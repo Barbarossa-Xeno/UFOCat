@@ -1,0 +1,32 @@
+{
+    "data": [
+        {
+            "timeLimit": "30s",
+            "similarity": 1,
+            "breedData": {
+                "similar": 1,
+                "other": 4
+            },
+            "intervalData": {
+                "count": 1,
+                "period": "2s"
+            },
+            "actionData": [
+                {
+                    "name": "bound",
+                    "overload": 0,
+                    "params": null,
+                    "probability": 0.5
+                },
+                {
+                    "name": "appear",
+                    "overload": 7,
+                    "params": [
+                        "3s", "1s"
+                    ],
+                    "probability": 0.5
+                }
+            ]
+        }
+    ]
+}
