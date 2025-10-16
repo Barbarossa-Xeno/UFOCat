@@ -1,0 +1,277 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\06081\\Siv3D\\UFOCat\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{400C26B6-4C4F-4E67-AF54-12C9AE7D4734}|UFOCat.vcxproj|C:\\Users\\06081\\Siv3D\\UFOCat\\phase.hpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{400C26B6-4C4F-4E67-AF54-12C9AE7D4734}|UFOCat.vcxproj|solutionrelative:phase.hpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{400C26B6-4C4F-4E67-AF54-12C9AE7D4734}|UFOCat.vcxproj|C:\\Users\\06081\\Siv3D\\UFOCat\\cat_object.hpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{400C26B6-4C4F-4E67-AF54-12C9AE7D4734}|UFOCat.vcxproj|solutionrelative:cat_object.hpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{400C26B6-4C4F-4E67-AF54-12C9AE7D4734}|UFOCat.vcxproj|C:\\Users\\06081\\Siv3D\\UFOCat\\cat_data.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{400C26B6-4C4F-4E67-AF54-12C9AE7D4734}|UFOCat.vcxproj|solutionrelative:cat_data.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{400C26B6-4C4F-4E67-AF54-12C9AE7D4734}|UFOCat.vcxproj|C:\\Users\\06081\\Siv3D\\UFOCat\\game_manager.hpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{400C26B6-4C4F-4E67-AF54-12C9AE7D4734}|UFOCat.vcxproj|solutionrelative:game_manager.hpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{400C26B6-4C4F-4E67-AF54-12C9AE7D4734}|UFOCat.vcxproj|C:\\Users\\06081\\Siv3D\\UFOCat\\App\\phases.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{400C26B6-4C4F-4E67-AF54-12C9AE7D4734}|UFOCat.vcxproj|solutionrelative:App\\phases.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{400C26B6-4C4F-4E67-AF54-12C9AE7D4734}|UFOCat.vcxproj|C:\\Users\\06081\\Siv3D\\UFOCat\\cat_object.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{400C26B6-4C4F-4E67-AF54-12C9AE7D4734}|UFOCat.vcxproj|solutionrelative:cat_object.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{400C26B6-4C4F-4E67-AF54-12C9AE7D4734}|UFOCat.vcxproj|C:\\Users\\06081\\Siv3D\\UFOCat\\cat_data.hpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{400C26B6-4C4F-4E67-AF54-12C9AE7D4734}|UFOCat.vcxproj|solutionrelative:cat_data.hpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{400C26B6-4C4F-4E67-AF54-12C9AE7D4734}|UFOCat.vcxproj|C:\\Users\\06081\\Siv3D\\UFOCat\\phase.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{400C26B6-4C4F-4E67-AF54-12C9AE7D4734}|UFOCat.vcxproj|solutionrelative:phase.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{400C26B6-4C4F-4E67-AF54-12C9AE7D4734}|UFOCat.vcxproj|C:\\Users\\06081\\Siv3D\\UFOCat\\cat_action_signature.hpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{400C26B6-4C4F-4E67-AF54-12C9AE7D4734}|UFOCat.vcxproj|solutionrelative:cat_action_signature.hpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{400C26B6-4C4F-4E67-AF54-12C9AE7D4734}|UFOCat.vcxproj|C:\\Users\\06081\\Siv3D\\UFOCat\\Main.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{400C26B6-4C4F-4E67-AF54-12C9AE7D4734}|UFOCat.vcxproj|solutionrelative:Main.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{400C26B6-4C4F-4E67-AF54-12C9AE7D4734}|UFOCat.vcxproj|C:\\Users\\06081\\Siv3D\\UFOCat\\game_manager.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{400C26B6-4C4F-4E67-AF54-12C9AE7D4734}|UFOCat.vcxproj|solutionrelative:game_manager.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{400C26B6-4C4F-4E67-AF54-12C9AE7D4734}|UFOCat.vcxproj|C:\\Users\\06081\\Siv3D\\UFOCat\\delta_stopwatch.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{400C26B6-4C4F-4E67-AF54-12C9AE7D4734}|UFOCat.vcxproj|solutionrelative:delta_stopwatch.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{400C26B6-4C4F-4E67-AF54-12C9AE7D4734}|UFOCat.vcxproj|C:\\Users\\06081\\Siv3D\\UFOCat\\delta_stopwatch.hpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{400C26B6-4C4F-4E67-AF54-12C9AE7D4734}|UFOCat.vcxproj|solutionrelative:delta_stopwatch.hpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 155,
+          "SelectedChildIndex": 7,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "Main.cpp",
+              "DocumentMoniker": "C:\\Users\\06081\\Siv3D\\UFOCat\\Main.cpp",
+              "RelativeDocumentMoniker": "Main.cpp",
+              "ToolTip": "C:\\Users\\06081\\Siv3D\\UFOCat\\Main.cpp",
+              "RelativeToolTip": "Main.cpp",
+              "ViewState": "AgIAABsAAAAAAAAAAAA1wDMAAAADAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2025-09-27T13:51:24.911Z",
+              "IsPinned": true
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "game_manager.hpp",
+              "DocumentMoniker": "C:\\Users\\06081\\Siv3D\\UFOCat\\game_manager.hpp",
+              "RelativeDocumentMoniker": "game_manager.hpp",
+              "ToolTip": "C:\\Users\\06081\\Siv3D\\UFOCat\\game_manager.hpp",
+              "RelativeToolTip": "game_manager.hpp",
+              "ViewState": "AgIAACUAAAAAAAAAAAAAACIAAAAgAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2025-09-28T01:23:36.448Z",
+              "IsPinned": true,
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "game_manager.cpp",
+              "DocumentMoniker": "C:\\Users\\06081\\Siv3D\\UFOCat\\game_manager.cpp",
+              "RelativeDocumentMoniker": "game_manager.cpp",
+              "ToolTip": "C:\\Users\\06081\\Siv3D\\UFOCat\\game_manager.cpp",
+              "RelativeToolTip": "game_manager.cpp",
+              "ViewState": "AgIAAFgAAAAAAAAAAAAAAMYAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2025-09-28T01:23:54.884Z",
+              "IsPinned": true
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "cat_object.hpp",
+              "DocumentMoniker": "C:\\Users\\06081\\Siv3D\\UFOCat\\cat_object.hpp",
+              "RelativeDocumentMoniker": "cat_object.hpp",
+              "ToolTip": "C:\\Users\\06081\\Siv3D\\UFOCat\\cat_object.hpp",
+              "RelativeToolTip": "cat_object.hpp",
+              "ViewState": "AgIAAM4AAAAAAAAAAAAtwL8AAABBAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2025-09-28T08:22:29.49Z",
+              "IsPinned": true,
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "cat_object.cpp",
+              "DocumentMoniker": "C:\\Users\\06081\\Siv3D\\UFOCat\\cat_object.cpp",
+              "RelativeDocumentMoniker": "cat_object.cpp",
+              "ToolTip": "C:\\Users\\06081\\Siv3D\\UFOCat\\cat_object.cpp",
+              "RelativeToolTip": "cat_object.cpp",
+              "ViewState": "AgIAACEAAAAAAAAAAAAAADoCAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2025-09-28T08:22:28.493Z",
+              "IsPinned": true,
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "cat_data.hpp",
+              "DocumentMoniker": "C:\\Users\\06081\\Siv3D\\UFOCat\\cat_data.hpp",
+              "RelativeDocumentMoniker": "cat_data.hpp",
+              "ToolTip": "C:\\Users\\06081\\Siv3D\\UFOCat\\cat_data.hpp",
+              "RelativeToolTip": "cat_data.hpp",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2025-09-28T02:10:26.316Z",
+              "IsPinned": true,
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "cat_data.cpp",
+              "DocumentMoniker": "C:\\Users\\06081\\Siv3D\\UFOCat\\cat_data.cpp",
+              "RelativeDocumentMoniker": "cat_data.cpp",
+              "ToolTip": "C:\\Users\\06081\\Siv3D\\UFOCat\\cat_data.cpp",
+              "RelativeToolTip": "cat_data.cpp",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAAnAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2025-09-28T03:53:54.753Z",
+              "IsPinned": true,
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "phase.hpp",
+              "DocumentMoniker": "C:\\Users\\06081\\Siv3D\\UFOCat\\phase.hpp",
+              "RelativeDocumentMoniker": "phase.hpp",
+              "ToolTip": "C:\\Users\\06081\\Siv3D\\UFOCat\\phase.hpp",
+              "RelativeToolTip": "phase.hpp",
+              "ViewState": "AgIAADkAAAAAAAAAAAAAAEEAAAAHAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2025-09-28T11:53:40.836Z",
+              "IsPinned": true,
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "phase.cpp",
+              "DocumentMoniker": "C:\\Users\\06081\\Siv3D\\UFOCat\\phase.cpp",
+              "RelativeDocumentMoniker": "phase.cpp",
+              "ToolTip": "C:\\Users\\06081\\Siv3D\\UFOCat\\phase.cpp",
+              "RelativeToolTip": "phase.cpp",
+              "ViewState": "AgIAAHABAAAAAAAAAIAxwDcBAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2025-10-02T13:17:13.723Z",
+              "IsPinned": true,
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "cat_action_signature.hpp",
+              "DocumentMoniker": "C:\\Users\\06081\\Siv3D\\UFOCat\\cat_action_signature.hpp",
+              "RelativeDocumentMoniker": "cat_action_signature.hpp",
+              "ToolTip": "C:\\Users\\06081\\Siv3D\\UFOCat\\cat_action_signature.hpp",
+              "RelativeToolTip": "cat_action_signature.hpp",
+              "ViewState": "AgIAABsAAAAAAAAAAAAAACEAAAAOAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2025-10-14T22:37:28.388Z",
+              "IsPinned": true,
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{aa2115a1-9712-457b-9047-dbb71ca2cdd2}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "delta_stopwatch.hpp",
+              "DocumentMoniker": "C:\\Users\\06081\\Siv3D\\UFOCat\\delta_stopwatch.hpp",
+              "RelativeDocumentMoniker": "delta_stopwatch.hpp",
+              "ToolTip": "C:\\Users\\06081\\Siv3D\\UFOCat\\delta_stopwatch.hpp",
+              "RelativeToolTip": "delta_stopwatch.hpp",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2025-10-05T08:44:27.263Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "delta_stopwatch.cpp",
+              "DocumentMoniker": "C:\\Users\\06081\\Siv3D\\UFOCat\\delta_stopwatch.cpp",
+              "RelativeDocumentMoniker": "delta_stopwatch.cpp",
+              "ToolTip": "C:\\Users\\06081\\Siv3D\\UFOCat\\delta_stopwatch.cpp",
+              "RelativeToolTip": "delta_stopwatch.cpp",
+              "ViewState": "AgIAAB4AAAAAAAAAAAAAACUAAAALAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2025-10-05T08:44:28.103Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "phases.json",
+              "DocumentMoniker": "C:\\Users\\06081\\Siv3D\\UFOCat\\App\\phases.json",
+              "RelativeDocumentMoniker": "App\\phases.json",
+              "ToolTip": "C:\\Users\\06081\\Siv3D\\UFOCat\\App\\phases.json",
+              "RelativeToolTip": "App\\phases.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAEAAAAGAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2025-10-06T05:38:22.229Z",
+              "EditorCaption": ""
+            }
+          ]
+        },
+        {
+          "DockedWidth": 45,
+          "SelectedChildIndex": -1,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:3:0:{d212f56b-c48a-434c-a121-1c5d80b59b9f}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:1:0:{d212f56b-c48a-434c-a121-1c5d80b59b9f}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{d78612c7-9962-4b83-95d9-268046dad23a}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{605322a2-17ae-43f4-b60f-766556e46c87}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{34e76e81-ee4a-11d0-ae2e-00a0c90fffc3}"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

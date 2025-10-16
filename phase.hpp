@@ -1,0 +1,78 @@
+﻿#pragma once
+#include "cat_action.hpp"
+#include "delta_stopwatch.hpp"
+#include <any>
+
+class Phase
+{
+	/* -- エイリアス --  */
+public:
+	/// @brief `std::type_info` 型の配列で引数の型情報（シグネチャ）を表す
+	using Signature = Array<const std::type_info*>;
+
+	/* -- クラス -- */
+public:
+	
+	struct BreedData
+	{
+		uint32 similar;
+
+		uint32 other;
+	};
+
+	struct IntervalData
+	{
+		uint32 count;
+
+		Duration period;
+	};
+
+	struct ActionData
+	{
+		String name;
+
+		std::any methodParameters;
+
+		double probability = 0.0;
+	};
+
+	/* -- フィールド -- */
+public:
+
+	Duration timeLimit;
+
+	uint32 similarity;
+
+	BreedData breedData;
+
+	IntervalData intervalData;
+
+	Array<ActionData> actionDataList;
+
+	bool isCleared = false;
+
+private:
+
+	DeltaStopwatch m_stopwatch;
+
+	const static HashTable<String, Array<Signature>> m_actionInfo;
+
+	const static struct
+	{
+
+	} m_actionDictionary;
+
+	/* -- メソッド -- */
+public:
+	Phase(const Duration& timeLimit, uint32 similarity, BreedData &breedData, IntervalData &intervalData, Array<ActionData> &actionDataList)
+		: timeLimit{ timeLimit }
+		, similarity{ similarity }
+		, breedData{ breedData }
+		, intervalData{ intervalData }
+		, actionDataList{ actionDataList }
+	{ }
+
+	bool updateAtInterval();
+
+	static Array<Phase> LoadData();
+};

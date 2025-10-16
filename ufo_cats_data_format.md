@@ -1,0 +1,7 @@
+- id equals to each cat's image filename number
+- "name" is used only internally, not referred
+- separator is "|"
+- "color": "white", "black", "gray", "brown", "ocher", "redbrown", "cream", "kiji", "shilver", "ruddy", "fawn", "bluegray", "bluegray2", "gold"
+- diluted colors start with "D_" (operator)
+- "pattern": "none", "tora", "hachiware", "sabi", "mike", "tabby", "calico"
+- "tora" and "tabby", "mike" and "calico" are same mean (use same filter condition), but tora and mike are used for Japanese cats
