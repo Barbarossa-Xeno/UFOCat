@@ -1,4 +1,5 @@
 ﻿#pragma once
+#include "cat_action.hpp"
 #include "cat_data.hpp"
 #include "delta_stopwatch.hpp"
 #include "phase.hpp"
@@ -37,7 +38,7 @@ private:
 public:
 
 	/// @brief Siv3D のイージング関数の型
-	using EasingFunction = double (*const) (double) noexcept;
+	using EasingFunction = cact::EasingFunction;
 
 	/* -- フィールド -- */
 

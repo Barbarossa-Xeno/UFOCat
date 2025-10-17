@@ -75,4 +75,21 @@ public:
 	bool updateAtInterval();
 
 	static Array<Phase> LoadData();
+
+private:
+	static bool m_IsDuration(const String &str);
+
+	static bool m_IsRect(const String &str);
+
+	static bool m_IsEasing(const String &str);
+
+	static Duration m_ParseDuration(const String &str);
+
+	static Rect m_ParseRect(const String &str);
+
+	static cact::EasingFunction m_ParseEasing(const String &str);
+
+	template <typename TTuple>
+	static auto m_ParseParameters(const JSON &paramData)
+		requires requires { typename std::tuple_size<TTuple>; };
 };

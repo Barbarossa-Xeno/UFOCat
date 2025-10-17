@@ -49,6 +49,8 @@ CatObject& CatObject::setAction(Phase::ActionData actionData)
 	{
 	
 	}
+
+	return *this;
 }
 
 CatObject& CatObject::bound()

@@ -381,6 +381,7 @@
     <ClInclude Include="cat_action.hpp" />
     <ClInclude Include="cat_object.hpp" />
     <ClInclude Include="delta_stopwatch.hpp" />
+    <ClInclude Include="flatten_variant.hpp" />
     <ClInclude Include="game_manager.hpp" />
     <ClInclude Include="phase.hpp" />
     <ClInclude Include="stdafx.h" />

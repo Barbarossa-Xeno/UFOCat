@@ -40,10 +40,9 @@ void Main()
 		ingameState = IngameState::AnnounceTarget;
 		ingameTimer.restart(3s);
 	}
-
 	{
-		auto res = Phase::LoadData();
-		Console << Unicode::FromUTF8(std::string(res[0].actionDataList[1].methodParameters.type().name()));
+		// auto res = Phase::LoadData();
+		// Console << Unicode::FromUTF8(std::string(res[0].actionDataList[1].methodParameters.type().name()));
 	}
 	
 	while (System::Update())

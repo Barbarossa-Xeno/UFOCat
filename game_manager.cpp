@@ -22,17 +22,17 @@ void GameManager::startPhase()
 {
 	// クリアしているフェーズの数は、現在行っているフェーズのインデックスと同じなのを利用する
 	// （そのフェーズが終わり次第、isCleared のフラグを上げるため）
-	m_currentPhaseIndex = phases.filter([](const Phase& p) { return p.isCleared; }).size();
-
-	currentState = State::InPhase;
+// 	m_currentPhaseIndex = phases.filter([](const Phase& p) { return p.isCleared; }).size();
+// 
+// 	currentState = State::InPhase;
 }
 
 void GameManager::inPhase()
 {
-	if (phases[m_currentPhaseIndex].updateAtInterval())
-	{
-		spawn();
-	}
+// 	if (phases[m_currentPhaseIndex].updateAtInterval())
+// 	{
+// 		spawn();
+// 	}
 }
 
 void GameManager::spawn()
