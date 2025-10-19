@@ -11,6 +11,7 @@ namespace cact
 		using _1 = std::tuple<Duration>;
 
 		using TSignatures = std::variant<_0, _1>;
+		constexpr size_t Count = std::variant_size_v<TSignatures>;
 	}
 
 	namespace appear
@@ -25,6 +26,7 @@ namespace cact
 		using _7 = std::tuple<Duration, Duration>;
 
 		using TSignatures = std::variant<_0, _1, _2, _3, _4, _5, _6, _7>;
+		constexpr size_t Count = std::variant_size_v<TSignatures>;
 	}
 
 	namespace appearFromEdge
@@ -35,6 +37,7 @@ namespace cact
 		using _3 = std::tuple<Duration, Duration, std::array<double, 4>>;
 
 		using TSignatures = std::variant<_0, _1, _2, _3>;
+		constexpr size_t Count = std::variant_size_v<TSignatures>;
 	}
 
 	using Generic = std::variant<

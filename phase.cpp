@@ -436,33 +436,176 @@ Array<Phase> Phase::LoadData()
 							}
 							else if (name == U"cross")
 							{
-								if (overload < std::variant_size_v<cact::cross::TSignatures>)
+								switch (overload)
 								{
-									switch (overload)
-									{
 									case 0:
 									{
 										auto p = m_ParseParameters<cact::cross::_0>(data_params);
-										// params = std::make_tuple(std::get<std::tuple_element_t<0, cact::cross::_0>>(std::get<0>(p)))
-
 										params = std::make_tuple(get_at.operator()<0, cact::cross::_0>(p), get_at.operator()<1, cact::cross::_0>(p));
 										break;
 									}
-
+									case 1:
+									{
+										auto p = m_ParseParameters<cact::cross::_1>(data_params);
+										params = std::make_tuple(get_at.operator()<0, cact::cross::_1>(p));
+										break;
+									}
+									default:
+									{
+										throw Error(U"`cross` overload index is invalid. (valid range: 0 ~ {})"_fmt(cact::cross::Count - 1));
 									}
 								}
 							}
-							else if (name == U"")
+							else if (name == U"appear")
 							{
-
+								switch (overload)
+								{
+									case 0:
+									{
+										auto p = m_ParseParameters<cact::appear::_0>(data_params);
+										params = std::make_tuple(get_at.operator()<0, cact::appear::_0>(p),
+																 get_at.operator()<1, cact::appear::_0>(p),
+																 get_at.operator()<2, cact::appear::_0>(p),
+																 get_at.operator()<3, cact::appear::_0>(p),
+																 get_at.operator()<4, cact::appear::_0>(p),
+																 get_at.operator()<5, cact::appear::_0>(p)
+																);
+										break;
+									}
+									case 1:
+									{
+										auto p = m_ParseParameters<cact::appear::_1>(data_params);
+										params = std::make_tuple(get_at.operator()<0, cact::appear::_1>(p),
+																 get_at.operator()<1, cact::appear::_1>(p),
+																 get_at.operator()<2, cact::appear::_1>(p),
+																 get_at.operator()<3, cact::appear::_1>(p)
+																);
+										break;
+									}
+									case 2:
+									{
+										auto p = m_ParseParameters<cact::appear::_2>(data_params);
+										params = std::make_tuple(get_at.operator()<0, cact::appear::_2>(p),
+																 get_at.operator()<1, cact::appear::_2>(p),
+																 get_at.operator()<2, cact::appear::_2>(p),
+																 get_at.operator()<3, cact::appear::_2>(p)
+																);
+										break;
+									}
+									case 3:
+									{
+										auto p = m_ParseParameters<cact::appear::_3>(data_params);
+										params = std::make_tuple(get_at.operator()<0, cact::appear::_3>(p),
+																 get_at.operator()<1, cact::appear::_3>(p),
+																 get_at.operator()<2, cact::appear::_3>(p)
+																);
+										break;
+									}
+									case 4:
+									{
+										auto p = m_ParseParameters<cact::appear::_4>(data_params);
+										params = std::make_tuple(get_at.operator()<0, cact::appear::_4>(p),
+																 get_at.operator()<1, cact::appear::_4>(p),
+																 get_at.operator()<2, cact::appear::_4>(p),
+																 get_at.operator()<3, cact::appear::_4>(p),
+																 get_at.operator()<4, cact::appear::_4>(p)
+																);
+										break;
+									}
+									case 5:
+									{
+										auto p = m_ParseParameters<cact::appear::_5>(data_params);
+										params = std::make_tuple(get_at.operator()<0, cact::appear::_5>(p),
+																 get_at.operator()<1, cact::appear::_5>(p),
+																 get_at.operator()<2, cact::appear::_5>(p)
+																);
+										break;
+									}
+									case 6:
+									{
+										auto p = m_ParseParameters<cact::appear::_6>(data_params);
+										params = std::make_tuple(get_at.operator()<0, cact::appear::_6>(p),
+																 get_at.operator()<1, cact::appear::_6>(p),
+																 get_at.operator()<2, cact::appear::_6>(p)
+																);
+										break;
+									}
+									case 7:
+									{
+										auto p = m_ParseParameters<cact::appear::_7>(data_params);
+										params = std::make_tuple(get_at.operator()<0, cact::appear::_7>(p),
+																 get_at.operator()<1, cact::appear::_7>(p)
+																);
+										break;
+									}
+									default:
+									{
+										throw Error(U"`appear` overload index is invalid. (valid range: 0 ~ {})"_fmt(cact::appear::Count - 1));
+									}
+								}
 							}
-							else if (name == U"")
+							else if (name == U"appearFromEdge")
 							{
-
+								switch (overload)
+								{
+									case 0:
+									{
+										auto p = m_ParseParameters<cact::appearFromEdge::_0>(data_params);
+										params = std::make_tuple(get_at.operator()<0, cact::appearFromEdge::_0>(p),
+																 get_at.operator()<1, cact::appearFromEdge::_0>(p),
+																 get_at.operator()<2, cact::appearFromEdge::_0>(p),
+																 get_at.operator()<3, cact::appearFromEdge::_0>(p),
+																 get_at.operator()<4, cact::appearFromEdge::_0>(p),
+																 get_at.operator()<5, cact::appearFromEdge::_0>(p)
+																);
+										break;
+									}
+									case 1:
+									{
+										auto p = m_ParseParameters<cact::appearFromEdge::_1>(data_params);
+										params = std::make_tuple(get_at.operator()<0, cact::appearFromEdge::_1>(p),
+																 get_at.operator()<1, cact::appearFromEdge::_1>(p),
+																 get_at.operator()<2, cact::appearFromEdge::_1>(p),
+																 get_at.operator()<3, cact::appearFromEdge::_1>(p)
+																);
+										break;
+									}
+									case 2:
+									{
+										auto p = m_ParseParameters<cact::appearFromEdge::_2>(data_params);
+										params = std::make_tuple(get_at.operator()<0, cact::appearFromEdge::_2>(p),
+																 get_at.operator()<1, cact::appearFromEdge::_2>(p),
+																 get_at.operator()<2, cact::appearFromEdge::_2>(p),
+																 get_at.operator()<3, cact::appearFromEdge::_2>(p)
+																);
+										break;
+									}
+									case 3:
+									{
+										auto p = m_ParseParameters<cact::appearFromEdge::_3>(data_params);
+										params = std::make_tuple(get_at.operator()<0, cact::appearFromEdge::_3>(p),
+																 get_at.operator()<1, cact::appearFromEdge::_3>(p),
+																 get_at.operator()<2, cact::appearFromEdge::_3>(p)
+																);
+										break;
+									}
+									default:
+									{
+										throw Error(U"`appearFromEdge` overload index is invalid. (valid range: 0 ~ {})"_fmt(cact::appearFromEdge::Count - 1));
+									}
+								}
+							}
+							else
+							{
+								throw Error(U"`{}` is not registered as action (method) name."_fmt(name));
 							}
 						}
+
+						actionDataList << ActionData{ name, params, probability };
 					}
 				}
+
+				result << Phase{ timeLimit, similarity, breedData, intervalData, actionDataList };
 			}
 			
 		}

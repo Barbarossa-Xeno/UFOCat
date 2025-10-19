@@ -1,7 +1,6 @@
 ﻿#pragma once
 #include "cat_action.hpp"
 #include "delta_stopwatch.hpp"
-#include <any>
 
 class Phase
 {
@@ -31,7 +30,7 @@ public:
 	{
 		String name;
 
-		std::any methodParameters;
+		cact::Generic params;
 
 		double probability = 0.0;
 	};
