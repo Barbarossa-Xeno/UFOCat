@@ -55,7 +55,8 @@ public:
 
 	/// @brief コンストラクタ
 	explicit GameManager()
-		: cats{ LoadData() }
+		: cats{ LoadCatData() }
+		, phases{ LoadPhaseData() }
 	{ }
 
 	void announceTarget();
@@ -76,5 +77,9 @@ private:
 
 	/// @brief UFO猫のデータをJSONから読み込んでそれら全てのインスタンスを作成する
 	/// @return 全てのUFO猫のインスタンス配列
-	Array<CatObject> LoadData();
+	Array<CatObject> LoadCatData();
+
+	/// @brief 
+	/// @return 
+	static Array<Phase> LoadPhaseData();
 };

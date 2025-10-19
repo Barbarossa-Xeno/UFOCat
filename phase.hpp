@@ -78,8 +78,6 @@ public:
 
 	bool updateAtInterval();
 
-	static Array<Phase> LoadData();
-
 	static bool IsDuration(const String &str);
 
 	static bool IsRect(const String &str);
