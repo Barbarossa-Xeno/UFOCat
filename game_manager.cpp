@@ -292,43 +292,67 @@ Array<Phase> GameManager::LoadPhaseData()
 				{
 					for (const auto &md : data_actionData)
 					{
-
+						// アクション名（メソッド名）
 						const String name = md.value[U"name"].getString();
 
+						// オーバーロード番号（何がどれに対応するかは、`cact` 参照）
 						const size_t overload = md.value[U"overload"].get<size_t>();
 
+						// `params` プロパティを格納する仮変数
 						const auto &data_params = md.value[U"params"];
 
+						// 発生確率
 						const double probability = md.value[U"probability"].get<double>();
 
+						/* -- こっから実際の引数として使えるタプルにするためのパース処理 -- */
+
+						// 引数リスト
 						cact::Generic params;
 
+						// 配列形式であることを確認
 						if (data_params.isArray())
 						{
-
+							// タプルの N 番目の要素を variant を外して取り出す
+							// tparam: N - 取り出す要素のインデックス
+							// tparam: TTuple - 取り出す対象のタプル型
+							// param: source - `Phase::ParseParameters()` の戻り値として得られた tuple (中身 variant)
 							const auto get_at = []<size_t N, typename TTuple>(const auto &source)
 							{
-								return std::get<std::tuple_element_t<N, TTuple>>(std::get<N>(source));
-							};
+								// source (タプル) の N 番目の要素を取り出す
+								// これは、variant<> であることが期待される
+								auto &&element = std::get<N>(source);
 
+								// TTuple の N 番目の要素の型を取得
+								// この型は、element の variant に格納されている本来の型と同じはず
+								using RealType = std::tuple_element_t<N, TTuple>;
+
+								// つまりこれはvariant を外す処理となる
+								return std::get<RealType>(element);
+							};
+							// ジェネリックラムダのテンプレートは、実質ローカル関数でもテンプレートが使えるので便利だけど
+							// 明示的にテンプレートを指定するのは、operator() を使わなければならないので少し面倒
+
+							// 各アクションごとに場合分けしてパース処理
 							if (name == U"bound")
 							{
+								// `bound` は引数を取らないので、monostate をセットしておく
 								params = std::monostate{};
 							}
 							else if (name == U"cross")
 							{
 								switch (overload)
 								{
+									// 各オーバーロード番号に対応するようにパースする
 									case 0:
 									{
 										auto p = Phase::ParseParameters<cact::cross::_0>(data_params);
-										params = std::make_tuple(get_at.operator() < 0, cact::cross::_0 > (p), get_at.operator() < 1, cact::cross::_0 > (p));
+										params = std::make_tuple(get_at.operator()<0, cact::cross::_0>(p), get_at.operator()<1, cact::cross::_0>(p));
 										break;
 									}
 									case 1:
 									{
 										auto p = Phase::ParseParameters<cact::cross::_1>(data_params);
-										params = std::make_tuple(get_at.operator() < 0, cact::cross::_1 > (p));
+										params = std::make_tuple(get_at.operator()<0, cact::cross::_1>(p));
 										break;
 									}
 									default:
@@ -344,79 +368,97 @@ Array<Phase> GameManager::LoadPhaseData()
 									case 0:
 									{
 										auto p = Phase::ParseParameters<cact::appear::_0>(data_params);
-										params = std::make_tuple(get_at.operator() < 0, cact::appear::_0 > (p),
-											get_at.operator() < 1, cact::appear::_0 > (p),
-											get_at.operator() < 2, cact::appear::_0 > (p),
-											get_at.operator() < 3, cact::appear::_0 > (p),
-											get_at.operator() < 4, cact::appear::_0 > (p),
-											get_at.operator() < 5, cact::appear::_0 > (p)
-										);
+										// 直書きでタプル作るのはちょっとダサいけど
+										// 固定長で作るという制約上しゃあないところが大きい
+										params = std::make_tuple
+											(
+												get_at.operator()<0, cact::appear::_0>(p),
+												get_at.operator()<1, cact::appear::_0>(p),
+												get_at.operator()<2, cact::appear::_0>(p),
+												get_at.operator()<3, cact::appear::_0>(p),
+												get_at.operator()<4, cact::appear::_0>(p),
+												get_at.operator()<5, cact::appear::_0>(p)
+											);
 										break;
 									}
 									case 1:
 									{
 										auto p = Phase::ParseParameters<cact::appear::_1>(data_params);
-										params = std::make_tuple(get_at.operator() < 0, cact::appear::_1 > (p),
-											get_at.operator() < 1, cact::appear::_1 > (p),
-											get_at.operator() < 2, cact::appear::_1 > (p),
-											get_at.operator() < 3, cact::appear::_1 > (p)
-										);
+										params = std::make_tuple
+											(
+												get_at.operator()<0, cact::appear::_1>(p),
+												get_at.operator()<1, cact::appear::_1>(p),
+												get_at.operator()<2, cact::appear::_1>(p),
+												get_at.operator()<3, cact::appear::_1>(p)
+											);
 										break;
 									}
 									case 2:
 									{
 										auto p = Phase::ParseParameters<cact::appear::_2>(data_params);
-										params = std::make_tuple(get_at.operator() < 0, cact::appear::_2 > (p),
-											get_at.operator() < 1, cact::appear::_2 > (p),
-											get_at.operator() < 2, cact::appear::_2 > (p),
-											get_at.operator() < 3, cact::appear::_2 > (p)
-										);
+										params = std::make_tuple
+											(
+												get_at.operator()<0, cact::appear::_2>(p),
+												get_at.operator()<1, cact::appear::_2>(p),
+												get_at.operator()<2, cact::appear::_2>(p),
+												get_at.operator()<3, cact::appear::_2>(p)
+											);
 										break;
 									}
 									case 3:
 									{
 										auto p = Phase::ParseParameters<cact::appear::_3>(data_params);
-										params = std::make_tuple(get_at.operator() < 0, cact::appear::_3 > (p),
-											get_at.operator() < 1, cact::appear::_3 > (p),
-											get_at.operator() < 2, cact::appear::_3 > (p)
-										);
+										params = std::make_tuple
+											(
+												get_at.operator()<0, cact::appear::_3>(p),
+												get_at.operator()<1, cact::appear::_3>(p),
+												get_at.operator()<2, cact::appear::_3>(p)
+											);
 										break;
 									}
 									case 4:
 									{
 										auto p = Phase::ParseParameters<cact::appear::_4>(data_params);
-										params = std::make_tuple(get_at.operator() < 0, cact::appear::_4 > (p),
-											get_at.operator() < 1, cact::appear::_4 > (p),
-											get_at.operator() < 2, cact::appear::_4 > (p),
-											get_at.operator() < 3, cact::appear::_4 > (p),
-											get_at.operator() < 4, cact::appear::_4 > (p)
-										);
+										params = std::make_tuple
+											(
+												get_at.operator()<0, cact::appear::_4>(p),
+												get_at.operator()<1, cact::appear::_4>(p),
+												get_at.operator()<2, cact::appear::_4>(p),
+												get_at.operator()<3, cact::appear::_4>(p),
+												get_at.operator()<4, cact::appear::_4>(p)
+											);
 										break;
 									}
 									case 5:
 									{
 										auto p = Phase::ParseParameters<cact::appear::_5>(data_params);
-										params = std::make_tuple(get_at.operator() < 0, cact::appear::_5 > (p),
-											get_at.operator() < 1, cact::appear::_5 > (p),
-											get_at.operator() < 2, cact::appear::_5 > (p)
-										);
+										params = std::make_tuple
+											(
+												get_at.operator()<0, cact::appear::_5>(p),
+												get_at.operator()<1, cact::appear::_5>(p),
+												get_at.operator()<2, cact::appear::_5>(p)
+											);
 										break;
 									}
 									case 6:
 									{
 										auto p = Phase::ParseParameters<cact::appear::_6>(data_params);
-										params = std::make_tuple(get_at.operator() < 0, cact::appear::_6 > (p),
-											get_at.operator() < 1, cact::appear::_6 > (p),
-											get_at.operator() < 2, cact::appear::_6 > (p)
-										);
+										params = std::make_tuple
+											(
+												get_at.operator()<0, cact::appear::_6>(p),
+												get_at.operator()<1, cact::appear::_6>(p),
+												get_at.operator()<2, cact::appear::_6>(p)
+											);
 										break;
 									}
 									case 7:
 									{
 										auto p = Phase::ParseParameters<cact::appear::_7>(data_params);
-										params = std::make_tuple(get_at.operator() < 0, cact::appear::_7 > (p),
-											get_at.operator() < 1, cact::appear::_7 > (p)
-										);
+										params = std::make_tuple
+											(
+												get_at.operator()<0, cact::appear::_7>(p),
+												get_at.operator()<1, cact::appear::_7>(p)
+											);
 										break;
 									}
 									default:
@@ -432,42 +474,50 @@ Array<Phase> GameManager::LoadPhaseData()
 									case 0:
 									{
 										auto p = Phase::ParseParameters<cact::appearFromEdge::_0>(data_params);
-										params = std::make_tuple(get_at.operator() < 0, cact::appearFromEdge::_0 > (p),
-											get_at.operator() < 1, cact::appearFromEdge::_0 > (p),
-											get_at.operator() < 2, cact::appearFromEdge::_0 > (p),
-											get_at.operator() < 3, cact::appearFromEdge::_0 > (p),
-											get_at.operator() < 4, cact::appearFromEdge::_0 > (p),
-											get_at.operator() < 5, cact::appearFromEdge::_0 > (p)
-										);
+										params = std::make_tuple
+											(
+												get_at.operator()<0, cact::appearFromEdge::_0>(p),
+												get_at.operator()<1, cact::appearFromEdge::_0>(p),
+												get_at.operator()<2, cact::appearFromEdge::_0>(p),
+												get_at.operator()<3, cact::appearFromEdge::_0>(p),
+												get_at.operator()<4, cact::appearFromEdge::_0>(p),
+												get_at.operator()<5, cact::appearFromEdge::_0>(p)
+											);
 										break;
 									}
 									case 1:
 									{
 										auto p = Phase::ParseParameters<cact::appearFromEdge::_1>(data_params);
-										params = std::make_tuple(get_at.operator() < 0, cact::appearFromEdge::_1 > (p),
-											get_at.operator() < 1, cact::appearFromEdge::_1 > (p),
-											get_at.operator() < 2, cact::appearFromEdge::_1 > (p),
-											get_at.operator() < 3, cact::appearFromEdge::_1 > (p)
-										);
+										params = std::make_tuple
+											(
+												get_at.operator()<0, cact::appearFromEdge::_1>(p),
+												get_at.operator()<1, cact::appearFromEdge::_1>(p),
+												get_at.operator()<2, cact::appearFromEdge::_1>(p),
+												get_at.operator()<3, cact::appearFromEdge::_1>(p)
+											);
 										break;
 									}
 									case 2:
 									{
 										auto p = Phase::ParseParameters<cact::appearFromEdge::_2>(data_params);
-										params = std::make_tuple(get_at.operator() < 0, cact::appearFromEdge::_2 > (p),
-											get_at.operator() < 1, cact::appearFromEdge::_2 > (p),
-											get_at.operator() < 2, cact::appearFromEdge::_2 > (p),
-											get_at.operator() < 3, cact::appearFromEdge::_2 > (p)
-										);
+										params = std::make_tuple
+											(
+												get_at.operator()<0, cact::appearFromEdge::_2>(p),
+												get_at.operator()<1, cact::appearFromEdge::_2>(p),
+												get_at.operator()<2, cact::appearFromEdge::_2>(p),
+												get_at.operator()<3, cact::appearFromEdge::_2>(p)
+											);
 										break;
 									}
 									case 3:
 									{
 										auto p = Phase::ParseParameters<cact::appearFromEdge::_3>(data_params);
-										params = std::make_tuple(get_at.operator() < 0, cact::appearFromEdge::_3 > (p),
-											get_at.operator() < 1, cact::appearFromEdge::_3 > (p),
-											get_at.operator() < 2, cact::appearFromEdge::_3 > (p)
-										);
+										params = std::make_tuple
+											(
+												get_at.operator()<0, cact::appearFromEdge::_3>(p),
+												get_at.operator()<1, cact::appearFromEdge::_3>(p),
+												get_at.operator()<2, cact::appearFromEdge::_3>(p)
+											);
 										break;
 									}
 									default:
@@ -482,6 +532,7 @@ Array<Phase> GameManager::LoadPhaseData()
 							}
 						}
 
+						// アクションデータのパース1周したら、リストに追加
 						actionDataList << Phase::ActionData{ name, params, probability };
 					}
 				}
@@ -490,6 +541,7 @@ Array<Phase> GameManager::LoadPhaseData()
 					throw Error(U"`actionData` is not array type.");
 				}
 
+				// 1フェーズ走査したら、結果に追加
 				result << Phase{ timeLimit, similarity, breedData, intervalData, actionDataList };
 			}
 

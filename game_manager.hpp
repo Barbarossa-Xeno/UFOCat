@@ -79,7 +79,7 @@ private:
 	/// @return 全てのUFO猫のインスタンス配列
 	Array<CatObject> LoadCatData();
 
-	/// @brief 
-	/// @return 
+	/// @brief 各フェーズのデータをJSONから読み込んでそれらすべてのインスタンスを作成する
+	/// @return 全てのフェーズの配列
 	Array<Phase> LoadPhaseData();
 };
