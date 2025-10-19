@@ -50,23 +50,23 @@ bool Phase::updateAtInterval()
 	return m_stopwatch.isOver(intervalData.period);
 }
 
-bool Phase::m_IsDuration(const String &str)
+bool Phase::IsDuration(const String &str)
 {
 	return str.ends_with(U"s");
 }
 
-bool Phase::m_IsRect(const String &str)
+bool Phase::IsRect(const String &str)
 {
 	const std::regex rectPattern{ R"(^((\d+),\s*(\d+))$)" };
 	return std::regex_match(str.narrow(), rectPattern);
 }
 
-bool Phase::m_IsEasing(const String &str)
+bool Phase::IsEasing(const String &str)
 {
 	return str.substr(0, 2) == U"e_";
 }
 
-Duration Phase::m_ParseDuration(const String &str)
+Duration Phase::ParseDuration(const String &str)
 {
 	if (str.ends_with(U"s"))
 	{
@@ -78,7 +78,7 @@ Duration Phase::m_ParseDuration(const String &str)
 	}
 }
 
-Rect Phase::m_ParseRect(const String &str)
+Rect Phase::ParseRect(const String &str)
 {
 	// s3d::String から std::string への変換
 	std::string cast = str.narrow();
@@ -102,7 +102,7 @@ Rect Phase::m_ParseRect(const String &str)
 	}
 }
 
-cact::EasingFunction Phase::m_ParseEasing(const String &str)
+cact::EasingFunction Phase::ParseEasing(const String &str)
 {
 	if (str.substr(0, 2) == U"e_")
 	{
@@ -162,7 +162,7 @@ cact::EasingFunction Phase::m_ParseEasing(const String &str)
 }
 
 template <typename TTuple>
-auto Phase::m_ParseParameters(const JSON &paramData)
+auto Phase::ParseParameters(const JSON &paramData)
 	requires requires { typename std::tuple_size<TTuple>; }
 {
 	if (paramData.size() != std::tuple_size_v<TTuple>)
@@ -191,17 +191,17 @@ auto Phase::m_ParseParameters(const JSON &paramData)
 		{
 			const String& parsed = paramData[i].getString();
 
-			if (m_IsDuration(parsed))
+			if (IsDuration(parsed))
 			{
-				temp[i] = m_ParseDuration(parsed);
+				temp[i] = ParseDuration(parsed);
 			}
-			else if (m_IsRect(parsed))
+			else if (IsRect(parsed))
 			{
-				temp[i] = m_ParseRect(parsed);
+				temp[i] = ParseRect(parsed);
 			}
-			else if (m_IsEasing(parsed))
+			else if (IsEasing(parsed))
 			{
-				temp[i] = m_ParseEasing(parsed);
+				temp[i] = ParseEasing(parsed);
 			}
 			else
 			{
@@ -260,155 +260,63 @@ Array<Phase> Phase::LoadData()
 	// まずは、配列形式でいろんなPhaseのデータが入っているのが前提
 	if (data.isArray())
 	{
-
-		/* -- JSONデータのパースに用いるローカル関数などの機能群 -- */
-
-		// 文字列データが Duration かどうかを調べる
-		// Duration を表す文字列は、最後に "s" がついている
-		const auto isDuration = [](const String& str) { return str.ends_with(U"s"); };
-
-		// 文字列データが Rect であるときのパターン
-		// \s は空白文字、有無は問わないようにする
-		const std::regex rectPattern{ R"(^((\d+),\s*(\d+))$)" };
-
-		// 文字列データが Rect かどうかを調べる
-		const auto isRect = [&rectPattern](const String& str) { return std::regex_match(str.narrow(), rectPattern); };
-
-		const auto isEasing = [](const String& str) { return str.substr(0, 2) == U"e_"; };
-
-		// 文字列が Duration を表すならパースする
-		const auto parseDuration = [](const String& str) -> Duration
-			{
-				if (str.ends_with(U"s"))
-				{
-					return Duration{ ParseFloat<double>(str.removed(U"s")) };
-				}
-				else
-					throw Error(U"String to Duration casting was failed.");
-			};
-
-		// 文字列が Rect を表すならパースする
-		const auto parseRect = [&rectPattern](const String& str) -> Rect
-			{
-				// s3d::String から std::string への変換
-				std::string cast = str.narrow();
-
-				// マッチ結果を格納する変数を作って、パターンを検証
-				if (std::smatch match;
-					std::regex_match(cast, match, rectPattern))
-				{
-					return Rect
-					{
-						// match[1]以降が、部分パターンに適合した文字列を格納してる
-						static_cast<int32>(std::stoi(match[1].str())),
-						static_cast<int32>(std::stoi(match[2].str()))
-					};
-				}
-				else
-					throw Error(U"String to Rect casting was failed.");
-			};
-
-		// ここの str は & にしてはいけない
-		const auto parseEasing = [](String str)
-			{
-				if (str.substr(0, 2) == U"e_")
-				{
-					// "e_" を削除し、小文字にして表記揺れ統一
-					str = str.substr(2).lowercase();
-
-					if (str == U"back")
-					{
-						return Easing::Back;
-					}
-					else if (str == U"bounce")
-					{
-						return Easing::Bounce;
-					}
-					else if (str == U"circ")
-					{
-						return Easing::Circ;
-					}
-					else if (str == U"cubic")
-					{
-						return Easing::Cubic;
-					}
-					else if (str == U"elastic")
-					{
-						return Easing::Elastic;
-					}
-					else if (str == U"expo")
-					{
-						return Easing::Expo;
-					}
-					else if (str == U"Linear")
-					{
-						return Easing::Linear;
-					}
-					else if (str == U"quad")
-					{
-						return Easing::Quad;
-					}
-					else if (str == U"Quart")
-					{
-						return Easing::Quart;
-					}
-					else if (str == U"sine")
-					{
-						return Easing::Sine;
-					}
-					else
-					{
-						throw Error(U"`{}` is not registered as easing function."_fmt(str));
-					}
-				}
-				else
-				{
-					throw Error(U"Prefix of easing function `e_` is not found.");
-				}
-			};
-
-		/* -- END: JSONデータのパースに用いるローカル関数などの機能群 -- */
-
 		// JSONデータの全てを走査
 		for (const auto& d : data)
 		{
 			if (d.value.isObject())
 			{
-				// 以後、JSONから抽出する仮の文字列格納用変数は data_ で始める
+				/*
+				 * 以後、JSONから抽出する仮の文字列格納用変数は data_ で始める
+				 * JSONのプロパティ値が
+				 *	数値型の場合はs3d::JSON の get<uint32>() を使ってパース
+				 *	文字列型の場合は、複数の型表現を包括しているため
+				 *	 一旦 getString() で文字列として取得し、
+				 *	 Duration や Rect、EasingFunction に変換する
+				 */
 
 				// 1フェーズの時間制限
-				Duration timeLimit = parseDuration(d.value[U"timeLimit"].get<String>());
+				Duration timeLimit = ParseDuration(d.value[U"timeLimit"].get<String>());
 
 				// 類似度
 				uint32 similarity = d.value[U"similarity"].get<uint32>();
 
-
+				// 品種
 				BreedData breedData{ };
 
+				// 品種データを読み込む
 				if (const auto& data_breedData = d.value[U"breedData"];
-					data_breedData.getType() == JSONValueType::Object)
+					data_breedData.isObject())
 				{
 					breedData.similar = data_breedData[U"similar"].get<uint32>();
 					breedData.other = data_breedData[U"other"].get<uint32>();
 				}
-
-				IntervalData intervalData{ };
-
-				if (const auto& data_intervalData = d.value[U"intervalData"];
-					data_intervalData.getType() == JSONValueType::Object)
+				else
 				{
-					intervalData.count = data_intervalData[U"count"].get<uint32>();
-					intervalData.period = parseDuration(data_intervalData[U"period"].getString());
+					throw Error(U"`breedData` is not object type.");
 				}
 
-				// 
+				// 出現ペース
+				IntervalData intervalData{ };
+
+				// 出現ペースのデータを読み込む
+				if (const auto& data_intervalData = d.value[U"intervalData"];
+					data_intervalData.isObject())
+				{
+					intervalData.count = data_intervalData[U"count"].get<uint32>();
+					intervalData.period = ParseDuration(data_intervalData[U"period"].getString());
+				}
+				else
+				{
+					throw Error(U"`intervalData` is not object type.");
+				}
+
+				// このフェーズでの使用アクション
 				Array<ActionData> actionDataList{ };
 
+				// 配列であることを確認してからアクションデータを全走査
 				if (const auto& data_actionData = d.value[U"actionData"];
-					data_actionData.getType() == JSONValueType::Array)
+					data_actionData.isArray())
 				{
-					size_t currentIndex = 0;
-
 					for (const auto& md : data_actionData)
 					{
 
@@ -440,13 +348,13 @@ Array<Phase> Phase::LoadData()
 								{
 									case 0:
 									{
-										auto p = m_ParseParameters<cact::cross::_0>(data_params);
+										auto p = ParseParameters<cact::cross::_0>(data_params);
 										params = std::make_tuple(get_at.operator()<0, cact::cross::_0>(p), get_at.operator()<1, cact::cross::_0>(p));
 										break;
 									}
 									case 1:
 									{
-										auto p = m_ParseParameters<cact::cross::_1>(data_params);
+										auto p = ParseParameters<cact::cross::_1>(data_params);
 										params = std::make_tuple(get_at.operator()<0, cact::cross::_1>(p));
 										break;
 									}
@@ -462,7 +370,7 @@ Array<Phase> Phase::LoadData()
 								{
 									case 0:
 									{
-										auto p = m_ParseParameters<cact::appear::_0>(data_params);
+										auto p = ParseParameters<cact::appear::_0>(data_params);
 										params = std::make_tuple(get_at.operator()<0, cact::appear::_0>(p),
 																 get_at.operator()<1, cact::appear::_0>(p),
 																 get_at.operator()<2, cact::appear::_0>(p),
@@ -474,7 +382,7 @@ Array<Phase> Phase::LoadData()
 									}
 									case 1:
 									{
-										auto p = m_ParseParameters<cact::appear::_1>(data_params);
+										auto p = ParseParameters<cact::appear::_1>(data_params);
 										params = std::make_tuple(get_at.operator()<0, cact::appear::_1>(p),
 																 get_at.operator()<1, cact::appear::_1>(p),
 																 get_at.operator()<2, cact::appear::_1>(p),
@@ -484,7 +392,7 @@ Array<Phase> Phase::LoadData()
 									}
 									case 2:
 									{
-										auto p = m_ParseParameters<cact::appear::_2>(data_params);
+										auto p = ParseParameters<cact::appear::_2>(data_params);
 										params = std::make_tuple(get_at.operator()<0, cact::appear::_2>(p),
 																 get_at.operator()<1, cact::appear::_2>(p),
 																 get_at.operator()<2, cact::appear::_2>(p),
@@ -494,7 +402,7 @@ Array<Phase> Phase::LoadData()
 									}
 									case 3:
 									{
-										auto p = m_ParseParameters<cact::appear::_3>(data_params);
+										auto p = ParseParameters<cact::appear::_3>(data_params);
 										params = std::make_tuple(get_at.operator()<0, cact::appear::_3>(p),
 																 get_at.operator()<1, cact::appear::_3>(p),
 																 get_at.operator()<2, cact::appear::_3>(p)
@@ -503,7 +411,7 @@ Array<Phase> Phase::LoadData()
 									}
 									case 4:
 									{
-										auto p = m_ParseParameters<cact::appear::_4>(data_params);
+										auto p = ParseParameters<cact::appear::_4>(data_params);
 										params = std::make_tuple(get_at.operator()<0, cact::appear::_4>(p),
 																 get_at.operator()<1, cact::appear::_4>(p),
 																 get_at.operator()<2, cact::appear::_4>(p),
@@ -514,7 +422,7 @@ Array<Phase> Phase::LoadData()
 									}
 									case 5:
 									{
-										auto p = m_ParseParameters<cact::appear::_5>(data_params);
+										auto p = ParseParameters<cact::appear::_5>(data_params);
 										params = std::make_tuple(get_at.operator()<0, cact::appear::_5>(p),
 																 get_at.operator()<1, cact::appear::_5>(p),
 																 get_at.operator()<2, cact::appear::_5>(p)
@@ -523,7 +431,7 @@ Array<Phase> Phase::LoadData()
 									}
 									case 6:
 									{
-										auto p = m_ParseParameters<cact::appear::_6>(data_params);
+										auto p = ParseParameters<cact::appear::_6>(data_params);
 										params = std::make_tuple(get_at.operator()<0, cact::appear::_6>(p),
 																 get_at.operator()<1, cact::appear::_6>(p),
 																 get_at.operator()<2, cact::appear::_6>(p)
@@ -532,7 +440,7 @@ Array<Phase> Phase::LoadData()
 									}
 									case 7:
 									{
-										auto p = m_ParseParameters<cact::appear::_7>(data_params);
+										auto p = ParseParameters<cact::appear::_7>(data_params);
 										params = std::make_tuple(get_at.operator()<0, cact::appear::_7>(p),
 																 get_at.operator()<1, cact::appear::_7>(p)
 																);
@@ -550,7 +458,7 @@ Array<Phase> Phase::LoadData()
 								{
 									case 0:
 									{
-										auto p = m_ParseParameters<cact::appearFromEdge::_0>(data_params);
+										auto p = ParseParameters<cact::appearFromEdge::_0>(data_params);
 										params = std::make_tuple(get_at.operator()<0, cact::appearFromEdge::_0>(p),
 																 get_at.operator()<1, cact::appearFromEdge::_0>(p),
 																 get_at.operator()<2, cact::appearFromEdge::_0>(p),
@@ -562,7 +470,7 @@ Array<Phase> Phase::LoadData()
 									}
 									case 1:
 									{
-										auto p = m_ParseParameters<cact::appearFromEdge::_1>(data_params);
+										auto p = ParseParameters<cact::appearFromEdge::_1>(data_params);
 										params = std::make_tuple(get_at.operator()<0, cact::appearFromEdge::_1>(p),
 																 get_at.operator()<1, cact::appearFromEdge::_1>(p),
 																 get_at.operator()<2, cact::appearFromEdge::_1>(p),
@@ -572,7 +480,7 @@ Array<Phase> Phase::LoadData()
 									}
 									case 2:
 									{
-										auto p = m_ParseParameters<cact::appearFromEdge::_2>(data_params);
+										auto p = ParseParameters<cact::appearFromEdge::_2>(data_params);
 										params = std::make_tuple(get_at.operator()<0, cact::appearFromEdge::_2>(p),
 																 get_at.operator()<1, cact::appearFromEdge::_2>(p),
 																 get_at.operator()<2, cact::appearFromEdge::_2>(p),
@@ -582,7 +490,7 @@ Array<Phase> Phase::LoadData()
 									}
 									case 3:
 									{
-										auto p = m_ParseParameters<cact::appearFromEdge::_3>(data_params);
+										auto p = ParseParameters<cact::appearFromEdge::_3>(data_params);
 										params = std::make_tuple(get_at.operator()<0, cact::appearFromEdge::_3>(p),
 																 get_at.operator()<1, cact::appearFromEdge::_3>(p),
 																 get_at.operator()<2, cact::appearFromEdge::_3>(p)
@@ -603,6 +511,10 @@ Array<Phase> Phase::LoadData()
 
 						actionDataList << ActionData{ name, params, probability };
 					}
+				}
+				else
+				{
+					throw Error(U"`actionData` is not array type.");
 				}
 
 				result << Phase{ timeLimit, similarity, breedData, intervalData, actionDataList };
