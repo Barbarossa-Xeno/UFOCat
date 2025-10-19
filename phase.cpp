@@ -1,49 +1,9 @@
 ﻿#include "phase.hpp"
 #include <regex>
-#include <span>
-
-// const HashTable<String, Array<Phase::Signature>> Phase::m_actionInfo
-// {
-// 	// 奇遇にも JSON みたいな書き方になった
-// 	{
-// 		U"bound",
-// 		{
-// 			{ &typeid(void) }
-// 		}
-// 	},
-// 	{
-// 		U"cross",
-// 		{
-// 			{ &typeid(Duration), &typeid(uint32) },
-// 			{ &typeid(Duration) }
-// 		}
-// 	},
-// 	{
-// 		U"appear",
-// 		{
-// 			{ &typeid(Duration), &typeid(EasingF), &typeid(Duration), &typeid(EasingF), &typeid(Duration), &typeid(Rect) },
-// 			{ &typeid(Duration), &typeid(Duration), &typeid(Duration), &typeid(Rect) },
-// 			{ &typeid(Duration), &typeid(EasingF), &typeid(Duration), &typeid(Rect) },
-// 			{ &typeid(Duration), &typeid(Duration), &typeid(Rect) },
-// 			{ &typeid(Duration), &typeid(EasingF), &typeid(Duration), &typeid(EasingF), &typeid(Duration) },
-// 			{ &typeid(Duration), &typeid(Duration), &typeid(Duration) },
-// 			{ &typeid(Duration), &typeid(EasingF), &typeid(Duration) },
-// 			{ &typeid(Duration), &typeid(Duration) }
-// 		}
-// 	},
-// 	{
-// 		U"appearFromEdge",
-// 		{
-// 			{ &typeid(Duration), &typeid(EasingF), &typeid(Duration), &typeid(EasingF), &typeid(Duration), &typeid(std::array<double, 4>) },
-// 			{ &typeid(Duration), &typeid(Duration), &typeid(Duration), &typeid(std::array<double, 4>) },
-// 			{ &typeid(Duration), &typeid(EasingF), &typeid(Duration), &typeid(std::array<double, 4>) },
-// 			{ &typeid(Duration), &typeid(Duration), &typeid(std::array<double, 4>) }
-// 		}
-// 	}
-// };
 
 bool Phase::updateAtInterval()
 {
+	// 呼び出されたときにタイマーを進めて、周期時間が経過したのを返す仕組み
 	m_stopwatch.forward();
 	
 	return m_stopwatch.isOver(intervalData.period);
@@ -51,24 +11,30 @@ bool Phase::updateAtInterval()
 
 bool Phase::IsDuration(const String &str)
 {
+	// 文字列末尾が "s" だったら Duration ということに
 	return str.ends_with(U"s");
 }
 
 bool Phase::IsRect(const String &str)
 {
+	// 正規表現で Rect と見なす
+	// (数字, 数字) の形
 	const std::regex rectPattern{ R"(^((\d+),\s*(\d+))$)" };
 	return std::regex_match(str.narrow(), rectPattern);
 }
 
 bool Phase::IsEasing(const String &str)
 {
+	// 文字列戦闘が "e_" で始まっていたらイージング関数の名前ということに
 	return str.substr(0, 2) == U"e_";
 }
 
 Duration Phase::ParseDuration(const String &str)
 {
+	// せっかく定義した Isなんちゃら を使おうと思ったけど、たかが１行なので直書きで
 	if (str.ends_with(U"s"))
 	{
+		// "s" を削除 -> double にパース -> Duration のコンストラクタに渡す
 		return Duration{ ParseFloat<double>(str.removed(U"s")) };
 	}
 	else
@@ -82,6 +48,7 @@ Rect Phase::ParseRect(const String &str)
 	// s3d::String から std::string への変換
 	std::string cast = str.narrow();
 
+	// IsRect と同じ正規表現パターンを用意
 	const std::regex rectPattern{ R"(^((\d+),\s*(\d+))$)" };
 
 	// マッチ結果を格納する変数を作って、パターンを検証
@@ -90,7 +57,7 @@ Rect Phase::ParseRect(const String &str)
 	{
 		return Rect
 		{
-			// match[1]以降が、部分パターンに適合した文字列を格納してる
+			// match[1]以降が、部分パターンに適合した文字列を格納してるので 1、2 番目をそれぞれ整数に変換して Rect の幅と高さにする
 			static_cast<int32>(std::stoi(match[1].str())),
 			static_cast<int32>(std::stoi(match[2].str()))
 		};

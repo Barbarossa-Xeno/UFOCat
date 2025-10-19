@@ -2,16 +2,11 @@
 #include "cat_action.hpp"
 #include "delta_stopwatch.hpp"
 
+/// @brief ゲームの1フェーズに関するデータを持つクラス
 class Phase
 {
-	/* -- エイリアス --  */
+	/* -- 構造体 -- */
 public:
-	/// @brief `std::type_info` 型の配列で引数の型情報（シグネチャ）を表す
-	using Signature = Array<const std::type_info*>;
-
-	/* -- クラス -- */
-public:
-
 	/// @brief 品種のデータ
 	struct BreedData
 	{
@@ -39,7 +34,8 @@ public:
 		/// @brief アクション名（`CatObject` のメソッド名と同じ）
 		String name;
 
-		/// @brief メソッドを実行させるときのパラメータ情報
+		/// @brief メソッドを実行させるときのパラメータ情報 @n
+		/// CatObject のすべての動作系メソッドの引数に対応するタプル型を格納できる
 		cact::Generic params;
 
 		/// @brief このアクションが選択される確率（0.0 ～ 1.0）
@@ -48,26 +44,37 @@ public:
 
 	/* -- フィールド -- */
 public:
-
+	/// @brief このフェーズの制限時間
 	Duration timeLimit;
 
+	/// @brief ターゲットとの類似度 一致する特徴の数で表現する@n
+	/// 例えば一致する特徴のパラメータが1つ共通するなら `1`、2つ共通するなら `2` となる
 	uint32 similarity;
 
+	/// @brief このフェーズで登場する猫の品種データ
 	BreedData breedData;
 
+	/// @brief このフェーズでの猫の出現ペース
 	IntervalData intervalData;
 
 	/// @brief このフェーズで使用し得るすべてのアクション
 	Array<ActionData> actionDataList;
 
+	/// @brief このフェーズをクリアしたかどうか
 	bool isCleared = false;
 
 private:
-
+	/// @brief フェーズの時間を計測するストップウォッチ
 	DeltaStopwatch m_stopwatch;
 
 	/* -- メソッド -- */
 public:
+	/// @brief コンストラクタ
+	/// @param timeLimit 制限時間
+	/// @param similarity 類似度
+	/// @param breedData 品種データ
+	/// @param intervalData 出現ペース
+	/// @param actionDataList 使用するすべてのアクション
 	Phase(const Duration& timeLimit, uint32 similarity, BreedData &breedData, IntervalData &intervalData, Array<ActionData> &actionDataList)
 		: timeLimit{ timeLimit }
 		, similarity{ similarity }
@@ -76,40 +83,67 @@ public:
 		, actionDataList{ actionDataList }
 	{ }
 
+	/// @brief 一定周期の時間（`intervalData.period`）が経過したかをどうかを返す、更新処理のためのメソッド
+	/// @return 一定周期の時間が経過したタイミングで `true`
 	bool updateAtInterval();
 
+	/// @brief 文字列が Duration 型に変換可能かどうかを返す
+	/// @param str 対象文字列
+	/// @return 変換可能なら `true`
 	static bool IsDuration(const String &str);
 
+	/// @brief 文字列が Rect 型に変換可能かどうかを返す
+	/// @param str 対象文字列
+	/// @return 変換可能なら `true`
 	static bool IsRect(const String &str);
 
+	/// @brief 文字列が Siv3D 規定のイージング関数として見なせるかどうかを返す
+	/// @param str 対象文字列
+	/// @return 変換可能なら `true`
 	static bool IsEasing(const String &str);
 
+	/// @brief 文字列を Duration 型に変換する
+	/// @param str 対象文字列
+	/// @return 変換した Duration 型オブジェクト、変換できなければ例外が投げられる
 	static Duration ParseDuration(const String &str);
 
+	/// @brief 文字列を Rect 型に変換する
+	/// @param str 対象文字列
+	/// @return 変換した Rect 型オブジェクト、変換できなければ例外が投げられる
 	static Rect ParseRect(const String &str);
 
+	/// @brief 文字列を Siv3D 規定のイージング関数へ変換する
+	/// @param str 対象文字列
+	/// @return 変換したイージング関数のオブジェクト、変換できなければ例外が投げられる
 	static cact::EasingFunction ParseEasing(const String &str);
 
-	template <typename TTuple>
+	/// @brief JSON 配列から指定したタプル型 TTuple に対応する値を検証して、アクションの引数として取りうる型およびその要素が入った std::tuple に変換する（中身が std::variant）
+	/// @tparam TTuple 変換したい引数の構成となるタプル型 名前空間 `cact` に定義されている各アクション（`bound` 以外）のシグネチャを指定する
+	/// @param paramData 解析対象の JSON 配列 TTupleの要素数と一致していなければならない @n
+	/// 各要素は: 数値 (uint32 として扱う)、文字列 (Duration, Rect, または cact::EasingFunction を表す形式)、または長さ4の配列 (std::array<double,4>) であることが期待され、合わない場合は例外を投げる
+	/// @return 各要素が TTuple に合う形で構成した tuple（中身 variant） @n 配列の長さや各要素の型が期待と一致しない場合は例外を投げる
+	template <cact::ValidSignature TTuple>
 	static auto ParseParameters(const JSON &paramData)
-		requires requires { typename std::tuple_size<TTuple>; }
 	{
+		// JSON 配列の長さと 希望のタプル型の要素数が一致していなかったらエラー
 		if (paramData.size() != std::tuple_size_v<TTuple>)
 		{
 			throw Error(U"Specified `paramData` (JSON data) and TTuple is not match length.");
 		}
 
+		// 一時的に各要素を取りうる型の variant で格納する配列（長さは TTuple 分）
 		std::array<
 			std::variant<
-			uint32,
-			Duration,
-			Rect,
-			cact::EasingFunction,
-			std::array<double, 4>
+				uint32,
+				Duration,
+				Rect,
+				cact::EasingFunction,
+				std::array<double, 4>
 			>,
 			std::tuple_size_v<TTuple>
 		> temp;
 
+		// 各要素を検証しながら対応する位置の temp に格納していく
 		for (size_t i = 0; i < std::tuple_size_v<TTuple>; i++)
 		{
 			if (paramData[i].isNumber())
@@ -134,12 +168,12 @@ public:
 				}
 				else
 				{
-					throw Error(U"");
+					throw Error(U"Failed to parse parameter.");
 				}
 			}
-			// 配列だった場合特殊
+			// 配列だった場合特殊ということにしておく
 			// `appearFromEdge` の `overflow` でしか配列を引数にとらない
-			// そのため、サイズ4の配列を決め打ちで渡して問題はないはず
+			// そのため、サイズ4の配列を決め打ちで渡して問題はないはず（`overflow` の使用は `CatObject` 確認）
 			else if (paramData[i].isArray())
 			{
 				std::array<double, 4> overflow{};
@@ -154,19 +188,21 @@ public:
 				}
 				else
 				{
-					throw Error(U"");
+					throw Error(U"Invalid array parameter. `appearFromEdge`'s parameter is allowed [double, double, double, double].");
 				}
 			}
 			else
 			{
-				throw Error(U"");
+				throw Error(U"Invalid format of parameter (index: {}) in JSON "_fmt(i));
 			}
 		}
 
+		// temp の各要素を取り出してタプルに変換したのを返す
+		// apply はパラメータパックを使って展開できるからこれが便利
 		return std::apply([](auto &&...args)
 			{
 					return std::make_tuple(args...);
 			}, temp);
 	}
-
+	// 戻り値が auto のせいでテンプレート外で定義できないので、この関数だけヘッダーに定義を書いています
 };
