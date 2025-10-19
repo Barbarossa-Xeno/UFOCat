@@ -1,3 +1,5 @@
+.vs/UFOCat/*
+
 App/*
 !App/texture
 !App/phases.json
