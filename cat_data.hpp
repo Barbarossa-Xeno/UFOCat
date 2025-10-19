@@ -1,4 +1,5 @@
 ﻿#pragma once
+#include <Siv3D.hpp>
 
 /// @brief UFO猫のデータ（品種や模様など）
 struct CatData
