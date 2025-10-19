@@ -1,6 +1,6 @@
 ﻿#pragma once
-#include "cat_object.hpp"
 #include "phase.hpp"
+#include "cat_object.hpp"
 
 class GameManager
 {
@@ -81,5 +81,5 @@ private:
 
 	/// @brief 
 	/// @return 
-	static Array<Phase> LoadPhaseData();
+	Array<Phase> LoadPhaseData();
 };

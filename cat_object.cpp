@@ -30,7 +30,7 @@ CatObject& CatObject::setCatData(CatData &&data)
 	return *this;
 }
 
-CatObject& CatObject::setAction(Phase::ActionData &&actionData)
+CatObject& CatObject::setAction(Phase::ActionData &actionData)
 {
 	m_actionData = actionData;
 	return *this;

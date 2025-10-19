@@ -28,6 +28,8 @@ void Main()
 	cats[7].velocity = { 100, 100 };
 	cats[8].velocity = { 250, 400 };
 
+	cats[0].setAction(GameManager::Instance().phases[0].actionDataList[1]);
+
 	// TODO: 乱数を使って見つけるネコを設定する
 	// 将来的にはこの部分もゲームループに入れることになるのは承知のうえで
 	GameManager::Instance().setTarget();
@@ -39,10 +41,6 @@ void Main()
 	{
 		ingameState = IngameState::AnnounceTarget;
 		ingameTimer.restart(3s);
-	}
-	{
-		auto res = Phase::LoadData();
-		Console << std::holds_alternative<cact::appear::_7>(res[0].actionDataList[1].params);
 	}
 	
 	while (System::Update())
@@ -66,7 +64,8 @@ void Main()
 			case IngameState::Finding:
 			{
 				{
-					cats[0].bound().draw().checkCatchable(GameManager::Instance().getTarget());
+					cats[0].act().draw();
+					/*cats[0].bound().draw().checkCatchable(GameManager::Instance().getTarget());
 					cats[0].drawHitArea();
 
 					cats[1].appear(3s, 1s).draw();
@@ -78,7 +77,7 @@ void Main()
 					cats[6].appearFromEdge(3.3s, Easing::Expo, 1.5s, Easing::Sine, 0.8s, { 0, 0, 0, 30 }).draw();
 
 					cats[7].cross(2s, 3).draw();
-					cats[8].cross(4s).draw();
+					cats[8].cross(4s).draw();*/
 				}
 
 				break;

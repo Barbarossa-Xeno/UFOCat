@@ -195,7 +195,7 @@ public:
 	/// @brief 
 	/// @param actionData 
 	/// @return 
-	CatObject& setAction(Phase::ActionData &&actionData);
+	CatObject& setAction(Phase::ActionData &actionData);
 
 	/* -- コンストラクタ -- */
 	// TODO: 何故かコピーコンストラクタが暗黙定義されないので、自分で試してみる
