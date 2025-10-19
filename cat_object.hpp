@@ -3,7 +3,6 @@
 #include "cat_data.hpp"
 #include "delta_stopwatch.hpp"
 #include "phase.hpp"
-#include <Siv3D.hpp>
 
 /// @brief UFO猫のクラス
 class CatObject
@@ -32,6 +31,27 @@ private:
 		Right,
 		Bottom,
 		Left
+	};
+
+	struct Invoke
+	{
+		CatObject *target;
+
+		Invoke(CatObject& target) : target{ &target } {}
+
+		// CatObject &operator()(const std::monostate& value) const { return target->bound(); };
+
+		CatObject &operator()(const cact::ValidSignature auto &value) const
+		{
+			if constexpr (std::same_as<decltype(value), std::monostate>)
+			{
+				return target->bound();
+			}
+			else
+			{
+				return std::apply([this](auto &&...args) -> CatObject& { return target->cross(args...); }, value);
+			}
+		};
 	};
 
 	/* -- エイリアス -- */
@@ -124,7 +144,7 @@ private:
 
 	} m_crossData;
 
-	std::function<CatObject&(void)> m_action;
+	Phase::ActionData m_actionData;
 
 	/// @brief テクスチャのアルファ値
 	double m_textureAlpha = 1;
@@ -160,15 +180,18 @@ public:
 	/// @brief UFO猫のデータを登録する
 	/// @param data データ
 	/// @return （変更を反映した）自分自身の参照
-	CatObject& setCatData(CatData&& data);
+	CatObject& setCatData(CatData &&data);
 
-	CatObject& setAction(Phase::ActionData actionData);
+	/// @brief 
+	/// @param actionData 
+	/// @return 
+	CatObject& setAction(Phase::ActionData &&actionData);
 
 private:
 
 	/// @brief クラス全体で共有するターゲット情報を設定する
 	/// @param data ターゲット情報
-	static void SetTargetData(const CatData& data);
+	static void SetTargetData(const CatData &data);
 
 	/* -- コンストラクタ -- */
 	// TODO: 何故かコピーコンストラクタが暗黙定義されないので、自分で試してみる
@@ -324,6 +347,8 @@ public:
 
 	// TODO: チャッピーとQiitaを参考に overflow~ を可変長引数で省略可能にもできるような宣言と定義をする！ -> 参考にしてもパラメータパックの意味がわからんくて無理
  	// 本当は Arg::top_, Arg::right_, Arg::bottom_, Arg::left_ を使いたかった
+
+	CatObject& act();
 
 	/// @brief オブジェクトを描画する
 	/// @return 自分自身の参照

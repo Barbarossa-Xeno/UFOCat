@@ -54,13 +54,6 @@ private:
 
 	DeltaStopwatch m_stopwatch;
 
-	const static HashTable<String, Array<Signature>> m_actionInfo;
-
-	const static struct
-	{
-
-	} m_actionDictionary;
-
 	/* -- メソッド -- */
 public:
 	Phase(const Duration& timeLimit, uint32 similarity, BreedData &breedData, IntervalData &intervalData, Array<ActionData> &actionDataList)

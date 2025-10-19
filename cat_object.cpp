@@ -25,31 +25,15 @@ Rect CatObject::getMaxDisplayedArea() const
 	return Rect{ 0, 0, Scene::Width() - static_cast<int32>(ClientSize.x), Scene::Height() - static_cast<int32>(ClientSize.y) };
 }
 
-CatObject& CatObject::setCatData(CatData&& data)
+CatObject& CatObject::setCatData(CatData &&data)
 {
 	m_catData = data;
 	return *this;
 }
 
-CatObject& CatObject::setAction(Phase::ActionData actionData)
+CatObject& CatObject::setAction(Phase::ActionData &&actionData)
 {
-	if (actionData.name == U"bound")
-	{
-		m_action = [this]() -> CatObject& { return this->bound(); };
-	}
-	else if (actionData.name == U"cross")
-	{
-		m_action = [this]() -> CatObject& { return this->cross(); };
-	}
-	else if (actionData.name == U"appear")
-	{
-		
-	}
-	else if (actionData.name == U"appearFromEdge")
-	{
-	
-	}
-
+	m_actionData = actionData;
 	return *this;
 }
 
@@ -556,6 +540,11 @@ CatObject& CatObject::appearFromEdge(Duration period, EasingFunction inAndOutFun
 CatObject& CatObject::appearFromEdge(Duration period, Duration inAndOut, const std::array<double, 4> &overflow)
 {
 	return appearFromEdge(period, inAndOut, inAndOut, overflow);
+}
+
+CatObject &CatObject::act()
+{
+	return std::visit(Invoke{ *this }, m_actionData.params);
 }
 
 CatObject& CatObject::draw()

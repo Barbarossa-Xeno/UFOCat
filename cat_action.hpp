@@ -46,4 +46,23 @@ namespace cact
 		appear::_0, appear::_1, appear::_2, appear::_3, appear::_4, appear::_5, appear::_6, appear::_7,
 		appearFromEdge::_0, appearFromEdge::_1, appearFromEdge::_2, appearFromEdge::_3>;
 
+	template <typename T>
+	concept ValidSignature =
+	(
+		std::same_as<T, std::monostate> ||
+		std::same_as<T, cross::_0> ||
+		std::same_as<T, cross::_1> ||
+		std::same_as<T, appear::_0> ||
+		std::same_as<T, appear::_1> ||
+		std::same_as<T, appear::_2> ||
+		std::same_as<T, appear::_3> ||
+		std::same_as<T, appear::_4> ||
+		std::same_as<T, appear::_5> ||
+		std::same_as<T, appear::_6> ||
+		std::same_as<T, appear::_7> ||
+		std::same_as<T, appearFromEdge::_0> ||
+		std::same_as<T, appearFromEdge::_1> ||
+		std::same_as<T, appearFromEdge::_2> ||
+		std::same_as<T, appearFromEdge::_3>
+	);
 }
