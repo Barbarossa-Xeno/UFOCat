@@ -1,5 +1,4 @@
 ﻿#pragma once
-#include "cat_action.hpp"
 #include "cat_data.hpp"
 #include "delta_stopwatch.hpp"
 #include "phase.hpp"
@@ -33,6 +32,7 @@ private:
 		Left
 	};
 
+	/// @brief 
 	struct Invoke
 	{
 		CatObject *target;
@@ -43,15 +43,25 @@ private:
 
 		CatObject &operator()(const cact::ValidSignature auto &value) const
 		{
-			if constexpr (std::same_as<decltype(value), std::monostate>)
+			using Type = std::remove_cvref_t<decltype(value)>;
+
+			if constexpr (std::same_as<Type, std::monostate>)
 			{
 				return target->bound();
 			}
-			else
+			else if constexpr (cact::cross::ValidSignature<Type>)
 			{
 				return std::apply([this](auto &&...args) -> CatObject& { return target->cross(args...); }, value);
 			}
-		};
+			else if constexpr (cact::appear::ValidSignature<Type>)
+			{
+				return std::apply([this](auto &&...args) -> CatObject& { return target->appear(args...); }, value);
+			}
+			else if constexpr (cact::appearFromEdge::ValidSignature<Type>)
+			{
+				return std::apply([this](auto &&...args) -> CatObject& { return target->appearFromEdge(args...); }, value);
+			}
+		}
 	};
 
 	/* -- エイリアス -- */
@@ -186,12 +196,6 @@ public:
 	/// @param actionData 
 	/// @return 
 	CatObject& setAction(Phase::ActionData &&actionData);
-
-private:
-
-	/// @brief クラス全体で共有するターゲット情報を設定する
-	/// @param data ターゲット情報
-	static void SetTargetData(const CatData &data);
 
 	/* -- コンストラクタ -- */
 	// TODO: 何故かコピーコンストラクタが暗黙定義されないので、自分で試してみる
@@ -348,6 +352,8 @@ public:
 	// TODO: チャッピーとQiitaを参考に overflow~ を可変長引数で省略可能にもできるような宣言と定義をする！ -> 参考にしてもパラメータパックの意味がわからんくて無理
  	// 本当は Arg::top_, Arg::right_, Arg::bottom_, Arg::left_ を使いたかった
 
+	/// @brief 
+	/// @return 
 	CatObject& act();
 
 	/// @brief オブジェクトを描画する

@@ -11,7 +11,15 @@ namespace cact
 		using _1 = std::tuple<Duration>;
 
 		using TSignatures = std::variant<_0, _1>;
+
 		constexpr size_t Count = std::variant_size_v<TSignatures>;
+
+		template <typename T>
+		concept ValidSignature =
+			(
+				std::same_as<T, _0> ||
+				std::same_as<T, _1>
+			);
 	}
 
 	namespace appear
@@ -26,7 +34,21 @@ namespace cact
 		using _7 = std::tuple<Duration, Duration>;
 
 		using TSignatures = std::variant<_0, _1, _2, _3, _4, _5, _6, _7>;
+
 		constexpr size_t Count = std::variant_size_v<TSignatures>;
+
+		template <typename T>
+		concept ValidSignature =
+			(
+				std::same_as<T, _0> ||
+				std::same_as<T, _1> ||
+				std::same_as<T, _2> ||
+				std::same_as<T, _3> ||
+				std::same_as<T, _4> ||
+				std::same_as<T, _5> ||
+				std::same_as<T, _6> ||
+				std::same_as<T, _7>
+			);
 	}
 
 	namespace appearFromEdge
@@ -37,7 +59,17 @@ namespace cact
 		using _3 = std::tuple<Duration, Duration, std::array<double, 4>>;
 
 		using TSignatures = std::variant<_0, _1, _2, _3>;
+
 		constexpr size_t Count = std::variant_size_v<TSignatures>;
+
+		template <typename T>
+		concept ValidSignature =
+			(
+				std::same_as<T, _0> ||
+				std::same_as<T, _1> ||
+				std::same_as<T, _2> ||
+				std::same_as<T, _3>
+			);
 	}
 
 	using Generic = std::variant<
@@ -50,19 +82,8 @@ namespace cact
 	concept ValidSignature =
 	(
 		std::same_as<T, std::monostate> ||
-		std::same_as<T, cross::_0> ||
-		std::same_as<T, cross::_1> ||
-		std::same_as<T, appear::_0> ||
-		std::same_as<T, appear::_1> ||
-		std::same_as<T, appear::_2> ||
-		std::same_as<T, appear::_3> ||
-		std::same_as<T, appear::_4> ||
-		std::same_as<T, appear::_5> ||
-		std::same_as<T, appear::_6> ||
-		std::same_as<T, appear::_7> ||
-		std::same_as<T, appearFromEdge::_0> ||
-		std::same_as<T, appearFromEdge::_1> ||
-		std::same_as<T, appearFromEdge::_2> ||
-		std::same_as<T, appearFromEdge::_3>
+		cact::cross::ValidSignature<T> ||
+		cact::appear::ValidSignature<T> ||
+		cact::appearFromEdge::ValidSignature<T>
 	);
 }
