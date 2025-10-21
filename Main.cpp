@@ -56,6 +56,8 @@ void Main()
 				{
 					ingameState = IngameState::Finding;
 					ingameTimer.restart(30s);
+
+					GameManager::Instance().currentState = GameManager::State::PhaseStart;
 				}
 
 				break;

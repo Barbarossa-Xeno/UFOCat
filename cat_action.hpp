@@ -1,12 +1,16 @@
 ﻿#pragma once
 
+/// @brief UFO猫がとるアクションについて定義した名前空間
+/// @details cat_action の略で cact
 namespace cact
 {
 	/// @brief Siv3D のイージング関数の型
 	using EasingFunction = std::function<double(double)>;
 
+	/// @brief `CatObject::cross()` のシグネチャなど
 	namespace cross
 	{
+		
 		using _0 = std::tuple<Duration, uint32>;
 		using _1 = std::tuple<Duration>;
 
