@@ -15,24 +15,41 @@ const CatData& GameManager::setTarget()
 void GameManager::announceTarget()
 {
 	setTarget();
-	
+	// TODO: あとはUIを表示させる処理や時間カウントしてステートを変える機能を書く
 }
 
 void GameManager::startPhase()
 {
 	// クリアしているフェーズの数は、現在行っているフェーズのインデックスと同じなのを利用する
 	// （そのフェーズが終わり次第、isCleared のフラグを上げるため）
-// 	m_currentPhaseIndex = phases.filter([](const Phase& p) { return p.isCleared; }).size();
-// 
-// 	currentState = State::InPhase;
+ 	m_currentPhaseIndex = phases.filter([](const Phase& p) { return p.isCleared; }).size();
+
+	// フェーズの設定に合わせて登場する猫を設定する
+	catsInPhase.clear();
+	
+	auto &&similars = cats.filter([this](const CatObject &cat)
+		{
+			return phases[m_currentPhaseIndex].similarity == cat.getCatData().getSameDataCount(getTarget());
+		});
+
+	if (auto comp = similars.size() <=> phases[m_currentPhaseIndex].breedData.similar;
+		comp > 0)
+	{
+
+	}
+	else if (comp < 0)
+	{
+
+	}
+ 	currentState = State::InPhase;
 }
 
 void GameManager::inPhase()
 {
-// 	if (phases[m_currentPhaseIndex].updateAtInterval())
-// 	{
-// 		spawn();
-// 	}
+ 	if (phases[m_currentPhaseIndex].updateAtInterval())
+ 	{
+ 		spawn();
+ 	}
 }
 
 void GameManager::spawn()

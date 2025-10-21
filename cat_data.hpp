@@ -44,6 +44,8 @@ struct CatData
 		, isLongHair{ isLongHair }
 	{ }
 
+	uint32 getSameDataCount(const CatData &target) const;
+
 	/// @brief データが等しいかどうか id の比較で比べる
 	/// @param target 比較対象
 	/// @return 等しいデータなら true

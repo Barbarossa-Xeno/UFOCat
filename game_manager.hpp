@@ -20,7 +20,9 @@ public:
 	/* -- フィールド -- */
 public:
 
-	Array<CatObject> cats;	
+	Array<CatObject> cats;
+
+	Array<std::shared_ptr<CatObject>> catsInPhase;
 
 	Array<std::unique_ptr<CatObject>> spawns;
 
