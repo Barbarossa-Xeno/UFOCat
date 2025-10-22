@@ -32,31 +32,40 @@ private:
 		Left
 	};
 
-	/// @brief 
-	struct Invoke
+	/// @brief アクションに自動的に引数を入れて呼び出すための関数オブジェクト
+	struct InvokeAction
 	{
+		/// @brief どの CatObject のインスタンスのアクションを呼び出すか
 		CatObject *target;
 
-		Invoke(CatObject& target) : target{ &target } {}
+		/// @brief コンストラクタ
+		/// @param target アクションを呼び出す対象のインスタンス
+		InvokeAction(CatObject &target) : target{ &target } {}
 
-		// CatObject &operator()(const std::monostate& value) const { return target->bound(); };
-
+		/// @brief 関数を呼び出す
+		/// @param value `cact::ValidSignature` に適合している引数値
+		/// @return ターゲットインスタンスの参照
 		CatObject &operator()(const cact::ValidSignature auto &value) const
 		{
+			// 引数の型を取得（const や参照は削除する）
 			using Type = std::remove_cvref_t<decltype(value)>;
 
+			// std::monostate = 引数なし なら bound() を呼び出す
 			if constexpr (std::same_as<Type, std::monostate>)
 			{
 				return target->bound();
 			}
+			// cact::cross のコンセプトに適合していたら cross() を呼び出す
 			else if constexpr (cact::cross::ValidSignature<Type>)
 			{
 				return std::apply([this](auto &&...args) -> CatObject& { return target->cross(args...); }, value);
 			}
+			// cact::appear のコンセプトに適合していたら appear() を呼び出す
 			else if constexpr (cact::appear::ValidSignature<Type>)
 			{
 				return std::apply([this](auto &&...args) -> CatObject& { return target->appear(args...); }, value);
 			}
+			// cact::appearFromEdge のコンセプトに適合していたら appearFromEdge() を呼び出す
 			else if constexpr (cact::appearFromEdge::ValidSignature<Type>)
 			{
 				return std::apply([this](auto &&...args) -> CatObject& { return target->appearFromEdge(args...); }, value);
@@ -352,8 +361,9 @@ public:
 	// TODO: チャッピーとQiitaを参考に overflow~ を可変長引数で省略可能にもできるような宣言と定義をする！ -> 参考にしてもパラメータパックの意味がわからんくて無理
  	// 本当は Arg::top_, Arg::right_, Arg::bottom_, Arg::left_ を使いたかった
 
-	/// @brief 
-	/// @return 
+	/// @brief 登録されたアクションを実行する
+	/// @details `m_actionData` に登録されたアクションを実行する
+	/// @return 自分自身の参照
 	CatObject& act();
 
 	/// @brief オブジェクトを描画する

@@ -543,7 +543,8 @@ CatObject& CatObject::appearFromEdge(Duration period, Duration inAndOut, const s
 
 CatObject &CatObject::act()
 {
-	return std::visit(Invoke{ *this }, m_actionData.params);
+	// m_actionData.params (variant の型)に格納されている引数をもとにアクションを呼び出す
+	return std::visit(InvokeAction{ *this }, m_actionData.params);
 }
 
 CatObject& CatObject::draw()
