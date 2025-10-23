@@ -30,7 +30,7 @@ CatObject& CatObject::setCatData(CatData &&data)
 	return *this;
 }
 
-CatObject& CatObject::setAction(Phase::ActionData &actionData)
+CatObject& CatObject::setAction(const Phase::ActionData &actionData)
 {
 	m_actionData = actionData;
 	return *this;
@@ -91,49 +91,15 @@ CatObject& CatObject::cross(Duration period, uint32 count)
 	// 今回は Hidden と Visible の2つの状態だけ扱うようにする
 	switch (m_appearanceState)
 	{
-		case Appearance::Hidden:
+		case AppearanceState::Hidden:
 		{
 			// 隠れている時のみ、タイマーを測る
 			m_stopwatch.forward();
 
 			if (m_stopwatch.isOver(period))
 			{
-				// この Rect から スクリーンの Rect を切り抜いたエリア内（画面外の部分）をスタートまたはゴールとする
-				const RectF goalArea = { -Vec2(ClientSize), Scene::Width() + ClientSize.x, Scene::Height() + ClientSize.y };
-
-				// ランダムに開始位置を決める
-				switch (m_edgeState = ToEnum<ScreenEdge>(Random(0, 3)))
-				{
-					// 上側なら下側を目指す
-				case ScreenEdge::Top:
-				{
-					m_crossData.start = RandomVec2(goalArea.top());
-					m_crossData.goal = RandomVec2(goalArea.bottom());
-				}
-				break;
-				// 右側なら左側を目指す
-				case ScreenEdge::Right:
-				{
-					m_crossData.start = RandomVec2(goalArea.right());
-					m_crossData.goal = RandomVec2(goalArea.left());
-				}
-				break;
-				// 下側なら上側を目指す
-				case ScreenEdge::Bottom:
-				{
-					m_crossData.start = RandomVec2(goalArea.bottom());
-					m_crossData.goal = RandomVec2(goalArea.top());
-				}
-				break;
-				// 左側なら右側を目指す
-				case ScreenEdge::Left:
-				{
-					m_crossData.start = RandomVec2(goalArea.left());
-					m_crossData.goal = RandomVec2(goalArea.right());
-				}
-				break;
-				default: return *this;
-				}
+				// ランダムに開始位置を決める（スタート位置はこの関数で代入される）
+				std::tie(m_crossData.start, m_crossData.goal) = m_changeScreenEdgePosition();
 
 				// 増やす角度
 				double angle = 0.0;
@@ -145,9 +111,6 @@ CatObject& CatObject::cross(Duration period, uint32 count)
 					velocity.rotate(++angle);
 				}
 
-				// スタート地点へ移動
-				position = m_crossData.start;
-
 				// 移動回数を増やす
 				if (count != std::numeric_limits<int32>::infinity())
 				{
@@ -155,39 +118,39 @@ CatObject& CatObject::cross(Duration period, uint32 count)
 				}
 
 				// 見える状態へ移行
-				m_appearanceState = Appearance::Visible;
+				m_appearanceState = AppearanceState::Visible;
 			}
 			
 		}
 		break;
 
-		case Appearance::Visible:
+		case AppearanceState::Visible:
 		{
 			// 相対する画面端に辿り着いたかどうか
 			bool isReached = false;
 
 			// 初めに出現した画面端の位置によって条件を変える
-			switch (m_edgeState)
+			switch (m_edgeDirection)
 			{
-				case ScreenEdge::Top:
+				case ScreenEdgeDirection::Top:
 				{
 					// 上から始まったら左上が画面外に出るまで
 					isReached = y > Scene::Height();
 				}
 				break;
-				case ScreenEdge::Right:
+				case ScreenEdgeDirection::Right:
 				{
 					// 右から始まったら右上が画面外に出るまで
 					isReached = x + ClientSize.x < 0;
 				}
 				break;
-				case ScreenEdge::Bottom:
+				case ScreenEdgeDirection::Bottom:
 				{
 					// 下から始まったら左下が画面外に出るまで
 					isReached = y + ClientSize.y < 0;
 				}
 				break;
-				case ScreenEdge::Left:
+				case ScreenEdgeDirection::Left:
 				{
 					// 左から始まったら左上が画面外に出るまで
 					isReached = x > Scene::Width();
@@ -199,7 +162,7 @@ CatObject& CatObject::cross(Duration period, uint32 count)
 			if (isReached)
 			{
 				// もう一度隠す
-				m_appearanceState = Appearance::Hidden;
+				m_appearanceState = AppearanceState::Hidden;
 			}
 			else
 			{
@@ -225,7 +188,7 @@ CatObject& CatObject::appear(Duration period, EasingFunction fadeInFunc, Duratio
 	switch (m_appearanceState)
 	{
 		// 隠れている（見えない）とき
-		case Appearance::Hidden:
+		case AppearanceState::Hidden:
 		{
 			m_textureAlpha = 0;
 
@@ -235,13 +198,13 @@ CatObject& CatObject::appear(Duration period, EasingFunction fadeInFunc, Duratio
 				// 位置をランダムに変更
 				position = RandomVec2(range);
 				// フェードインに移行する
-				m_appearanceState = Appearance::In;
+				m_appearanceState = AppearanceState::In;
 			}
 		}
 		break;
 
 		// フェードインしているとき
-		case Appearance::In:
+		case AppearanceState::In:
 		{
 			// アルファ値の増加率
 			// const double increaseFactor = 1 / fadeIn.count();
@@ -251,7 +214,7 @@ CatObject& CatObject::appear(Duration period, EasingFunction fadeInFunc, Duratio
 			{
 				// 可視状態に移行
 				m_stopwatch.reset(fadeIn.count());
-				m_appearanceState = Appearance::Visible;
+				m_appearanceState = AppearanceState::Visible;
 			}
 			else
 			{
@@ -265,7 +228,7 @@ CatObject& CatObject::appear(Duration period, EasingFunction fadeInFunc, Duratio
 		break;
 
 		// 見えているとき
-		case Appearance::Visible:
+		case AppearanceState::Visible:
 		{
 			m_textureAlpha = 1;
 
@@ -274,17 +237,17 @@ CatObject& CatObject::appear(Duration period, EasingFunction fadeInFunc, Duratio
 				m_stopwatch.reset(period.count());
 
 				// フェードアウト状態に移行
-				m_appearanceState = Appearance::Out;
+				m_appearanceState = AppearanceState::Out;
 			}
 		}
 		break;
 
-		case Appearance::Out:
+		case AppearanceState::Out:
 		{
 			if (m_stopwatch.isOver(fadeOut.count()))
 			{
 				m_stopwatch.reset(fadeOut.count());
-				m_appearanceState = Appearance::Hidden;
+				m_appearanceState = AppearanceState::Hidden;
 			}
 			else
 			{
@@ -360,7 +323,7 @@ CatObject& CatObject::appearFromEdge(Duration period, EasingFunction inFunc, Dur
 	switch (m_appearanceState)
 	{
 		// 見えていない時
-		case Appearance::Hidden:
+		case AppearanceState::Hidden:
 		{
 			if (m_stopwatch.isOver(period))
 			{
@@ -371,15 +334,15 @@ CatObject& CatObject::appearFromEdge(Duration period, EasingFunction inFunc, Dur
 					// overflow の 1 が右
 					// overflow の 2 が下
 					// overflow の 3 が左 に対応（時計回り）
-					m_edgeState = ToEnum<ScreenEdge>(Random(0, 3));
+					m_edgeDirection = ToEnum<ScreenEdgeDirection>(Random(0, 3));
 				}
-				while (overflow[FromEnum(m_edgeState)] == 0);
+				while (overflow[FromEnum(m_edgeDirection)] == 0);
 
 				// どの端の部分が選択されたかによって
-				switch (m_edgeState)
+				switch (m_edgeDirection)
 				{
 					// 上
-					case ScreenEdge::Top:
+					case ScreenEdgeDirection::Top:
 					{
 						x = Random(0, getMaxDisplayedArea().w);
 						y = -ClientSize.y;
@@ -387,7 +350,7 @@ CatObject& CatObject::appearFromEdge(Duration period, EasingFunction inFunc, Dur
 					break;
 
 					// 右
-					case ScreenEdge::Right:
+					case ScreenEdgeDirection::Right:
 					{
 						x = Scene::Width();
 						y = Random(0, getMaxDisplayedArea().h);
@@ -395,7 +358,7 @@ CatObject& CatObject::appearFromEdge(Duration period, EasingFunction inFunc, Dur
 					break;
 
 					// 下
-					case ScreenEdge::Bottom:
+					case ScreenEdgeDirection::Bottom:
 					{
 						x = Random(0, getMaxDisplayedArea().w);
 						y = Scene::Height();
@@ -403,7 +366,7 @@ CatObject& CatObject::appearFromEdge(Duration period, EasingFunction inFunc, Dur
 					break;
 
 					// 左
-					case ScreenEdge::Left:
+					case ScreenEdgeDirection::Left:
 					{
 						x = -ClientSize.x;
 						y = Random(0, getMaxDisplayedArea().h);
@@ -413,17 +376,17 @@ CatObject& CatObject::appearFromEdge(Duration period, EasingFunction inFunc, Dur
 					default: return *this;
 				}
 
-				m_appearanceState = Appearance::In;
+				m_appearanceState = AppearanceState::In;
 			}
 		}
 		break;
 
 		// 出現しようとしている時
-		case Appearance::In:
+		case AppearanceState::In:
 		{
 			if (m_stopwatch.isOver(in))
 			{
-				m_appearanceState = Appearance::Visible;
+				m_appearanceState = AppearanceState::Visible;
 			}
 			else
 			{
@@ -432,28 +395,28 @@ CatObject& CatObject::appearFromEdge(Duration period, EasingFunction inFunc, Dur
 				double t = Min(inFunc(m_stopwatch.now() / in.count()), 1.0);
 
 				// どの端の部分が選択されたかによって
-				switch (m_edgeState)
+				switch (m_edgeDirection)
 				{
-					case ScreenEdge::Top:
+					case ScreenEdgeDirection::Top:
 					{
 						// 位置は線形補間ではみだし量に相当する位置まで移動させる
 						position = position.lerp({ x, overflow[0] }, t);
 					}
 					break;
 
-					case ScreenEdge::Right:
+					case ScreenEdgeDirection::Right:
 					{
 						position = position.lerp({ getMaxDisplayedArea().w - overflow[1], y}, t);
 					}
 					break;
 
-					case ScreenEdge::Bottom:
+					case ScreenEdgeDirection::Bottom:
 					{
 						position = position.lerp({ x, getMaxDisplayedArea().h - overflow[2]}, t);
 					}
 					break;
 
-					case ScreenEdge::Left:
+					case ScreenEdgeDirection::Left:
 					{
 						position = position.lerp({ overflow[3], y }, t);
 					}
@@ -466,48 +429,48 @@ CatObject& CatObject::appearFromEdge(Duration period, EasingFunction inFunc, Dur
 		break;
 
 		// 見えている時
-		case Appearance::Visible:
+		case AppearanceState::Visible:
 		{
 			if (m_stopwatch.isOver(period))
 			{
-				m_appearanceState = Appearance::Out;
+				m_appearanceState = AppearanceState::Out;
 			}
 		}
 		break;
 
 		// 退去しようとしている時
-		case Appearance::Out:
+		case AppearanceState::Out:
 		{
 			if (m_stopwatch.isOver(out))
 			{
-				m_appearanceState = Appearance::Hidden;
+				m_appearanceState = AppearanceState::Hidden;
 			}
 			else
 			{
 				// パラメータ
 				double t = Min(outFunc(m_stopwatch.now() / out.count()), 1.0);
 
-				switch (m_edgeState)
+				switch (m_edgeDirection)
 				{
-					case ScreenEdge::Top:
+					case ScreenEdgeDirection::Top:
 					{
 						position = position.lerp({ x, -ClientSize.y }, t);
 					}
 					break;
 
-					case ScreenEdge::Right:
+					case ScreenEdgeDirection::Right:
 					{
 						position = position.lerp({ Scene::Width(), y }, t);
 					}
 					break;
 
-					case ScreenEdge::Bottom:
+					case ScreenEdgeDirection::Bottom:
 					{
 						position = position.lerp({ x, Scene::Height() }, t);
 					}
 					break;
 
-					case ScreenEdge::Left:
+					case ScreenEdgeDirection::Left:
 					{
 						position = position.lerp({ -ClientSize.x , y }, t);
 					}
@@ -578,4 +541,46 @@ CatObject& CatObject::checkCatchable(const CatData &target)
 	}
 
 	return *this;
+}
+
+std::tuple<Vec2, Vec2> CatObject::m_changeScreenEdgePosition()
+{
+	Vec2 start{}, goal{};
+	
+	// ランダムに開始位置を決める
+	switch (m_edgeDirection = ToEnum<ScreenEdgeDirection>(Random(0, 3)))
+	{
+		// 上側なら下側を目指す
+		case ScreenEdgeDirection::Top:
+		{
+			start = RandomVec2(m_screenEdgeArea.top());
+			goal = RandomVec2(m_screenEdgeArea.bottom());
+		}
+		break;
+		// 右側なら左側を目指す
+		case ScreenEdgeDirection::Right:
+		{
+			start = RandomVec2(m_screenEdgeArea.right());
+			m_crossData.goal = RandomVec2(m_screenEdgeArea.left());
+		}
+		break;
+		// 下側なら上側を目指す
+		case ScreenEdgeDirection::Bottom:
+		{
+			start = RandomVec2(m_screenEdgeArea.bottom());
+			goal = RandomVec2(m_screenEdgeArea.top());
+		}
+		break;
+		// 左側なら右側を目指す
+		case ScreenEdgeDirection::Left:
+		{
+			start = RandomVec2(m_screenEdgeArea.left());
+			goal = RandomVec2(m_screenEdgeArea.right());
+		}
+		break;
+	}
+
+	position = start;
+
+	return std::tie(start, goal);
 }

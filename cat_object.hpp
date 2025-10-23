@@ -11,7 +11,7 @@ class CatObject
 private:
 
 	/// @brief 外見の状態
-	enum class Appearance
+	enum class AppearanceState
 	{
 		/// @brief 表示されていない（画面外もしくは描画していない）
 		Hidden,
@@ -24,7 +24,7 @@ private:
 	};
 
 	/// @brief 画面端の種類
-	enum class ScreenEdge
+	enum class ScreenEdgeDirection
 	{
 		Top,
 		Right,
@@ -130,10 +130,10 @@ private:
 	DeltaStopwatch m_stopwatch;
 
 	/// @brief このオブジェクトがどんな外見状態にあるか
-	Appearance m_appearanceState = Appearance::Hidden;
+	AppearanceState m_appearanceState = AppearanceState::Hidden;
 
 	/// @brief このオブジェクトが画面端のどこから出現するかを表す
-	ScreenEdge m_edgeState = ScreenEdge::Top;
+	ScreenEdgeDirection m_edgeDirection = ScreenEdgeDirection::Top;
 
 	/// @brief `cross()` で使うデータ群
 	struct
@@ -163,10 +163,15 @@ private:
 
 	} m_crossData;
 
+	/// @brief このUFO猫が行うアクションのデータ @n
+	/// bound, cross, appear, appearFromEdge のいずれかを行うように設定されている
 	Phase::ActionData m_actionData;
 
 	/// @brief テクスチャのアルファ値
 	double m_textureAlpha = 1;
+
+	/// @brief 外から出てくるタイプのアクションで初期の出現範囲としてつかう描画領域外の場所
+	const RectF m_screenEdgeArea;
 
 	/// @brief テクスチャの表示領域
 	/// @note 画像の上下部に余白を作ってしまっているので、そこを除いた領域を指定する
@@ -204,10 +209,9 @@ public:
 	/// @brief 
 	/// @param actionData 
 	/// @return 
-	CatObject& setAction(Phase::ActionData &actionData);
+	CatObject& setAction(const Phase::ActionData &actionData);
 
 	/* -- コンストラクタ -- */
-	// TODO: 何故かコピーコンストラクタが暗黙定義されないので、自分で試してみる
 public:
 
 	/// @brief 使用テクスチャからオブジェクトを作る
@@ -216,9 +220,13 @@ public:
 		: texture{ texture }
 		, m_hitArea{ Circle{ m_ClipArea.h * m_Scale / 2 }.scaled(static_cast<double>(m_ClipArea.w) / m_ClipArea.h, 1) }
 		, ClientSize{ m_ClipArea.scaledAt(m_ClipArea.pos, m_Scale).size }
-		, position{ { 0, 0 } }
+		// 自分のサイズ分だけ画面外に出した場所を原点として、
+		// シーンの幅と高さにそれぞれ自分の縦横幅を足した範囲がちょうどぎりぎり表示されないところ
+		, m_screenEdgeArea{ -Vec2(ClientSize), Scene::Width() + ClientSize.x, Scene::Height() + ClientSize.y }
 		, velocity{ { 0, 0 } }
-	{ }
+	{
+		m_changeScreenEdgePosition();
+	}
 
 	/// @brief 使用テクスチャ、初期位置、初期速度からオブジェクトを作る
 	/// @param texture 使用テクスチャ
@@ -228,19 +236,23 @@ public:
 		: texture{ texture }
 		, m_hitArea{ Circle{ m_ClipArea.h * m_Scale / 2 }.scaled(static_cast<double>(m_ClipArea.w) / m_ClipArea.h, 1) }
 		, ClientSize{ m_ClipArea.scaledAt(m_ClipArea.pos, m_Scale).size }
+		, m_screenEdgeArea{ -Vec2(ClientSize), Scene::Width() + ClientSize.x, Scene::Height() + ClientSize.y }
 		, position{ position }
 		, velocity{ velocity }
 	{ }
 
 	/// @brief コピーコンストラクタ
 	/// @param obj コピー元のオブジェクト
+	/// @remarks すべてをコピーするわけではない
 	CatObject(const CatObject &obj)
 		: texture{ obj.texture }
-		, m_hitArea{ obj.m_hitArea }
-		, m_catData{ obj.m_catData }
 		, ClientSize{ obj.ClientSize }
-		, position{ position }
-		, velocity{ velocity }
+		, m_hitArea{ obj.m_hitArea }
+		, m_screenEdgeArea{ obj.m_screenEdgeArea }
+		, m_catData{ obj.m_catData }
+		, m_actionData{ obj.m_actionData }
+		, position{ obj.position }
+		, velocity{ obj.velocity }
 	{ }
 
 	/* -- メソッド -- */
@@ -378,4 +390,11 @@ public:
 	/// @param target ターゲットの情報
 	/// @return 自分自身の参照
 	CatObject& checkCatchable(const CatData &target);
+
+private:
+	/// @brief 画面端のどこを開始点と終了点にするかランダムに決める @n
+	/// 終了点は開始点の反対側として決められ、開始点と終了点の組み合わせをタプルで返す @n
+	/// ** `m_edgeDirection` を同時に変更し、更に決まった開始点は、自動的に `position` に代入される **
+	/// @return 開始点と終了点のタプル <0> が開始点、<1> が終了点で、表示領域外の位置で与えられる @n 
+	std::tuple<Vec2, Vec2> m_changeScreenEdgePosition();
 };
