@@ -30,11 +30,9 @@ void Main()
 
 	cats[0].setAction(GameManager::Instance().phases[0].actionDataList[1]);
 
-	// TODO: 乱数を使って見つけるネコを設定する
 	// 将来的にはこの部分もゲームループに入れることになるのは承知のうえで
 	GameManager::Instance().setTarget();
 	// CatObject::targetData = cats[targetIndex].getCatData();
-	// TODO: ネコどうしの類似度を設定して、難易度によって出現させるべきネコを変える
 
 	// 各ステートを何秒ごとに切り替えていくかは、何かの形でまとめておきたい
 	// ここでは仮にターゲットをアナウンスする画面が消えるのに 3s かけるとして
@@ -66,7 +64,7 @@ void Main()
 			case IngameState::Finding:
 			{
 				{
-					cats[0].act().draw();
+					//cats[0].act().draw();
 					/*cats[0].bound().draw().checkCatchable(GameManager::Instance().getTarget());
 					cats[0].drawHitArea();
 
@@ -76,9 +74,9 @@ void Main()
 
 					cats[4].appearFromEdge(2s, 0.4s, { 60, 40, 80, 60 }).draw();
 					cats[5].appearFromEdge(3s, Easing::Bounce, 1s, { 100, 0, 0, 50 }).draw();
-					cats[6].appearFromEdge(3.3s, Easing::Expo, 1.5s, Easing::Sine, 0.8s, { 0, 0, 0, 30 }).draw();
+					cats[6].appearFromEdge(3.3s, Easing::Expo, 1.5s, Easing::Sine, 0.8s, { 0, 0, 0, 30 }).draw();*/
 
-					cats[7].cross(2s, 3).draw();
+					/*cats[7].cross(2s, 3).draw();
 					cats[8].cross(4s).draw();*/
 				}
 
@@ -103,11 +101,9 @@ void Main()
 			case GameManager::State::InPhase:
 			{
 				// Phase の更新間隔に合わせてスポーンを行うような処理
-				// GameManager::Instance().
+				GameManager::Instance().inPhase();
 			}
 		}
-
-		// TODO: 描画処理は共通して行う？
 	}
 }
 

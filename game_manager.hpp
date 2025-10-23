@@ -43,14 +43,18 @@ public:
 
 	/// @brief 現在のターゲットを取得する
 	/// @return 現在のターゲットの `CatData` の参照
-	const CatData& getTarget() const;
+	const CatData &getTarget() const;
+
+	/// @brief 
+	/// @return 
+	const Phase &getCurrentPhase() const;
 
 	/* -- セッター -- */
 public:
 
 	/// @brief 全種類のUFO猫の中からランダムに1体ターゲットを設定する
 	/// @return 設定後のターゲットの `CatData` の参照
-	const CatData& setTarget();
+	const CatData &setTarget();
 
 	/* -- メソッド -- */
 public:

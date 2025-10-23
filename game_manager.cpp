@@ -1,11 +1,16 @@
 ﻿#include "game_manager.hpp"
 
-const CatData& GameManager::getTarget() const
+const CatData &GameManager::getTarget() const
 {
 	return m_target_ptr->getCatData();
 }
 
-const CatData& GameManager::setTarget()
+const Phase& GameManager::getCurrentPhase() const
+{
+	return phases[m_currentPhaseIndex];
+}
+
+const CatData &GameManager::setTarget()
 {
 	// 全種の中からランダムに選ぶ
 	m_target_ptr = &cats.choice();
@@ -20,27 +25,96 @@ void GameManager::announceTarget()
 
 void GameManager::startPhase()
 {
+	// フェーズ開始前フェーズでなければ、戻る
+	if (Instance().currentState != State::PhaseStart)
+	{
+		return;
+	}
+
 	// クリアしているフェーズの数は、現在行っているフェーズのインデックスと同じなのを利用する
 	// （そのフェーズが終わり次第、isCleared のフラグを上げるため）
- 	m_currentPhaseIndex = phases.filter([](const Phase& p) { return p.isCleared; }).size();
+	m_currentPhaseIndex = phases.filter([](const Phase& p) { return p.isCleared; }).size();
 
-	// フェーズの設定に合わせて登場する猫を設定する
-	catsInPhase.clear();
-	
-	auto &&similars = cats.filter([this](const CatObject &cat)
+	// フェーズデータのうち、登場する猫の数に関するデータを取得する
+	const auto& similarCount = getCurrentPhase().breedData.similar;
+	const auto& otherCount = getCurrentPhase().breedData.other;
+
+	// それぞれ、似ている猫とそうじゃない猫を絞り込む用の配列を用意する
+	Array<std::shared_ptr<CatObject>> similars;
+	Array<std::shared_ptr<CatObject>> others;
+
+	// 前回フェーズの猫を吹っ飛ばし、shared_ptr も解放する
+	catsInPhase.release();
+
+	// 全種類の猫の中から、ターゲットと似ている猫とそうでない猫を振り分ける
+	for (const auto& cat : cats)
+	{
+		if (getCurrentPhase().similarity == cat.getCatData().getSameDataCount(getTarget()))
 		{
-			return phases[m_currentPhaseIndex].similarity == cat.getCatData().getSameDataCount(getTarget());
-		});
+			similars << std::make_shared<CatObject>(cat);
+		}
+		else
+		{
+			others << std::make_shared<CatObject>(cat);
+		}
+	}
 
-	if (auto comp = similars.size() <=> phases[m_currentPhaseIndex].breedData.similar;
+	// 宇宙船演算子が使いたかっただけ！！！
+	// 上で絞り込んだ結果、similars の数が既定 (similarCount) より多すぎるか、少なすぎる場合に調整する
+	// まずは多すぎる場合
+	if (auto comp = similars.size() <=> similarCount;
 		comp > 0)
 	{
-
+		// 多すぎる場合はランダムに頭数を削る
+		while (similars.size() > similarCount)
+		{
+			similars.shuffle().pop_back();
+		}
 	}
+	// 少なすぎる場合
 	else if (comp < 0)
 	{
+		// 条件を緩和して絞り込んだ猫を入れる配列
+		Array<std::shared_ptr<CatObject>> looses;
 
+		// 類似度を1つ下げて絞り込んだものを looses に入れる
+		for (auto cat : others)
+		{
+			if ((getCurrentPhase().similarity - 1) == cat->getCatData().getSameDataCount(getTarget()))
+			{
+				looses << cat;
+			}
+		}
+
+		// 足りなかった分を looses か others から補う
+		while (similars.size() < similarCount)
+		{
+			if (not looses.isEmpty())
+			{
+				similars << looses.shuffle().choice();
+			}
+			else
+			{
+				// others から補うことになった場合は補ったやつを元のリストから消す
+				// others はもともと多く絞り込まれるはずなので、枯渇することはない
+				const auto &transferred = others.shuffle().choice();
+				similars << transferred;
+				others.remove(transferred);
+			}
+		}
+		
 	}
+
+	// others は既定の数から溢れている可能性が高いので、ランダムに削る
+	others.shuffle().resize(otherCount);
+
+	// 最終的に catsInPhase にまとめて
+	// TODO: アクションを発生確率から抽選できるようにする
+	catsInPhase.append(similars)
+			   .append(others)
+			   .each([this](std::shared_ptr<CatObject>& cat) { cat->setAction(getCurrentPhase().actionDataList[1]); });
+
+	// ステートをフェーズ中に変更する
  	currentState = State::InPhase;
 }
 
@@ -50,19 +124,24 @@ void GameManager::inPhase()
  	{
  		spawn();
  	}
+	draw();
 }
 
 void GameManager::spawn()
 {
-	const CatObject& choice = cats.choice();
-	spawns << std::make_unique<CatObject>(choice);
+	if (Instance().currentState != State::InPhase)
+	{
+		return;
+	}
+	// TODO: どっかのタイミングで意図的にターゲットを湧かせる
+	spawns << std::make_unique<CatObject>(*(catsInPhase.choice()));
 }
 
 void GameManager::draw()
 {
 	for (const auto& cat : spawns)
 	{
-		cat->draw();
+		cat->act().draw().checkCatchable(getTarget());
 	}
 }
 
