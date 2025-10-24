@@ -31,30 +31,58 @@ public:
 	State currentState = State::Title;
 
 private:
+	/// @brief ターゲット
+	std::shared_ptr<CatObject> m_target = nullptr;
 
-	const CatObject* m_target_ptr = nullptr;
-
+	/// @brief 現在のフェーズ（のインデックス）
 	size_t m_currentPhaseIndex = 0;
 
-	// Array<CatObject&> m_selectCats;
+	/// @brief フェーズの時間を計測するタイマー
+	Timer m_phaseTimer;
+
+	/// @brief フェーズ中にターゲットが出現する時刻
+	Duration m_targetAppearTime;
+
+	/// @brief ターゲットが出現したかどうか
+	bool m_appearedTarget = false;
+
+	/// @brief 現在のフェーズで起こせるアクションの確率分布
+	DiscreteDistribution m_actionProbabilities;
 
 	/* -- ゲッター -- */
 public:
 
+	const CatObject &temp_getTarget() const
+	{
+		return *m_target;
+	}
+
 	/// @brief 現在のターゲットを取得する
 	/// @return 現在のターゲットの `CatData` の参照
-	const CatData &getTarget() const;
+	const CatData &getTargetData() const;
 
-	/// @brief 
-	/// @return 
-	const Phase &getCurrentPhase() const;
+	/// @brief 現在のフェーズを取得する
+	/// @return 現在の `Phase` の参照
+	const Phase &getCurrentPhase();
+
+private:
+	/// @brief 現在のフェーズ (非 const)
+	/// @return 現在の `Phase` の参照
+	/// @remarks ゲッターとか言いながらオブジェクトの変更も許しているので、private にしておく
+	Phase &m_currentPhase();
 
 	/* -- セッター -- */
 public:
 
 	/// @brief 全種類のUFO猫の中からランダムに1体ターゲットを設定する
 	/// @return 設定後のターゲットの `CatData` の参照
-	const CatData &setTarget();
+	const CatData &setTargetData();
+
+private:
+	/// @brief ターゲットが出現する時間を引数に応じてランダムに決め、`m_targetAppearTime` に設定する
+	/// @param level 整数値（1 ~ 10 の範囲で、特に現在のフェーズレベル (`m_currentPhaseIndex`) を入れることを想定）
+	/// @return  ターゲットが出現する時間
+	const Duration &m_setTargetAppearTime(uint32 level);
 
 	/* -- メソッド -- */
 public:

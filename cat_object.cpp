@@ -24,6 +24,16 @@ Rect CatObject::getMaxDisplayedArea() const
 	return Rect{ 0, 0, Scene::Width() - static_cast<int32>(ClientSize.x), Scene::Height() - static_cast<int32>(ClientSize.y) };
 }
 
+CatObject &CatObject::setRandomVelocity(uint32 level)
+{
+	// マジックナンバーだらけだけど仕様書に書いてあるとおり
+	double min = 50.0 + (1.0 + level / 10.0);
+	double max = Max(((Random(1.0, static_cast<double>(level)) / 10.0) * Max(Scene::Width(), Scene::Height()) * Math::Exp(level / Random(5, 10))), 900.0);
+	velocity = RandomVec2(Random(min, max));
+
+	return *this;
+}
+
 CatObject& CatObject::setCatData(CatData &&data)
 {
 	m_catData = data;

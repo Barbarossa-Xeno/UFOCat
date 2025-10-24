@@ -23,15 +23,15 @@ void Main()
 	Array<CatObject> cats = GameManager::Instance().cats;
 	cats.each([](auto &cat) { cat.position = { -100, -100 }; });
 
-	cats[0].vx = 300;
-	cats[0].vy = 200;
+	cats[0].vx = 700;
+	cats[0].vy = 800;
 	cats[7].velocity = { 100, 100 };
 	cats[8].velocity = { 250, 400 };
 
 	cats[0].setAction(GameManager::Instance().phases[0].actionDataList[1]);
 
 	// 将来的にはこの部分もゲームループに入れることになるのは承知のうえで
-	GameManager::Instance().setTarget();
+	GameManager::Instance().setTargetData();
 	// CatObject::targetData = cats[targetIndex].getCatData();
 
 	// 各ステートを何秒ごとに切り替えていくかは、何かの形でまとめておきたい
@@ -48,7 +48,8 @@ void Main()
 			case IngameState::AnnounceTarget:
 			{
 				font(U"見つけるUFOネコは").drawAt(Scene::Center().x, 50);
-				font(U"{}"_fmt(GameManager::Instance().getTarget().breed)).drawAt(Scene::Center().x, 100);
+				font(U"{}"_fmt(GameManager::Instance().getTargetData().breed)).drawAt(Scene::Center().x, 100);
+				GameManager::Instance().temp_getTarget().texture.scaled(0.5).drawAt(Scene::Center());
 
 				if (ingameTimer.reachedZero())
 				{
@@ -65,8 +66,8 @@ void Main()
 			{
 				{
 					//cats[0].act().draw();
-					/*cats[0].bound().draw().checkCatchable(GameManager::Instance().getTarget());
-					cats[0].drawHitArea();
+					//cats[0].bound().draw().checkCatchable(GameManager::Instance().getTargetData());
+					/*cats[0].drawHitArea();
 
 					cats[1].appear(3s, 1s).draw();
 					cats[2].appear(2s, 0.6s, 0.4s).draw();
@@ -104,6 +105,8 @@ void Main()
 				GameManager::Instance().inPhase();
 			}
 		}
+
+		GameManager::Instance().draw();
 	}
 }
 

@@ -16,6 +16,13 @@ public:
 
 		/// @brief 別にターゲットとは類似ではない猫を何匹登場させるか
 		uint32 other;
+
+		/// @brief 品種の総数
+		/// @return similar + other
+		uint32 total() const
+		{
+			return similar + other;
+		}
 	};
 
 	/// @brief 出現ペースのデータ
