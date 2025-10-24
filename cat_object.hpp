@@ -45,7 +45,7 @@ private:
 		/// @brief 関数を呼び出す
 		/// @param value `cact::ValidSignature` に適合している引数値
 		/// @return ターゲットインスタンスの参照
-		CatObject &operator()(const cact::ValidSignature auto &value) const
+		CatObject &operator()(const CACT::ValidSignature auto &value) const
 		{
 			// 引数の型を取得（const や参照は削除する）
 			using Type = std::remove_cvref_t<decltype(value)>;
@@ -55,18 +55,18 @@ private:
 			{
 				return target->bound();
 			}
-			// cact::cross のコンセプトに適合していたら cross() を呼び出す
-			else if constexpr (cact::cross::ValidSignature<Type>)
+			// CACT::cross のコンセプトに適合していたら cross() を呼び出す
+			else if constexpr (CACT::cross::ValidSignature<Type>)
 			{
 				return std::apply([this](auto &&...args) -> CatObject& { return target->cross(args...); }, value);
 			}
-			// cact::appear のコンセプトに適合していたら appear() を呼び出す
-			else if constexpr (cact::appear::ValidSignature<Type>)
+			// CACT::appear のコンセプトに適合していたら appear() を呼び出す
+			else if constexpr (CACT::appear::ValidSignature<Type>)
 			{
 				return std::apply([this](auto &&...args) -> CatObject& { return target->appear(args...); }, value);
 			}
-			// cact::appearFromEdge のコンセプトに適合していたら appearFromEdge() を呼び出す
-			else if constexpr (cact::appearFromEdge::ValidSignature<Type>)
+			// CACT::appearFromEdge のコンセプトに適合していたら appearFromEdge() を呼び出す
+			else if constexpr (CACT::appearFromEdge::ValidSignature<Type>)
 			{
 				return std::apply([this](auto &&...args) -> CatObject& { return target->appearFromEdge(args...); }, value);
 			}
@@ -77,7 +77,7 @@ private:
 public:
 
 	/// @brief Siv3D のイージング関数の型
-	using EasingFunction = cact::EasingFunction;
+	using EasingFunction = CACT::EasingFunction;
 
 	/* -- フィールド -- */
 
