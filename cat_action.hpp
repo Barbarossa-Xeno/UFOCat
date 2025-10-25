@@ -1,8 +1,8 @@
 ﻿#pragma once
 
 /// @brief UFO猫がとるアクションについて定義した名前空間
-/// @details cat_action の略で cact
-namespace CACT
+/// @details cat_action の略で CAct
+namespace CAct
 {
 	/// @brief Siv3D のイージング関数の型
 	using EasingFunction = std::function<double(double)>;
@@ -116,8 +116,8 @@ namespace CACT
 	concept ValidSignature =
 	(
 		std::same_as<T, std::monostate> ||
-		CACT::cross::ValidSignature<T> ||
-		CACT::appear::ValidSignature<T> ||
-		CACT::appearFromEdge::ValidSignature<T>
+		CAct::cross::ValidSignature<T> ||
+		CAct::appear::ValidSignature<T> ||
+		CAct::appearFromEdge::ValidSignature<T>
 	);
 }

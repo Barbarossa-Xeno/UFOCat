@@ -68,7 +68,7 @@ Rect Phase::ParseRect(const String &str)
 	}
 }
 
-CACT::EasingFunction Phase::ParseEasing(const String &str)
+CAct::EasingFunction Phase::ParseEasing(const String &str)
 {
 	if (str.substr(0, 2) == U"e_")
 	{
