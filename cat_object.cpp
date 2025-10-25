@@ -24,7 +24,7 @@ Rect CatObject::getMaxDisplayedArea() const
 	return Rect{ 0, 0, Scene::Width() - static_cast<int32>(ClientSize.x), Scene::Height() - static_cast<int32>(ClientSize.y) };
 }
 
-CatObject &CatObject::setRandomVelocity(uint32 level)
+CatObject &CatObject::setRandomVelocity(size_t level)
 {
 	// マジックナンバーだらけだけど仕様書に書いてあるとおり
 	double min = 75.0 + (1.0 + level / 10.0);

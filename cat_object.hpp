@@ -204,7 +204,7 @@ public:
 	/// @brief 定式と引数の値に従ってランダムに速度を設定する
 	/// @param level 整数値（1 ~ 10 の範囲で、特に現在のフェーズレベルを入れることを想定）
 	/// @return 自分自身の参照
-	CatObject &setRandomVelocity(uint32 level);
+	CatObject &setRandomVelocity(size_t level);
 
 	/// @brief UFO猫のデータを登録する
 	/// @param data データ
