@@ -27,7 +27,7 @@ public:
 	/// @brief 指定した数値で現在の時間を引いてリセットする
 	/// @param time 時間 [Duration]
 	/// @return リセット後の時間
-	const double& reset(Duration &time) noexcept;
+	const double& reset(const Duration &time) noexcept;
 
 	/// @brief タイマーを 0 にリセットする
 	/// @return リセット後の時間
@@ -45,5 +45,27 @@ public:
 	/// @param time 時間 [Duration]
 	/// @param isAutoReset 指定した時間を超えていたら自動でリセットするか（デフォルト `true`）
 	/// @return 指定した時間を超えていたら `true`
-	bool isOver(Duration &time, bool isAutoReset = true) noexcept;
+	bool isOver(const Duration &time, bool isAutoReset = true) noexcept;
+
+	/// @brief 指定時間経過したあとに、コールバックを実行する @n
+	/// このメソッドは呼び出されるたびにタイマーを進めている（`forward()` を実行している）ので、ループ内で呼び出す必要がある
+	/// @tparam Func コールバックの型
+	/// @param callback コールバック
+	/// @param time 時間
+	/// @return コールバックに戻り値があればそれを返す
+	template <typename Func>
+	auto setTimeout(Func&& callback, const Duration &time)
+		-> decltype(callback())
+	{
+		forward();
+		if (isOver(time)) {
+			if constexpr (std::is_void_v<std::invoke_result_t<Func>>) {
+				std::forward<Func>(callback)();
+			}
+			else {
+				return std::forward<Func>(callback)();
+			}
+		}
+	}
+
 };

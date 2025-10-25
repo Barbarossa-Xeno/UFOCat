@@ -19,7 +19,7 @@ const double &DeltaStopwatch::reset(double time) noexcept
 	return m_elapsedTime;
 }
 
-const double& DeltaStopwatch::reset(Duration& time) noexcept
+const double& DeltaStopwatch::reset(const Duration& time) noexcept
 {
 	return reset(time.count());
 }
@@ -43,7 +43,7 @@ bool DeltaStopwatch::isOver(double time, bool isAutoReset) noexcept
 	return result;
 }
 
-bool DeltaStopwatch::isOver(Duration& time, bool isAutoReset) noexcept
+bool DeltaStopwatch::isOver(const Duration& time, bool isAutoReset) noexcept
 {
 	return isOver(time.count(), isAutoReset);
 }
