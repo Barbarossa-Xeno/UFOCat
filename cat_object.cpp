@@ -187,9 +187,6 @@ CatObject& CatObject::cross(Duration period, uint32 count)
 
 CatObject& CatObject::appear(Duration period, EasingFunction fadeInFunc, Duration fadeIn, EasingFunction fadeOutFunc, Duration fadeOut, const Rect& range)
 {
-	// このメソッドが呼び出されたらとりあえず経過時間を積算する
-	m_stopwatch.forward();
-
 	// 外観の状態によって挙動を変える
 	switch (m_appearanceState)
 	{
@@ -198,20 +195,23 @@ CatObject& CatObject::appear(Duration period, EasingFunction fadeInFunc, Duratio
 		{
 			m_textureAlpha = 0;
 
-			// 出現周期だけの時間が経過したら
-			if (m_stopwatch.isOver(period))
-			{
-				// 位置をランダムに変更
-				position = RandomVec2(range);
-				// フェードインに移行する
-				m_appearanceState = AppearanceState::In;
-			}
+			// 出現周期だけ経過したら
+			m_stopwatch.setTimeout([&]()
+				{
+					// 位置をランダムに変更
+					position = RandomVec2(range);
+					// フェードインに移行する
+					m_appearanceState = AppearanceState::In;
+				}, period);
 		}
 		break;
 
 		// フェードインしているとき
 		case AppearanceState::In:
 		{
+			// 手動で時間を経過させる
+			m_stopwatch.forward();
+
 			// アルファ値の増加率
 			// const double increaseFactor = 1 / fadeIn.count();
 
@@ -219,7 +219,6 @@ CatObject& CatObject::appear(Duration period, EasingFunction fadeInFunc, Duratio
 			if (m_stopwatch.isOver(fadeIn.count()))
 			{
 				// 可視状態に移行
-				m_stopwatch.reset(fadeIn.count());
 				m_appearanceState = AppearanceState::Visible;
 			}
 			else
@@ -238,21 +237,21 @@ CatObject& CatObject::appear(Duration period, EasingFunction fadeInFunc, Duratio
 		{
 			m_textureAlpha = 1;
 
-			if (m_stopwatch.isOver(period.count()))
-			{
-				m_stopwatch.reset(period.count());
-
-				// フェードアウト状態に移行
-				m_appearanceState = AppearanceState::Out;
-			}
+			m_stopwatch.setTimeout([&]()
+				{
+					// フェードアウト状態に移行
+					m_appearanceState = AppearanceState::Out;
+				}, period);
 		}
 		break;
 
 		case AppearanceState::Out:
 		{
+			// 手動で時間を経過させる
+			m_stopwatch.forward();
+
 			if (m_stopwatch.isOver(fadeOut.count()))
 			{
-				m_stopwatch.reset(fadeOut.count());
 				m_appearanceState = AppearanceState::Hidden;
 			}
 			else
