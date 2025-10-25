@@ -34,14 +34,34 @@ const Duration &GameManager::m_setTargetAppearTime(uint32 level)
 
 void GameManager::announceTarget()
 {
-	setTargetData();
+	if (currentState != State::TargetAnnounce)
+	{
+		return;
+	}
+
+	if (not m_target)
+	{
+		setTargetData();
+
+		// 仮に 5s 経ったらフェーズ開始処理へ移行
+		m_phaseTimer.restart(5s);
+	}
+	else if (m_phaseTimer.reachedZero())
+	{
+		currentState = State::PhaseStart;
+	}
+
 	// TODO: あとはUIを表示させる処理や時間カウントしてステートを変える機能を書く
+	FontAsset(U"Test")(U"見つけるUFOネコは").drawAt(Scene::Center().x, 50);
+	FontAsset(U"Test")(U"{}"_fmt(getTargetData().breed)).drawAt(Scene::Center().x, 100);
+	m_target->texture.scaled(0.5).drawAt(Scene::Center());
+	FontAsset(U"Test")(U"あと {}"_fmt(m_phaseTimer.s())).drawAt(Scene::Center().x, Scene::Center().y + 100);
 }
 
 void GameManager::startPhase()
 {
 	// フェーズ開始前フェーズでなければ、戻る
-	if (Instance().currentState != State::PhaseStart)
+	if (currentState != State::PhaseStart)
 	{
 		return;
 	}
@@ -141,7 +161,8 @@ void GameManager::startPhase()
  	currentState = State::InPhase;
 
 	// 制限時間を決めて、タイマー開始
-	m_phaseTimer.restart(m_currentPhase().timeLimit);
+	// 1s 猶予を持たせて、気持ち長めにすることで間に入る処理の影響を減らす
+	m_phaseTimer.restart(m_currentPhase().timeLimit + 1s);
 
 	// 現在のフェーズに合わせてターゲットの出現時刻を設定
 	m_setTargetAppearTime(m_currentPhaseIndex + 1);
@@ -184,10 +205,25 @@ void GameManager::inPhase()
  	}
 
 	// # 描画処理
-	for (const auto& cat : spawns)
 	{
-		cat->act().checkCatchable(getTargetData());
+		for (const auto& cat : spawns)
+		{
+			cat->act().checkCatchable(getTargetData());
+		}
+
+		FontAsset(U"Test")(U"のこり {} 秒"_fmt(m_phaseTimer.s())).draw(10, 10);
 	}
+	
+}
+
+void GameManager::endPhase()
+{
+	if (currentState != State::PhaseEnd)
+	{
+		return;
+	}
+
+
 }
 
 void GameManager::spawn()
@@ -461,7 +497,7 @@ Array<Phase> GameManager::LoadPhaseData()
 						/* -- こっから実際の引数として使えるタプルにするためのパース処理 -- */
 
 						// 引数リスト
-						cact::Generic params;
+						CAct::Generic params;
 
 						// 配列形式であることを確認
 						if (data_params.isArray())
@@ -499,19 +535,19 @@ Array<Phase> GameManager::LoadPhaseData()
 									// 各オーバーロード番号に対応するようにパースする
 									case 0:
 									{
-										auto p = Phase::ParseParameters<cact::cross::_0>(data_params);
-										params = std::make_tuple(get_at.operator()<0, cact::cross::_0>(p), get_at.operator()<1, cact::cross::_0>(p));
+										auto p = Phase::ParseParameters<CAct::cross::_0>(data_params);
+										params = std::make_tuple(get_at.operator()<0, CAct::cross::_0>(p), get_at.operator()<1, CAct::cross::_0>(p));
 										break;
 									}
 									case 1:
 									{
-										auto p = Phase::ParseParameters<cact::cross::_1>(data_params);
-										params = std::make_tuple(get_at.operator()<0, cact::cross::_1>(p));
+										auto p = Phase::ParseParameters<CAct::cross::_1>(data_params);
+										params = std::make_tuple(get_at.operator()<0, CAct::cross::_1>(p));
 										break;
 									}
 									default:
 									{
-										throw Error(U"`cross` overload index is invalid. (valid range: 0 ~ {})"_fmt(cact::cross::Count - 1));
+										throw Error(U"`cross` overload index is invalid. (valid range: 0 ~ {})"_fmt(CAct::cross::Count - 1));
 									}
 								}
 							}
@@ -521,103 +557,103 @@ Array<Phase> GameManager::LoadPhaseData()
 								{
 									case 0:
 									{
-										auto p = Phase::ParseParameters<cact::appear::_0>(data_params);
+										auto p = Phase::ParseParameters<CAct::appear::_0>(data_params);
 										// 直書きでタプル作るのはちょっとダサいけど
 										// 固定長で作るという制約上しゃあないところが大きい
 										params = std::make_tuple
 											(
-												get_at.operator()<0, cact::appear::_0>(p),
-												get_at.operator()<1, cact::appear::_0>(p),
-												get_at.operator()<2, cact::appear::_0>(p),
-												get_at.operator()<3, cact::appear::_0>(p),
-												get_at.operator()<4, cact::appear::_0>(p),
-												get_at.operator()<5, cact::appear::_0>(p)
+												get_at.operator()<0, CAct::appear::_0>(p),
+												get_at.operator()<1, CAct::appear::_0>(p),
+												get_at.operator()<2, CAct::appear::_0>(p),
+												get_at.operator()<3, CAct::appear::_0>(p),
+												get_at.operator()<4, CAct::appear::_0>(p),
+												get_at.operator()<5, CAct::appear::_0>(p)
 											);
 										break;
 									}
 									case 1:
 									{
-										auto p = Phase::ParseParameters<cact::appear::_1>(data_params);
+										auto p = Phase::ParseParameters<CAct::appear::_1>(data_params);
 										params = std::make_tuple
 											(
-												get_at.operator()<0, cact::appear::_1>(p),
-												get_at.operator()<1, cact::appear::_1>(p),
-												get_at.operator()<2, cact::appear::_1>(p),
-												get_at.operator()<3, cact::appear::_1>(p)
+												get_at.operator()<0, CAct::appear::_1>(p),
+												get_at.operator()<1, CAct::appear::_1>(p),
+												get_at.operator()<2, CAct::appear::_1>(p),
+												get_at.operator()<3, CAct::appear::_1>(p)
 											);
 										break;
 									}
 									case 2:
 									{
-										auto p = Phase::ParseParameters<cact::appear::_2>(data_params);
+										auto p = Phase::ParseParameters<CAct::appear::_2>(data_params);
 										params = std::make_tuple
 											(
-												get_at.operator()<0, cact::appear::_2>(p),
-												get_at.operator()<1, cact::appear::_2>(p),
-												get_at.operator()<2, cact::appear::_2>(p),
-												get_at.operator()<3, cact::appear::_2>(p)
+												get_at.operator()<0, CAct::appear::_2>(p),
+												get_at.operator()<1, CAct::appear::_2>(p),
+												get_at.operator()<2, CAct::appear::_2>(p),
+												get_at.operator()<3, CAct::appear::_2>(p)
 											);
 										break;
 									}
 									case 3:
 									{
-										auto p = Phase::ParseParameters<cact::appear::_3>(data_params);
+										auto p = Phase::ParseParameters<CAct::appear::_3>(data_params);
 										params = std::make_tuple
 											(
-												get_at.operator()<0, cact::appear::_3>(p),
-												get_at.operator()<1, cact::appear::_3>(p),
-												get_at.operator()<2, cact::appear::_3>(p)
+												get_at.operator()<0, CAct::appear::_3>(p),
+												get_at.operator()<1, CAct::appear::_3>(p),
+												get_at.operator()<2, CAct::appear::_3>(p)
 											);
 										break;
 									}
 									case 4:
 									{
-										auto p = Phase::ParseParameters<cact::appear::_4>(data_params);
+										auto p = Phase::ParseParameters<CAct::appear::_4>(data_params);
 										params = std::make_tuple
 											(
-												get_at.operator()<0, cact::appear::_4>(p),
-												get_at.operator()<1, cact::appear::_4>(p),
-												get_at.operator()<2, cact::appear::_4>(p),
-												get_at.operator()<3, cact::appear::_4>(p),
-												get_at.operator()<4, cact::appear::_4>(p)
+												get_at.operator()<0, CAct::appear::_4>(p),
+												get_at.operator()<1, CAct::appear::_4>(p),
+												get_at.operator()<2, CAct::appear::_4>(p),
+												get_at.operator()<3, CAct::appear::_4>(p),
+												get_at.operator()<4, CAct::appear::_4>(p)
 											);
 										break;
 									}
 									case 5:
 									{
-										auto p = Phase::ParseParameters<cact::appear::_5>(data_params);
+										auto p = Phase::ParseParameters<CAct::appear::_5>(data_params);
 										params = std::make_tuple
 											(
-												get_at.operator()<0, cact::appear::_5>(p),
-												get_at.operator()<1, cact::appear::_5>(p),
-												get_at.operator()<2, cact::appear::_5>(p)
+												get_at.operator()<0, CAct::appear::_5>(p),
+												get_at.operator()<1, CAct::appear::_5>(p),
+												get_at.operator()<2, CAct::appear::_5>(p)
 											);
 										break;
 									}
 									case 6:
 									{
-										auto p = Phase::ParseParameters<cact::appear::_6>(data_params);
+										auto p = Phase::ParseParameters<CAct::appear::_6>(data_params);
 										params = std::make_tuple
 											(
-												get_at.operator()<0, cact::appear::_6>(p),
-												get_at.operator()<1, cact::appear::_6>(p),
-												get_at.operator()<2, cact::appear::_6>(p)
+												get_at.operator()<0, CAct::appear::_6>(p),
+												get_at.operator()<1, CAct::appear::_6>(p),
+												get_at.operator()<2, CAct::appear::_6>(p)
 											);
 										break;
 									}
 									case 7:
 									{
-										auto p = Phase::ParseParameters<cact::appear::_7>(data_params);
+										auto p = Phase::ParseParameters<CAct::appear::_7>(data_params);
 										params = std::make_tuple
 											(
-												get_at.operator()<0, cact::appear::_7>(p),
-												get_at.operator()<1, cact::appear::_7>(p)
+												get_at.operator()<0, CAct::appear::_7>(p),
+												get_at.operator()<1, CAct::appear::_7>(p)
 											);
 										break;
 									}
 									default:
 									{
-										throw Error(U"`appear` overload index is invalid. (valid range: 0 ~ {})"_fmt(cact::appear::Count - 1));
+										throw Error(U"`appear` overload index is invalid. (valid range: 0 ~ {})"_fmt(CAct::appear::Count - 1));
 									}
 								}
 							}
@@ -627,56 +663,56 @@ Array<Phase> GameManager::LoadPhaseData()
 								{
 									case 0:
 									{
-										auto p = Phase::ParseParameters<cact::appearFromEdge::_0>(data_params);
+										auto p = Phase::ParseParameters<CAct::appearFromEdge::_0>(data_params);
 										params = std::make_tuple
 											(
-												get_at.operator()<0, cact::appearFromEdge::_0>(p),
-												get_at.operator()<1, cact::appearFromEdge::_0>(p),
-												get_at.operator()<2, cact::appearFromEdge::_0>(p),
-												get_at.operator()<3, cact::appearFromEdge::_0>(p),
-												get_at.operator()<4, cact::appearFromEdge::_0>(p),
-												get_at.operator()<5, cact::appearFromEdge::_0>(p)
+												get_at.operator()<0, CAct::appearFromEdge::_0>(p),
+												get_at.operator()<1, CAct::appearFromEdge::_0>(p),
+												get_at.operator()<2, CAct::appearFromEdge::_0>(p),
+												get_at.operator()<3, CAct::appearFromEdge::_0>(p),
+												get_at.operator()<4, CAct::appearFromEdge::_0>(p),
+												get_at.operator()<5, CAct::appearFromEdge::_0>(p)
 											);
 										break;
 									}
 									case 1:
 									{
-										auto p = Phase::ParseParameters<cact::appearFromEdge::_1>(data_params);
+										auto p = Phase::ParseParameters<CAct::appearFromEdge::_1>(data_params);
 										params = std::make_tuple
 											(
-												get_at.operator()<0, cact::appearFromEdge::_1>(p),
-												get_at.operator()<1, cact::appearFromEdge::_1>(p),
-												get_at.operator()<2, cact::appearFromEdge::_1>(p),
-												get_at.operator()<3, cact::appearFromEdge::_1>(p)
+												get_at.operator()<0, CAct::appearFromEdge::_1>(p),
+												get_at.operator()<1, CAct::appearFromEdge::_1>(p),
+												get_at.operator()<2, CAct::appearFromEdge::_1>(p),
+												get_at.operator()<3, CAct::appearFromEdge::_1>(p)
 											);
 										break;
 									}
 									case 2:
 									{
-										auto p = Phase::ParseParameters<cact::appearFromEdge::_2>(data_params);
+										auto p = Phase::ParseParameters<CAct::appearFromEdge::_2>(data_params);
 										params = std::make_tuple
 											(
-												get_at.operator()<0, cact::appearFromEdge::_2>(p),
-												get_at.operator()<1, cact::appearFromEdge::_2>(p),
-												get_at.operator()<2, cact::appearFromEdge::_2>(p),
-												get_at.operator()<3, cact::appearFromEdge::_2>(p)
+												get_at.operator()<0, CAct::appearFromEdge::_2>(p),
+												get_at.operator()<1, CAct::appearFromEdge::_2>(p),
+												get_at.operator()<2, CAct::appearFromEdge::_2>(p),
+												get_at.operator()<3, CAct::appearFromEdge::_2>(p)
 											);
 										break;
 									}
 									case 3:
 									{
-										auto p = Phase::ParseParameters<cact::appearFromEdge::_3>(data_params);
+										auto p = Phase::ParseParameters<CAct::appearFromEdge::_3>(data_params);
 										params = std::make_tuple
 											(
-												get_at.operator()<0, cact::appearFromEdge::_3>(p),
-												get_at.operator()<1, cact::appearFromEdge::_3>(p),
-												get_at.operator()<2, cact::appearFromEdge::_3>(p)
+												get_at.operator()<0, CAct::appearFromEdge::_3>(p),
+												get_at.operator()<1, CAct::appearFromEdge::_3>(p),
+												get_at.operator()<2, CAct::appearFromEdge::_3>(p)
 											);
 										break;
 									}
 									default:
 									{
-										throw Error(U"`appearFromEdge` overload index is invalid. (valid range: 0 ~ {})"_fmt(cact::appearFromEdge::Count - 1));
+										throw Error(U"`appearFromEdge` overload index is invalid. (valid range: 0 ~ {})"_fmt(CAct::appearFromEdge::Count - 1));
 									}
 								}
 							}

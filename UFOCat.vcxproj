@@ -119,7 +119,6 @@
     <ClCompile Include="cat_object.cpp" />
     <ClCompile Include="delta_stopwatch.cpp" />
     <ClCompile Include="game_manager.cpp" />
-    <ClCompile Include="gui.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="phase.cpp" />
     <ClCompile Include="stdafx.cpp">
@@ -383,7 +382,6 @@
     <ClInclude Include="cat_object.hpp" />
     <ClInclude Include="delta_stopwatch.hpp" />
     <ClInclude Include="game_manager.hpp" />
-    <ClInclude Include="gui.hpp" />
     <ClInclude Include="phase.hpp" />
     <ClInclude Include="stdafx.h" />
   </ItemGroup>

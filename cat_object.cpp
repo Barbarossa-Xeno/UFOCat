@@ -27,7 +27,7 @@ Rect CatObject::getMaxDisplayedArea() const
 CatObject &CatObject::setRandomVelocity(uint32 level)
 {
 	// マジックナンバーだらけだけど仕様書に書いてあるとおり
-	double min = 50.0 + (1.0 + level / 10.0);
+	double min = 75.0 + (1.0 + level / 10.0);
 	double max = Max(((Random(1.0, static_cast<double>(level)) / 10.0) * Max(Scene::Width(), Scene::Height()) * Math::Exp(level / Random(5, 10))), 900.0);
 	velocity = RandomVec2(Random(min, max));
 

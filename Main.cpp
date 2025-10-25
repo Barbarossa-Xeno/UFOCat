@@ -1,112 +1,69 @@
 ﻿#include "game_manager.hpp"
 #include <Siv3D.hpp> // Siv3D v0.6.16
 
-enum class IngameState
-{
-	PhaseStart,
-	AnnounceTarget,
-	Finding,
-	PhaseEnd
-};
-
 void Main()
 {
 	// テスト用フォント
-	const Font font{ 36 };
+	FontAsset::Register(U"Test", 36);
 
-	// インゲームの状態（上手くループと合わせる必要）
-	IngameState ingameState = IngameState::PhaseStart;
+	GameManager& game = GameManager::Instance();
 
-	// インゲームタイマー
-	Timer ingameTimer;
-
-	Array<CatObject> cats = GameManager::Instance().cats;
+	// 動作確認用のコピー
+	Array<CatObject> cats = game.cats;
 	cats.each([](auto &cat) { cat.position = { -100, -100 }; });
-
 	cats[0].vx = 700;
 	cats[0].vy = 800;
 	cats[7].velocity = { 100, 100 };
 	cats[8].velocity = { 250, 400 };
-
 	cats[0].setAction(GameManager::Instance().phases[0].actionDataList[1]);
-
-	// 将来的にはこの部分もゲームループに入れることになるのは承知のうえで
-	GameManager::Instance().setTargetData();
-	// CatObject::targetData = cats[targetIndex].getCatData();
 
 	// 各ステートを何秒ごとに切り替えていくかは、何かの形でまとめておきたい
 	// ここでは仮にターゲットをアナウンスする画面が消えるのに 3s かけるとして
 	{
-		ingameState = IngameState::AnnounceTarget;
-		ingameTimer.restart(3s);
+		game.currentState = GameManager::State::TargetAnnounce;
 	}
 	
 	while (System::Update())
 	{
-		switch (ingameState)
-		{
-			case IngameState::AnnounceTarget:
-			{
-				font(U"見つけるUFOネコは").drawAt(Scene::Center().x, 50);
-				font(U"{}"_fmt(GameManager::Instance().getTargetData().breed)).drawAt(Scene::Center().x, 100);
-				GameManager::Instance().temp_getTarget().texture.scaled(0.5).drawAt(Scene::Center());
+		//cats[0].act().draw();
+		//cats[0].bound().draw().checkCatchable(GameManager::Instance().getTargetData());
+		/*cats[0].drawHitArea();
 
-				if (ingameTimer.reachedZero())
-				{
-					ingameState = IngameState::Finding;
-					ingameTimer.restart(30s);
+		cats[1].appear(3s, 1s).draw();
+		cats[2].appear(2s, 0.6s, 0.4s).draw();
+		cats[3].appear(1.5s, Easing::Quint, 0.4s, Easing::Sine, 0.8s).draw();
 
-					GameManager::Instance().currentState = GameManager::State::PhaseStart;
-				}
+		cats[4].appearFromEdge(2s, 0.4s, { 60, 40, 80, 60 }).draw();
+		cats[5].appearFromEdge(3s, Easing::Bounce, 1s, { 100, 0, 0, 50 }).draw();
+		cats[6].appearFromEdge(3.3s, Easing::Expo, 1.5s, Easing::Sine, 0.8s, { 0, 0, 0, 30 }).draw();*/
 
-				break;
-			}
-
-			case IngameState::Finding:
-			{
-				{
-					//cats[0].act().draw();
-					//cats[0].bound().draw().checkCatchable(GameManager::Instance().getTargetData());
-					/*cats[0].drawHitArea();
-
-					cats[1].appear(3s, 1s).draw();
-					cats[2].appear(2s, 0.6s, 0.4s).draw();
-					cats[3].appear(1.5s, Easing::Quint, 0.4s, Easing::Sine, 0.8s).draw();
-
-					cats[4].appearFromEdge(2s, 0.4s, { 60, 40, 80, 60 }).draw();
-					cats[5].appearFromEdge(3s, Easing::Bounce, 1s, { 100, 0, 0, 50 }).draw();
-					cats[6].appearFromEdge(3.3s, Easing::Expo, 1.5s, Easing::Sine, 0.8s, { 0, 0, 0, 30 }).draw();*/
-
-					/*cats[7].cross(2s, 3).draw();
-					cats[8].cross(4s).draw();*/
-				}
-
-				break;
-			}
-
-			default: break;
-		}
+		/*cats[7].cross(2s, 3).draw();
+		cats[8].cross(4s).draw();*/
 		
-		switch (GameManager::Instance().currentState)
+		switch (game.currentState)
 		{
+			case GameManager::State::Title:
+			{
+				break;
+			}
 			case GameManager::State::TargetAnnounce:
 			{
-				GameManager::Instance().announceTarget();
+				game.announceTarget();
 				break;
 			}
 			case GameManager::State::PhaseStart:
 			{
-				GameManager::Instance().startPhase();
+				game.startPhase();
 				break;
 			}
 			case GameManager::State::InPhase:
 			{
 				// Phase の更新間隔に合わせてスポーンを行うような処理
-				GameManager::Instance().inPhase();
+				game.inPhase();
 			}
 		}
 
-		GameManager::Instance().draw();
+		game.draw();
 	}
 }
 

@@ -1,6 +1,6 @@
 ﻿#pragma once
-#include "phase.hpp"
 #include "cat_object.hpp"
+#include "phase.hpp"
 
 class GameManager
 {
@@ -98,6 +98,10 @@ public:
 	void startPhase();
 
 	void inPhase();
+
+	void endPhase();
+
+	void result();
 
 	void spawn();
 
