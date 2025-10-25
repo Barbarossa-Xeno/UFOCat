@@ -19,7 +19,7 @@ const double &DeltaStopwatch::reset(double time) noexcept
 	return m_elapsedTime;
 }
 
-const double& DeltaStopwatch::reset(const Duration& time) noexcept
+const double &DeltaStopwatch::reset(const Duration& time) noexcept
 {
 	return reset(time.count());
 }
@@ -30,14 +30,26 @@ const double &DeltaStopwatch::reset() noexcept
 	return m_elapsedTime;
 }
 
+void DeltaStopwatch::resetOverCount() noexcept
+{
+	m_overCount = 0;
+}
+
 bool DeltaStopwatch::isOver(double time, bool isAutoReset) noexcept
 {
 	bool result = m_elapsedTime >= time;
 
-	// 超えていたらリセットするので、一定周期で行う処理には便利
-	if (isAutoReset && result)
+	// 超えていたら、超過回数をカウント
+	if (result)
 	{
-		reset(time);
+		++m_overCount;
+
+		// かつ、自動リセットが true ならリセットしてカウントを戻す
+		if (isAutoReset)
+		{
+			reset(time);
+			m_overCount = 0;
+		}
 	}
 
 	return result;
