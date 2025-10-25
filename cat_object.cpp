@@ -103,34 +103,30 @@ CatObject& CatObject::cross(Duration period, uint32 count)
 	{
 		case AppearanceState::Hidden:
 		{
-			// 隠れている時のみ、タイマーを測る
-			m_stopwatch.forward();
-
-			if (m_stopwatch.isOver(period))
-			{
-				// ランダムに開始位置を決める（スタート位置はこの関数で代入される）
-				std::tie(m_crossData.start, m_crossData.goal) = m_changeScreenEdgePosition();
-
-				// 増やす角度
-				double angle = 0.0;
-
-				// velocity と (start - goal) の 内積がほぼ 1 になるまで回転させ続ける
-				// 内積が 1 = 角度の差が 0（長さがそれぞれ1の場合！）
-				while (velocity.normalized().dot(m_crossData.difference().normalized()) < (1 - 0.0005))
+			m_stopwatch.setInterval([&]()
 				{
-					velocity.rotate(++angle);
-				}
+					// ランダムに開始位置を決める（スタート位置はこの関数で代入される）
+					std::tie(m_crossData.start, m_crossData.goal) = m_changeScreenEdgePosition();
 
-				// 移動回数を増やす
-				if (count != std::numeric_limits<int32>::infinity())
-				{
-					m_crossData.count++;
-				}
+					// 増やす角度
+					double angle = 0.0;
 
-				// 見える状態へ移行
-				m_appearanceState = AppearanceState::Visible;
-			}
-			
+					// velocity と (start - goal) の 内積がほぼ 1 になるまで回転させ続ける
+					// 内積が 1 = 角度の差が 0（長さがそれぞれ1の場合！）
+					while (velocity.normalized().dot(m_crossData.difference().normalized()) < (1 - 0.0005))
+					{
+						velocity.rotate(++angle);
+					}
+
+					// 移動回数を増やす
+					if (count != std::numeric_limits<int32>::infinity())
+					{
+						m_crossData.count++;
+					}
+
+					// 見える状態へ移行
+					m_appearanceState = AppearanceState::Visible;
+				}, period);
 		}
 		break;
 
