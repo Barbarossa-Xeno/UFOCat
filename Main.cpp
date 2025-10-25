@@ -1,26 +1,37 @@
 ﻿#include "game_manager.hpp"
 #include <Siv3D.hpp> // Siv3D v0.6.16
+# include "Common.hpp"
+# include "Title.hpp"
+# include "Wanted.hpp"
+# include "Level.hpp"
+
+using namespace UFOCat;
 
 void Main()
 {
 	// テスト用フォント
 	FontAsset::Register(U"Test", 36);
 
-	GameManager& game = GameManager::Instance();
+	App app;
+
+	app.add<Title>(UFOCat::State::Title);
+	app.add<Wanted>(UFOCat::State::Wanted);
+	app.add<Level>(UFOCat::State::Level);
 
 	// 動作確認用のコピー
+	/*GameManager& game = GameManager::Instance();
 	Array<CatObject> cats = game.cats;
 	cats.each([](auto &cat) { cat.position = { -100, -100 }; });
 	cats[0].vx = 700;
 	cats[0].vy = 800;
 	cats[7].velocity = { 100, 100 };
 	cats[8].velocity = { 250, 400 };
-	cats[0].setAction(GameManager::Instance().phases[0].actionDataList[1]);
+	cats[0].setAction(GameManager::Instance().phases[0].actionDataList[1]);*/
 
 	// 各ステートを何秒ごとに切り替えていくかは、何かの形でまとめておきたい
 	// ここでは仮にターゲットをアナウンスする画面が消えるのに 3s かけるとして
 	{
-		game.currentState = GameManager::State::TargetAnnounce;
+		//game.currentState = GameManager::State::TargetAnnounce;
 	}
 	
 	while (System::Update())
@@ -40,30 +51,34 @@ void Main()
 		/*cats[7].cross(2s, 3).draw();
 		cats[8].cross(4s).draw();*/
 		
-		switch (game.currentState)
-		{
-			case GameManager::State::Title:
-			{
-				break;
-			}
-			case GameManager::State::TargetAnnounce:
-			{
-				game.announceTarget();
-				break;
-			}
-			case GameManager::State::PhaseStart:
-			{
-				game.startPhase();
-				break;
-			}
-			case GameManager::State::InPhase:
-			{
-				// Phase の更新間隔に合わせてスポーンを行うような処理
-				game.inPhase();
-			}
-		}
+		//switch (game.currentState)
+		//{
+		//	case GameManager::State::Title:
+		//	{
+		//		break;
+		//	}
+		//	case GameManager::State::TargetAnnounce:
+		//	{
+		//		game.announceTarget();
+		//		break;
+		//	}
+		//	case GameManager::State::PhaseStart:
+		//	{
+		//		game.startPhase();
+		//		break;
+		//	}
+		//	case GameManager::State::InPhase:
+		//	{
+		//		// Phase の更新間隔に合わせてスポーンを行うような処理
+		//		game.inPhase();
+		//	}
+		//}
+		//game.draw();
 
-		game.draw();
+		if (not app.update())
+		{
+			break;
+		}
 	}
 }
 

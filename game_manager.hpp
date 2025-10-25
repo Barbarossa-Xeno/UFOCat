@@ -51,12 +51,6 @@ private:
 
 	/* -- ゲッター -- */
 public:
-
-	const CatObject &temp_getTarget() const
-	{
-		return *m_target;
-	}
-
 	/// @brief 現在のターゲットを取得する
 	/// @return 現在のターゲットの `CatData` の参照
 	const CatData &getTargetData() const;

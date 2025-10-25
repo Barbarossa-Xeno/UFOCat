@@ -117,8 +117,10 @@
   <ItemGroup>
     <ClCompile Include="cat_data.cpp" />
     <ClCompile Include="cat_object.cpp" />
+    <ClCompile Include="Common.cpp" />
     <ClCompile Include="delta_stopwatch.cpp" />
     <ClCompile Include="game_manager.cpp" />
+    <ClCompile Include="Level.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="phase.cpp" />
     <ClCompile Include="stdafx.cpp">
@@ -126,6 +128,8 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="cat_data.hpp" />
+    <ClCompile Include="Title.cpp" />
+    <ClCompile Include="Wanted.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="App\engine\texture\box-shadow\128.png" />
@@ -380,10 +384,14 @@
   <ItemGroup>
     <ClInclude Include="cat_action.hpp" />
     <ClInclude Include="cat_object.hpp" />
+    <ClInclude Include="Common.hpp" />
     <ClInclude Include="delta_stopwatch.hpp" />
     <ClInclude Include="game_manager.hpp" />
+    <ClInclude Include="Level.hpp" />
     <ClInclude Include="phase.hpp" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="Title.hpp" />
+    <ClInclude Include="Wanted.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App\example\obj\blacksmith.obj">

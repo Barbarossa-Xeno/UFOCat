@@ -2,6 +2,7 @@
 #include "cat_action.hpp"
 #include "delta_stopwatch.hpp"
 
+// TODO: 名前を LevelData にしたい 参照している部分の名前変更忘れずに
 /// @brief ゲームの1フェーズに関するデータを持つクラス
 class Phase
 {

@@ -60,7 +60,7 @@ public:
 	/// @param time 時間
 	/// @return コールバックに戻り値があればそれを返す
 	template <typename Func>
-	auto setTimeout(Func&& callback, const Duration &time)
+	auto setTimeout(Func &&callback, const Duration &time)
 		-> decltype(callback())
 	{
 		
@@ -87,8 +87,7 @@ public:
 	/// @param time 時間
 	/// @return コールバックに戻り値があればそれを返す
 	template <typename Func>
-	auto setInterval(Func&& callback, const Duration& time)
-		-> decltype(callback())
+	auto setInterval(Func &&callback, const Duration& time)
 	{
 		// setTimeout() とほぼ変わらないが、時間と超過回数のリセットによってインターバルを作る
 		if (isOver(time)) {
@@ -104,4 +103,6 @@ public:
 			forward();
 		}
 	}
+
+	// TODO: オーバーしてないときにも発火できる関数を指定するようにしたくはある
 };
