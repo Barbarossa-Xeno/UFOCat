@@ -531,21 +531,12 @@ CatObject& CatObject::drawHitArea()
 	return *this;
 }
 
-CatObject& CatObject::checkCatchable(const CatData &target)
+bool CatObject::checkCatchable(const CatData &target)
 {
 	if (m_hitArea.leftClicked())
 	{
-		if (m_catData == target)
-		{
-			Console << U"合ってる";
-		}
-		else
-		{
-			Console << U"別人だわ";
-		}
+		return m_catData == target;
 	}
-
-	return *this;
 }
 
 std::tuple<Vec2, Vec2> CatObject::m_changeScreenEdgePosition()

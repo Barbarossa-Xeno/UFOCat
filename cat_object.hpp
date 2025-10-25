@@ -393,8 +393,8 @@ public:
 
 	/// @brief オブジェクトがタッチされたときに、現在のターゲット情報と比較して捕まえられるか試す
 	/// @param target ターゲットの情報
-	/// @return 自分自身の参照
-	CatObject& checkCatchable(const CatData &target);
+	/// @return 捕まえられる（データが同じ）なら `true`
+	bool checkCatchable(const CatData &target);
 
 private:
 	/// @brief 画面端のどこを開始点と終了点にするかランダムに決める @n
