@@ -1,5 +1,4 @@
 ﻿#pragma once
-#include <Siv3D.hpp>
 
 /// @brief Scene::DeltaTime() を積算することで動く自作ストップウォッチ @n
 /// 

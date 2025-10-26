@@ -1,4 +1,4 @@
-﻿#include "delta_stopwatch.hpp"
+﻿#include "DeltaStopwatch.hpp"
 
 const double &DeltaStopwatch::now() const noexcept
 {

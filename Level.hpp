@@ -1,6 +1,6 @@
 ﻿# pragma once
 # include "Common.hpp"
-# include "delta_stopwatch.hpp"
+# include "DeltaStopwatch.hpp"
 
 namespace UFOCat
 {

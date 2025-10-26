@@ -1,6 +1,6 @@
 ﻿#pragma once
 #include "CatData.hpp"
-#include "delta_stopwatch.hpp"
+#include "DeltaStopwatch.hpp"
 #include "LevelData.hpp"
 
 /// @brief UFO猫のクラス
