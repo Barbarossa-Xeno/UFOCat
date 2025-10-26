@@ -1,5 +1,5 @@
 ﻿#pragma once
-#include "cat_action.hpp"
+#include "CatAction.hpp"
 
 // TODO: 名前空間に入れたい 参照している部分の名前変更忘れずに
 /// @brief ゲームの1フェーズに関するデータを持つクラス
