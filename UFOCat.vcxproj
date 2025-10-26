@@ -122,7 +122,7 @@
     <ClCompile Include="game_manager.cpp" />
     <ClCompile Include="Level.cpp" />
     <ClCompile Include="Main.cpp" />
-    <ClCompile Include="phase.cpp" />
+    <ClCompile Include="LevelData.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
@@ -361,8 +361,8 @@
     <None Include="App\example\toml\config.toml" />
     <None Include="App\example\toml\test.toml" />
     <None Include="App\example\zip\zip_test.zip" />
-    <None Include="App\phases.json" />
-    <None Include="App\ufo_cats_data.json" />
+    <None Include="App\level_data.json" />
+    <None Include="App\cat_data.json" />
   </ItemGroup>
   <ItemGroup>
     <Media Include="App\example\shot.mp3" />
@@ -388,7 +388,7 @@
     <ClInclude Include="delta_stopwatch.hpp" />
     <ClInclude Include="game_manager.hpp" />
     <ClInclude Include="Level.hpp" />
-    <ClInclude Include="phase.hpp" />
+    <ClInclude Include="LevelData.hpp" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Title.hpp" />
     <ClInclude Include="Wanted.hpp" />

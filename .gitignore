@@ -2,8 +2,8 @@
 
 App/*
 !App/texture
-!App/phases.json
-!App/ufo_cats_data.json
+!App/level_data.json
+!App/cat_data.json
 
 !App/Resource.aps
 !App/Resource.rc

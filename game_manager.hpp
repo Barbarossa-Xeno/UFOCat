@@ -26,7 +26,7 @@ public:
 
 	Array<std::unique_ptr<CatObject>> spawns;
 
-	Array<Phase> phases;
+	Array<LevelData> phases;
 
 	State currentState = State::Title;
 
@@ -57,13 +57,13 @@ public:
 
 	/// @brief 現在のフェーズを取得する
 	/// @return 現在の `Phase` の参照
-	const Phase &getCurrentPhase();
+	const LevelData &getCurrentPhase();
 
 private:
 	/// @brief 現在のフェーズ (非 const)
 	/// @return 現在の `Phase` の参照
 	/// @remarks ゲッターとか言いながらオブジェクトの変更も許しているので、private にしておく
-	Phase &m_currentPhase();
+	LevelData &m_currentPhase();
 
 	/* -- セッター -- */
 public:
@@ -84,7 +84,7 @@ public:
 	/// @brief コンストラクタ
 	explicit GameManager()
 		: cats{ LoadCatData() }
-		, phases{ LoadPhaseData() }
+		, phases{ LoadLevelData() }
 	{ }
 
 	void announceTarget();
@@ -113,5 +113,5 @@ private:
 
 	/// @brief 各フェーズのデータをJSONから読み込んでそれらすべてのインスタンスを作成する
 	/// @return 全てのフェーズの配列
-	Array<Phase> LoadPhaseData();
+	Array<LevelData> LoadLevelData();
 };

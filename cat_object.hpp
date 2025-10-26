@@ -1,7 +1,7 @@
 ﻿#pragma once
 #include "cat_data.hpp"
 #include "delta_stopwatch.hpp"
-#include "phase.hpp"
+#include "LevelData.hpp"
 
 /// @brief UFO猫のクラス
 class CatObject
@@ -122,7 +122,7 @@ private:
 
 	/// @brief 当たり判定の領域
 	/// @note これもあくまで `m_ClientSize` を基準にしたときの当たり判定領域であって、表示スケールが変わった場合はこれも調整する必要がある
-	const Ellipse m_HitArea;
+	Ellipse m_hitArea;
 
 	/// @brief UFO猫のデータ
 	CatData m_catData;
@@ -167,7 +167,7 @@ private:
 
 	/// @brief このUFO猫が行うアクションのデータ @n
 	/// bound, cross, appear, appearFromEdge のいずれかを行うように設定されている
-	Phase::ActionData m_actionData;
+	LevelData::ActionData m_actionData;
 
 	/// @brief テクスチャのアルファ値
 	double m_textureAlpha = 1;
@@ -181,6 +181,10 @@ private:
 
 	/// @brief テクスチャや図形などの描画スケール
 	constexpr static double m_Scale = 0.35;
+
+	/// @brief 当たり判定の大きさの倍率
+	/// @note 1 でテクスチャと同じ大きさの楕円になる
+	constexpr static double m_HitAreaScale = 0.8;
 
 	/* -- ゲッター -- */
 
@@ -224,7 +228,7 @@ public:
 	/// @brief 
 	/// @param actionData 
 	/// @return 
-	CatObject& setAction(const Phase::ActionData &actionData);
+	CatObject& setAction(const LevelData::ActionData &actionData);
 
 	/* -- コンストラクタ -- */
 public:
@@ -233,7 +237,8 @@ public:
 	/// @param texture 使用テクスチャ
 	explicit CatObject(const Texture& texture)
 		: m_Texture{ texture }
-		, m_HitArea{ Circle{ m_ClipArea.h * m_Scale / 2 }.scaled(static_cast<double>(m_ClipArea.w) / m_ClipArea.h, 1) }
+		// 半径は表示サイズの高さの半分、横幅に合わせてスケーリングした楕円を、さらに調整
+		, m_hitArea{ Circle{ m_ClipArea.h * m_Scale / 2 }.scaled(static_cast<double>(m_ClipArea.w) / m_ClipArea.h, 1).scaled(m_HitAreaScale)}
 		, m_ClientSize{ m_ClipArea.scaledAt(m_ClipArea.pos, m_Scale).size }
 		// 自分のサイズ分だけ画面外に出した場所を原点として、
 		// シーンの幅と高さにそれぞれ自分の縦横幅を足した範囲がちょうどぎりぎり表示されないところ
@@ -249,7 +254,7 @@ public:
 	/// @param velocity 初期速度
 	CatObject(const Texture& texture, const Vec2& position, const Vec2& velocity)
 		: m_Texture{ texture }
-		, m_HitArea{ Circle{ m_ClipArea.h * m_Scale / 2 }.scaled(static_cast<double>(m_ClipArea.w) / m_ClipArea.h, 1) }
+		, m_hitArea{ Circle{ m_ClipArea.h * m_Scale / 2 }.scaled(static_cast<double>(m_ClipArea.w) / m_ClipArea.h, 1).scaled(m_HitAreaScale) }
 		, m_ClientSize{ m_ClipArea.scaledAt(m_ClipArea.pos, m_Scale).size }
 		, m_screenEdgeArea{ -Vec2(m_ClientSize), Scene::Width() + m_ClientSize.x, Scene::Height() + m_ClientSize.y }
 		, position{ position }
@@ -262,7 +267,7 @@ public:
 	CatObject(const CatObject &obj)
 		: m_Texture{ obj.m_Texture }
 		, m_ClientSize{ obj.m_ClientSize }
-		, m_HitArea{ obj.m_HitArea }
+		, m_hitArea{ obj.m_hitArea }
 		, m_screenEdgeArea{ obj.m_screenEdgeArea }
 		, m_catData{ obj.m_catData }
 		, m_actionData{ obj.m_actionData }

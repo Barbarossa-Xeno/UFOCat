@@ -156,7 +156,7 @@
     <ClCompile Include="cat_object.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="phase.cpp">
+    <ClCompile Include="LevelData.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="delta_stopwatch.cpp">
@@ -927,9 +927,9 @@
     <None Include="App\engine\shader\glsl\quad_warp.frag">
       <Filter>Resource Files\engine\shader\glsl</Filter>
     </None>
-    <None Include="App\ufo_cats_data.json" />
+    <None Include="App\cat_data.json" />
     <None Include=".gitignore" />
-    <None Include="App\phases.json" />
+    <None Include="App\level_data.json" />
   </ItemGroup>
   <ItemGroup>
     <Media Include="App\example\test.mp3">
@@ -980,7 +980,7 @@
     <ClInclude Include="cat_object.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="phase.hpp">
+    <ClInclude Include="LevelData.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="delta_stopwatch.hpp">

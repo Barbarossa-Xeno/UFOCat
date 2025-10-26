@@ -5,12 +5,12 @@ const CatData &GameManager::getTargetData() const
 	return m_target->getCatData();
 }
 
-const Phase &GameManager::getCurrentPhase()
+const LevelData &GameManager::getCurrentPhase()
 {
 	return phases[m_currentPhaseIndex];
 }
 
-Phase &GameManager::m_currentPhase()
+LevelData &GameManager::m_currentPhase()
 {
 	return phases[m_currentPhaseIndex];
 }
@@ -54,7 +54,7 @@ void GameManager::announceTarget()
 	// TODO: あとはUIを表示させる処理や時間カウントしてステートを変える機能を書く
 	FontAsset(U"Test")(U"見つけるUFOネコは").drawAt(Scene::Center().x, 50);
 	FontAsset(U"Test")(U"{}"_fmt(getTargetData().breed)).drawAt(Scene::Center().x, 100);
-	m_target->texture.scaled(0.5).drawAt(Scene::Center());
+	m_target->getTexture().scaled(0.5).drawAt(Scene::Center());
 	FontAsset(U"Test")(U"あと {}"_fmt(m_phaseTimer.s())).drawAt(Scene::Center().x, Scene::Center().y + 100);
 }
 
@@ -68,7 +68,7 @@ void GameManager::startPhase()
 
 	// クリアしているフェーズの数は、現在行っているフェーズのインデックスと同じなのを利用する
 	// （そのフェーズが終わり次第、isCleared のフラグを上げるため）
-	m_currentPhaseIndex = phases.filter([](const Phase& p) { return p.isCleared; }).size();
+	m_currentPhaseIndex = phases.filter([](const LevelData& p) { return p.isCleared; }).size();
 
 	// フェーズデータのうち、登場する猫の数に関するデータを取得する
 	const auto& similarCount = m_currentPhase().breedData.similar;
@@ -146,7 +146,7 @@ void GameManager::startPhase()
 	others.shuffle().resize(otherCount);
 
 	// フェーズ中に行うアクションリストの中から、それぞれの発生確率だけを抜き取ったリストで確率分布をつくる
-	m_actionProbabilities = DiscreteDistribution{ m_currentPhase().actionDataList.map([](const Phase::ActionData& data) { return data.probability; }) };
+	m_actionProbabilities = DiscreteDistribution{ m_currentPhase().actionDataList.map([](const LevelData::ActionData& data) { return data.probability; }) };
 	
 	// 最終的に catsInPhase にまとめて
 	catsInPhase.append(similars)
@@ -208,7 +208,8 @@ void GameManager::inPhase()
 	{
 		for (const auto& cat : spawns)
 		{
-			cat->act().checkCatchable(getTargetData());
+			bool t = false;
+			cat->act().checkCatchable(getTargetData(), &t);
 		}
 
 		FontAsset(U"Test")(U"のこり {} 秒"_fmt(m_phaseTimer.s())).draw(10, 10);
@@ -403,7 +404,7 @@ Array<CatObject> GameManager::LoadCatData()
 	throw Error{ U"Parameter is not JSONValueType::Array." };
 }
 
-Array<Phase> GameManager::LoadPhaseData()
+Array<LevelData> GameManager::LoadLevelData()
 {
 	// JSON からデータを読み込む
 	const JSON json = JSON::Load(U"phases.json");
@@ -418,7 +419,7 @@ Array<Phase> GameManager::LoadPhaseData()
 	const auto &&data = json[U"data"];
 
 	// 結果格納用
-	Array<Phase> result;
+	Array<LevelData> result;
 
 	// まずは、配列形式でいろんなPhaseのデータが入っているのが前提
 	if (data.isArray())
@@ -438,13 +439,13 @@ Array<Phase> GameManager::LoadPhaseData()
 				 */
 
 				 // 1フェーズの時間制限
-				Duration timeLimit = Phase::ParseDuration(d.value[U"timeLimit"].get<String>());
+				Duration timeLimit = LevelData::ParseDuration(d.value[U"timeLimit"].get<String>());
 
 				// 類似度
 				uint32 similarity = d.value[U"similarity"].get<uint32>();
 
 				// 品種
-				Phase::BreedData breedData{ };
+				LevelData::BreedData breedData{ };
 
 				// 品種データを読み込む
 				if (const auto &data_breedData = d.value[U"breedData"];
@@ -459,14 +460,14 @@ Array<Phase> GameManager::LoadPhaseData()
 				}
 
 				// 出現ペース
-				Phase::IntervalData intervalData{ };
+				LevelData::IntervalData intervalData{ };
 
 				// 出現ペースのデータを読み込む
 				if (const auto &data_intervalData = d.value[U"intervalData"];
 					data_intervalData.isObject())
 				{
 					intervalData.count = data_intervalData[U"count"].get<uint32>();
-					intervalData.period = Phase::ParseDuration(data_intervalData[U"period"].getString());
+					intervalData.period = LevelData::ParseDuration(data_intervalData[U"period"].getString());
 				}
 				else
 				{
@@ -474,7 +475,7 @@ Array<Phase> GameManager::LoadPhaseData()
 				}
 
 				// このフェーズでの使用アクション
-				Array<Phase::ActionData> actionDataList{ };
+				Array<LevelData::ActionData> actionDataList{ };
 
 				// 配列であることを確認してからアクションデータを全走査
 				if (const auto &data_actionData = d.value[U"actionData"];
@@ -535,13 +536,13 @@ Array<Phase> GameManager::LoadPhaseData()
 									// 各オーバーロード番号に対応するようにパースする
 									case 0:
 									{
-										auto p = Phase::ParseParameters<CAct::cross::_0>(data_params);
+										auto p = LevelData::ParseParameters<CAct::cross::_0>(data_params);
 										params = std::make_tuple(get_at.operator()<0, CAct::cross::_0>(p), get_at.operator()<1, CAct::cross::_0>(p));
 										break;
 									}
 									case 1:
 									{
-										auto p = Phase::ParseParameters<CAct::cross::_1>(data_params);
+										auto p = LevelData::ParseParameters<CAct::cross::_1>(data_params);
 										params = std::make_tuple(get_at.operator()<0, CAct::cross::_1>(p));
 										break;
 									}
@@ -557,7 +558,7 @@ Array<Phase> GameManager::LoadPhaseData()
 								{
 									case 0:
 									{
-										auto p = Phase::ParseParameters<CAct::appear::_0>(data_params);
+										auto p = LevelData::ParseParameters<CAct::appear::_0>(data_params);
 										// 直書きでタプル作るのはちょっとダサいけど
 										// 固定長で作るという制約上しゃあないところが大きい
 										params = std::make_tuple
@@ -573,7 +574,7 @@ Array<Phase> GameManager::LoadPhaseData()
 									}
 									case 1:
 									{
-										auto p = Phase::ParseParameters<CAct::appear::_1>(data_params);
+										auto p = LevelData::ParseParameters<CAct::appear::_1>(data_params);
 										params = std::make_tuple
 											(
 												get_at.operator()<0, CAct::appear::_1>(p),
@@ -585,7 +586,7 @@ Array<Phase> GameManager::LoadPhaseData()
 									}
 									case 2:
 									{
-										auto p = Phase::ParseParameters<CAct::appear::_2>(data_params);
+										auto p = LevelData::ParseParameters<CAct::appear::_2>(data_params);
 										params = std::make_tuple
 											(
 												get_at.operator()<0, CAct::appear::_2>(p),
@@ -597,7 +598,7 @@ Array<Phase> GameManager::LoadPhaseData()
 									}
 									case 3:
 									{
-										auto p = Phase::ParseParameters<CAct::appear::_3>(data_params);
+										auto p = LevelData::ParseParameters<CAct::appear::_3>(data_params);
 										params = std::make_tuple
 											(
 												get_at.operator()<0, CAct::appear::_3>(p),
@@ -608,7 +609,7 @@ Array<Phase> GameManager::LoadPhaseData()
 									}
 									case 4:
 									{
-										auto p = Phase::ParseParameters<CAct::appear::_4>(data_params);
+										auto p = LevelData::ParseParameters<CAct::appear::_4>(data_params);
 										params = std::make_tuple
 											(
 												get_at.operator()<0, CAct::appear::_4>(p),
@@ -621,7 +622,7 @@ Array<Phase> GameManager::LoadPhaseData()
 									}
 									case 5:
 									{
-										auto p = Phase::ParseParameters<CAct::appear::_5>(data_params);
+										auto p = LevelData::ParseParameters<CAct::appear::_5>(data_params);
 										params = std::make_tuple
 											(
 												get_at.operator()<0, CAct::appear::_5>(p),
@@ -632,7 +633,7 @@ Array<Phase> GameManager::LoadPhaseData()
 									}
 									case 6:
 									{
-										auto p = Phase::ParseParameters<CAct::appear::_6>(data_params);
+										auto p = LevelData::ParseParameters<CAct::appear::_6>(data_params);
 										params = std::make_tuple
 											(
 												get_at.operator()<0, CAct::appear::_6>(p),
@@ -643,7 +644,7 @@ Array<Phase> GameManager::LoadPhaseData()
 									}
 									case 7:
 									{
-										auto p = Phase::ParseParameters<CAct::appear::_7>(data_params);
+										auto p = LevelData::ParseParameters<CAct::appear::_7>(data_params);
 										params = std::make_tuple
 											(
 												get_at.operator()<0, CAct::appear::_7>(p),
@@ -663,7 +664,7 @@ Array<Phase> GameManager::LoadPhaseData()
 								{
 									case 0:
 									{
-										auto p = Phase::ParseParameters<CAct::appearFromEdge::_0>(data_params);
+										auto p = LevelData::ParseParameters<CAct::appearFromEdge::_0>(data_params);
 										params = std::make_tuple
 											(
 												get_at.operator()<0, CAct::appearFromEdge::_0>(p),
@@ -677,7 +678,7 @@ Array<Phase> GameManager::LoadPhaseData()
 									}
 									case 1:
 									{
-										auto p = Phase::ParseParameters<CAct::appearFromEdge::_1>(data_params);
+										auto p = LevelData::ParseParameters<CAct::appearFromEdge::_1>(data_params);
 										params = std::make_tuple
 											(
 												get_at.operator()<0, CAct::appearFromEdge::_1>(p),
@@ -689,7 +690,7 @@ Array<Phase> GameManager::LoadPhaseData()
 									}
 									case 2:
 									{
-										auto p = Phase::ParseParameters<CAct::appearFromEdge::_2>(data_params);
+										auto p = LevelData::ParseParameters<CAct::appearFromEdge::_2>(data_params);
 										params = std::make_tuple
 											(
 												get_at.operator()<0, CAct::appearFromEdge::_2>(p),
@@ -701,7 +702,7 @@ Array<Phase> GameManager::LoadPhaseData()
 									}
 									case 3:
 									{
-										auto p = Phase::ParseParameters<CAct::appearFromEdge::_3>(data_params);
+										auto p = LevelData::ParseParameters<CAct::appearFromEdge::_3>(data_params);
 										params = std::make_tuple
 											(
 												get_at.operator()<0, CAct::appearFromEdge::_3>(p),
@@ -723,7 +724,7 @@ Array<Phase> GameManager::LoadPhaseData()
 						}
 
 						// アクションデータのパース1周したら、リストに追加
-						actionDataList << Phase::ActionData{ name, params, probability };
+						actionDataList << LevelData::ActionData{ name, params, probability };
 					}
 				}
 				else
@@ -732,7 +733,7 @@ Array<Phase> GameManager::LoadPhaseData()
 				}
 
 				// 1フェーズ走査したら、結果に追加
-				result << Phase{ timeLimit, similarity, breedData, intervalData, actionDataList };
+				result << LevelData{ timeLimit, similarity, breedData, intervalData, actionDataList };
 			}
 
 		}

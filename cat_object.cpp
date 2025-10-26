@@ -14,7 +14,7 @@ SizeF CatObject::getClientSize() const
 
 Ellipse CatObject::getHitArea() const
 {
-	return m_HitArea;
+	return m_hitArea;
 }
 
 const CatData& CatObject::getCatData(CatData *out) const
@@ -50,7 +50,7 @@ CatObject& CatObject::setCatData(CatData &&data)
 	return *this;
 }
 
-CatObject& CatObject::setAction(const Phase::ActionData &actionData)
+CatObject& CatObject::setAction(const LevelData::ActionData &actionData)
 {
 	m_actionData = actionData;
 	return *this;
@@ -528,7 +528,7 @@ CatObject &CatObject::act()
 CatObject& CatObject::draw()
 {
 	// 描画前の共通処理として、当たり判定を更新
-	m_HitArea.setPos(x + m_ClientSize.x / 2, y + m_ClientSize.y / 2);
+	m_hitArea.setPos(x + m_ClientSize.x / 2, y + m_ClientSize.y / 2);
 
 	// 描画範囲をクリップ -> スケール変更 -> 任意位置にアルファ値を乗算して描画
 	m_Texture(m_ClipArea).scaled(m_Scale).draw(position, ColorF{ 1.0, m_textureAlpha });
@@ -537,14 +537,14 @@ CatObject& CatObject::draw()
 
 CatObject& CatObject::drawHitArea()
 {
-	m_HitArea.drawFrame();
+	m_hitArea.drawFrame();
 	return *this;
 }
 
 bool CatObject::checkCatchable(const CatData &target, bool *const isCorrect) const
 {
 	*isCorrect = m_catData == target;
-	return m_HitArea.leftClicked();
+	return m_hitArea.leftClicked();
 }
 
 std::tuple<Vec2, Vec2> CatObject::m_changeScreenEdgePosition()

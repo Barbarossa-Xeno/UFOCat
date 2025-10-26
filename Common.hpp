@@ -1,6 +1,6 @@
 ﻿# pragma once
 # include "cat_object.hpp"
-# include "phase.hpp"
+# include "LevelData.hpp"
 
 namespace UFOCat
 {
@@ -23,7 +23,7 @@ namespace UFOCat
 	{
 		Array<CatObject> cats;
 
-		Array<Phase> phases;
+		Array<LevelData> phases;
 
 		Array<std::unique_ptr<CatObject>> spawns;
 
@@ -42,7 +42,7 @@ namespace UFOCat
 
 	/// @brief 各フェーズのデータをJSONから読み込んでそれらすべてのインスタンスを作成する
 	/// @return 全てのフェーズの配列
-	Array<Phase> LoadPhaseData();
+	Array<LevelData> LoadLevelData();
 
 	using App = SceneManager<State, GameData>;
 }
