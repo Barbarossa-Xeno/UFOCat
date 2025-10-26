@@ -83,12 +83,6 @@ public:
 
 public:
 
-	/// @brief 使用テクスチャ
-	const Texture texture;
-
-	/// @brief スクリーンでの表示サイズ
-	const SizeF ClientSize;
-
 	union
 	{
 		/// @brief 位置
@@ -119,8 +113,16 @@ public:
 
 private:
 
+	/// @brief 使用テクスチャ
+	const Texture m_Texture;
+
+	/// @brief スクリーンでの表示サイズ
+	/// @note あくまでオブジェクトを湧かすときのサイズであって、それ以外の特別な用途では任意の倍率に拡大縮小してよい
+	const SizeF m_ClientSize;
+
 	/// @brief 当たり判定の領域
-	Ellipse m_hitArea;
+	/// @note これもあくまで `m_ClientSize` を基準にしたときの当たり判定領域であって、表示スケールが変わった場合はこれも調整する必要がある
+	const Ellipse m_HitArea;
 
 	/// @brief UFO猫のデータ
 	CatData m_catData;
@@ -184,6 +186,14 @@ private:
 
 public:
 
+	/// @brief このオブジェクトのテクスチャを取得する
+	/// @return テクスチャ
+	Texture getTexture() const;
+
+	/// @brief このオブジェクトのスクリーンでの表示サイズを取得する
+	/// @return サイズ
+	SizeF getClientSize() const;
+
 	/// @brief このオブジェクトの当たり判定領域（楕円）を取得する
 	/// @return 楕円オブジェクト
 	Ellipse getHitArea() const;
@@ -222,12 +232,12 @@ public:
 	/// @brief 使用テクスチャからオブジェクトを作る
 	/// @param texture 使用テクスチャ
 	explicit CatObject(const Texture& texture)
-		: texture{ texture }
-		, m_hitArea{ Circle{ m_ClipArea.h * m_Scale / 2 }.scaled(static_cast<double>(m_ClipArea.w) / m_ClipArea.h, 1) }
-		, ClientSize{ m_ClipArea.scaledAt(m_ClipArea.pos, m_Scale).size }
+		: m_Texture{ texture }
+		, m_HitArea{ Circle{ m_ClipArea.h * m_Scale / 2 }.scaled(static_cast<double>(m_ClipArea.w) / m_ClipArea.h, 1) }
+		, m_ClientSize{ m_ClipArea.scaledAt(m_ClipArea.pos, m_Scale).size }
 		// 自分のサイズ分だけ画面外に出した場所を原点として、
 		// シーンの幅と高さにそれぞれ自分の縦横幅を足した範囲がちょうどぎりぎり表示されないところ
-		, m_screenEdgeArea{ -Vec2(ClientSize), Scene::Width() + ClientSize.x, Scene::Height() + ClientSize.y }
+		, m_screenEdgeArea{ -Vec2(m_ClientSize), Scene::Width() + m_ClientSize.x, Scene::Height() + m_ClientSize.y }
 		, velocity{ { 0, 0 } }
 	{
 		m_changeScreenEdgePosition();
@@ -238,10 +248,10 @@ public:
 	/// @param position 初期位置
 	/// @param velocity 初期速度
 	CatObject(const Texture& texture, const Vec2& position, const Vec2& velocity)
-		: texture{ texture }
-		, m_hitArea{ Circle{ m_ClipArea.h * m_Scale / 2 }.scaled(static_cast<double>(m_ClipArea.w) / m_ClipArea.h, 1) }
-		, ClientSize{ m_ClipArea.scaledAt(m_ClipArea.pos, m_Scale).size }
-		, m_screenEdgeArea{ -Vec2(ClientSize), Scene::Width() + ClientSize.x, Scene::Height() + ClientSize.y }
+		: m_Texture{ texture }
+		, m_HitArea{ Circle{ m_ClipArea.h * m_Scale / 2 }.scaled(static_cast<double>(m_ClipArea.w) / m_ClipArea.h, 1) }
+		, m_ClientSize{ m_ClipArea.scaledAt(m_ClipArea.pos, m_Scale).size }
+		, m_screenEdgeArea{ -Vec2(m_ClientSize), Scene::Width() + m_ClientSize.x, Scene::Height() + m_ClientSize.y }
 		, position{ position }
 		, velocity{ velocity }
 	{ }
@@ -250,9 +260,9 @@ public:
 	/// @param obj コピー元のオブジェクト
 	/// @remarks すべてをコピーするわけではない
 	CatObject(const CatObject &obj)
-		: texture{ obj.texture }
-		, ClientSize{ obj.ClientSize }
-		, m_hitArea{ obj.m_hitArea }
+		: m_Texture{ obj.m_Texture }
+		, m_ClientSize{ obj.m_ClientSize }
+		, m_HitArea{ obj.m_HitArea }
 		, m_screenEdgeArea{ obj.m_screenEdgeArea }
 		, m_catData{ obj.m_catData }
 		, m_actionData{ obj.m_actionData }
@@ -393,8 +403,9 @@ public:
 
 	/// @brief オブジェクトがタッチされたときに、現在のターゲット情報と比較して捕まえられるか試す
 	/// @param target ターゲットの情報
-	/// @return 捕まえられる（データが同じ）なら `true`
-	bool checkCatchable(const CatData &target);
+	/// @param isCorrect タッチしたオブジェクトがターゲットと同じかどうかを格納する出力先変数へのポインタ
+	/// @return タッチしたとき `true`
+	bool checkCatchable(const CatData &target, bool *const isCorrect) const;
 
 private:
 	/// @brief 画面端のどこを開始点と終了点にするかランダムに決める @n

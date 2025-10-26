@@ -2,9 +2,19 @@
 
 const Rect CatObject::m_ClipArea{ 0, 134, 512, 290 };
 
+Texture CatObject::getTexture() const
+{
+	return m_Texture;
+}
+
+SizeF CatObject::getClientSize() const
+{
+	return m_ClientSize;
+}
+
 Ellipse CatObject::getHitArea() const
 {
-	return m_hitArea;
+	return m_HitArea;
 }
 
 const CatData& CatObject::getCatData(CatData *out) const
@@ -21,7 +31,7 @@ const CatData& CatObject::getCatData(CatData *out) const
 Rect CatObject::getMaxDisplayedArea() const
 {
 	// (0, 0) から 画面端から自分の長さを引いたところまでが左上基準の最大の表示領域
-	return Rect{ 0, 0, Scene::Width() - static_cast<int32>(ClientSize.x), Scene::Height() - static_cast<int32>(ClientSize.y) };
+	return Rect{ 0, 0, Scene::Width() - static_cast<int32>(m_ClientSize.x), Scene::Height() - static_cast<int32>(m_ClientSize.y) };
 }
 
 CatObject &CatObject::setRandomVelocity(size_t level)
@@ -52,16 +62,16 @@ CatObject& CatObject::bound()
 	position.moveBy(velocity * Scene::DeltaTime());
 
 	// オブジェクトの全てが入り切る領域内で X 方向の端に到達したら
-	if (const double rightEdge = Scene::Width() - ClientSize.x;
+	if (const double rightEdge = Scene::Width() - m_ClientSize.x;
 		x < 0 || x > rightEdge)
 	{
 		// 完全に画面外に出ているような状況に対しては、オブジェクト右下の点を見るようにして、
 		// 右下の点が画面外にあるようなら、画面内に戻すよう速度の符号を調整する
-		// (x + ClientSize.x) が右下の X 座標
-		if ((x + ClientSize.x) < ClientSize.x || (x + ClientSize.x) > rightEdge)
+		// (x + m_ClientSize.x) が右下の X 座標
+		if ((x + m_ClientSize.x) < m_ClientSize.x || (x + m_ClientSize.x) > rightEdge)
 		{
 			// x <= 0 領域なら vx を正に
-			// それ以外: x >= ClientSize.x 領域なら vx を負にして
+			// それ以外: x >= m_ClientSize.x 領域なら vx を負にして
 			// 強制的に画面内に戻す
 			vx = x <= 0 ? Abs(vx) : -Abs(vx);
 		}
@@ -73,12 +83,12 @@ CatObject& CatObject::bound()
 	}
 
 	// Y 方向の端に到達したら
-	if (const double bottomEdge = Scene::Height() - ClientSize.y;
+	if (const double bottomEdge = Scene::Height() - m_ClientSize.y;
 		y < 0 || y > bottomEdge)
 	{
 		// 以下、X 座標のときと同様
-		// (y + ClientSize.y) が右下の Y 座標
-		if (y + ClientSize.y < ClientSize.y || y + ClientSize.y > bottomEdge)
+		// (y + m_ClientSize.y) が右下の Y 座標
+		if (y + m_ClientSize.y < m_ClientSize.y || y + m_ClientSize.y > bottomEdge)
 		{
 			vy = y <= 0 ? Abs(vy) : -Abs(vy);
 		}
@@ -147,13 +157,13 @@ CatObject& CatObject::cross(Duration period, uint32 count)
 				case ScreenEdgeDirection::Right:
 				{
 					// 右から始まったら右上が画面外に出るまで
-					isReached = x + ClientSize.x < 0;
+					isReached = x + m_ClientSize.x < 0;
 				}
 				break;
 				case ScreenEdgeDirection::Bottom:
 				{
 					// 下から始まったら左下が画面外に出るまで
-					isReached = y + ClientSize.y < 0;
+					isReached = y + m_ClientSize.y < 0;
 				}
 				break;
 				case ScreenEdgeDirection::Left:
@@ -350,7 +360,7 @@ CatObject& CatObject::appearFromEdge(Duration period, EasingFunction inFunc, Dur
 					case ScreenEdgeDirection::Top:
 					{
 						x = Random(0, getMaxDisplayedArea().w);
-						y = -ClientSize.y;
+						y = -m_ClientSize.y;
 					}
 					break;
 
@@ -373,7 +383,7 @@ CatObject& CatObject::appearFromEdge(Duration period, EasingFunction inFunc, Dur
 					// 左
 					case ScreenEdgeDirection::Left:
 					{
-						x = -ClientSize.x;
+						x = -m_ClientSize.x;
 						y = Random(0, getMaxDisplayedArea().h);
 					}
 					break;
@@ -459,7 +469,7 @@ CatObject& CatObject::appearFromEdge(Duration period, EasingFunction inFunc, Dur
 				{
 					case ScreenEdgeDirection::Top:
 					{
-						position = position.lerp({ x, -ClientSize.y }, t);
+						position = position.lerp({ x, -m_ClientSize.y }, t);
 					}
 					break;
 
@@ -477,7 +487,7 @@ CatObject& CatObject::appearFromEdge(Duration period, EasingFunction inFunc, Dur
 
 					case ScreenEdgeDirection::Left:
 					{
-						position = position.lerp({ -ClientSize.x , y }, t);
+						position = position.lerp({ -m_ClientSize.x , y }, t);
 					}
 					break;
 
@@ -518,25 +528,23 @@ CatObject &CatObject::act()
 CatObject& CatObject::draw()
 {
 	// 描画前の共通処理として、当たり判定を更新
-	m_hitArea.setPos(x + ClientSize.x / 2, y + ClientSize.y / 2);
+	m_HitArea.setPos(x + m_ClientSize.x / 2, y + m_ClientSize.y / 2);
 
 	// 描画範囲をクリップ -> スケール変更 -> 任意位置にアルファ値を乗算して描画
-	texture(m_ClipArea).scaled(m_Scale).draw(position, ColorF{ 1.0, m_textureAlpha });
+	m_Texture(m_ClipArea).scaled(m_Scale).draw(position, ColorF{ 1.0, m_textureAlpha });
 	return *this;
 }
 
 CatObject& CatObject::drawHitArea()
 {
-	m_hitArea.drawFrame();
+	m_HitArea.drawFrame();
 	return *this;
 }
 
-bool CatObject::checkCatchable(const CatData &target)
+bool CatObject::checkCatchable(const CatData &target, bool *const isCorrect) const
 {
-	if (m_hitArea.leftClicked())
-	{
-		return m_catData == target;
-	}
+	*isCorrect = m_catData == target;
+	return m_HitArea.leftClicked();
 }
 
 std::tuple<Vec2, Vec2> CatObject::m_changeScreenEdgePosition()
