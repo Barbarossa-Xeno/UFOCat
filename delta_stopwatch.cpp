@@ -11,7 +11,7 @@ const double &DeltaStopwatch::forward() noexcept
 	return m_elapsedTime;
 }
 
-const double &DeltaStopwatch::reset(double time) noexcept
+const double &DeltaStopwatch::resetTime(double time) noexcept
 {
 	// もし m_elapsedTime が time とほぼ同じくらいならこの演算で 0 くらいになる
 	// DeltaTime の誤差は考慮しない
@@ -19,12 +19,12 @@ const double &DeltaStopwatch::reset(double time) noexcept
 	return m_elapsedTime;
 }
 
-const double &DeltaStopwatch::reset(const Duration& time) noexcept
+const double &DeltaStopwatch::resetTime(const Duration& time) noexcept
 {
-	return reset(time.count());
+	return resetTime(time.count());
 }
 
-const double &DeltaStopwatch::reset() noexcept
+const double &DeltaStopwatch::resetTime() noexcept
 {
 	m_elapsedTime = 0;
 	return m_elapsedTime;
@@ -33,6 +33,12 @@ const double &DeltaStopwatch::reset() noexcept
 void DeltaStopwatch::resetOverCount() noexcept
 {
 	m_overCount = 0;
+}
+
+void DeltaStopwatch::reset() noexcept
+{
+	resetTime();
+	resetOverCount();
 }
 
 bool DeltaStopwatch::isOver(double time, bool isAutoReset) noexcept
@@ -47,7 +53,7 @@ bool DeltaStopwatch::isOver(double time, bool isAutoReset) noexcept
 		// かつ、自動リセットが true ならリセットしてカウントを戻す
 		if (isAutoReset)
 		{
-			reset(time);
+			resetTime(time);
 			m_overCount = 0;
 		}
 	}

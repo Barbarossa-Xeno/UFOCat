@@ -25,19 +25,22 @@ public:
 	/// @brief 指定した数値で現在の時間を引いてリセットする
 	/// @param time 時間
 	/// @return リセット後の時間
-	const double &reset(double time) noexcept;
+	const double &resetTime(double time) noexcept;
 
 	/// @brief 指定した数値で現在の時間を引いてリセットする
 	/// @param time 時間 [Duration]
 	/// @return リセット後の時間
-	const double& reset(const Duration &time) noexcept;
+	const double& resetTime(const Duration &time) noexcept;
 
 	/// @brief タイマーを 0 にリセットする
 	/// @return リセット後の時間
-	const double &reset() noexcept;
+	const double &resetTime() noexcept;
 
 	/// @brief 超過カウントをリセットする
 	void resetOverCount() noexcept;
+
+	/// @brief タイマーも超過カウントもリセットする
+	void reset() noexcept;
 
 	/// @brief タイマーが指定した経過時間を超えているかを返す @n
 	/// デフォルトでは、指定した時間を超えていたらタイマーを自動リセットする
@@ -72,7 +75,7 @@ public:
 				return std::forward<Func>(callback)();
 			}
 			// 経過時間だけリセット（超過回数はしない）
-			reset();
+			resetTime();
 		}
 		else if (m_overCount <= 0)
 		{
