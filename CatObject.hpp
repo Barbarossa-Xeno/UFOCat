@@ -3,7 +3,7 @@
 #include "DeltaStopwatch.hpp"
 #include "LevelData.hpp"
 
-/// @brief UFO猫のクラス
+/// @brief オブジェクトとしてのUFO猫のクラス
 class CatObject
 {
 	/* -- クラスなど -- */

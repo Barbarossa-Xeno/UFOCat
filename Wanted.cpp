@@ -10,7 +10,7 @@ namespace UFOCat
 
 		// クリアしているフェーズの数は、現在行っているフェーズのインデックスと同じなのを利用する
 		// （そのフェーズが終わり次第、isCleared のフラグを上げるため）
-		getData().levelIndex = getData().phases.filter([](const Phase &p) { return p.isCleared; }).size();
+		getData().levelIndex = getData().phases.filter([](const LevelData &p) { return p.isCleared; }).size();
 
 		getData().timer.set(5s);
 	}
@@ -31,7 +31,7 @@ namespace UFOCat
 	{
 		FontAsset(U"Test")(U"見つけるUFOネコは").drawAt(Scene::Center().x, 50);
 		FontAsset(U"Test")(U"{}"_fmt(m_target->getCatData().breed)).drawAt(Scene::Center().x, 100);
-		m_target->texture.scaled(0.5).drawAt(Scene::Center());
+		m_target->getTexture().scaled(0.5).drawAt(Scene::Center());
 		FontAsset(U"Test")(U"あと {}"_fmt(getData().timer.s())).drawAt(Scene::Center().x, Scene::Center().y + 100);
 	}
 }

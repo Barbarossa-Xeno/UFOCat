@@ -1,4 +1,4 @@
-﻿#include "cat_object.hpp"
+﻿#include "CatObject.hpp"
 
 const Rect CatObject::m_ClipArea{ 0, 134, 512, 290 };
 

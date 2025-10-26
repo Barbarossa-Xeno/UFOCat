@@ -9,7 +9,7 @@ namespace UFOCat
 		{
 			// データがまだ読み込まれていなければ読み込む
 			getData().cats = LoadCatData();
-			getData().phases = LoadPhaseData();
+			getData().phases = LoadLevelData();
 		}
 
 		

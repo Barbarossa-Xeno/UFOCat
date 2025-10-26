@@ -1,5 +1,5 @@
 ﻿#pragma once
-#include "cat_object.hpp"
+#include "CatObject.hpp"
 #include "LevelData.hpp"
 
 class GameManager

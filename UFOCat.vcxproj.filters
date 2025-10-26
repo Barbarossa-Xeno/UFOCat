@@ -147,19 +147,19 @@
     <ClCompile Include="game_manager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="cat_data.hpp">
+    <ClCompile Include="CatData.hpp">
       <Filter>Header Files</Filter>
     </ClCompile>
-    <ClCompile Include="cat_data.cpp">
+    <ClCompile Include="CatData.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="cat_object.cpp">
+    <ClCompile Include="CatObject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="LevelData.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="delta_stopwatch.cpp">
+    <ClCompile Include="DeltaStopWatch.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Level.cpp">
@@ -977,16 +977,16 @@
     <ClInclude Include="game_manager.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="cat_object.hpp">
+    <ClInclude Include="CatObject.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="LevelData.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="delta_stopwatch.hpp">
+    <ClInclude Include="DeltaStopwatch.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="cat_action.hpp">
+    <ClInclude Include="CatAction.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Common.hpp">

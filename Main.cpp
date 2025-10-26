@@ -69,7 +69,7 @@ void Main()
 		//	}
 		//	case GameManager::State::InPhase:
 		//	{
-		//		// Phase の更新間隔に合わせてスポーンを行うような処理
+		//		// LevelData の更新間隔に合わせてスポーンを行うような処理
 		//		game.inPhase();
 		//	}
 		//}
