@@ -4,7 +4,7 @@ namespace UFOCat
 {
 	LevelData& Level::m_currentPhase()
 	{
-		return getData().phases[getData().levelIndex];
+		return getData().levels[getData().levelIndex];
 	}
 
 	void Level::m_setTargetAppearTime(size_t level)
@@ -101,13 +101,7 @@ namespace UFOCat
 		m_actionProbabilities = DiscreteDistribution{ m_currentPhase().actionDataList.map([](const LevelData::ActionData &data) { return data.probability; }) };
 
 		// 最終的に catsInPhase にまとめて
-		m_selections.append(similars)
-					.append(others)
-					.each([this](std::shared_ptr<CatObject> &cat)
-						{
-							// アクションを抽選してセットし、現在のレベルに合わせて速度もランダムに決める
-							cat->setAction(DiscreteSample(m_currentPhase().actionDataList, m_actionProbabilities)).setRandomVelocity(getData().levelIndex + 1);
-						});
+		m_selections.append(similars).append(others);
 
 		// ステートをプレイ中に変更する
 		m_state = Level::State::Playing;
@@ -148,7 +142,13 @@ namespace UFOCat
 							// ターゲット以外の猫をランダムに指定個選んで（コピーして）追加
 							for (int32 i = 0; i < m_currentPhase().intervalData.count; i++)
 							{
-								getData().spawns << std::make_unique<CatObject>(CatObject(*(m_selections.choice())));
+								getData().spawns << std::make_unique<CatObject>
+									(
+										// アクションを抽選してセットし、現在のレベルに合わせて速度もランダムに決める
+										CatObject(*(m_selections.choice()))
+											.setAction(DiscreteSample(m_currentPhase().actionDataList, m_actionProbabilities))
+												.setRandomVelocity(getData().levelIndex + 1)
+									);
 							}
 						}
 					}, m_currentPhase().intervalData.period);
@@ -159,13 +159,16 @@ namespace UFOCat
 					for (const auto& cat : getData().spawns)
 					{
 						// 猫をタッチしたら、その正誤を代入
-						if (cat->act().checkCatchable(m_target->getCatData(), &m_isCorrect))
+						if (cat->act().checkCatchable(m_target->getCatData(), &m_score.isCorrect))
 						{
 							// 捕まえた猫を記録
 							m_caught = &cat;
 
 							// ターゲットとの正誤にかかわらず、触ったことにはしておく
-							m_isCaught = true;
+							m_score.isCaught = true;
+							
+							// 反応時間を記録
+							m_score.response = (m_targetAppearTime - getData().timer.remaining()).count();
 
 							// レベル終了へ
 							m_state = Level::State::Finish;
@@ -193,6 +196,12 @@ namespace UFOCat
 			break;
 
 			case Level::State::After:
+			{
+				if (m_gui.toResult.isPressed())
+				{
+					changeScene(UFOCat::State::Result);
+				}
+			}
 				break;
 			default:
 				break;
@@ -226,11 +235,13 @@ namespace UFOCat
 
 			case UFOCat::Level::State::After:
 			{
+				// 背景 ちょっと暗くする
 				{
 					Rect{ Scene::Size() }.draw(ColorF{ 0.0, 0.75 });
 				}
+				// 画面左側 捕まえた猫を表示
 				{
-					if (m_isCaught)
+					if (m_score.isCaught)
 					{
 						auto &&image = m_caught->get()->getTexture().scaled(m_CatImageScale);
 
@@ -239,15 +250,19 @@ namespace UFOCat
 						FontAsset(U"Test")(U"キミが捕まえた猫").drawAt(Scene::CenterF() + SizeF(-image.size.x, -150));
 					}
 				}
+				// 画面右側 ターゲットを表示
 				{
 					auto &&image = m_target->getTexture().scaled(m_CatImageScale);
 					image.drawAt(Scene::CenterF() + SizeF(image.size.x, 0));
 					FontAsset(U"Test")(U"ターゲット").drawAt(Scene::CenterF() + SizeF(image.size.x, -150));
 				}
+				// 画面中央下部 結果表示
 				{
-					if (m_isCaught)
+					// 捕まえたかどうかで分岐
+					if (m_score.isCaught)
 					{
-						if (m_isCorrect)
+						// 合っていたかどうかでも分岐
+						if (m_score.isCorrect)
 						{
 							FontAsset(U"Test")(U"正解！").drawAt(Scene::CenterF().x, Scene::CenterF().y + 150);
 						}
@@ -260,6 +275,8 @@ namespace UFOCat
 					{
 						FontAsset(U"Test")(U"時間切れ！").drawAt(Scene::CenterF().x, Scene::CenterF().y + 150);
 					}
+
+					m_gui.toResult.set({ 10.0, Scene::Height() - 70.0 }, FontAsset(U"Test"), U"結果へ").draw();
 				}
 			}
 				break;

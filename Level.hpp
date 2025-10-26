@@ -36,11 +36,8 @@ namespace UFOCat
 		/// @brief スポーン間隔の計測やシーン内ステートの遷移などに使う内部ストップウォッチ
 		DeltaStopwatch m_watch;
 
-		/// @brief 猫を捕まえた（タッチした）か
-		bool m_isCaught = false;
-
-		/// @brief 捕まえた猫がターゲットと合っていたか
-		bool m_isCorrect = false;
+		/// @brief このレベルでのスコア
+		Score m_score;
 
 		/// @brief 捕まえた猫のオブジェクトへのポインタへのポインタ
 		/// @remarks 二重ポインタにしているのは、`spawns` からとってくるため `spawns`は unique_ptr で管理されている 
@@ -48,6 +45,11 @@ namespace UFOCat
 
 		/// @brief レベル終わりに自分の捕まえた猫やターゲットを表示する際の倍率
 		constexpr static double m_CatImageScale = 0.4;
+
+		struct
+		{
+			Component::Button toResult;
+		} m_gui;
 
 		/* -- ゲッター / セッター -- */
 

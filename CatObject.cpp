@@ -38,7 +38,7 @@ CatObject &CatObject::setRandomVelocity(size_t level)
 {
 	// マジックナンバーだらけだけど仕様書に書いてあるとおり
 	double min = 75.0 + (1.0 + level / 10.0);
-	double max = Max(((Random(1.0, static_cast<double>(level)) / 10.0) * Max(Scene::Width(), Scene::Height()) * Math::Exp(level / Random(5, 10))), 900.0);
+	double max = 300.0 + (1.0 + Random(1.0, static_cast<double>(level)) / 100.0) * Max(Scene::Width(), Scene::Height()) * ((1 / (0.9 * (level + 0.9))) * Math::Pow(level - 1 + 0.9, 4 * (level - 1 + 0.9)) * Math::Log(level + 0.9));
 	velocity = RandomVec2(Random(min, max));
 
 	return *this;

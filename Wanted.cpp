@@ -10,7 +10,7 @@ namespace UFOCat
 
 		// クリアしているフェーズの数は、現在行っているフェーズのインデックスと同じなのを利用する
 		// （そのフェーズが終わり次第、isCleared のフラグを上げるため）
-		getData().levelIndex = getData().phases.filter([](const LevelData &p) { return p.isCleared; }).size();
+		getData().levelIndex = getData().levels.filter([](const LevelData &p) { return p.isCleared; }).size();
 
 		getData().timer.set(5s);
 	}

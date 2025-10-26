@@ -8,7 +8,7 @@ Array<CatObject> UFOCat::LoadCatData()
 	// もし読み込みに失敗したら
 	if (not json)
 	{
-		throw Error{ U"Failed to load `ufo_cats_data.json`" };
+		throw Error{ U"Failed to load `cat_data.json`" };
 	}
 
 	// data プロパティの中に配列として格納されている（元JSON参照）
@@ -169,7 +169,7 @@ Array<LevelData> UFOCat::LoadLevelData()
 		throw Error{ U"Failed to load `level_data.json`" };
 	}
 
-	// data プロパティの中に配列として格納されている各フェーズのデータ（元JSON参照）
+	// data プロパティの中に配列として格納されている各レベルのデータ（元JSON参照）
 	const auto&& data = json[U"data"];
 
 	// 結果格納用
@@ -192,7 +192,7 @@ Array<LevelData> UFOCat::LoadLevelData()
 				 *	 Duration や Rect、EasingFunction に変換する
 				 */
 
-				 // 1フェーズの時間制限
+				 // 1レベルの時間制限
 				Duration timeLimit = LevelData::ParseDuration(d.value[U"timeLimit"].get<String>());
 
 				// 類似度
@@ -228,7 +228,7 @@ Array<LevelData> UFOCat::LoadLevelData()
 					throw Error(U"`intervalData` is not object type.");
 				}
 
-				// このフェーズでの使用アクション
+				// このレベルでの使用アクション
 				Array<LevelData::ActionData> actionDataList{ };
 
 				// 配列であることを確認してからアクションデータを全走査
@@ -287,17 +287,21 @@ Array<LevelData> UFOCat::LoadLevelData()
 							{
 								switch (overload)
 								{
-									// 各オーバーロード番号に対応するようにパースする
 								case 0:
 								{
 									auto p = LevelData::ParseParameters<CAct::cross::_0>(data_params);
-									params = std::make_tuple(get_at.operator() < 0, CAct::cross::_0 > (p), get_at.operator() < 1, CAct::cross::_0 > (p));
+									params = std::make_tuple(
+										get_at.operator()<0, CAct::cross::_0>(p),
+										get_at.operator()<1, CAct::cross::_0>(p)
+									);
 									break;
 								}
 								case 1:
 								{
 									auto p = LevelData::ParseParameters<CAct::cross::_1>(data_params);
-									params = std::make_tuple(get_at.operator() < 0, CAct::cross::_1 > (p));
+									params = std::make_tuple(
+										get_at.operator()<0, CAct::cross::_1>(p)
+									);
 									break;
 								}
 								default:
@@ -317,12 +321,12 @@ Array<LevelData> UFOCat::LoadLevelData()
 									// 固定長で作るという制約上しゃあないところが大きい
 									params = std::make_tuple
 									(
-										get_at.operator() < 0, CAct::appear::_0 > (p),
-										get_at.operator() < 1, CAct::appear::_0 > (p),
-										get_at.operator() < 2, CAct::appear::_0 > (p),
-										get_at.operator() < 3, CAct::appear::_0 > (p),
-										get_at.operator() < 4, CAct::appear::_0 > (p),
-										get_at.operator() < 5, CAct::appear::_0 > (p)
+										get_at.operator()<0, CAct::appear::_0>(p),
+										get_at.operator()<1, CAct::appear::_0>(p),
+										get_at.operator()<2, CAct::appear::_0>(p),
+										get_at.operator()<3, CAct::appear::_0>(p),
+										get_at.operator()<4, CAct::appear::_0>(p),
+										get_at.operator()<5, CAct::appear::_0>(p)
 									);
 									break;
 								}
@@ -331,10 +335,10 @@ Array<LevelData> UFOCat::LoadLevelData()
 									auto p = LevelData::ParseParameters<CAct::appear::_1>(data_params);
 									params = std::make_tuple
 									(
-										get_at.operator() < 0, CAct::appear::_1 > (p),
-										get_at.operator() < 1, CAct::appear::_1 > (p),
-										get_at.operator() < 2, CAct::appear::_1 > (p),
-										get_at.operator() < 3, CAct::appear::_1 > (p)
+										get_at.operator()<0, CAct::appear::_1>(p),
+										get_at.operator()<1, CAct::appear::_1>(p),
+										get_at.operator()<2, CAct::appear::_1>(p),
+										get_at.operator()<3, CAct::appear::_1>(p)
 									);
 									break;
 								}
@@ -343,10 +347,10 @@ Array<LevelData> UFOCat::LoadLevelData()
 									auto p = LevelData::ParseParameters<CAct::appear::_2>(data_params);
 									params = std::make_tuple
 									(
-										get_at.operator() < 0, CAct::appear::_2 > (p),
-										get_at.operator() < 1, CAct::appear::_2 > (p),
-										get_at.operator() < 2, CAct::appear::_2 > (p),
-										get_at.operator() < 3, CAct::appear::_2 > (p)
+										get_at.operator()<0, CAct::appear::_2>(p),
+										get_at.operator()<1, CAct::appear::_2>(p),
+										get_at.operator()<2, CAct::appear::_2>(p),
+										get_at.operator()<3, CAct::appear::_2>(p)
 									);
 									break;
 								}
@@ -355,9 +359,9 @@ Array<LevelData> UFOCat::LoadLevelData()
 									auto p = LevelData::ParseParameters<CAct::appear::_3>(data_params);
 									params = std::make_tuple
 									(
-										get_at.operator() < 0, CAct::appear::_3 > (p),
-										get_at.operator() < 1, CAct::appear::_3 > (p),
-										get_at.operator() < 2, CAct::appear::_3 > (p)
+										get_at.operator()<0, CAct::appear::_3>(p),
+										get_at.operator()<1, CAct::appear::_3>(p),
+										get_at.operator()<2, CAct::appear::_3>(p)
 									);
 									break;
 								}
@@ -366,11 +370,11 @@ Array<LevelData> UFOCat::LoadLevelData()
 									auto p = LevelData::ParseParameters<CAct::appear::_4>(data_params);
 									params = std::make_tuple
 									(
-										get_at.operator() < 0, CAct::appear::_4 > (p),
-										get_at.operator() < 1, CAct::appear::_4 > (p),
-										get_at.operator() < 2, CAct::appear::_4 > (p),
-										get_at.operator() < 3, CAct::appear::_4 > (p),
-										get_at.operator() < 4, CAct::appear::_4 > (p)
+										get_at.operator()<0, CAct::appear::_4>(p),
+										get_at.operator()<1, CAct::appear::_4>(p),
+										get_at.operator()<2, CAct::appear::_4>(p),
+										get_at.operator()<3, CAct::appear::_4>(p),
+										get_at.operator()<4, CAct::appear::_4>(p)
 									);
 									break;
 								}
@@ -379,9 +383,9 @@ Array<LevelData> UFOCat::LoadLevelData()
 									auto p = LevelData::ParseParameters<CAct::appear::_5>(data_params);
 									params = std::make_tuple
 									(
-										get_at.operator() < 0, CAct::appear::_5 > (p),
-										get_at.operator() < 1, CAct::appear::_5 > (p),
-										get_at.operator() < 2, CAct::appear::_5 > (p)
+										get_at.operator()<0, CAct::appear::_5>(p),
+										get_at.operator()<1, CAct::appear::_5>(p),
+										get_at.operator()<2, CAct::appear::_5>(p)
 									);
 									break;
 								}
@@ -390,9 +394,9 @@ Array<LevelData> UFOCat::LoadLevelData()
 									auto p = LevelData::ParseParameters<CAct::appear::_6>(data_params);
 									params = std::make_tuple
 									(
-										get_at.operator() < 0, CAct::appear::_6 > (p),
-										get_at.operator() < 1, CAct::appear::_6 > (p),
-										get_at.operator() < 2, CAct::appear::_6 > (p)
+										get_at.operator()<0, CAct::appear::_6>(p),
+										get_at.operator()<1, CAct::appear::_6>(p),
+										get_at.operator()<2, CAct::appear::_6>(p)
 									);
 									break;
 								}
@@ -401,8 +405,8 @@ Array<LevelData> UFOCat::LoadLevelData()
 									auto p = LevelData::ParseParameters<CAct::appear::_7>(data_params);
 									params = std::make_tuple
 									(
-										get_at.operator() < 0, CAct::appear::_7 > (p),
-										get_at.operator() < 1, CAct::appear::_7 > (p)
+										get_at.operator()<0, CAct::appear::_7>(p),
+										get_at.operator()<1, CAct::appear::_7>(p)
 									);
 									break;
 								}
@@ -421,12 +425,12 @@ Array<LevelData> UFOCat::LoadLevelData()
 									auto p = LevelData::ParseParameters<CAct::appearFromEdge::_0>(data_params);
 									params = std::make_tuple
 									(
-										get_at.operator() < 0, CAct::appearFromEdge::_0 > (p),
-										get_at.operator() < 1, CAct::appearFromEdge::_0 > (p),
-										get_at.operator() < 2, CAct::appearFromEdge::_0 > (p),
-										get_at.operator() < 3, CAct::appearFromEdge::_0 > (p),
-										get_at.operator() < 4, CAct::appearFromEdge::_0 > (p),
-										get_at.operator() < 5, CAct::appearFromEdge::_0 > (p)
+										get_at.operator()<0, CAct::appearFromEdge::_0>(p),
+										get_at.operator()<1, CAct::appearFromEdge::_0>(p),
+										get_at.operator()<2, CAct::appearFromEdge::_0>(p),
+										get_at.operator()<3, CAct::appearFromEdge::_0>(p),
+										get_at.operator()<4, CAct::appearFromEdge::_0>(p),
+										get_at.operator()<5, CAct::appearFromEdge::_0>(p)
 									);
 									break;
 								}
@@ -435,10 +439,10 @@ Array<LevelData> UFOCat::LoadLevelData()
 									auto p = LevelData::ParseParameters<CAct::appearFromEdge::_1>(data_params);
 									params = std::make_tuple
 									(
-										get_at.operator() < 0, CAct::appearFromEdge::_1 > (p),
-										get_at.operator() < 1, CAct::appearFromEdge::_1 > (p),
-										get_at.operator() < 2, CAct::appearFromEdge::_1 > (p),
-										get_at.operator() < 3, CAct::appearFromEdge::_1 > (p)
+										get_at.operator()<0, CAct::appearFromEdge::_1>(p),
+										get_at.operator()<1, CAct::appearFromEdge::_1>(p),
+										get_at.operator()<2, CAct::appearFromEdge::_1>(p),
+										get_at.operator()<3, CAct::appearFromEdge::_1>(p)
 									);
 									break;
 								}
@@ -447,10 +451,10 @@ Array<LevelData> UFOCat::LoadLevelData()
 									auto p = LevelData::ParseParameters<CAct::appearFromEdge::_2>(data_params);
 									params = std::make_tuple
 									(
-										get_at.operator() < 0, CAct::appearFromEdge::_2 > (p),
-										get_at.operator() < 1, CAct::appearFromEdge::_2 > (p),
-										get_at.operator() < 2, CAct::appearFromEdge::_2 > (p),
-										get_at.operator() < 3, CAct::appearFromEdge::_2 > (p)
+										get_at.operator()<0, CAct::appearFromEdge::_2>(p),
+										get_at.operator()<1, CAct::appearFromEdge::_2>(p),
+										get_at.operator()<2, CAct::appearFromEdge::_2>(p),
+										get_at.operator()<3, CAct::appearFromEdge::_2>(p)
 									);
 									break;
 								}
@@ -459,9 +463,9 @@ Array<LevelData> UFOCat::LoadLevelData()
 									auto p = LevelData::ParseParameters<CAct::appearFromEdge::_3>(data_params);
 									params = std::make_tuple
 									(
-										get_at.operator() < 0, CAct::appearFromEdge::_3 > (p),
-										get_at.operator() < 1, CAct::appearFromEdge::_3 > (p),
-										get_at.operator() < 2, CAct::appearFromEdge::_3 > (p)
+										get_at.operator()<0, CAct::appearFromEdge::_3>(p),
+										get_at.operator()<1, CAct::appearFromEdge::_3>(p),
+										get_at.operator()<2, CAct::appearFromEdge::_3>(p)
 									);
 									break;
 								}
@@ -486,7 +490,7 @@ Array<LevelData> UFOCat::LoadLevelData()
 					throw Error(U"`actionData` is not array type.");
 				}
 
-				// 1フェーズ走査したら、結果に追加
+				// 1レベル走査したら、結果に追加
 				result << LevelData{ timeLimit, similarity, breedData, intervalData, actionDataList };
 			}
 

@@ -26,7 +26,7 @@ public:
 
 	Array<std::unique_ptr<CatObject>> spawns;
 
-	Array<LevelData> phases;
+	Array<LevelData> levels;
 
 	State currentState = State::Title;
 
@@ -84,7 +84,7 @@ public:
 	/// @brief コンストラクタ
 	explicit GameManager()
 		: cats{ LoadCatData() }
-		, phases{ LoadLevelData() }
+		, levels{ LoadLevelData() }
 	{ }
 
 	void announceTarget();

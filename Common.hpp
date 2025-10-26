@@ -1,4 +1,5 @@
 ﻿# pragma once
+# include "Component.hpp"
 # include "CatObject.hpp"
 # include "LevelData.hpp"
 
@@ -19,21 +20,59 @@ namespace UFOCat
 		Result
 	};
 
+	/// @brief レベルごとに集計するスコアのデータ
+	struct Score
+	{
+		/// @brief プレイしたレベル
+		size_t level = 1;
+
+		/// @brief 猫を捕まえたか
+		bool isCaught = false;
+
+		/// @brief 捕まえた猫が正解だったか
+		bool isCorrect = false;
+
+		/// @brief ターゲットが出現してから捕まえるまでかかった時間 [s]
+		double response = 0.0;
+
+		/// @brief 連続正解数
+		uint32 consecutiveCorrect = 0;
+
+		/// @brief このレベルでの総合スコアを計算する
+		/// @return このレベルでの総合スコア
+		uint32 total() const
+		{
+			return static_cast<uint32>
+				(
+					// 捕まえたら +20
+					isCaught ? 20.0 *
+						// 正解なら x2.2、更に反応速度に応じたボーナスを加算
+						// 不正解なら x1
+						isCorrect ? 2.2 * (2.2 + 1 / (2.2 * response)) : 1 *
+						// 正誤にかかわらずレベルに応じたボーナスを乗算し、
+						// 連続正解ボーナスを加算
+						Math::Exp(2.2 * level / 10.0) +
+						222 * consecutiveCorrect
+					: 0
+				);
+		}
+	};
+
 	struct GameData
 	{
 		Array<CatObject> cats;
 
-		Array<LevelData> phases;
+		Array<LevelData> levels;
 
 		Array<std::unique_ptr<CatObject>> spawns;
+
+		Array<Score> scores;
 
 		size_t targetIndex = InvalidIndex;
 
 		size_t levelIndex = InvalidIndex;
 
 		Timer timer;
-
-		uint32 score;
 	};
 
 	/// @brief UFO猫のデータをJSONから読み込んでそれら全てのインスタンスを作成する
