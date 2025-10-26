@@ -1,6 +1,6 @@
 ﻿#pragma once
 #include "cat_object.hpp"
-#include "phase.hpp"
+#include "LevelData.hpp"
 
 class GameManager
 {

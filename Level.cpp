@@ -2,7 +2,7 @@
 
 namespace UFOCat
 {
-	Phase& Level::m_currentPhase()
+	LevelData& Level::m_currentPhase()
 	{
 		return getData().phases[getData().levelIndex];
 	}
@@ -98,7 +98,7 @@ namespace UFOCat
 		others.shuffle().resize(otherCount);
 
 		// レベル中に行うアクションリストの中から、それぞれの発生確率だけを抜き取ったリストで確率分布をつくる
-		m_actionProbabilities = DiscreteDistribution{ m_currentPhase().actionDataList.map([](const Phase::ActionData &data) { return data.probability; }) };
+		m_actionProbabilities = DiscreteDistribution{ m_currentPhase().actionDataList.map([](const LevelData::ActionData &data) { return data.probability; }) };
 
 		// 最終的に catsInPhase にまとめて
 		m_selections.append(similars)
@@ -131,39 +131,46 @@ namespace UFOCat
 			case Level::State::Playing:
 			{
 				// ## スポーン処理
-				if (m_currentPhase().updateAtInterval())
-				{
-					// ターゲットの出現時刻を超えていて、ターゲットがまだ出現していなかったら
-					if (getData().timer.remaining() <= m_targetAppearTime and (not m_appearedTarget))
+				m_watch.setInterval([this]()
 					{
-						// ターゲットを（コピーして）湧かせる
-						getData().spawns << std::make_unique<CatObject>(CatObject(*m_target));
-						// ターゲットにも同様にアクションと速度の設定を行う
-						getData().spawns.back()->setAction(DiscreteSample(m_currentPhase().actionDataList, m_actionProbabilities)).setRandomVelocity(getData().levelIndex + 1);
-						// ターゲットの出現フラグをあげる
-						m_appearedTarget = true;
-					}
-					else
-					{
-						// ランダムに選んで（コピーして）追加
-						getData().spawns << std::make_unique<CatObject>(CatObject(*(m_selections.choice())));
-					}
-				}
+						// ターゲットの出現時刻を超えていて、ターゲットがまだ出現していなかったら
+						if (getData().timer.remaining() <= m_targetAppearTime and (not m_appearedTarget))
+						{
+							// ターゲットを（コピーして）湧かせる
+							getData().spawns << std::make_unique<CatObject>(CatObject(*m_target));
+							// ターゲットにも同様にアクションと速度の設定を行う
+							getData().spawns.back()->setAction(DiscreteSample(m_currentPhase().actionDataList, m_actionProbabilities)).setRandomVelocity(getData().levelIndex + 1);
+							// ターゲットの出現フラグをあげる
+							m_appearedTarget = true;
+						}
+						else
+						{
+							// ターゲット以外の猫をランダムに指定個選んで（コピーして）追加
+							for (int32 i = 0; i < m_currentPhase().intervalData.count; i++)
+							{
+								getData().spawns << std::make_unique<CatObject>(CatObject(*(m_selections.choice())));
+							}
+						}
+					}, m_currentPhase().intervalData.period);
 
-				// 制限時間内と時間超過後での処理
+				// ## 制限時間内と時間超過後での処理
 				if (not getData().timer.reachedZero())
 				{
 					for (const auto& cat : getData().spawns)
 					{
 						// 猫をタッチしたら、その正誤を代入
-						if (m_isCorrect = cat->act().checkCatchable(m_target->getCatData());
-							m_isCorrect)
+						if (cat->act().checkCatchable(m_target->getCatData(), &m_isCorrect))
 						{
+							// 捕まえた猫を記録
+							m_caught = &cat;
+
 							// ターゲットとの正誤にかかわらず、触ったことにはしておく
 							m_isCaught = true;
 
 							// レベル終了へ
 							m_state = Level::State::Finish;
+							m_watch.reset();
+							break;
 						}
 					}
 				}
@@ -190,12 +197,18 @@ namespace UFOCat
 			default:
 				break;
 		}
-		
-		
 	}
 
 	void Level::draw() const
 	{
+		// # 共通処理（背面）
+		{
+			for (const auto& cat : getData().spawns)
+			{
+				cat->draw().drawHitArea();
+			}
+		}
+
 		// # ステート依存処理
 		switch (m_state)
 		{
@@ -213,19 +226,45 @@ namespace UFOCat
 
 			case UFOCat::Level::State::After:
 			{
+				{
+					Rect{ Scene::Size() }.draw(ColorF{ 0.0, 0.75 });
+				}
+				{
+					if (m_isCaught)
+					{
+						auto &&image = m_caught->get()->getTexture().scaled(m_CatImageScale);
 
+						image.drawAt(Scene::CenterF() - SizeF(image.size.x, 0));
+
+						FontAsset(U"Test")(U"キミが捕まえた猫").drawAt(Scene::CenterF() + SizeF(-image.size.x, -150));
+					}
+				}
+				{
+					auto &&image = m_target->getTexture().scaled(m_CatImageScale);
+					image.drawAt(Scene::CenterF() + SizeF(image.size.x, 0));
+					FontAsset(U"Test")(U"ターゲット").drawAt(Scene::CenterF() + SizeF(image.size.x, -150));
+				}
+				{
+					if (m_isCaught)
+					{
+						if (m_isCorrect)
+						{
+							FontAsset(U"Test")(U"正解！").drawAt(Scene::CenterF().x, Scene::CenterF().y + 150);
+						}
+						else
+						{
+							FontAsset(U"Test")(U"不正解...").drawAt(Scene::CenterF().x, Scene::CenterF().y + 150);
+						}
+					}
+					else
+					{
+						FontAsset(U"Test")(U"時間切れ！").drawAt(Scene::CenterF().x, Scene::CenterF().y + 150);
+					}
+				}
 			}
 				break;
 			default:
 				break;
-		}
-
-		// # 共通処理
-		{
-			for (const auto& cat : getData().spawns)
-			{
-				cat->draw();
-			}
 		}
 	}
 }

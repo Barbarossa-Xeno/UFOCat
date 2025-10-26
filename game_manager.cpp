@@ -186,7 +186,7 @@ void GameManager::inPhase()
 	}
 
 	// # スポーン処理
- 	if (m_currentPhase().updateAtInterval())
+ 	if (false/*m_currentPhase().updateAtInterval()*/)
  	{
 		// ターゲットの出現時刻を超えていて、ターゲットがまだ出現していなかったら
 		if (m_phaseTimer.remaining() <= m_targetAppearTime and (not m_appearedTarget))
