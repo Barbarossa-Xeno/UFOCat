@@ -41,7 +41,7 @@ private:
 	Timer m_phaseTimer;
 
 	/// @brief フェーズ中にターゲットが出現する時刻
-	Duration m_targetAppearTime;
+	Duration m_targetSpawnTime;
 
 	/// @brief ターゲットが出現したかどうか
 	bool m_appearedTarget = false;
@@ -63,7 +63,7 @@ private:
 	/// @brief 現在のフェーズ (非 const)
 	/// @return 現在の `Phase` の参照
 	/// @remarks ゲッターとか言いながらオブジェクトの変更も許しているので、private にしておく
-	LevelData &m_currentPhase();
+	LevelData &m_currentLevel();
 
 	/* -- セッター -- */
 public:
@@ -76,7 +76,7 @@ private:
 	/// @brief ターゲットが出現する時間を引数に応じてランダムに決め、`m_targetAppearTime` に設定する
 	/// @param level 整数値（1 ~ 10 の範囲で、特に現在のフェーズレベル (`m_currentPhaseIndex`) を入れることを想定）
 	/// @return  ターゲットが出現する時間
-	const Duration &m_setTargetAppearTime(uint32 level);
+	const Duration &m_setTargetSpawnTime(uint32 level);
 
 	/* -- メソッド -- */
 public:

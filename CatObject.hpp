@@ -180,7 +180,7 @@ private:
 	const static Rect m_ClipArea;
 
 	/// @brief テクスチャや図形などの描画スケール
-	constexpr static double m_Scale = 0.35;
+	constexpr static double m_Scale = 0.3;
 
 	/// @brief 当たり判定の大きさの倍率
 	/// @note 1 でテクスチャと同じ大きさの楕円になる
@@ -405,6 +405,11 @@ public:
 	/// @brief 当たり判定領域を描画する（デバッグ用）
 	/// @return 自分自身の参照
 	CatObject& drawHitArea();
+
+	/// @brief オブジェクトが現在画面上に見えているかどうかを取得する
+	/// @return 見えているなら `true`
+	/// @return めちゃくちゃ正確とは限らない、あくまで内部で設定されている外見状態に基づく
+	bool isVisible() const;
 
 	/// @brief オブジェクトがタッチされたときに、現在のターゲット情報と比較して捕まえられるか試す
 	/// @param target ターゲットの情報

@@ -24,7 +24,7 @@ namespace UFOCat
 	struct Score
 	{
 		/// @brief プレイしたレベル
-		size_t level = 1;
+		size_t level = InvalidIndex;
 
 		/// @brief 猫を捕まえたか
 		bool isCaught = false;
@@ -38,23 +38,29 @@ namespace UFOCat
 		/// @brief 連続正解数
 		uint32 consecutiveCorrect = 0;
 
-		/// @brief このレベルでの総合スコアを計算する
-		/// @return このレベルでの総合スコア
-		uint32 total() const
+		/// @brief 総合得点
+		uint32 total = 0;
+
+		/// @brief このレベルでの総合得点を計算する
+		/// @return このレベルでの総合得点
+		uint32 calculateTotal()
 		{
-			return static_cast<uint32>
+			total = static_cast<uint32>
 				(
-					// 捕まえたら +20
-					isCaught ? 20.0 *
+					// 捕まえたら +22
+					isCaught ? (22.0 *
 						// 正解なら x2.2、更に反応速度に応じたボーナスを加算
 						// 不正解なら x1
-						isCorrect ? 2.2 * (2.2 + 1 / (2.2 * response)) : 1 *
+						(isCorrect ? 2.2 * (2.2 + 1 / (2.2 * response)) : 1.0) *
 						// 正誤にかかわらずレベルに応じたボーナスを乗算し、
 						// 連続正解ボーナスを加算
 						Math::Exp(2.2 * level / 10.0) +
-						222 * consecutiveCorrect
+						222 * consecutiveCorrect)
+					// 捕まえなかったら 0 点
 					: 0
 				);
+
+			return total;
 		}
 	};
 

@@ -10,7 +10,7 @@ const LevelData &GameManager::getCurrentPhase()
 	return levels[m_currentPhaseIndex];
 }
 
-LevelData &GameManager::m_currentPhase()
+LevelData &GameManager::m_currentLevel()
 {
 	return levels[m_currentPhaseIndex];
 }
@@ -22,14 +22,14 @@ const CatData &GameManager::setTargetData()
 	return getTargetData();
 }
 
-const Duration &GameManager::m_setTargetAppearTime(uint32 level)
+const Duration &GameManager::m_setTargetSpawnTime(uint32 level)
 {
 	// 定式の詳細は仕様書参照
-	const double &&term1 = m_currentPhase().timeLimit.count() / Random(2, 4);
-	const double&& term2 = level * (m_currentPhase().breedData.total() * m_currentPhase().intervalData.period.count()) / (m_currentPhase().actionDataList.size() * m_currentPhase().breedData.similar);
-	m_targetAppearTime = Duration{ Min((term1 + term2), 0.75 * m_currentPhase().timeLimit.count()) };
+	const double &&term1 = m_currentLevel().timeLimit.count() / Random(2, 4);
+	const double&& term2 = level * (m_currentLevel().breedData.total() * m_currentLevel().intervalData.period.count()) / (m_currentLevel().actionDataList.size() * m_currentLevel().breedData.similar);
+	m_targetSpawnTime = Duration{ Min((term1 + term2), 0.75 * m_currentLevel().timeLimit.count()) };
 
-	return m_targetAppearTime;
+	return m_targetSpawnTime;
 }
 
 void GameManager::announceTarget()
@@ -71,8 +71,8 @@ void GameManager::startPhase()
 	m_currentPhaseIndex = levels.filter([](const LevelData& p) { return p.isCleared; }).size();
 
 	// フェーズデータのうち、登場する猫の数に関するデータを取得する
-	const auto& similarCount = m_currentPhase().breedData.similar;
-	const auto& otherCount = m_currentPhase().breedData.other;
+	const auto& similarCount = m_currentLevel().breedData.similar;
+	const auto& otherCount = m_currentLevel().breedData.other;
 
 	// それぞれ、似ている猫とそうじゃない猫を絞り込む用の配列を用意する
 	Array<std::shared_ptr<CatObject>> similars;
@@ -85,7 +85,7 @@ void GameManager::startPhase()
 	for (const auto& cat : cats)
 	{
 		// それと、ターゲットと同じのを参照しないように保障する
-		if (m_currentPhase().similarity == cat.getCatData().getSameDataCount(getTargetData())
+		if (m_currentLevel().similarity == cat.getCatData().getSameDataCount(getTargetData())
 			and m_target->getCatData() != cat.getCatData())
 		{
 			similars << std::make_shared<CatObject>(cat);
@@ -117,7 +117,7 @@ void GameManager::startPhase()
 		// 類似度を1つ下げて絞り込んだものを looses に入れる
 		for (auto cat : others)
 		{
-			if ((m_currentPhase().similarity - 1) == cat->getCatData().getSameDataCount(getTargetData()))
+			if ((m_currentLevel().similarity - 1) == cat->getCatData().getSameDataCount(getTargetData()))
 			{
 				looses << cat;
 			}
@@ -146,7 +146,7 @@ void GameManager::startPhase()
 	others.shuffle().resize(otherCount);
 
 	// フェーズ中に行うアクションリストの中から、それぞれの発生確率だけを抜き取ったリストで確率分布をつくる
-	m_actionProbabilities = DiscreteDistribution{ m_currentPhase().actionDataList.map([](const LevelData::ActionData& data) { return data.probability; }) };
+	m_actionProbabilities = DiscreteDistribution{ m_currentLevel().actionDataList.map([](const LevelData::ActionData& data) { return data.probability; }) };
 	
 	// 最終的に catsInPhase にまとめて
 	catsInPhase.append(similars)
@@ -154,7 +154,7 @@ void GameManager::startPhase()
 			   .each([this](std::shared_ptr<CatObject>& cat)
 				   {
 					   // アクションを抽選してセットし、現在のフェーズに合わせて速度もランダムに決める
-					   cat->setAction(DiscreteSample(m_currentPhase().actionDataList, m_actionProbabilities)).setRandomVelocity(m_currentPhaseIndex + 1);
+					   cat->setAction(DiscreteSample(m_currentLevel().actionDataList, m_actionProbabilities)).setRandomVelocity(m_currentPhaseIndex + 1);
 				   });
 
 	// ステートをフェーズ中に変更する
@@ -162,10 +162,10 @@ void GameManager::startPhase()
 
 	// 制限時間を決めて、タイマー開始
 	// 1s 猶予を持たせて、気持ち長めにすることで間に入る処理の影響を減らす
-	m_phaseTimer.restart(m_currentPhase().timeLimit + 1s);
+	m_phaseTimer.restart(m_currentLevel().timeLimit + 1s);
 
 	// 現在のフェーズに合わせてターゲットの出現時刻を設定
-	m_setTargetAppearTime(m_currentPhaseIndex + 1);
+	m_setTargetSpawnTime(m_currentPhaseIndex + 1);
 
 	// ターゲットの出現情報をリセット
 	m_appearedTarget = false;
@@ -186,15 +186,15 @@ void GameManager::inPhase()
 	}
 
 	// # スポーン処理
- 	if (false/*m_currentPhase().updateAtInterval()*/)
+ 	if (false/*m_currentLevel().updateAtInterval()*/)
  	{
 		// ターゲットの出現時刻を超えていて、ターゲットがまだ出現していなかったら
-		if (m_phaseTimer.remaining() <= m_targetAppearTime and (not m_appearedTarget))
+		if (m_phaseTimer.remaining() <= m_targetSpawnTime and (not m_appearedTarget))
 		{
 			// ターゲットを湧かせる
 			spawns << std::make_unique<CatObject>(*m_target);
 			// ターゲットにも同様にアクションと速度の設定を行う
-			spawns.back()->setAction(DiscreteSample(m_currentPhase().actionDataList, m_actionProbabilities)).setRandomVelocity(m_currentPhaseIndex + 1);
+			spawns.back()->setAction(DiscreteSample(m_currentLevel().actionDataList, m_actionProbabilities)).setRandomVelocity(m_currentPhaseIndex + 1);
 			// ターゲットの出現フラグをあげる
 			m_appearedTarget = true;
 		}

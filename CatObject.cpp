@@ -37,8 +37,8 @@ Rect CatObject::getMaxDisplayedArea() const
 CatObject &CatObject::setRandomVelocity(size_t level)
 {
 	// マジックナンバーだらけだけど仕様書に書いてあるとおり
-	double min = 75.0 + (1.0 + level / 10.0);
-	double max = 300.0 + (1.0 + Random(1.0, static_cast<double>(level)) / 100.0) * Max(Scene::Width(), Scene::Height()) * ((1 / (0.9 * (level + 0.9))) * Math::Pow(level - 1 + 0.9, 4 * (level - 1 + 0.9)) * Math::Log(level + 0.9));
+	double min = 60.0 + (1.0 + level / 10.0);
+	double max = 90.0 + (1.0 + Random(1.0, static_cast<double>(level)) / 100.0) * Max(Scene::Width(), Scene::Height()) * ((1 / (0.9 * (level + 0.9))) * Math::Pow(level - 1 + 0.9, 4 * (level - 1 + 0.9)) * Math::Log(Math::Pow(level + 0.9, 2)));
 	velocity = RandomVec2(Random(min, max));
 
 	return *this;
@@ -60,6 +60,10 @@ CatObject& CatObject::bound()
 {
 	// オブジェクトの位置を動かす
 	position.moveBy(velocity * Scene::DeltaTime());
+
+	// bound だけ外見状態の更新方法は付け焼刃
+	// 当たり判定領域が画面内にあるかどうかで外見状態を更新する
+	m_appearanceState = m_hitArea.intersects(Scene::Rect()) ? AppearanceState::Visible : AppearanceState::Hidden;
 
 	// オブジェクトの全てが入り切る領域内で X 方向の端に到達したら
 	if (const double rightEdge = Scene::Width() - m_ClientSize.x;
@@ -539,6 +543,21 @@ CatObject& CatObject::drawHitArea()
 {
 	m_hitArea.drawFrame();
 	return *this;
+}
+
+bool CatObject::isVisible() const
+{
+	// In, Visible, Out の場合は見えているとみなす
+	switch (m_appearanceState)
+	{
+		case AppearanceState::In:
+		case AppearanceState::Visible:
+		case AppearanceState::Out:
+			return true;
+		case AppearanceState::Hidden:
+		default:
+			return false;
+	}
 }
 
 bool CatObject::checkCatchable(const CatData &target, bool *const isCorrect) const

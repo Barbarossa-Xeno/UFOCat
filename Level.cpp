@@ -2,41 +2,71 @@
 
 namespace UFOCat
 {
-	LevelData& Level::m_currentPhase()
+	LevelData& Level::m_currentLevel() const
 	{
+		Console << getData().levelIndex;
 		return getData().levels[getData().levelIndex];
 	}
 
-	void Level::m_setTargetAppearTime(size_t level)
+	void Level::m_setTargetSpawnTime(size_t level)
 	{
 		// 定式の詳細は仕様書参照
-		const double&& term1 = m_currentPhase().timeLimit.count() / Random(2, 4);
-		const double&& term2 = level * (m_currentPhase().breedData.total() * m_currentPhase().intervalData.period.count()) / (m_currentPhase().actionDataList.size() * m_currentPhase().breedData.similar);
-		m_targetAppearTime = Duration{ Min((term1 + term2), 0.75 * m_currentPhase().timeLimit.count()) };
+		const double&& term1 = m_currentLevel().timeLimit.count() / Random(2, 4);
+		const double&& term2 = level * (m_currentLevel().breedData.total() * m_currentLevel().intervalData.period.count()) / (m_currentLevel().actionDataList.size() * m_currentLevel().breedData.similar);
+
+		// 一度、ターゲットスポーン時間を設定
+		m_targetAppearTime = Duration{ Min((term1 + term2), 0.75 * m_currentLevel().timeLimit.count()) };
+	}
+
+	bool Level::m_appearedTarget() const
+	{
+		if (not getData().spawns.isEmpty())
+		{
+			// ターゲットは 0番目 に入れるよう保証しているので、0番目が nullptr でなければ出現済み
+			return getData().spawns[0] != nullptr;
+		}
+		else
+		{
+			return false;
+		}
 	}
 
 	Level::Level(const InitData& init)
 		: IScene{ init }
 	{
+		// 前回レベルでスポーンした猫を吹っ飛ばし、unique_ptr も解放する
+		getData().spawns.release();
+
+		// 0 番目に空のポインタを入れて置き、
+		// ターゲットをスポーンさせるときはここを上書きする形にする
+		// こうすることで、0 番目が nullptr かどうかでターゲットの出現判定ができるようになるうえに、
+		// `catchable()` で判定をする際に、ターゲットを最も初めにチェックするので、
+		// 当たり判定を優遇することができる（ミスタップを起こしにくい）
+		// しかも一番初めに描画されるので、ターゲットが他の猫に隠れて見えづらいパターンが発生することもあり、難易度がちょっと上がる
+		getData().spawns << nullptr;
+
+		// 前回レベルで選んだ猫を吹っ飛ばし、shared_ptr も解放する
+		m_selections.release();
+
+		// 先にスコアのレベル情報を設定
+		m_score.level = getData().levelIndex + 1;
+
 		// 前回シーンで決めたターゲットを取得
 		m_target = std::make_shared<CatObject>(getData().cats[getData().targetIndex]);
 
 		// レベルデータのうち、登場する猫の数に関するデータを取得する
-		const auto& similarCount = m_currentPhase().breedData.similar;
-		const auto& otherCount = m_currentPhase().breedData.other;
+		const auto& similarCount = m_currentLevel().breedData.similar;
+		const auto& otherCount = m_currentLevel().breedData.other;
 
 		// それぞれ、似ている猫とそうじゃない猫を絞り込む用の配列を用意する
 		Array<std::shared_ptr<CatObject>> similars;
 		Array<std::shared_ptr<CatObject>> others;
 
-		// 前回レベルで使った猫を吹っ飛ばし、shared_ptr も解放する
-		m_selections.release();
-
 		// 全種類の猫の中から、ターゲットと似ている猫とそうでない猫を振り分ける
 		for (const auto& cat : getData().cats)
 		{
 			// それと、ターゲットと同じのを参照しないように保障する
-			if (m_currentPhase().similarity == cat.getCatData().getSameDataCount(m_target->getCatData())
+			if (m_currentLevel().similarity == cat.getCatData().getSameDataCount(m_target->getCatData())
 				and m_target->getCatData() != cat.getCatData())
 			{
 				similars << std::make_shared<CatObject>(cat);
@@ -68,7 +98,7 @@ namespace UFOCat
 			// 類似度を1つ下げて絞り込んだものを looses に入れる
 			for (const auto &cat : others)
 			{
-				if ((m_currentPhase().similarity - 1) == cat->getCatData().getSameDataCount(m_target->getCatData())
+				if ((m_currentLevel().similarity - 1) == cat->getCatData().getSameDataCount(m_target->getCatData())
 					and m_target->getCatData() != cat->getCatData())
 				{
 					looses << cat;
@@ -98,7 +128,7 @@ namespace UFOCat
 		others.shuffle().resize(otherCount);
 
 		// レベル中に行うアクションリストの中から、それぞれの発生確率だけを抜き取ったリストで確率分布をつくる
-		m_actionProbabilities = DiscreteDistribution{ m_currentPhase().actionDataList.map([](const LevelData::ActionData &data) { return data.probability; }) };
+		m_actionProbabilities = DiscreteDistribution{ m_currentLevel().actionDataList.map([](const LevelData::ActionData &data) { return data.probability; }) };
 
 		// 最終的に catsInPhase にまとめて
 		m_selections.append(similars).append(others);
@@ -108,13 +138,10 @@ namespace UFOCat
 
 		// 制限時間を決めて、タイマー開始
 		// 1s 猶予を持たせて、気持ち長めにすることで間に入る処理の影響を減らす
-		getData().timer.restart(m_currentPhase().timeLimit + 1s);
+		getData().timer.restart(m_currentLevel().timeLimit + 1s);
 
 		// 現在のレベルに合わせてターゲットの出現時刻を設定
-		m_setTargetAppearTime(getData().levelIndex + 1);
-
-		// ターゲットの出現情報をリセット
-		m_appearedTarget = false;
+		m_setTargetSpawnTime(getData().levelIndex + 1);
 	}
 
 	void Level::update()
@@ -128,36 +155,40 @@ namespace UFOCat
 				m_watch.setInterval([this]()
 					{
 						// ターゲットの出現時刻を超えていて、ターゲットがまだ出現していなかったら
-						if (getData().timer.remaining() <= m_targetAppearTime and (not m_appearedTarget))
+						if (getData().timer.remaining() <= m_targetAppearTime and (not m_appearedTarget()))
 						{
 							// ターゲットを（コピーして）湧かせる
-							getData().spawns << std::make_unique<CatObject>(CatObject(*m_target));
+							getData().spawns[0] = std::make_unique<CatObject>(CatObject(*m_target));
 							// ターゲットにも同様にアクションと速度の設定を行う
-							getData().spawns.back()->setAction(DiscreteSample(m_currentPhase().actionDataList, m_actionProbabilities)).setRandomVelocity(getData().levelIndex + 1);
-							// ターゲットの出現フラグをあげる
-							m_appearedTarget = true;
+							getData().spawns[0]->setAction(DiscreteSample(m_currentLevel().actionDataList, m_actionProbabilities)).setRandomVelocity(getData().levelIndex + 1);
 						}
 						else
 						{
 							// ターゲット以外の猫をランダムに指定個選んで（コピーして）追加
-							for (int32 i = 0; i < m_currentPhase().intervalData.count; i++)
+							for (uint32 i = 0; i < m_currentLevel().intervalData.count; i++)
 							{
 								getData().spawns << std::make_unique<CatObject>
 									(
 										// アクションを抽選してセットし、現在のレベルに合わせて速度もランダムに決める
 										CatObject(*(m_selections.choice()))
-											.setAction(DiscreteSample(m_currentPhase().actionDataList, m_actionProbabilities))
+											.setAction(DiscreteSample(m_currentLevel().actionDataList, m_actionProbabilities))
 												.setRandomVelocity(getData().levelIndex + 1)
 									);
 							}
 						}
-					}, m_currentPhase().intervalData.period);
+					}, m_currentLevel().intervalData.period);
 
 				// ## 制限時間内と時間超過後での処理
 				if (not getData().timer.reachedZero())
 				{
+					// ターゲットから順に捜査する
 					for (const auto& cat : getData().spawns)
 					{
+						if (not cat)
+						{
+							continue;
+						}
+
 						// 猫をタッチしたら、その正誤を代入
 						if (cat->act().checkCatchable(m_target->getCatData(), &m_score.isCorrect))
 						{
@@ -170,11 +201,50 @@ namespace UFOCat
 							// 反応時間を記録
 							m_score.response = (m_targetAppearTime - getData().timer.remaining()).count();
 
-							// レベル終了へ
+							// 連続正解数を記録
+							
+							// 仮変数
+							uint32 temp_consecutive = 0;
+
+							for (size_t i = 0; i < getData().scores.size() - 1; i++)
+							{
+								// 次のスコアデータが存在しない場合は終了
+								if (getData().scores[i + 1].level == InvalidIndex)
+								{
+									break;
+								}
+
+								// 今のレベルと次のレベルの両方で正解していたら増やす
+								if (getData().scores[i].isCorrect and getData().scores[i + 1].isCorrect)
+								{
+									++temp_consecutive;
+								}
+								else
+								{
+									temp_consecutive = 0;
+								}
+							}
+
+							// 記録
+							m_score.consecutiveCorrect = temp_consecutive;
+
+							// レベルデータにもクリア情報を反映
+							m_currentLevel().isCleared = m_score.isCorrect;
+
+							// プレイ終了へ
 							m_state = Level::State::Finish;
 							m_watch.reset();
 							break;
 						}
+					}
+
+					// ターゲットが初めて画面上に見えたかどうかを記録する
+					if (getData().spawns[0] and (not m_targetFirstVisible))
+					{
+						m_targetFirstVisible = getData().spawns[0]->isVisible();
+
+						// 初めて見えた時点での残り時間に変更しておく
+						m_targetAppearTime = getData().timer.remaining();
 					}
 				}
 				else
@@ -197,12 +267,17 @@ namespace UFOCat
 
 			case Level::State::After:
 			{
+				// TODO: 「次へ」ボタンを作るとき、レベルの上限が来たら非表示にしつつ、クリアマークのリセットなど、レベルデータのリセットを行うようにする
+
 				if (m_gui.toResult.isPressed())
 				{
+					// スコアを格納する
+					getData().scores[getData().levelIndex] = m_score;
+					// 結果シーンへ
 					changeScene(UFOCat::State::Result);
 				}
 			}
-				break;
+			break;
 			default:
 				break;
 		}
@@ -214,6 +289,11 @@ namespace UFOCat
 		{
 			for (const auto& cat : getData().spawns)
 			{
+				if (not cat)
+				{
+					continue;
+				}
+
 				cat->draw().drawHitArea();
 			}
 		}
@@ -276,7 +356,7 @@ namespace UFOCat
 						FontAsset(U"Test")(U"時間切れ！").drawAt(Scene::CenterF().x, Scene::CenterF().y + 150);
 					}
 
-					m_gui.toResult.set({ 10.0, Scene::Height() - 70.0 }, FontAsset(U"Test"), U"結果へ").draw();
+					m_gui.toResult.set({ 10.0, Scene::Height() - 70.0 }, FontAsset(U"Test"), U"結果・タイトルへ").draw();
 				}
 			}
 				break;

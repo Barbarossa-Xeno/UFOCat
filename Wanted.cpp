@@ -8,7 +8,7 @@ namespace UFOCat
 		getData().targetIndex = Random(getData().cats.size() - 1);
 		m_target = std::make_unique<CatObject>(getData().cats[getData().targetIndex]);
 
-		// クリアしているフェーズの数は、現在行っているフェーズのインデックスと同じなのを利用する
+		// 現在行っているレベルのインデックスは、クリアしているレベルの数と同じなのを利用する
 		// （そのフェーズが終わり次第、isCleared のフラグを上げるため）
 		getData().levelIndex = getData().levels.filter([](const LevelData &p) { return p.isCleared; }).size();
 

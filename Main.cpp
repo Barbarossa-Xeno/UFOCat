@@ -4,6 +4,7 @@
 # include "Title.hpp"
 # include "Wanted.hpp"
 # include "Level.hpp"
+# include "Result.hpp"
 
 using namespace UFOCat;
 
@@ -14,9 +15,10 @@ void Main()
 
 	App app;
 
-	app.add<Title>(UFOCat::State::Title);
-	app.add<Wanted>(UFOCat::State::Wanted);
-	app.add<Level>(UFOCat::State::Level);
+	app.add<Title>(State::Title);
+	app.add<Wanted>(State::Wanted);
+	app.add<Level>(State::Level);
+	app.add<Result>(State::Result);
 
 	// 動作確認用のコピー
 	/*GameManager& game = GameManager::Instance();
