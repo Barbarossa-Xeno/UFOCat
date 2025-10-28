@@ -28,32 +28,6 @@ namespace UFOCat::Component
 		mutable std::unique_ptr<ButtonRegion> m_selfRegion = nullptr;
 
 	public:
-		// TODO: set~ 系メソッド もしいらなくなったら消す (set 以外)
-
-		/// @brief ボタンの左上の位置を設定する
-		/// @param position 左上の位置
-		/// @return 自分自身の参照
-		ButtonRegion &setPosition(const Vec2 &position) const;
-
-		/// @brief ボタンのテキストに使うフォントを設定する
-		/// @param font フォント
-		/// @return 自分自身の参照
-		ButtonRegion &setFont(const Font &font) const;
-
-		/// @brief ボタンに表示するテキストを設定する
-		/// @param text テキスト
-		/// @return 自分自身の参照
-		ButtonRegion &setText(const String &text) const;
-
-		/// @brief ボタンの有効・無効を設定する
-		/// @param isEnabled 有効かどうか
-		/// @return 自分自身の参照
-		ButtonRegion &setEnabled(bool isEnabled) const;
-
-		/// @brief ボタンの内側の余白を設定する
-		/// @param padding パディング
-		/// @return 自分自身の参照
-		ButtonRegion &setPadding(const Vec2 &padding) const;
 
 		/// @brief ボタンの各種パラメータを一括で設定する
 		/// @param position 左上の位置

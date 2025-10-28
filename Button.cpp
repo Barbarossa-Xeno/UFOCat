@@ -2,36 +2,6 @@
 
 namespace UFOCat::Component
 {
-	ButtonRegion &Button::setPosition(const Vec2 &position) const
-	{
-		m_selfRegion = std::make_unique<ButtonRegion>(position, m_font, m_text, m_isEnabled, m_padding);
-		return *m_selfRegion;
-	}
-
-	ButtonRegion &Button::setFont(const Font &font) const
-	{
-		m_selfRegion = std::make_unique<ButtonRegion>(m_position, font, m_text, m_isEnabled, m_padding);
-		return *m_selfRegion;
-	}
-
-	ButtonRegion &Button::setText(const String &text) const
-	{
-		m_selfRegion = std::make_unique<ButtonRegion>(m_position, m_font, text, m_isEnabled, m_padding);
-		return *m_selfRegion;
-	}
-
-	ButtonRegion &Button::setEnabled(bool isEnabled) const
-	{
-		m_selfRegion = std::make_unique<ButtonRegion>(m_position, m_font, m_text, isEnabled, m_padding);
-		return *m_selfRegion;
-	}
-
-	ButtonRegion &Button::setPadding(const Vec2 &padding) const
-	{
-		m_selfRegion = std::make_unique<ButtonRegion>(m_position, m_font, m_text, m_isEnabled, padding);
-		return *m_selfRegion;
-	}
-
 	ButtonRegion &Button::set(const Vec2& position, const Font& font, const String& text, bool isEnabled, const Vec2& padding) const
 	{
 		m_selfRegion = std::make_unique<ButtonRegion>(position, font, text, isEnabled, padding);
