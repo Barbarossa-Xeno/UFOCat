@@ -79,13 +79,22 @@ namespace UFOCat
 		static void SetLevelCount(size_t count);
 	};
 
-	/// @brief 1プレイ全体のスコアのデータ
+	/// @brief 1ゲームをプレイしたとき全体のスコアのデータ
 	struct Score
 	{
+		/// @brief 各レベルのスコアデータ
+		/// @remarks 途中でレベルをクリアできなかった場合は、そのレベル以降のデータは存在しない
 		Array<ScoreData> scoreDataList;
 
 		/// @brief 
 		ScoreTitleData titleData;
+
+		size_t total = 0;
+
+		// TODO: インターフェースとかでやるとおもろいかも
+		/// @brief この1ゲーム全体での総合得点（複数レベルの総合得点の合計）を計算する
+		/// @return この1ゲームでの総合得点
+		size_t calculateTotal();
 
 		const static std::array<ScoreTitleData, 5> Titles;
 	};

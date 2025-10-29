@@ -5,7 +5,6 @@ namespace UFOCat::Component
 	/// @brief ボタン
 	class Button
 	{
-	protected:
 
 		Font m_font;
 
@@ -19,12 +18,11 @@ namespace UFOCat::Component
 		/// @remarks mutable にして描画メソッドでの値の更新を許可する
 		mutable RectF m_region;
 
-	private:
 		/// @brief ボタンのデータから生成する ButtonRegion のポインタ
 		/// @remarks ButtonRegion のメソッドチェーンと、Button のインスタンスを参照したときに、
 		/// 同じ ButtonRegion を返すために使用するので、mutable にしている
 		/// なお、ButtonRegion には継承されない（参照一貫性を保つため）
-		mutable std::unique_ptr<Button> m_selfRegion = nullptr;
+		mutable std::unique_ptr<Button> m_instance = nullptr;
 
 	public:
 
@@ -88,6 +86,66 @@ namespace UFOCat::Component
 		/// @brief 中央位置を指定してボタンを描画する
 		/// @param position 中央位置
 		void drawAt(const Vec2& position) const;
+	};
+
+
+	class ProgressBar
+	{
+		RectF m_region;
+
+		double m_progress = 0.0;
+
+		mutable std::unique_ptr<ProgressBar> m_instance = nullptr;
+
+		const double m_roundness = 6;
+
+	public:
+
+		ProgressBar &setSize(const SizeF &size) const;
+
+		/// @brief プログレスバーの値を設定する
+		/// @param progress パラメータ (0.0 〜 1.0)
+		ProgressBar &setProgress(double progress) const;
+
+		ProgressBar() = default;
+
+		ProgressBar(const SizeF &size, double roundness, double progress = 0.0);
+
+		/// @brief 左上位置を指定してボタンを描画する
+		/// @param position 左上位置
+		void draw(const Vec2& position, const SizeF &barScale) const;
+
+		/// @brief 中央上位置を指定してボタンを描画する
+		/// @param position 中央上位置
+		void draw(const Arg::topCenter_<Vec2>& position, const SizeF &barScale) const;
+
+		/// @brief 右上位置を指定してボタンを描画する
+		/// @param position 右上位置
+		void draw(const Arg::topRight_<Vec2>& position, const SizeF& barScale) const;
+
+		/// @brief 中央左位置を指定してボタンを描画する
+		/// @param position 中央左上位置
+		void draw(const Arg::leftCenter_<Vec2>& position, const SizeF& barScale) const;
+
+		/// @brief 中央右位置を指定してボタンを描画する
+		/// @param position 中央右位置
+		void draw(const Arg::rightCenter_<Vec2>& position, const SizeF& barScale) const;
+
+		/// @brief 左下位置を指定してボタンを描画する
+		/// @param position 左下位置
+		void draw(const Arg::bottomLeft_<Vec2>& position, const SizeF& barScale) const;
+
+		/// @brief 中央下位置を指定してボタンを描画する
+		/// @param position 中央下位置
+		void draw(const Arg::bottomCenter_<Vec2>& position, const SizeF& barScale) const;
+
+		/// @brief 右下位置を指定しボタンを描画する
+		/// @param position 右下位置
+		void draw(const Arg::bottomRight_<Vec2>& position, const SizeF& barScale) const;
+
+		/// @brief 中央位置を指定してボタンを描画する
+		/// @param position 中央位置
+		void drawAt(const Vec2& position, const SizeF& barScale) const;
 	};
 
 	// TODO: 後で作る！！

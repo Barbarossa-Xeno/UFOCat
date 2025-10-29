@@ -7,7 +7,7 @@ namespace UFOCat
 		return getData().levels[getData().levelIndex];
 	}
 
-	Array<ScoreData> &Level::m_currentScores() const
+	Array<ScoreData> &Level::m_currentScoreDatas() const
 	{
 		return getData().scores.back().scoreDataList;
 	}
@@ -216,16 +216,16 @@ namespace UFOCat
 						// 仮変数
 						uint32 temp_consecutive = 0;
 
-						for (size_t i = 0; i < m_currentScores().size() - 1; i++)
+						for (size_t i = 0; i < m_currentScoreDatas().size() - 1; i++)
 						{
 							// 次のスコアデータが存在しない場合は終了
-							if (m_currentScores()[i + 1].level == InvalidIndex)
+							if (m_currentScoreDatas()[i + 1].level == InvalidIndex)
 							{
 								break;
 							}
 
 							// 今のレベルと次のレベルの両方で正解していたら増やす
-							if (m_currentScores()[i].isCorrect and m_currentScores()[i + 1].isCorrect)
+							if (m_currentScoreDatas()[i].isCorrect and m_currentScoreDatas()[i + 1].isCorrect)
 							{
 								++temp_consecutive;
 							}
@@ -284,7 +284,7 @@ namespace UFOCat
 				m_currentLevel().isCleared = m_score.isCorrect;
 
 				// スコアを格納する
-				m_currentScores()[getData().levelIndex] = m_score;
+				m_currentScoreDatas()[getData().levelIndex] = m_score;
 
 				// 次のレベル初期化へ
 				changeScene(UFOCat::State::Wanted);
@@ -299,7 +299,7 @@ namespace UFOCat
 					m_currentLevel().isCleared = m_score.isCorrect;
 
 					// スコアを格納する
-					m_currentScores()[getData().levelIndex] = m_score;
+					m_currentScoreDatas()[getData().levelIndex] = m_score;
 
 					// 結果シーンへ
 					changeScene(UFOCat::State::Result);
@@ -311,7 +311,7 @@ namespace UFOCat
 					// それでOKだったら、
 					{
 						// スコアを格納する
-						m_currentScores()[getData().levelIndex] = m_score;
+						m_currentScoreDatas()[getData().levelIndex] = m_score;
 
 						// 結果シーンへ
 						changeScene(UFOCat::State::Result);
@@ -328,7 +328,7 @@ namespace UFOCat
 # if _DEBUG    // デバッグ機能：Ctrl + Shift + S でスキップ
 		if (KeyControl.pressed() and KeyShift.pressed() and KeyS.pressed())
 		{
-			m_currentScores()[getData().levelIndex] = ScoreData{ getData().levelIndex + 1, true, true, 0.5, getData().levelIndex };
+			m_currentScoreDatas()[getData().levelIndex] = ScoreData{ getData().levelIndex + 1, true, true, 0.5, getData().levelIndex };
 			getData().timer.reset();
 			changeScene(UFOCat::State::Result);
 		}

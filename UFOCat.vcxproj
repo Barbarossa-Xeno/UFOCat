@@ -124,6 +124,7 @@
     <ClCompile Include="Level.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="LevelData.cpp" />
+    <ClCompile Include="ProgressBar.cpp" />
     <ClCompile Include="Result.cpp" />
     <ClCompile Include="Scrollable.cpp" />
     <ClCompile Include="stdafx.cpp">

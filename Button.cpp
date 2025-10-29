@@ -4,8 +4,8 @@ namespace UFOCat::Component
 {
 	Button &Button::set(const Font& font, const String& text, bool isEnabled, const Vec2& padding) const
 	{
-		m_selfRegion = std::make_unique<Button>(font, text, isEnabled, padding);
-		return *m_selfRegion;
+		m_instance = std::make_unique<Button>(font, text, isEnabled, padding);
+		return *m_instance;
 	}
 
 	Button::Button(const Font &font, const String &text, bool isEnabled, const Vec2 &padding)
@@ -19,10 +19,10 @@ namespace UFOCat::Component
 
 	bool Button::isPressed() const
 	{
-		// 束縛している ButtonRegion があればそれを使う
+		// 束縛している Button があればそれを使う
 		// なければ自分自身を使う
 		// （ないのは、インスタンスを作ったきりで set 系メソッドを実行していないとき）
-		Button const* ptr = m_selfRegion ? m_selfRegion.get() : this;
+		const Button *const ptr = m_instance ? m_instance.get() : this;
 
 		// マウスカーソルがボタンの上にある場合
 		if (ptr->m_isEnabled and ptr->m_region.mouseOver())

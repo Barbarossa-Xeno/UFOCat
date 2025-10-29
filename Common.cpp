@@ -63,6 +63,17 @@ void UFOCat::ScoreData::SetLevelCount(size_t count)
 	GetMaxTheoretical(count);
 }
 
+size_t UFOCat::Score::calculateTotal()
+{
+	// 一度すべてのスコアで総合得点を反映させる
+	scoreDataList.each([](ScoreData& data) { data.calculateTotal(); });
+
+	// それらを合計する
+	total =  (scoreDataList >> [](const ScoreData& data) { return data.total; }).sum();
+
+	return total;
+}
+
 Array<CatObject> UFOCat::LoadCatData()
 {
 	// JSON ファイルからデータを読み込む

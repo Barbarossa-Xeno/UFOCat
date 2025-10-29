@@ -18,10 +18,10 @@ namespace UFOCat
 		}
 		m_gui{};
 
-		ScoreData& m_currentScore() const;
+		ScoreData& m_currentScoreData() const;
 
-		// TODO: m_currentScores() は2個目 親クラスでの共通化を考える
-		Array<ScoreData> &m_currentScores() const;
+		// TODO: m_currentScoreDatas() は2個目 親クラスでの共通化を考える
+		Array<ScoreData> &m_currentScoreDatas() const;
 
 	public:
 		Result(const InitData &init);

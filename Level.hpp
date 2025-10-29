@@ -72,7 +72,7 @@ namespace UFOCat
 
 		/// @brief 
 		/// @return 
-		Array<ScoreData> &m_currentScores() const;
+		Array<ScoreData> &m_currentScoreDatas() const;
 
 		/// @brief ターゲットが出現する時間を引数に応じてランダムに決め、`m_targetAppearTime` に設定する
 		/// @param level 整数値（1 ~ 10 の範囲で、特に現在のレベル値を入れることを想定）

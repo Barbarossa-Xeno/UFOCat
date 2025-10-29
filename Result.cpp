@@ -3,12 +3,12 @@
 namespace UFOCat
 {
 
-	ScoreData &Result::m_currentScore() const
+	ScoreData &Result::m_currentScoreData() const
 	{
 		return getData().scores.back().scoreDataList[getData().levelIndex];
 	}
 
-	Array<ScoreData> &Result::m_currentScores() const
+	Array<ScoreData> &Result::m_currentScoreDatas() const
 	{
 		return getData().scores.back().scoreDataList;
 	}
@@ -16,9 +16,24 @@ namespace UFOCat
 	Result::Result(const InitData &init)
 		: IScene{ init }
 	{
-		// 現在のレベルの総合得点を計算しておく
-		m_currentScore().calculateTotal();
-		
+		// 総合得点を計算しておく
+		const uint32 total = getData().scores.back().calculateTotal();
+
+		// 閾値の割合がデカいほうから順に走査
+		for (size_t i = Score::Titles.size(); --i > 0;)
+		{
+			// 閾値よりも総合得点が大きければ、その称号を与える
+			if (total >= Score::Titles[i].threshold * ScoreData::GetMaxTheoretical())
+			{
+				getData().scores.back().titleData = Score::Titles[i];
+				break;
+			}
+			// 最後まで当てはまらなかったら、もう、一番下の称号を与える
+			else if (i == 0)
+			{
+				getData().scores.back().titleData = Score::Titles[0];
+			}
+		}
 	}
 
 
@@ -26,23 +41,66 @@ namespace UFOCat
 	{
 		if (m_gui.toTitle.isPressed())
 		{
+			// TODO: リセット処理しましょう
+
 			changeScene(UFOCat::State::Title);
 		}
 
 		{
-			if (const size_t total = m_currentScore().total;
+			if (const size_t total = getData().scores.back().total;
 				tempScore < total)
 			{
-				m_scoreCountUpWatch.setInterval([&]()
-				{
-					++tempScore;
-				}, Duration(2.0 / total - Scene::DeltaTime()));
-			}
-		}
+				// インターバルは 2.0s を目指すが、引き算の結果がデルタタイムより小さくなった場合は、デルタタイムを使用する
+				double interval = Max(2.0 / total - Scene::DeltaTime(), Scene::DeltaTime());
 
-		{
-			double t = 1 / (ScoreData::GetMaxTheoretical());
-			m_gui.scoreBar.setProgress();
+				// 最終表示にもっていくのに 5.0s 以上かかる場合は、
+				// tempScore が大体 5.0s かけて増やした時の値以上になっていることを確認して
+				// 途中でぶちぎる
+				if (interval * total >= 5.0
+					and tempScore >= 5.0 / interval)
+				{
+					// 直接代入
+					tempScore = total;
+
+					// 既に記録された称号での閾値計算に切り替えて、プログレスバーに反映
+					double t = static_cast<double>(total) / (getData().scores.back().titleData.threshold * ScoreData::GetMaxTheoretical());
+					m_gui.scoreBar.setProgress(t);
+				}
+				else
+				{
+					m_scoreCountUpWatch.setInterval([&]()
+						{
+							++tempScore;
+
+							// 閾値の割合がデカいほうから順に走査
+							for (auto itr = Score::Titles.begin(); itr != Score::Titles.end(); ++itr)
+							{
+								if (double realThreshold = itr->threshold * ScoreData::GetMaxTheoretical();
+									tempScore <= realThreshold)
+								{
+									// 一番下の称号の場合、そのまま進捗を設定
+									if (itr == Score::Titles.begin())
+									{
+										double t = static_cast<double>(tempScore) / realThreshold;
+										m_gui.scoreBar.setProgress(t);
+									}
+									// それ以外の場合、前の称号の閾値を引いた分だけ進捗を設定
+									else
+									{
+										// 一個下の閾値をフィードバック
+										double feedbacked = static_cast<double>(tempScore) - std::prev(itr)->threshold * ScoreData::GetMaxTheoretical();
+
+										double t = feedbacked / realThreshold;
+										m_gui.scoreBar.setProgress(t);
+									}
+									break;
+								}
+							}
+						}, Duration());
+				}
+
+				
+			}
 		}
 	}
 
@@ -50,32 +108,32 @@ namespace UFOCat
 	{
 		// TODO: 進んだレベル分だけ表示、アニメーションスクロール、終わった後自分でスクロール可
 
-		/*if (m_currentScore().isCaught)
+		/*if (m_currentScoreData().isCaught)
 		{
 			FontAsset(U"Test")(U"猫を捕まえた！").draw(Arg::leftCenter = Vec2{ 30.0, Scene::Center().y - 120.0 });
 			FontAsset(U"Test")(U"+22").draw(Arg::rightCenter = Vec2{ Scene::Width() - 30.0, Scene::Center().y - 120.0 });
 
-			if (m_currentScore().isCorrect)
+			if (m_currentScoreData().isCorrect)
 			{
 				FontAsset(U"Test")(U"正解ボーナス！").draw(Arg::leftCenter = Vec2{ 30.0, Scene::Center().y - 60.0 });
 				FontAsset(U"Test")(U"×2.2").draw(Arg::rightCenter = Vec2{ Scene::Width() - 30.0, Scene::Center().y - 60.0 });
 
 				{
-					FontAsset(U"Test")(U"{:.2}秒で捕まえた！"_fmt(m_currentScore().response)).draw(Arg::leftCenter = Vec2{ 30.0, Scene::Center().y });
-					double factor = 2.2 + 1 / (2.2 * m_currentScore().response);
+					FontAsset(U"Test")(U"{:.2}秒で捕まえた！"_fmt(m_currentScoreData().response)).draw(Arg::leftCenter = Vec2{ 30.0, Scene::Center().y });
+					double factor = 2.2 + 1 / (2.2 * m_currentScoreData().response);
 					FontAsset(U"Test")(U"×{:.2}"_fmt(factor)).draw(Arg::rightCenter = Vec2{ Scene::Width() - 30.0, Scene::Center().y });
 				}
 
 				{
 					FontAsset(U"Test")(U"レベルボーナス！").draw(Arg::leftCenter = Vec2{ 30.0, Scene::Center().y + 60.0 });
-					double factor = Math::Exp(2.2 * (m_currentScore().level) / 10.0);
+					double factor = Math::Exp(2.2 * (m_currentScoreData().level) / 10.0);
 					FontAsset(U"Test")(U"×{:.2}"_fmt(factor)).draw(Arg::rightCenter = Vec2{ Scene::Width() - 30.0, Scene::Center().y + 60.0 });
 				}
 
-				if (m_currentScore().consecutiveCorrect > 0)
+				if (m_currentScoreData().consecutiveCorrect > 0)
 				{
 					FontAsset(U"Test")(U"連続正解ボーナス！").draw(Arg::leftCenter = Vec2{ 30.0, Scene::Center().y + 120.0 });
-					FontAsset(U"Test")(U"+{}"_fmt(222 * m_currentScore().consecutiveCorrect)).draw(Arg::rightCenter = Vec2{ Scene::Width() - 30.0, Scene::Center().y + 120.0 });
+					FontAsset(U"Test")(U"+{}"_fmt(222 * m_currentScoreData().consecutiveCorrect)).draw(Arg::rightCenter = Vec2{ Scene::Width() - 30.0, Scene::Center().y + 120.0 });
 				}
 			}
 
