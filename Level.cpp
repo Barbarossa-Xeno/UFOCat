@@ -7,6 +7,11 @@ namespace UFOCat
 		return getData().levels[getData().levelIndex];
 	}
 
+	Array<ScoreData> &Level::m_currentScores() const
+	{
+		return getData().scores.back().scoreDataList;
+	}
+
 	void Level::m_setTargetSpawnTime(size_t level)
 	{
 		// 定式の詳細は仕様書参照
@@ -101,7 +106,7 @@ namespace UFOCat
 			Array<std::shared_ptr<CatObject>> looses;
 
 			// 類似度を1つ下げて絞り込んだものを looses に入れる
-			for (const auto &cat : others)
+			for (const auto& cat : others)
 			{
 				if ((m_currentLevel().similarity - 1) == cat->getCatData().getSameDataCount(m_target->getCatData())
 					and m_target->getCatData() != cat->getCatData())
@@ -121,7 +126,7 @@ namespace UFOCat
 				{
 					// others から補うことになった場合は補ったやつを元のリストから消す
 					// others はもともと多く絞り込まれるはずなので、枯渇することはない
-					const auto &instead = others.shuffle().choice();
+					const auto& instead = others.shuffle().choice();
 					similars << instead;
 					others.remove(instead);
 				}
@@ -133,7 +138,7 @@ namespace UFOCat
 		others.shuffle().resize(otherCount);
 
 		// レベル中に行うアクションリストの中から、それぞれの発生確率だけを抜き取ったリストで確率分布をつくる
-		m_actionProbabilities = DiscreteDistribution{ m_currentLevel().actionDataList.map([](const LevelData::ActionData &data) { return data.probability; }) };
+		m_actionProbabilities = DiscreteDistribution{ m_currentLevel().actionDataList.map([](const LevelData::ActionData& data) { return data.probability; }) };
 
 		// 最終的に catsInPhase にまとめて
 		m_selections.append(similars).append(others);
@@ -154,176 +159,176 @@ namespace UFOCat
 		// # ステート依存処理
 		switch (m_state)
 		{
-			case Level::State::Playing:
-			{
-				// ## スポーン処理
-				m_watch.setInterval([this]()
-					{
-						// ターゲットの出現時刻を超えていて、ターゲットがまだ出現していなかったら
-						if (getData().timer.remaining() <= m_targetAppearTime and (not m_hasAppearedTarget()))
-						{
-							// ターゲットを（コピーして）湧かせる
-							getData().spawns[0] = std::make_unique<CatObject>(m_target->clone());
-							// ターゲットにも同様にアクションと速度の設定を行う
-							getData().spawns[0]->setAction(DiscreteSample(m_currentLevel().actionDataList, m_actionProbabilities)).setRandomVelocity(getData().levelIndex + 1);
-						}
-						else
-						{
-							// ターゲット以外の猫をランダムに指定個選んで（コピーして）追加
-							for (uint32 i = 0; i < m_currentLevel().intervalData.count; i++)
-							{
-								getData().spawns << std::make_unique<CatObject>
-									(
-										// アクションを抽選してセットし、現在のレベルに合わせて速度もランダムに決める
-										m_selections.choice()->clone()
-											.setAction(DiscreteSample(m_currentLevel().actionDataList, m_actionProbabilities))
-												.setRandomVelocity(getData().levelIndex + 1)
-									);
-							}
-						}
-					}, m_currentLevel().intervalData.period);
-
-				// ## 制限時間内と時間超過後での処理
-				if (not getData().timer.reachedZero())
+		case Level::State::Playing:
+		{
+			// ## スポーン処理
+			m_watch.setInterval([this]()
 				{
-					// ターゲットから順に捜査する
-					for (const auto& cat : getData().spawns)
-					{
-						if (not cat)
-						{
-							continue;
-						}
-
-						// 猫をタッチしたら、その正誤を代入
-						if (cat->act().checkCatchable(m_target->getCatData(), &m_score.isCorrect))
-						{
-							// 捕まえた猫を記録
-							m_caught = &cat;
-
-							// ターゲットとの正誤にかかわらず、触ったことにはしておく
-							m_score.isCaught = true;
-							
-							// 反応時間を記録
-							m_score.response = (m_targetAppearTime - getData().timer.remaining()).count();
-
-							// 連続正解数を記録
-							
-							// 仮変数
-							uint32 temp_consecutive = 0;
-
-							for (size_t i = 0; i < getData().scores.size() - 1; i++)
-							{
-								// 次のスコアデータが存在しない場合は終了
-								if (getData().scores[i + 1].level == InvalidIndex)
-								{
-									break;
-								}
-
-								// 今のレベルと次のレベルの両方で正解していたら増やす
-								if (getData().scores[i].isCorrect and getData().scores[i + 1].isCorrect)
-								{
-									++temp_consecutive;
-								}
-								else
-								{
-									temp_consecutive = 0;
-								}
-							}
-
-							// 記録
-							m_score.consecutiveCorrect = temp_consecutive;
-
-							// プレイ終了へ
-							m_state = Level::State::Finish;
-							m_watch.reset();
-							break;
-						}
-					}
-
-					// ターゲットが初めて画面上に見えたかどうかを記録する
-					if (getData().spawns[0] and (not m_targetFirstVisible))
-					{
-						m_targetFirstVisible = getData().spawns[0]->isVisible();
-
-						// 初めて見えた時点での残り時間に変更しておく
-						m_targetAppearTime = getData().timer.remaining();
-					}
+				// ターゲットの出現時刻を超えていて、ターゲットがまだ出現していなかったら
+				if (getData().timer.remaining() <= m_targetAppearTime and (not m_hasAppearedTarget()))
+				{
+					// ターゲットを（コピーして）湧かせる
+					getData().spawns[0] = std::make_unique<CatObject>(m_target->clone());
+					// ターゲットにも同様にアクションと速度の設定を行う
+					getData().spawns[0]->setAction(DiscreteSample(m_currentLevel().actionDataList, m_actionProbabilities)).setRandomVelocity(getData().levelIndex + 1);
 				}
 				else
 				{
-					// 制限時間が終わったら、終了表示を出しに行く
-					m_state = Level::State::Finish;
+					// ターゲット以外の猫をランダムに指定個選んで（コピーして）追加
+					for (uint32 i = 0; i < m_currentLevel().intervalData.count; i++)
+					{
+						getData().spawns << std::make_unique<CatObject>
+							(
+								// アクションを抽選してセットし、現在のレベルに合わせて速度もランダムに決める
+								m_selections.choice()->clone()
+									.setAction(DiscreteSample(m_currentLevel().actionDataList, m_actionProbabilities))
+										.setRandomVelocity(getData().levelIndex + 1)
+							);
+					}
+				}
+				}, m_currentLevel().intervalData.period);
+
+			// ## 制限時間内と時間超過後での処理
+			if (not getData().timer.reachedZero())
+			{
+				// ターゲットから順に捜査する
+				for (const auto& cat : getData().spawns)
+				{
+					if (not cat)
+					{
+						continue;
+					}
+
+					// 猫をタッチしたら、その正誤を代入
+					if (cat->act().checkCatchable(m_target->getCatData(), &m_score.isCorrect))
+					{
+						// 捕まえた猫を記録
+						m_caught = &cat;
+
+						// ターゲットとの正誤にかかわらず、触ったことにはしておく
+						m_score.isCaught = true;
+
+						// 反応時間を記録
+						m_score.response = (m_targetAppearTime - getData().timer.remaining()).count();
+
+						// 連続正解数を記録
+
+						// 仮変数
+						uint32 temp_consecutive = 0;
+
+						for (size_t i = 0; i < m_currentScores().size() - 1; i++)
+						{
+							// 次のスコアデータが存在しない場合は終了
+							if (m_currentScores()[i + 1].level == InvalidIndex)
+							{
+								break;
+							}
+
+							// 今のレベルと次のレベルの両方で正解していたら増やす
+							if (m_currentScores()[i].isCorrect and m_currentScores()[i + 1].isCorrect)
+							{
+								++temp_consecutive;
+							}
+							else
+							{
+								temp_consecutive = 0;
+							}
+						}
+
+						// 記録
+						m_score.consecutiveCorrect = temp_consecutive;
+
+						// プレイ終了へ
+						m_state = Level::State::Finish;
+						m_watch.reset();
+						break;
+					}
+				}
+
+				// ターゲットが初めて画面上に見えたかどうかを記録する
+				if (getData().spawns[0] and (not m_targetFirstVisible))
+				{
+					m_targetFirstVisible = getData().spawns[0]->isVisible();
+
+					// 初めて見えた時点での残り時間に変更しておく
+					m_targetAppearTime = getData().timer.remaining();
 				}
 			}
-			break;
-
-			case Level::State::Finish:
+			else
 			{
-				// 3s 経ったらレベル終わり画面を出しに行く
-				m_watch.setTimeout([this]()
-					{
-						m_state = Level::State::After;
-					}, 3s);
+				// 制限時間が終わったら、終了表示を出しに行く
+				m_state = Level::State::Finish;
 			}
-			break;
+		}
+		break;
 
-			case Level::State::After:
-			{
-				// TODO: 「次へ」ボタンを作るとき、クリアマークのリセットなど、レベルデータのリセットを行うようにする
-				// ボタン内の利用可能状態によって押せるかどうか決まることが保証されるので
-				// この条件式はボタンが利用不可能なときには通過しない
-				if (m_gui.toNextLevel.isPressed())
+		case Level::State::Finish:
+		{
+			// 3s 経ったらレベル終わり画面を出しに行く
+			m_watch.setTimeout([this]()
 				{
-					// 次に進む場合は、レベルデータにもクリア情報を反映
-					// これにより、Wanted シーンの初期化で自動的に次のレベルへ進む
+				m_state = Level::State::After;
+				}, 3s);
+		}
+		break;
+
+		case Level::State::After:
+		{
+			// TODO: 「次へ」ボタンを作るとき、クリアマークのリセットなど、レベルデータのリセットを行うようにする
+			// ボタン内の利用可能状態によって押せるかどうか決まることが保証されるので
+			// この条件式はボタンが利用不可能なときには通過しない
+			if (m_gui.toNextLevel.isPressed())
+			{
+				// 次に進む場合は、レベルデータにもクリア情報を反映
+				// これにより、Wanted シーンの初期化で自動的に次のレベルへ進む
+				m_currentLevel().isCleared = m_score.isCorrect;
+
+				// スコアを格納する
+				m_currentScores()[getData().levelIndex] = m_score;
+
+				// 次のレベル初期化へ
+				changeScene(UFOCat::State::Wanted);
+			}
+
+			if (m_gui.toResult.isPressed())
+			{
+				if (not m_isAvailableNextLevel())
+				{
+					// 次のレベルが存在しないためにタイトルへ戻らなければならない場合は、
+					// レベルデータにもクリア情報を反映
 					m_currentLevel().isCleared = m_score.isCorrect;
 
 					// スコアを格納する
-					getData().scores[getData().levelIndex] = m_score;
+					m_currentScores()[getData().levelIndex] = m_score;
 
-					// 次のレベル初期化へ
-					changeScene(UFOCat::State::Wanted);
+					// 結果シーンへ
+					changeScene(UFOCat::State::Result);
 				}
-
-				if (m_gui.toResult.isPressed())
+				else
 				{
-					if (not m_isAvailableNextLevel())
-					{
-						// 次のレベルが存在しないためにタイトルへ戻らなければならない場合は、
-						// レベルデータにもクリア情報を反映
-						m_currentLevel().isCleared = m_score.isCorrect;
+					// TODO: ダイアログで本当に戻るか確認をとるように
 
+					// それでOKだったら、
+					{
 						// スコアを格納する
-						getData().scores[getData().levelIndex] = m_score;
+						m_currentScores()[getData().levelIndex] = m_score;
 
 						// 結果シーンへ
 						changeScene(UFOCat::State::Result);
 					}
-					else
-					{
-						// TODO: ダイアログで本当に戻るか確認をとるように
 
-						// それでOKだったら、
-						{
-							// スコアを格納する
-							getData().scores[getData().levelIndex] = m_score;
-
-							// 結果シーンへ
-							changeScene(UFOCat::State::Result);
-						}
-						
-					}
 				}
 			}
+		}
+		break;
+		default:
 			break;
-			default:
-				break;
 		}
 
 # if _DEBUG    // デバッグ機能：Ctrl + Shift + S でスキップ
 		if (KeyControl.pressed() and KeyShift.pressed() and KeyS.pressed())
 		{
-			getData().scores[getData().levelIndex] = Score{ getData().levelIndex + 1, true, true, 0.5, getData().levelIndex };
+			m_currentScores()[getData().levelIndex] = ScoreData{ getData().levelIndex + 1, true, true, 0.5, getData().levelIndex };
 			getData().timer.reset();
 			changeScene(UFOCat::State::Result);
 		}

@@ -13,11 +13,15 @@ namespace UFOCat
 		struct
 		{
 			Component::Button toTitle;
-		} m_gui{ };
 
-		const Score &m_getScore(size_t index) const;
+			Component::ProgressBar scoreBar;
+		}
+		m_gui{};
 
-		const Score &m_currentScore() const;
+		ScoreData& m_currentScore() const;
+
+		// TODO: m_currentScores() は2個目 親クラスでの共通化を考える
+		Array<ScoreData> &m_currentScores() const;
 
 	public:
 		Result(const InitData &init);

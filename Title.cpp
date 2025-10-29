@@ -11,8 +11,12 @@ namespace UFOCat
 			getData().cats = LoadCatData();
 			getData().levels = LoadLevelData();
 
-			// スコアデータはレベル数に合わせて確保しておく
-			getData().scores.resize(getData().levels.size());			
+			// 最大レベル数の情報をスコアデータに共通のものとして設定しておく
+			ScoreData::SetLevelCount(getData().levels.size());
+
+			// スコアデータはレベル数に合わせて確保してから、1プレイ分として追加しておく
+			getData().scores << Score{ Array<ScoreData>{ getData().levels.size() }, ScoreTitleData{} };
+			//getData().scores.resize(getData().levels.size());			
 		}
 	}
 

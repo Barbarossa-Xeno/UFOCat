@@ -24,8 +24,19 @@ namespace UFOCat
 		Result
 	};
 
+	/// @brief スコアから決められる「称号」のデータ
+	struct ScoreTitleData
+	{
+		String kanjiName;
+
+		String ruby;
+
+		double threshold = 0.0;
+
+	};
+
 	/// @brief レベルごとに集計するスコアのデータ
-	struct Score
+	struct ScoreData
 	{
 		/// @brief プレイしたレベル (1 ~ )
 		size_t level = InvalidIndex;
@@ -44,55 +55,39 @@ namespace UFOCat
 
 		/// @brief 総合得点
 		size_t total = 0;
+		
+		ScoreData();
 
-		Score() = default;
-
-		Score(size_t level, bool isCaught, bool isCorrect, double response, size_t consecutiveCorrect)
-			: level{ level }
-			, isCaught { isCaught }
-			, isCorrect { isCorrect }
-			, response { response }
-			, consecutiveCorrect { consecutiveCorrect }
-		{}
+		ScoreData(size_t level, bool isCaught, bool isCorrect, double response, size_t consecutiveCorrect);
 
 		/// @brief このレベルでの総合得点を計算する
 		/// @return このレベルでの総合得点
-		size_t calculateTotal()
-		{
-			total = static_cast<size_t>
-				(
-					// 捕まえたら +22
-					isCaught ? (22.0 *
-						// 正解なら x2.2、更に反応速度に応じたボーナスを加算
-						// 不正解なら x1
-						(isCorrect ? 2.2 * (2.2 + 1 / (2.2 * response)) : 1.0) *
-						// 正誤にかかわらずレベルに応じたボーナスを乗算し、
-						// 連続正解ボーナスを加算
-						Math::Exp(2.2 * level / 10.0) +
-						222 * consecutiveCorrect)
-					// 捕まえなかったら 0 点
-					: 0
-				);
+		size_t calculateTotal();
 
-			return total;
-		}
+		/// @brief このゲームでの理論上の最大スコアを返す
+		/// @remarks アプリが起動している間、変更されないレベル数をもとに計算されるので、引数を省略可能とする @n
+		/// この計算は、レベルデータがアプリが最初に起動したときにのみ読み込まれる保証を利用している
+		/// @param levelCount レベル数 省略された場合はアプリ起動時に設定されたレベル数が使われる
+		/// @return 理論値
+		static size_t GetMaxTheoretical(size_t levelCount = 0);
 
-		static size_t Theoretical(size_t levelCount)
-		{
-			// TODO: static にしてもよい
-			size_t sum = Array<Score>{ levelCount }
-				.each_index([](size_t i, Score& score)
-					{
-						score = Score{ i + 1, true, true, 0.1, i };
-					})
-					.map([](Score score)
-						{
-							return score.calculateTotal();
-						})
-						.sum();
+		/// @brief この1ゲームで行われる最大レベル数を決める @n
+		/// 単純に level_data.json で定義されたレベルの数と同じだが、
+		/// レベルの数をもとに最大スコアの理論値が決まるため、ここで保持しておき、
+		/// アプリが起動している間、変更を許さない
+		/// @param count レベル数
+		static void SetLevelCount(size_t count);
+	};
 
-			return sum;
-		}
+	/// @brief 1プレイ全体のスコアのデータ
+	struct Score
+	{
+		Array<ScoreData> scoreDataList;
+
+		/// @brief 
+		ScoreTitleData titleData;
+
+		const static std::array<ScoreTitleData, 5> Titles;
 	};
 
 	struct GameData

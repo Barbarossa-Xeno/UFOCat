@@ -1,5 +1,68 @@
 ﻿# include "Common.hpp"
 
+const std::array<UFOCat::ScoreTitleData, 5> UFOCat::Score::Titles =
+{ {
+	{ U"新米", U"しんまい", 0.25 },
+	{ U"逸材", U"いつざい", 0.5 },
+	{ U"中堅", U"ちゅうけん", 0.75 },
+	{ U"達人", U"たつじん", 0.9 },
+	{ U"英傑", U"えいけつ", 1.0 }
+} };
+
+UFOCat::ScoreData::ScoreData() = default;
+
+UFOCat::ScoreData::ScoreData(size_t level, bool isCaught, bool isCorrect, double response, size_t consecutiveCorrect)
+	: level{ level }
+	, isCaught{ isCaught }
+	, isCorrect{ isCorrect }
+	, response{ response }
+	, consecutiveCorrect{ consecutiveCorrect }
+{}
+
+size_t UFOCat::ScoreData::calculateTotal()
+{
+	total = static_cast<size_t>
+		(
+			// 捕まえたら +22
+			isCaught ? (22.0 *
+				// 正解なら x2.2、更に反応速度に応じたボーナスを加算
+				// 不正解なら x1
+				(isCorrect ? 2.2 * (2.2 + 1 / (2.2 * response)) : 1.0) *
+				// 正誤にかかわらずレベルに応じたボーナスを乗算し、
+				// 連続正解ボーナスを加算
+				Math::Exp(2.2 * level / 10.0) +
+				222 * consecutiveCorrect)
+			// 捕まえなかったら 0 点
+			: 0
+		);
+
+	return total;
+}
+
+size_t UFOCat::ScoreData::GetMaxTheoretical(size_t levelCount)
+{
+	// static フィールドのため初回呼び出し時にしか計算されない
+	static size_t sum = Array<ScoreData>{ levelCount }
+		.each_index([](size_t i, ScoreData& score)
+			{
+				// 反応時間は 0.1s ということで、バカ早くしておく
+				// これのせいで理論値が高くなりすぎる場合は調整する
+				score = ScoreData{ i + 1, true, true, 0.1, i };
+			})
+			.map([](ScoreData score)
+				{
+					return score.calculateTotal();
+				})
+				.sum();
+
+	return sum;
+}
+
+void UFOCat::ScoreData::SetLevelCount(size_t count)
+{
+	GetMaxTheoretical(count);
+}
+
 Array<CatObject> UFOCat::LoadCatData()
 {
 	// JSON ファイルからデータを読み込む

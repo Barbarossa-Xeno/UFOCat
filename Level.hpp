@@ -45,7 +45,7 @@ namespace UFOCat
 		DeltaStopwatch m_watch;
 
 		/// @brief このレベルでのスコア
-		Score m_score;
+		ScoreData m_score;
 
 		/// @brief 捕まえた猫のオブジェクトへのポインタへのポインタ
 		/// @remarks 二重ポインタにしているのは、`spawns` からとってくるため `spawns`は unique_ptr で管理されている 
@@ -69,6 +69,10 @@ namespace UFOCat
 		/// @return 現在の `LevelData` の参照
 		/// @remarks ゲッターとか言いながらオブジェクトの変更も許している（？）
 		LevelData &m_currentLevel() const;
+
+		/// @brief 
+		/// @return 
+		Array<ScoreData> &m_currentScores() const;
 
 		/// @brief ターゲットが出現する時間を引数に応じてランダムに決め、`m_targetAppearTime` に設定する
 		/// @param level 整数値（1 ~ 10 の範囲で、特に現在のレベル値を入れることを想定）

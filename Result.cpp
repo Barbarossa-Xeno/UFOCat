@@ -2,21 +2,23 @@
 
 namespace UFOCat
 {
-	const Score &Result::m_getScore(size_t index) const
+
+	ScoreData &Result::m_currentScore() const
 	{
-		return getData().scores[index];
+		return getData().scores.back().scoreDataList[getData().levelIndex];
 	}
 
-	const Score &Result::m_currentScore() const
+	Array<ScoreData> &Result::m_currentScores() const
 	{
-		return getData().scores[getData().levelIndex];
+		return getData().scores.back().scoreDataList;
 	}
 
 	Result::Result(const InitData &init)
 		: IScene{ init }
 	{
 		// 現在のレベルの総合得点を計算しておく
-		getData().scores[getData().levelIndex].calculateTotal();
+		m_currentScore().calculateTotal();
+		
 	}
 
 
@@ -36,6 +38,11 @@ namespace UFOCat
 					++tempScore;
 				}, Duration(2.0 / total - Scene::DeltaTime()));
 			}
+		}
+
+		{
+			double t = 1 / (ScoreData::GetMaxTheoretical());
+			m_gui.scoreBar.setProgress();
 		}
 	}
 
@@ -83,7 +90,7 @@ namespace UFOCat
 			// TODO: ほんとはこういうサイズもレスポンシブにすべきなんだろうな
 			const RectF &region = FontAsset(U"Test")(U"{}"_fmt(tempScore)).draw(120, Arg::bottomCenter = Scene::Center());
 
-			const RectF& maxRegion = FontAsset(U"Test")(U"{}"_fmt(Score::Theoretical(getData().scores.size()))).region(120, Arg::bottomCenter = Scene::Center());
+			const RectF& maxRegion = FontAsset(U"Test")(U"{}"_fmt(ScoreData::GetMaxTheoretical())).region(120, Arg::bottomCenter = Scene::Center());
 			maxRegion.drawFrame();
 
 			// 回転座標
@@ -94,13 +101,18 @@ namespace UFOCat
 		}
 
 		{
+			m_gui.scoreBar.setSize({ 0.7 * Scene::Width(), 150.0 })
+						  .draw(Arg::topCenter = Vec2{ Scene::Center().x, Scene::Center().y + 40 }, SizeF{ 0.9, 0.1 });
+		}
+
+		/*{
 			RectF back{ Arg::topCenter(Scene::Center().x, Scene::Center().y + 40), 0.7 * Scene::Width(), 150.0 };
 			back.rounded(12).draw();
 
 			RoundRect bar = back.scaled(0.9, 0.1).rounded(9);
 			bar.drawFrame(2, Palette::Dimgray);
 			bar.stretched(-2).draw(Palette::Bisque);
-		}
+		}*/
 
 		m_gui.toTitle.set(FontAsset(U"Test"), U"タイトルへ").draw(Arg::bottomLeft = Vec2{ 10.0, Scene::Height() - 10.0 });
 	}
