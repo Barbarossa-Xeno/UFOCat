@@ -104,17 +104,17 @@ public:
 	static bool IsEasing(const String &str);
 
 	/// @brief 文字列を Duration 型に変換する
-	/// @param str 対象文字列
+	/// @param str 対象文字列 末尾に 's' がつく
 	/// @return 変換した Duration 型オブジェクト、変換できなければ例外が投げられる
 	static Duration ParseDuration(const String &str);
 
 	/// @brief 文字列を Rect 型に変換する
-	/// @param str 対象文字列
+	/// @param str 対象文字列 '(x, y, w, h)' の形式
 	/// @return 変換した Rect 型オブジェクト、変換できなければ例外が投げられる
 	static Rect ParseRect(const String &str);
 
 	/// @brief 文字列を Siv3D 規定のイージング関数へ変換する
-	/// @param str 対象文字列
+	/// @param str 対象文字列 'e_' で始まる必要がある
 	/// @return 変換したイージング関数のオブジェクト、変換できなければ例外が投げられる
 	static CAct::EasingFunction ParseEasing(const String &str);
 
@@ -129,7 +129,7 @@ public:
 		// JSON 配列の長さと 希望のタプル型の要素数が一致していなかったらエラー
 		if (paramData.size() != std::tuple_size_v<TTuple>)
 		{
-			throw Error(U"Specified `paramData` (JSON data) and TTuple is not match length.");
+			throw Error(U"Specified `paramData` (JSON data) and TTuple is not match length.\n`paramData.size()`: {} - `{}` length: {}"_fmt(paramData.size(), Unicode::Widen(std::string(typeid(TTuple).name())), std::tuple_size_v<TTuple>));
 		}
 
 		// 一時的に各要素を取りうる型の variant で格納する配列（長さは TTuple 分）
@@ -183,7 +183,7 @@ public:
 				{
 					for (size_t j = 0; j < 4; j++)
 					{
-						overflow[j] = paramData[j].get<double>();
+						overflow[j] = paramData[i][j].get<double>();
 					}
 					temp[i] = overflow;
 				}
