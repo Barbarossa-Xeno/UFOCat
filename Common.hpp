@@ -14,16 +14,20 @@ namespace UFOCat
 
 	enum class State
 	{
+		/// @brief タイトル画面
 		Title,
+		/// @brief 捕まえるUFO猫が発表される画面 レベルシーンの初期化処理に使う
 		Wanted,
+		/// @brief レベル画面
 		Level,
+		/// @brief 結果画面 リタイアするか、失敗したときに移行できる
 		Result
 	};
 
 	/// @brief レベルごとに集計するスコアのデータ
 	struct Score
 	{
-		/// @brief プレイしたレベル
+		/// @brief プレイしたレベル (1 ~ )
 		size_t level = InvalidIndex;
 
 		/// @brief 猫を捕まえたか
@@ -36,16 +40,26 @@ namespace UFOCat
 		double response = 0.0;
 
 		/// @brief 連続正解数
-		uint32 consecutiveCorrect = 0;
+		size_t consecutiveCorrect = 0;
 
 		/// @brief 総合得点
-		uint32 total = 0;
+		size_t total = 0;
+
+		Score() = default;
+
+		Score(size_t level, bool isCaught, bool isCorrect, double response, size_t consecutiveCorrect)
+			: level{ level }
+			, isCaught { isCaught }
+			, isCorrect { isCorrect }
+			, response { response }
+			, consecutiveCorrect { consecutiveCorrect }
+		{}
 
 		/// @brief このレベルでの総合得点を計算する
 		/// @return このレベルでの総合得点
-		uint32 calculateTotal()
+		size_t calculateTotal()
 		{
-			total = static_cast<uint32>
+			total = static_cast<size_t>
 				(
 					// 捕まえたら +22
 					isCaught ? (22.0 *
@@ -61,6 +75,23 @@ namespace UFOCat
 				);
 
 			return total;
+		}
+
+		static size_t Theoretical(size_t levelCount)
+		{
+			// TODO: static にしてもよい
+			size_t sum = Array<Score>{ levelCount }
+				.each_index([](size_t i, Score& score)
+					{
+						score = Score{ i + 1, true, true, 0.1, i };
+					})
+					.map([](Score score)
+						{
+							return score.calculateTotal();
+						})
+						.sum();
+
+			return sum;
 		}
 	};
 
@@ -80,6 +111,7 @@ namespace UFOCat
 
 		Timer timer;
 	};
+	// TODO: 直近のスコアデータを残そうと思えば、二次元Arrayのフィールドを追加してもよい
 
 	/// @brief UFO猫のデータをJSONから読み込んでそれら全てのインスタンスを作成する
 	/// @return 全てのUFO猫のインスタンス配列
