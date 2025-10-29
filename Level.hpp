@@ -59,6 +59,8 @@ namespace UFOCat
 		{
 			/// @brief 結果シーンに進むボタン
 			Component::Button toResult;
+
+			Component::Button toNextLevel;
 		} m_gui;
 
 		/* -- ゲッター / セッター -- */
@@ -75,7 +77,11 @@ namespace UFOCat
 
 		/// @brief ターゲットが出現したかどうか
 		/// @return 既に出現させていたら `true`
-		bool m_appearedTarget() const;
+		bool m_hasAppearedTarget() const;
+
+		/// @brief 次のレベルに進めるかどうか
+		/// @return 進めるなら `true`
+		bool m_isAvailableNextLevel() const;
 
 	public:
 		Level(const InitData &init);

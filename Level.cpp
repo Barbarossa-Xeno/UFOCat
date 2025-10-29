@@ -4,7 +4,6 @@ namespace UFOCat
 {
 	LevelData& Level::m_currentLevel() const
 	{
-		Console << getData().levelIndex;
 		return getData().levels[getData().levelIndex];
 	}
 
@@ -18,7 +17,7 @@ namespace UFOCat
 		m_targetAppearTime = Duration{ Min((term1 + term2), 0.75 * m_currentLevel().timeLimit.count()) };
 	}
 
-	bool Level::m_appearedTarget() const
+	bool Level::m_hasAppearedTarget() const
 	{
 		if (not getData().spawns.isEmpty())
 		{
@@ -29,6 +28,12 @@ namespace UFOCat
 		{
 			return false;
 		}
+	}
+
+	bool Level::m_isAvailableNextLevel() const
+	{
+		// 次のレベルのインデックスがレベルの数未満であれば進める
+		return (getData().levelIndex + 1) < getData().levels.size();
 	}
 
 	Level::Level(const InitData& init)
@@ -51,8 +56,8 @@ namespace UFOCat
 		// 先にスコアのレベル情報を設定
 		m_score.level = getData().levelIndex + 1;
 
-		// 前回シーンで決めたターゲットを取得
-		m_target = std::make_shared<CatObject>(getData().cats[getData().targetIndex]);
+		// 前回シーンで決めたターゲットを取得（注：コピーで取得すること！）
+		m_target = std::make_shared<CatObject>(getData().cats[getData().targetIndex].clone());
 
 		// レベルデータのうち、登場する猫の数に関するデータを取得する
 		const auto& similarCount = m_currentLevel().breedData.similar;
@@ -155,10 +160,10 @@ namespace UFOCat
 				m_watch.setInterval([this]()
 					{
 						// ターゲットの出現時刻を超えていて、ターゲットがまだ出現していなかったら
-						if (getData().timer.remaining() <= m_targetAppearTime and (not m_appearedTarget()))
+						if (getData().timer.remaining() <= m_targetAppearTime and (not m_hasAppearedTarget()))
 						{
 							// ターゲットを（コピーして）湧かせる
-							getData().spawns[0] = std::make_unique<CatObject>(CatObject(*m_target));
+							getData().spawns[0] = std::make_unique<CatObject>(m_target->clone());
 							// ターゲットにも同様にアクションと速度の設定を行う
 							getData().spawns[0]->setAction(DiscreteSample(m_currentLevel().actionDataList, m_actionProbabilities)).setRandomVelocity(getData().levelIndex + 1);
 						}
@@ -170,7 +175,7 @@ namespace UFOCat
 								getData().spawns << std::make_unique<CatObject>
 									(
 										// アクションを抽選してセットし、現在のレベルに合わせて速度もランダムに決める
-										CatObject(*(m_selections.choice()))
+										m_selections.choice()->clone()
 											.setAction(DiscreteSample(m_currentLevel().actionDataList, m_actionProbabilities))
 												.setRandomVelocity(getData().levelIndex + 1)
 									);
@@ -228,9 +233,6 @@ namespace UFOCat
 							// 記録
 							m_score.consecutiveCorrect = temp_consecutive;
 
-							// レベルデータにもクリア情報を反映
-							m_currentLevel().isCleared = m_score.isCorrect;
-
 							// プレイ終了へ
 							m_state = Level::State::Finish;
 							m_watch.reset();
@@ -267,20 +269,65 @@ namespace UFOCat
 
 			case Level::State::After:
 			{
-				// TODO: 「次へ」ボタンを作るとき、レベルの上限が来たら非表示にしつつ、クリアマークのリセットなど、レベルデータのリセットを行うようにする
+				// TODO: 「次へ」ボタンを作るとき、クリアマークのリセットなど、レベルデータのリセットを行うようにする
+				// ボタン内の利用可能状態によって押せるかどうか決まることが保証されるので
+				// この条件式はボタンが利用不可能なときには通過しない
+				if (m_gui.toNextLevel.isPressed())
+				{
+					// 次に進む場合は、レベルデータにもクリア情報を反映
+					// これにより、Wanted シーンの初期化で自動的に次のレベルへ進む
+					m_currentLevel().isCleared = m_score.isCorrect;
+
+					// スコアを格納する
+					getData().scores[getData().levelIndex] = m_score;
+
+					// 次のレベル初期化へ
+					changeScene(UFOCat::State::Wanted);
+				}
 
 				if (m_gui.toResult.isPressed())
 				{
-					// スコアを格納する
-					getData().scores[getData().levelIndex] = m_score;
-					// 結果シーンへ
-					changeScene(UFOCat::State::Result);
+					if (not m_isAvailableNextLevel())
+					{
+						// 次のレベルが存在しないためにタイトルへ戻らなければならない場合は、
+						// レベルデータにもクリア情報を反映
+						m_currentLevel().isCleared = m_score.isCorrect;
+
+						// スコアを格納する
+						getData().scores[getData().levelIndex] = m_score;
+
+						// 結果シーンへ
+						changeScene(UFOCat::State::Result);
+					}
+					else
+					{
+						// TODO: ダイアログで本当に戻るか確認をとるように
+
+						// それでOKだったら、
+						{
+							// スコアを格納する
+							getData().scores[getData().levelIndex] = m_score;
+
+							// 結果シーンへ
+							changeScene(UFOCat::State::Result);
+						}
+						
+					}
 				}
 			}
 			break;
 			default:
 				break;
 		}
+
+# if _DEBUG    // デバッグ機能：Ctrl + Shift + S でスキップ
+		if (KeyControl.pressed() and KeyShift.pressed() and KeyS.pressed())
+		{
+			getData().scores[getData().levelIndex] = Score{ getData().levelIndex + 1, true, true, 0.5, getData().levelIndex };
+			getData().timer.reset();
+			changeScene(UFOCat::State::Result);
+		}
+# endif
 	}
 
 	void Level::draw() const
@@ -356,7 +403,12 @@ namespace UFOCat
 						FontAsset(U"Test")(U"時間切れ！").drawAt(Scene::CenterF().x, Scene::CenterF().y + 150);
 					}
 
-					m_gui.toResult.set({ 10.0, Scene::Height() - 70.0 }, FontAsset(U"Test"), U"結果・タイトルへ").draw();
+					m_gui.toResult.set(FontAsset(U"Test"), U"結果・タイトルへ")
+								  .draw(Arg::bottomLeft = Vec2{ 10.0, Scene::Height() - 10.0 });
+
+					// このレベルをクリアできていて、次のレベルが存在する場合のみ表示
+					m_gui.toNextLevel.set(FontAsset(U"Test"), U"次のレベルへ", (m_score.isCorrect and m_isAvailableNextLevel()))
+									 .draw(Arg::bottomRight = (Scene::Size() - Vec2{ 10.0, 10.0 }));
 				}
 			}
 				break;
