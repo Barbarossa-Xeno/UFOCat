@@ -37,8 +37,8 @@ Rect CatObject::getMaxDisplayedArea() const
 CatObject &CatObject::setRandomVelocity(size_t level)
 {
 	// マジックナンバーだらけだけど仕様書に書いてあるとおり
-	double min = 60.0 + (1.0 + level / 10.0);
-	double max = 90.0 + (1.0 + Random(1.0, static_cast<double>(level)) / 100.0) * Max(Scene::Width(), Scene::Height()) * ((1 / (0.9 * (level + 0.9))) * Math::Pow(level - 1 + 0.9, 4 * (level - 1 + 0.9)) * Math::Log(Math::Pow(level + 0.9, 2)));
+	double min = 65.0 * (1.0 + level / 10.0) + (10 * level);
+	double max = 90.0 + (1.0 + Random(1.0, static_cast<double>(level)) / 100.0) * Max(Scene::Width(), Scene::Height()) * ((1 / (0.9 * (level / 10.0 + 0.9))) * Math::Pow(level / 10.0 - 1 + 0.9, 4 * (level / 10.0 - 1 + 0.9)) * Math::Log(Math::Pow(level / 10.0 + 0.9, 2)));
 	velocity = RandomVec2(Random(min, max));
 
 	return *this;
@@ -564,6 +564,11 @@ bool CatObject::checkCatchable(const CatData &target, bool *const isCorrect) con
 {
 	*isCorrect = m_catData == target;
 	return m_hitArea.leftClicked();
+}
+
+CatObject CatObject::clone() const
+{
+	return CatObject{ *this };
 }
 
 std::tuple<Vec2, Vec2> CatObject::m_changeScreenEdgePosition()

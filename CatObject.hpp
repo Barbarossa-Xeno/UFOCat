@@ -417,6 +417,10 @@ public:
 	/// @return タッチしたとき `true`
 	bool checkCatchable(const CatData &target, bool *const isCorrect) const;
 
+	/// @brief このオブジェクトの複製を生成して返す
+	/// @return 情報がコピーされた新しいインスタンス
+	CatObject clone() const;
+
 private:
 	/// @brief 画面端のどこを開始点と終了点にするかランダムに決める @n
 	/// 自身がぎりぎり映らない、表示領域外の場所として決められる @n
