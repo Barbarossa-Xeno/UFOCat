@@ -12,10 +12,8 @@ namespace UFOCat
 			getData().levels = LoadLevelData();
 
 			// スコアデータはレベル数に合わせて確保しておく
-			getData().scores.resize(getData().levels.size());
+			getData().scores.resize(getData().levels.size());			
 		}
-
-		
 	}
 
 	void Title::update()
@@ -25,10 +23,12 @@ namespace UFOCat
 			// とりあえずタイトルまだ作ってないのですぐに wanted シーンへ移動
 			changeScene(State::Wanted);
 		}
+
+
 	}
 
 	void Title::draw() const
 	{
-
+		FontAsset(U"Test")(U"タイトル").drawAt(Scene::Center());
 	}
 }

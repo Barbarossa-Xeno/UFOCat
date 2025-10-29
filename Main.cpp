@@ -29,12 +29,6 @@ void Main()
 	cats[7].velocity = { 100, 100 };
 	cats[8].velocity = { 250, 400 };
 	cats[0].setAction(GameManager::Instance().levels[0].actionDataList[1]);*/
-
-	// 各ステートを何秒ごとに切り替えていくかは、何かの形でまとめておきたい
-	// ここでは仮にターゲットをアナウンスする画面が消えるのに 3s かけるとして
-	{
-		//game.currentState = GameManager::State::TargetAnnounce;
-	}
 	
 	while (System::Update())
 	{

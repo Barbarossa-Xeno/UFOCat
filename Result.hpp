@@ -1,10 +1,15 @@
 ﻿# pragma once
 # include "Common.hpp"
+# include "DeltaStopwatch.hpp"
 
 namespace UFOCat
 {
 	class Result : public App::Scene
 	{
+		size_t tempScore = 0;
+
+		DeltaStopwatch m_scoreCountUpWatch;
+
 		struct
 		{
 			Component::Button toTitle;

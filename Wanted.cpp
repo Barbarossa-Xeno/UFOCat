@@ -9,9 +9,10 @@ namespace UFOCat
 		m_target = std::make_unique<CatObject>(getData().cats[getData().targetIndex]);
 
 		// 現在行っているレベルのインデックスは、クリアしているレベルの数と同じなのを利用する
-		// （そのフェーズが終わり次第、isCleared のフラグを上げるため）
+		// （そのレベルが終わり次第、isCleared のフラグを上げるため）
 		getData().levelIndex = getData().levels.filter([](const LevelData &p) { return p.isCleared; }).size();
 
+		// TODO: レベルが進むごとにちょっと時間を短くしたら面白いかも
 		getData().timer.set(5s);
 	}
 
@@ -25,7 +26,15 @@ namespace UFOCat
 		{
 			changeScene(State::Level);
 		}
+		
+# if _DEBUG    // デバッグ機能：Ctrl + Shift + S でスキップ
+		else if (KeyControl.pressed() and KeyShift.pressed() and KeyS.pressed())
+		{
+			getData().timer.reset();
+			changeScene(State::Level);
+		}
 	}
+# endif
 
 	void Wanted::draw() const
 	{
