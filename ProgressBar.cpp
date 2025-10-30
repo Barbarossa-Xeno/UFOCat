@@ -38,18 +38,25 @@ namespace UFOCat::Component
 
 	void ProgressBar::draw(const Vec2 &position, const SizeF &barScale) const
 	{
+		// 角丸四角形を描画
 		m_region.movedBy(position).rounded(m_roundness).draw();
 
+		// バーの大きさを定義する
 		RoundRect bar = m_region.movedBy(position).scaled(barScale).rounded(0.75 * m_roundness);
 
+		// バーの枠
 		bar.drawFrame(2, Palette::Dimgray);
 
+		// バーが 100% (t = 1.0) の長さの状態
 		const RoundRect full = bar.stretched(-2);
+
+		// 線形補間
 		RoundRect{ bar.rect.pos, SizeF{ 0.0, bar.h }, bar.r }.lerp(full, m_progress).draw(Palette::Bisque);
 	}
 
 	void ProgressBar::draw(const Arg::topCenter_<Vec2> &position, const SizeF &barScale) const
 	{
+		// Button.cpp の draw() と同様の処理
 		double x = position->x - m_region.w / 2;
 		draw(Vec2{ x, position->y }, barScale);
 	}

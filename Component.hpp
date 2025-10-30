@@ -2,26 +2,30 @@
 
 namespace UFOCat::Component
 {
-	/// @brief ボタン
+	/// @brief ボタン フォントサイズに大きさが適応する
 	class Button
 	{
 
+		/// @brief 使用フォント（フォントサイズを任意に設定してあるもの）
 		Font m_font;
 
+		/// @brief 表示テキスト
 		String m_text;
 
+		/// @brief ボタンが有効か
 		bool m_isEnabled = true;
 
+		/// @brief 外枠からのパディング
 		Vec2 m_padding = { 30.0, 10.0 };
 
 		/// @brief ボタンの描画領域
 		/// @remarks mutable にして描画メソッドでの値の更新を許可する
 		mutable RectF m_region;
 
-		/// @brief ボタンのデータから生成する ButtonRegion のポインタ
-		/// @remarks ButtonRegion のメソッドチェーンと、Button のインスタンスを参照したときに、
-		/// 同じ ButtonRegion を返すために使用するので、mutable にしている
-		/// なお、ButtonRegion には継承されない（参照一貫性を保つため）
+		/// @brief パラメータの変更があった際に生成するの自クラスのポインタ
+		/// @remarks はじめに生成したインスタンスからメソッドチェーンを使ったり、
+		/// 別の場所で参照したりしたときに、同じデータを扱えるようにするためのもの
+		/// const メソッドでもキャッシュのために使用するので、mutable にしている
 		mutable std::unique_ptr<Button> m_instance = nullptr;
 
 	public:
@@ -88,23 +92,32 @@ namespace UFOCat::Component
 		void drawAt(const Vec2& position) const;
 	};
 
-
+	/// @brief プログレスバー（ゲージ要素）
 	class ProgressBar
 	{
+		/// @brief 表示範囲
 		RectF m_region;
 
+		/// @brief 進捗を表すパラメータ (0 ~ 1)
 		double m_progress = 0.0;
 
+		/// @brief パラメータの変更により生成する、自クラスのインスタンスを示すポインタ
 		mutable std::unique_ptr<ProgressBar> m_instance = nullptr;
 
+		// TODO: 角丸具合が外部から調整できてもいいかも
+		/// @brief 角丸の丸み
 		const double m_roundness = 6;
 
 	public:
 
+		/// @brief 大きさを設定する
+		/// @param size x, y 方向の大きさ
+		/// @return インスタンス
 		ProgressBar &setSize(const SizeF &size) const;
 
 		/// @brief プログレスバーの値を設定する
 		/// @param progress パラメータ (0.0 〜 1.0)
+		/// @return インスタンス
 		ProgressBar &setProgress(double progress) const;
 
 		ProgressBar() = default;
