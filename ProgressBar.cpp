@@ -2,101 +2,96 @@
 
 namespace UFOCat::Component
 {
-	ProgressBar::ProgressBar(const SizeF &size, double roundness, double progress)
+	ProgressBar::ProgressBar(const SizeF &size, const SizeF &barScale, double roundness, double progress)
 		: m_region{ size }
+		, m_barScale{ barScale }
 		, m_roundness{ roundness }
 		, m_progress{ progress }
 	{}
 
-	ProgressBar &ProgressBar::setSize(const SizeF &size) const
+	ProgressBar &ProgressBar::set(const SizeF &size, const SizeF &barScale, double roundness)
 	{
-		if (not m_instance)
-		{
-			m_instance = std::make_unique<ProgressBar>(size, m_roundness, m_progress);
-		}
-		else
-		{
-			m_instance->m_region.size = size;
-		}
-		
-		return *m_instance;
+		m_region = RectF{ size };
+		m_barScale = barScale;
+		m_roundness = roundness;
+		return *this;
 	}
 
-	ProgressBar &ProgressBar::setProgress(double progress) const
+	ProgressBar &ProgressBar::setProgress(double progress)
 	{
-		if (not m_instance)
-		{
-			m_instance = std::make_unique<ProgressBar>(m_region.size, m_roundness, Clamp(progress, 0.0, 1.0));
-		}
-		else
-		{
-			m_instance->m_progress = Clamp(progress, 0.0, 1.0);
-		}
-		
-		return *m_instance;
+		m_progress = progress;
+		return *this;
 	}
 
-	void ProgressBar::draw(const Vec2 &position, const SizeF &barScale) const
+	void ProgressBar::draw() const
 	{
-		m_region.movedBy(position).rounded(m_roundness).draw();
+		// 角丸四角形を描画
+		m_region.rounded(m_roundness).draw();
 
-		RoundRect bar = m_region.movedBy(position).scaled(barScale).rounded(0.75 * m_roundness);
+		// バーの大きさを定義する
+		RoundRect bar = m_region.scaled(m_barScale).rounded(0.75 * m_roundness);
 
+		// バーの枠
 		bar.drawFrame(2, Palette::Dimgray);
 
+		// バーが 100% (t = 1.0) の長さの状態
 		const RoundRect full = bar.stretched(-2);
+
+		// 線形補間
 		RoundRect{ bar.rect.pos, SizeF{ 0.0, bar.h }, bar.r }.lerp(full, m_progress).draw(Palette::Bisque);
 	}
 
-	void ProgressBar::draw(const Arg::topCenter_<Vec2> &position, const SizeF &barScale) const
+	ProgressBar &ProgressBar::setPosition(const Vec2 &position)
 	{
-		double x = position->x - m_region.w / 2;
-		draw(Vec2{ x, position->y }, barScale);
+		m_region.setPos(position);
+		return *this;
 	}
 
-	void ProgressBar::draw(const Arg::topRight_<Vec2> &position, const SizeF &barScale) const
+	ProgressBar &ProgressBar::setPosition(const Arg::topCenter_<Vec2> &position)
 	{
-		double x = position->x - m_region.w;
-		draw(Vec2{ x, position->y }, barScale);
+		m_region.setPos(position);
+		return *this;
 	}
 
-	void ProgressBar::draw(const Arg::leftCenter_<Vec2> &position, const SizeF &barScale) const
+	ProgressBar &ProgressBar::setPosition(const Arg::topRight_<Vec2> &position)
 	{
-		double y = position->y - m_region.h / 2;
-		draw(Vec2{ position->x, y }, barScale);
+		m_region.setPos(position);
+		return *this;
 	}
 
-	void ProgressBar::draw(const Arg::rightCenter_<Vec2> &position, const SizeF &barScale) const
+	ProgressBar &ProgressBar::setPosition(const Arg::leftCenter_<Vec2> &position)
 	{
-		double x = position->x - m_region.w;
-		double y = position->y - m_region.h / 2;
-		draw(Vec2{ x, y }, barScale);
+		m_region.setPos(position);
+		return *this;
 	}
 
-	void ProgressBar::draw(const Arg::bottomLeft_<Vec2> &position, const SizeF &barScale) const
+	ProgressBar &ProgressBar::setPosition(const Arg::rightCenter_<Vec2> &position)
 	{
-		double y = position->y - m_region.h;
-		draw(Vec2{ position->x, y }, barScale);
+		m_region.setPos(position);
+		return *this;
 	}
 
-	void ProgressBar::draw(const Arg::bottomCenter_<Vec2> &position, const SizeF &barScale) const
+	ProgressBar &ProgressBar::setPosition(const Arg::bottomLeft_<Vec2> &position)
 	{
-		double x = position->x - m_region.w / 2;
-		double y = position->y - m_region.h;
-		draw(Vec2{ x, y }, barScale);
+		m_region.setPos(position);
+		return *this;
 	}
 
-	void ProgressBar::draw(const Arg::bottomRight_<Vec2> &position, const SizeF &barScale) const
+	ProgressBar &ProgressBar::setPosition(const Arg::bottomCenter_<Vec2> &position)
 	{
-		double x = position->x - m_region.w;
-		double y = position->y - m_region.h;
-		draw(Vec2{ x, y }, barScale);
+		m_region.setPos(position);
+		return *this;
 	}
 
-	void ProgressBar::drawAt(const Vec2 &position, const SizeF &barScale) const
+	ProgressBar &ProgressBar::setPosition(const Arg::bottomRight_<Vec2> &position)
 	{
-		double x = position.x - m_region.w / 2;
-		double y = position.y - m_region.h / 2;
-		draw(Vec2{ x, y }, barScale);
+		m_region.setPos(position);
+		return *this;
+	}
+
+	ProgressBar &ProgressBar::setPositionAt(const Vec2 &position)
+	{
+		m_region.setPos(Arg::center(position));
+		return *this;
 	}
 }

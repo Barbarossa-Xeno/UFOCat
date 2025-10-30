@@ -29,13 +29,11 @@ namespace UFOCat
 
 	void Title::update()
 	{
-		if (MouseL.down())
+		if (MouseR.down())
 		{
 			// とりあえずタイトルまだ作ってないのですぐに wanted シーンへ移動
 			changeScene(State::Wanted);
-		}
-
-
+		}	
 	}
 
 	void Title::draw() const

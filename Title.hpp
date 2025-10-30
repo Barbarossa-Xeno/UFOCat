@@ -5,6 +5,7 @@ namespace UFOCat
 {
 	class Title : public App::Scene
 	{
+		Component::Dialog dialog;
 	public:
 		Title(const InitData &init);
 

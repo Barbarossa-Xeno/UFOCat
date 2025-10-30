@@ -51,8 +51,18 @@ namespace UFOCat
 				// インターバルごとに繰り返す
 				m_scoreCountUpWatch.setInterval([&]()
 					{
-						// 速度（デルタタイムの足し上げ）の切り上げを変化にする
-						m_scoreCount += static_cast<size_t>(Ceil(countUpSpeed));
+						// 実際の総得点とカウントとの差が10を切るまで、スピードを上げてカウントアップ
+						if (total - m_scoreCount >= 10)
+						{
+							// 速度（デルタタイムの足し上げ）の切り上げを変化にする
+							m_scoreCount += static_cast<size_t>(Ceil(countUpSpeed));
+						}
+						// 最後は1つずつ足し上げて誤差がないように終了
+						else
+						{
+							++m_scoreCount;
+						}
+						
 
 						// デルタタイムの足し上げを速度とする
 						countUpSpeed += Scene::DeltaTime();
@@ -92,12 +102,22 @@ namespace UFOCat
 						}
 					}, Duration(interval));
 			}
+
+			
 		}
 
-		if (m_gui.toTitle.isPressed())
+		// # GUI 更新処理
 		{
-			// リセット処理は、タイトル側で行う
-			changeScene(UFOCat::State::Title);
+			m_gui.scoreTitleGauge.set({ 0.7 * Scene::Width(), 150.0 }, SizeF{ 0.9, 0.1 })
+				.setPosition(Arg::topCenter = Vec2{ Scene::Center().x, Scene::Center().y + 40 });
+
+			if (m_gui.toTitle.set(FontAsset(U"Test"), U"タイトルへ")
+							  .setPosition(Arg::bottomLeft = Vec2{ 10.0, Scene::Height() - 10.0 })
+							  .isPressed())
+			{
+				// リセット処理は、タイトル側で行う
+				changeScene(UFOCat::State::Title);
+			}
 		}
 
 # if _DEBUG
@@ -165,8 +185,7 @@ namespace UFOCat
 			}
 
 			// 称号ゲージ更新
-			m_gui.scoreTitleGauge.setSize({ 0.7 * Scene::Width(), 150.0 })
-				.draw(Arg::topCenter = Vec2{ Scene::Center().x, Scene::Center().y + 40 }, SizeF{ 0.9, 0.1 });
+			m_gui.scoreTitleGauge.draw();
 		}
 
 		/*{
@@ -178,6 +197,6 @@ namespace UFOCat
 			bar.stretched(-2).draw(Palette::Bisque);
 		}*/
 
-		m_gui.toTitle.set(FontAsset(U"Test"), U"タイトルへ").draw(Arg::bottomLeft = Vec2{ 10.0, Scene::Height() - 10.0 });
+		m_gui.toTitle.draw();
 	}
 }

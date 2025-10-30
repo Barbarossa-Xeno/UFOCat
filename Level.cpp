@@ -273,75 +273,100 @@ namespace UFOCat
 
 		case Level::State::After:
 		{
-			// TODO: 「次へ」ボタンを作るとき、クリアマークのリセットなど、レベルデータのリセットを行うようにする
-			// ボタン内の利用可能状態によって押せるかどうか決まることが保証されるので
-			// この条件式はボタンが利用不可能なときには通過しない
-			if (m_gui.toNextLevel.isPressed())
+			// # GUI 処理
 			{
-				// 次に進む場合は、レベルデータにもクリア情報を反映
-				// これにより、Wanted シーンの初期化で自動的に次のレベルへ進む
-				m_currentLevel().isCleared = m_score.isCorrect;
+				// ボタン内の利用可能状態によって押せるかどうか決まることが保証されるので
+				// そもそもこの条件式はボタンが利用不可能なときには通過しない
 
-				// スコアを格納する
-				m_currentScoreDatas()[getData().levelIndex] = m_score;
-
-				// 次のレベル初期化へ
-				changeScene(UFOCat::State::Wanted);
-			}
-
-			if (m_gui.toResult.isPressed())
-			{
-				if (not m_isAvailableNextLevel())
+				// 次のレベルへ進むボタン
+				if (m_gui.toNextLevel.set(FontAsset(U"Test"), U"次のレベルへ", (m_score.isCorrect and m_isAvailableNextLevel()))
+									  .setPosition(Arg::bottomRight = (Scene::Size() - Vec2{ 10.0, 10.0 })).isPressed())
 				{
-					// 次のレベルが存在しないためにタイトルへ戻らなければならない場合は、
-					// レベルデータにもクリア情報を反映
+					// 次に進む場合は、レベルデータにもクリア情報を反映
+					// これにより、Wanted シーンの初期化で自動的に次のレベルへ進む
 					m_currentLevel().isCleared = m_score.isCorrect;
 
 					// スコアを格納する
 					m_currentScoreDatas()[getData().levelIndex] = m_score;
 
-					// 結果シーンへ
-					changeScene(UFOCat::State::Result);
+					// 次のレベル初期化へ
+					changeScene(UFOCat::State::Wanted);
 				}
-				else
-				{
-					// TODO: ダイアログで本当に戻るか確認をとるように
 
-					// それでOKだったら、
+				// タイトルへ戻るボタン
+				if (m_gui.toResult.set(FontAsset(U"Test"), U"結果 / タイトルへ")
+								  .setPosition(Arg::bottomLeft = Vec2{ 10.0, Scene::Height() - 10.0 })
+								  .isPressed())
+				{
+					if (not m_isAvailableNextLevel())
 					{
+						// 次のレベルが存在しないためにタイトルへ戻らなければならない場合は、
+						// レベルデータにもクリア情報を反映
+						m_currentLevel().isCleared = m_score.isCorrect;
+
 						// スコアを格納する
 						m_currentScoreDatas()[getData().levelIndex] = m_score;
 
 						// 結果シーンへ
 						changeScene(UFOCat::State::Result);
 					}
-
+					else
+					{
+						// ダイアログへ
+						m_gui.dialog.set(FontAsset(U"Test"), U"本当に戻りますか？\nここまでのデータは失われます").open();
+					}
 				}
+
+				// ダイアログ タイトルへ戻るボタンを押して、ダイアログが開かれた場合にボタン判定が始まる
+				if (m_gui.dialog.isPressedOK())
+				{
+					// スコアを格納する
+					m_currentScoreDatas()[getData().levelIndex] = m_score;
+
+					// 結果シーンへ
+					changeScene(UFOCat::State::Result);
+				}
+
+				m_gui.dialog.isPressedCancel();
 			}
+			
 		}
 		break;
 		default:
 			break;
 		}
 
-# if _DEBUG    // デバッグ機能：Ctrl + Shift + S でスキップ
-		if (KeyControl.pressed() and KeyShift.pressed() and KeyS.pressed())
+# if _DEBUG    // デバッグ機能：
+		if (KeyControl.pressed() and KeyShift.pressed())
 		{
-			m_currentLevel().isCleared = true;
-			m_currentScoreDatas()[getData().levelIndex] = ScoreData{ getData().levelIndex + 1, true, true, 0.5, getData().levelIndex };
-			
-			getData().timer.reset();
-
-			if (getData().levelIndex + 1 >= getData().levels.size())
+			// Ctrl + Shift + S でスキップ
+			if (KeyS.pressed())
 			{
-				// レベルがもう存在しない場合は、結果シーンへ
+				m_currentLevel().isCleared = true;
+				m_currentScoreDatas()[getData().levelIndex] = ScoreData{ getData().levelIndex + 1, true, true, 0.3, getData().levelIndex };
+			
+				getData().timer.reset();
+
+				if (getData().levelIndex + 1 >= getData().levels.size())
+				{
+					// レベルがもう存在しない場合は、結果シーンへ
+					changeScene(UFOCat::State::Result);
+				}
+				else
+				{
+					changeScene(UFOCat::State::Wanted);
+				}
+			}
+
+			// Ctrl + Shift + R で全スキップ
+			if (KeyR.pressed())
+			{
+				// 全てのレベルをクリアしたことにして結果シーンへ
+				// 一気に移るので、クリアフラグを上げる必要もない
+				m_currentScoreDatas().each_index([this](size_t i, ScoreData& score) { score = ScoreData{ i + 1, true, true, 0.5, i }; });
+				getData().timer.reset();
 				changeScene(UFOCat::State::Result);
 			}
-			else
-			{
-				changeScene(UFOCat::State::Wanted);
-			}
-			
 		}
 # endif
 	}
@@ -419,12 +444,12 @@ namespace UFOCat
 						FontAsset(U"Test")(U"時間切れ！").drawAt(Scene::CenterF().x, Scene::CenterF().y + 150);
 					}
 
-					m_gui.toResult.set(FontAsset(U"Test"), U"結果・タイトルへ")
-								  .draw(Arg::bottomLeft = Vec2{ 10.0, Scene::Height() - 10.0 });
+					m_gui.toResult.draw();
 
-					// このレベルをクリアできていて、次のレベルが存在する場合のみ表示
-					m_gui.toNextLevel.set(FontAsset(U"Test"), U"次のレベルへ", (m_score.isCorrect and m_isAvailableNextLevel()))
-									 .draw(Arg::bottomRight = (Scene::Size() - Vec2{ 10.0, 10.0 }));
+					// このレベルをクリアできていて、次のレベルが存在する場合のみ表示される update 参照
+					m_gui.toNextLevel.draw();
+
+					m_gui.dialog.draw();
 				}
 			}
 				break;

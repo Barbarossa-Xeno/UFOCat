@@ -2,10 +2,20 @@
 
 namespace UFOCat::Component
 {
-	Button &Button::set(const Font& font, const String& text, bool isEnabled, const Vec2& padding) const
+	RectF Button::getRegion() const
 	{
-		m_instance = std::make_unique<Button>(font, text, isEnabled, padding);
-		return *m_instance;
+		return m_region;
+	}
+
+	Button &Button::set(const Font& font, const String& text, bool isEnabled, const Vec2& padding)
+	{
+		m_font = font;
+		m_text = text;
+		m_isEnabled = isEnabled;
+		m_padding = padding;
+		m_region = RectF{ m_font(m_text).region().size + m_padding };
+
+		return *this;
 	}
 
 	Button::Button(const Font &font, const String &text, bool isEnabled, const Vec2 &padding)
@@ -18,28 +28,22 @@ namespace UFOCat::Component
 	{}
 
 	bool Button::isPressed() const
-	{
-		// 束縛している Button があればそれを使う
-		// なければ自分自身を使う
-		// （ないのは、インスタンスを作ったきりで set 系メソッドを実行していないとき）
-		const Button *const ptr = m_instance ? m_instance.get() : this;
-
+	{	
 		// マウスカーソルがボタンの上にある場合
-		if (ptr->m_isEnabled and ptr->m_region.mouseOver())
+		if (m_isEnabled and m_region.mouseOver())
 		{
 			// マウスカーソルを手の形にする
 			Cursor::RequestStyle(CursorStyle::Hand);
 		}
 
 		// ボタンが押されたら true を返す
-		return (ptr->m_isEnabled and ptr->m_region.leftClicked());
+		return (m_isEnabled and m_region.leftClicked());
 	}
 
-	void Button::draw(const Vec2 &position) const
+	void Button::draw() const
 	{
-		// 範囲を指定位置にずらしたうえで、描画用の角丸長方形を作成
-		// mutable だから、できること。
-		const RoundRect roundRect = m_region.moveBy(position).rounded(6);
+		// 描画用の角丸長方形を作成
+		const RoundRect roundRect = m_region.rounded(6);
 
 		// 影と背景を描く
 		roundRect.drawShadow(Vec2{ 2, 2 }, 12, 0)
@@ -60,62 +64,51 @@ namespace UFOCat::Component
 		}
 	}
 
-	void Button::draw(const Arg::topCenter_<Vec2> &position) const
+	Button &Button::setPosition(const Arg::topCenter_<Vec2> &position)
 	{
-		// 中央基準位置から自分の長さの半分ずらして左上位置とする、yはそのまま
-		double x = position->x - m_region.w / 2;
-		return draw(Vec2{ x, position->y });
+		m_region.setPos(position);
+		return *this;
 	}
 
-	void Button::draw(const Arg::topRight_<Vec2> &position) const
+	Button &Button::setPosition(const Arg::topRight_<Vec2> &position)
 	{
-		// 右端基準位置から自分の長さ分ずらして左上位置とする、yはそのまま
-		double x = position->x - m_region.w;
-		return draw(Vec2{ x, position->y });
+		m_region.setPos(position);
+		return *this;
 	}
 
-	void Button::draw(const Arg::leftCenter_<Vec2> &position) const
+	Button &Button::setPosition(const Arg::leftCenter_<Vec2> &position)
 	{
-		// 左端中央基準位置から自分の高さの半分ずらす、xはそのまま
-		double y = position->y - m_region.h / 2;
-		return draw(Vec2{ position->x, y });
+		m_region.setPos(position);
+		return *this;
 	}
 
-	void Button::draw(const Arg::rightCenter_<Vec2> &position) const
+	Button &Button::setPosition(const Arg::rightCenter_<Vec2> &position)
 	{
-		// 右端中央基準位置から自分の高さの半分ずらす、xはそのまま
-		double y = position->y - m_region.h / 2;
-		return draw(Vec2{ position->x - m_region.w, y });
+		m_region.setPos(position);
+		return *this;
 	}
 
-	void Button::draw(const Arg::bottomLeft_<Vec2> &position) const
+	Button &Button::setPosition(const Arg::bottomLeft_<Vec2> &position)
 	{
-		// 左下基準位置から自分の高さ分ずらす、xはそのまま
-		double y = position->y - m_region.h;
-		return draw(Vec2{ position->x, y });
+		m_region.setPos(position);
+		return *this;
 	}
 
-	void Button::draw(const Arg::bottomCenter_<Vec2> &position) const
+	Button &Button::setPosition(const Arg::bottomCenter_<Vec2> &position)
 	{
-		// 下中央基準位置から自分の高さ分と半分ずらす、xは中央基準位置から自分の長さの半分ずらす
-		double x = position->x - m_region.w / 2;
-		double y = position->y - m_region.h;
-		return draw(Vec2{ x, y });
+		m_region.setPos(position);
+		return *this;
 	}
 
-	void Button::draw(const Arg::bottomRight_<Vec2> &position) const
+	Button &Button::setPosition(const Arg::bottomRight_<Vec2> &position)
 	{
-		// 右下基準位置から自分の高さ分ずらす、xは右端基準位置から自分の長さ分ずらす
-		double x = position->x - m_region.w;
-		double y = position->y - m_region.h;
-		return draw(Vec2{ x, y });
+		m_region.setPos(position);
+		return *this;
 	}
 
-	void Button::drawAt(const Vec2 &position) const
+	Button &Button::setPositionAt(const Vec2 &position)
 	{
-		// 中央基準位置から自分の長さと高さの半分ずらして左上位置とする
-		double x = position.x - m_region.w / 2;
-		double y = position.y - m_region.h / 2;
-		return draw(Vec2{ x, y });
+		m_region.setPos(Arg::center = position);
+		return *this;
 	}
 }

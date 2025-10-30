@@ -61,6 +61,8 @@ namespace UFOCat
 			Component::Button toResult;
 
 			Component::Button toNextLevel;
+
+			Component::Dialog dialog;
 		} m_gui;
 
 		/* -- ゲッター / セッター -- */
