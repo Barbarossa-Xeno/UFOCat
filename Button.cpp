@@ -4,19 +4,7 @@ namespace UFOCat::Component
 {
 	Button &Button::set(const Font& font, const String& text, bool isEnabled, const Vec2& padding) const
 	{
-		// 束縛インスタンスがない場合は、生成してパラメータを渡す
-		if (not m_instance)
-		{
-			m_instance = std::make_unique<Button>(font, text, isEnabled, padding);
-		}
-		else
-		{
-			m_instance->m_font = font;
-			m_instance->m_text = text;
-			m_instance->m_isEnabled = isEnabled;
-			m_instance->m_padding = padding;
-		}
-		
+		m_instance = std::make_unique<Button>(font, text, isEnabled, padding);
 		return *m_instance;
 	}
 
