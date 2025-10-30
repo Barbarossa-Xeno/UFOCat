@@ -386,7 +386,7 @@
     <Xml Include="App\example\xml\test.xml" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Component.hpp" />
+    <ClInclude Include="GUI.hpp" />
     <ClInclude Include="CatAction.hpp" />
     <ClCompile Include="CatData.hpp" />
     <ClInclude Include="CatObject.hpp" />

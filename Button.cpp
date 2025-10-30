@@ -1,4 +1,4 @@
-﻿# include "Component.hpp"
+﻿# include "GUI.hpp"
 
 namespace UFOCat::Component::GUI
 {

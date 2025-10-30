@@ -1,5 +1,5 @@
 ﻿# pragma once
-# include "Component.hpp"
+# include "GUI.hpp"
 # include "CatObject.hpp"
 # include "LevelData.hpp"
 

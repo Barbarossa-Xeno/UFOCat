@@ -1016,7 +1016,7 @@
     <ClInclude Include="Wanted.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Component.hpp">
+    <ClInclude Include="GUI.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Result.hpp">
