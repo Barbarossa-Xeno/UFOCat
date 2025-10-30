@@ -58,11 +58,11 @@ namespace UFOCat
 		struct
 		{
 			/// @brief 結果シーンに進むボタン
-			Component::Button toResult;
+			Component::GUI::Button toResult;
 
-			Component::Button toNextLevel;
+			Component::GUI::Button toNextLevel;
 
-			Component::Dialog dialog;
+			Component::GUI::Dialog dialog;
 		} m_gui;
 
 		/* -- ゲッター / セッター -- */

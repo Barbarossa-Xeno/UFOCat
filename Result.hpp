@@ -18,10 +18,10 @@ namespace UFOCat
 		struct
 		{
 			/// @brief タイトルに行くボタン
-			Component::Button toTitle;
+			Component::GUI::Button toTitle;
 
 			/// @brief スコアに比例して伸びる称号ゲージ
-			Component::ProgressBar scoreTitleGauge;
+			Component::GUI::ProgressBar scoreTitleGauge;
 		}
 		m_gui{};
 

@@ -1,6 +1,6 @@
 ﻿# include "Component.hpp"
 
-namespace UFOCat::Component
+namespace UFOCat::Component::GUI
 {
 	RectF Button::getRegion() const
 	{

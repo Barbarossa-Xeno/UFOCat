@@ -1,6 +1,6 @@
 ﻿# include "Component.hpp"
 
-namespace UFOCat::Component
+namespace UFOCat::Component::GUI
 {
 	ProgressBar::ProgressBar(const SizeF &size, const SizeF &barScale, double roundness, double progress)
 		: m_region{ size }

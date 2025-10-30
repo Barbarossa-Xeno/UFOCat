@@ -1,6 +1,6 @@
 ﻿# pragma once
 
-namespace UFOCat::Component
+namespace UFOCat::Component::GUI
 {
 	/// @brief ボタンコンポーネント
 	class Button

@@ -1,6 +1,6 @@
 ﻿# include "Component.hpp"
 
-namespace UFOCat::Component
+namespace UFOCat::Component::GUI
 {
 	Dialog &Dialog::set(const Font &font, const String &text, const SizeF &size)
 	{
