@@ -16,7 +16,7 @@ namespace UFOCat
 	Result::Result(const InitData &init)
 		: IScene{ init }
 	{
-		// 総合得点を計算しておく
+		// 現在のプレイの総合得点を計算しておく
 		const uint32 total = getData().scores.back().calculateTotal();
 
 		// 閾値の割合がデカいほうから順に走査
@@ -39,69 +39,74 @@ namespace UFOCat
 
 	void Result::update()
 	{
-		if (m_gui.toTitle.isPressed())
+		// # スコア表示更新処理
 		{
-			// TODO: リセット処理しましょう
-
-			changeScene(UFOCat::State::Title);
-		}
-
-		{
+			// スコアと称号ゲージを増やす
 			if (const size_t total = getData().scores.back().total;
-				tempScore < total)
+				m_scoreCount < total)
 			{
 				// インターバルは 2.0s を目指すが、引き算の結果がデルタタイムより小さくなった場合は、デルタタイムを使用する
 				double interval = Max(2.0 / total - Scene::DeltaTime(), Scene::DeltaTime());
 
-				// 最終表示にもっていくのに 5.0s 以上かかる場合は、
-				// tempScore が大体 5.0s かけて増やした時の値以上になっていることを確認して
-				// 途中でぶちぎる
-				if (interval * total >= 5.0
-					and tempScore >= 5.0 / interval)
-				{
-					// 直接代入
-					tempScore = total;
+				// インターバルごとに繰り返す
+				m_scoreCountUpWatch.setInterval([&]()
+					{
+						// 速度（デルタタイムの足し上げ）の切り上げを変化にする
+						m_scoreCount += static_cast<size_t>(Ceil(countUpSpeed));
 
-					// 既に記録された称号での閾値計算に切り替えて、プログレスバーに反映
-					double t = static_cast<double>(total) / (getData().scores.back().titleData.threshold * ScoreData::GetMaxTheoretical());
-					m_gui.scoreBar.setProgress(t);
-				}
-				else
-				{
-					m_scoreCountUpWatch.setInterval([&]()
+						// デルタタイムの足し上げを速度とする
+						countUpSpeed += Scene::DeltaTime();
+
+						// 閾値の割合がデカいほうから順に走査
+						for (auto itr = Score::Titles.begin(); itr != Score::Titles.end(); ++itr)
 						{
-							++tempScore;
-
-							// 閾値の割合がデカいほうから順に走査
-							for (auto itr = Score::Titles.begin(); itr != Score::Titles.end(); ++itr)
+							// 現在のスコアのカウントが、比較対象の称号の閾値以下
+							// （カウント / 理論値 が 1.0 以下になる状況）のとき、
+							// ゲージを加算する
+							if (double realThreshold = itr->threshold * ScoreData::GetMaxTheoretical();
+								m_scoreCount <= realThreshold)
 							{
-								if (double realThreshold = itr->threshold * ScoreData::GetMaxTheoretical();
-									tempScore <= realThreshold)
+								// パラメータ
+								double t = 0.0;
+
+								// 一番下の称号の場合、そのまま進捗を設定
+								if (itr == Score::Titles.begin())
 								{
-									// 一番下の称号の場合、そのまま進捗を設定
-									if (itr == Score::Titles.begin())
-									{
-										double t = static_cast<double>(tempScore) / realThreshold;
-										m_gui.scoreBar.setProgress(t);
-									}
-									// それ以外の場合、前の称号の閾値を引いた分だけ進捗を設定
-									else
-									{
-										// 一個下の閾値をフィードバック
-										double feedbacked = static_cast<double>(tempScore) - std::prev(itr)->threshold * ScoreData::GetMaxTheoretical();
-
-										double t = feedbacked / realThreshold;
-										m_gui.scoreBar.setProgress(t);
-									}
-									break;
+									t = static_cast<double>(m_scoreCount) / realThreshold;
 								}
-							}
-						}, Duration());
-				}
+								// それ以外の場合、前の称号の閾値を引いた分だけ進捗を設定
+								else
+								{
+									// 一個下の閾値をフィードバック
+									const double prev = std::prev(itr)->threshold * ScoreData::GetMaxTheoretical();
+									const double num = static_cast<double>(m_scoreCount) - prev;
+									const double den = realThreshold - prev;
+									t = num / den;
+								}
 
-				
+								m_gui.scoreTitleGauge.setProgress(Easing::Sine(t));
+
+								// 更新したら走査やめる
+								break;
+							}
+						}
+					}, Duration(interval));
 			}
 		}
+
+		if (m_gui.toTitle.isPressed())
+		{
+			// リセット処理は、タイトル側で行う
+			changeScene(UFOCat::State::Title);
+		}
+
+# if _DEBUG
+		// デバッグ機能：Ctrl + Shift + S でスキップ
+		if (KeyControl.pressed() and KeyShift.pressed() and KeyR.pressed())
+		{
+			changeScene(State::Result);
+		}
+# endif
 	}
 
 	void Result::draw() const
@@ -144,23 +149,24 @@ namespace UFOCat
 			FontAsset(U"Test")(U"+0").draw(Arg::rightCenter = Vec2{ Scene::Width() - 30.0, Scene::Center().y - 60.0 });
 		}*/
 
+		// # スコア表示
 		{
 			// TODO: ほんとはこういうサイズもレスポンシブにすべきなんだろうな
-			const RectF &region = FontAsset(U"Test")(U"{}"_fmt(tempScore)).draw(120, Arg::bottomCenter = Scene::Center());
+
+			// 点数表示
+			FontAsset(U"Test")(U"{}"_fmt(m_scoreCount)).draw(120, Arg::bottomCenter = Scene::Center());
 
 			const RectF& maxRegion = FontAsset(U"Test")(U"{}"_fmt(ScoreData::GetMaxTheoretical())).region(120, Arg::bottomCenter = Scene::Center());
-			maxRegion.drawFrame();
 
-			// 回転座標
+			// 回転座標系
 			{
 				const Transformer2D tr{ Mat3x2::Rotate(-15_deg, maxRegion.left().end) };
 				FontAsset(U"Test")(U"今回の評価").draw(40, Arg::bottomCenter = Vec2{ maxRegion.x, maxRegion.y });
 			}
-		}
 
-		{
-			m_gui.scoreBar.setSize({ 0.7 * Scene::Width(), 150.0 })
-						  .draw(Arg::topCenter = Vec2{ Scene::Center().x, Scene::Center().y + 40 }, SizeF{ 0.9, 0.1 });
+			// 称号ゲージ更新
+			m_gui.scoreTitleGauge.setSize({ 0.7 * Scene::Width(), 150.0 })
+				.draw(Arg::topCenter = Vec2{ Scene::Center().x, Scene::Center().y + 40 }, SizeF{ 0.9, 0.1 });
 		}
 
 		/*{

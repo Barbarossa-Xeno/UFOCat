@@ -5,6 +5,7 @@ namespace UFOCat
 	Title::Title(const InitData& init)
 		: IScene{ init }
 	{
+		// 初回起動時
 		if (getData().cats.isEmpty() or getData().levels.isEmpty())
 		{
 			// データがまだ読み込まれていなければ読み込む
@@ -17,6 +18,12 @@ namespace UFOCat
 			// スコアデータはレベル数に合わせて確保してから、1プレイ分として追加しておく
 			getData().scores << Score{ Array<ScoreData>{ getData().levels.size() }, ScoreTitleData{} };
 			//getData().scores.resize(getData().levels.size());			
+		}
+		// それ以降でタイトルに戻ってきた場合
+		else
+		{
+			// 読み込んでいるレベルデータのクリアフラグをリセット
+			getData().levels.each([](LevelData &level) { level.isCleared = false; });
 		}
 	}
 

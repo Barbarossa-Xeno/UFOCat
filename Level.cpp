@@ -81,7 +81,8 @@ namespace UFOCat
 			{
 				similars << std::make_shared<CatObject>(cat);
 			}
-			else
+			// 類似条件を下回るのを「その他」としてカウント
+			else if (m_currentLevel().similarity > cat.getCatData().getSameDataCount(m_target->getCatData()))
 			{
 				others << std::make_shared<CatObject>(cat);
 			}
@@ -94,10 +95,7 @@ namespace UFOCat
 			comp > 0)
 		{
 			// 多すぎる場合はランダムに頭数を削る
-			while (similars.size() > similarCount)
-			{
-				similars.shuffle().pop_back();
-			}
+			similars.shuffle().resize(similarCount);
 		}
 		// 少なすぎる場合
 		else if (comp < 0)
@@ -135,6 +133,7 @@ namespace UFOCat
 		}
 
 		// others は既定の数から溢れている可能性が高いので、ランダムに削る
+		// 既定の数に達しない場合は、それでもよしとする
 		others.shuffle().resize(otherCount);
 
 		// レベル中に行うアクションリストの中から、それぞれの発生確率だけを抜き取ったリストで確率分布をつくる
@@ -328,9 +327,21 @@ namespace UFOCat
 # if _DEBUG    // デバッグ機能：Ctrl + Shift + S でスキップ
 		if (KeyControl.pressed() and KeyShift.pressed() and KeyS.pressed())
 		{
+			m_currentLevel().isCleared = true;
 			m_currentScoreDatas()[getData().levelIndex] = ScoreData{ getData().levelIndex + 1, true, true, 0.5, getData().levelIndex };
+			
 			getData().timer.reset();
-			changeScene(UFOCat::State::Result);
+
+			if (getData().levelIndex + 1 >= getData().levels.size())
+			{
+				// レベルがもう存在しない場合は、結果シーンへ
+				changeScene(UFOCat::State::Result);
+			}
+			else
+			{
+				changeScene(UFOCat::State::Wanted);
+			}
+			
 		}
 # endif
 	}

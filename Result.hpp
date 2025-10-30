@@ -6,18 +6,27 @@ namespace UFOCat
 {
 	class Result : public App::Scene
 	{
-		size_t tempScore = 0;
+		/// @brief スコア表示のカウントアップに使う変数
+		size_t m_scoreCount = 0;
 
+		/// @brief カウントアップさせるときのスピード（倍率）
+		double countUpSpeed = 1.0;
+
+		/// @brief カウントアップするためのストップウォッチ
 		DeltaStopwatch m_scoreCountUpWatch;
 
 		struct
 		{
+			/// @brief タイトルに行くボタン
 			Component::Button toTitle;
 
-			Component::ProgressBar scoreBar;
+			/// @brief スコアに比例して伸びる称号ゲージ
+			Component::ProgressBar scoreTitleGauge;
 		}
 		m_gui{};
 
+		/// @brief 
+		/// @return 
 		ScoreData& m_currentScoreData() const;
 
 		// TODO: m_currentScoreDatas() は2個目 親クラスでの共通化を考える
