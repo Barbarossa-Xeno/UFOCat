@@ -92,7 +92,7 @@ Array<CatObject> UFOCat::LoadCatData()
 	Array<CatObject> results;
 
 	// テクスチャフォルダから初めに全ての猫の画像を読み込んでおく
-	const auto&& textures = FileSystem::DirectoryContents(U"texture").map([](const String& path) { return Texture{ path }; });
+	const auto&& textures = FileSystem::DirectoryContents(U"texture/cat").map([](const String& path) { return Texture{ path }; });
 
 	if (data.getType() == JSONValueType::Array)
 	{
