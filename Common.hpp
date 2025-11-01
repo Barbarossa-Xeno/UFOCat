@@ -118,6 +118,9 @@ namespace UFOCat
 	};
 	// TODO: 直近のスコアデータを残そうと思えば、二次元Arrayのフィールドを追加してもよい
 
+	/// @brief マウスカーソルの周囲を明るくする（画面幅 or 高さの大きいほうの 2% 分の半径）
+	void BrightenCursor();
+
 	/// @brief UFO猫のデータをJSONから読み込んでそれら全てのインスタンスを作成する
 	/// @return 全てのUFO猫のインスタンス配列
 	Array<CatObject> LoadCatData();

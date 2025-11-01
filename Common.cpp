@@ -74,6 +74,14 @@ size_t UFOCat::Score::calculateTotal()
 	return total;
 }
 
+void UFOCat::BrightenCursor()
+{
+	if (Cursor::OnClientRect())
+	{
+		Circle{ Cursor::Pos(), 0.02 * Max(Scene::Width(), Scene::Height()) }.draw(ColorF{1.0, 0.7});
+	}
+}
+
 Array<CatObject> UFOCat::LoadCatData()
 {
 	// JSON ファイルからデータを読み込む
