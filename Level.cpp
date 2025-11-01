@@ -44,6 +44,11 @@ namespace UFOCat
 	Level::Level(const InitData& init)
 		: IScene{ init }
 	{
+		// テクスチャ取得
+		{
+			m_gui.stopwatch = Texture{ U"texture/stopwatch.png", TextureDesc::Mipped };
+		}
+
 		// 前回レベルでスポーンした猫を吹っ飛ばし、unique_ptr も解放する
 		getData().spawns.release();
 
@@ -146,8 +151,8 @@ namespace UFOCat
 		m_state = Level::State::Playing;
 
 		// 制限時間を決めて、タイマー開始
-		// 1s 猶予を持たせて、気持ち長めにすることで間に入る処理の影響を減らす
-		getData().timer.restart(m_currentLevel().timeLimit + 1s);
+		// 0.5s 猶予を持たせて、気持ち長めにすることで間に入る処理の影響を減らす
+		getData().timer.restart(m_currentLevel().timeLimit + 0.5s);
 
 		// 現在のレベルに合わせてターゲットの出現時刻を設定
 		m_setTargetSpawnTime(getData().levelIndex + 1);
@@ -275,11 +280,11 @@ namespace UFOCat
 		{
 			// # GUI 処理
 			{
-				// ボタン内の利用可能状態によって押せるかどうか決まることが保証されるので
-				// そもそもこの条件式はボタンが利用不可能なときには通過しない
+				// 次のレベルへ進めるかは、今回が合っていて かつ 次のレベルが存在する必要がある
+				bool canContinue = (m_score.isCorrect and m_isAvailableNextLevel());
 
 				// 次のレベルへ進むボタン
-				if (m_gui.toNextLevel.set(FontAsset(U"Test"), U"次のレベルへ", (m_score.isCorrect and m_isAvailableNextLevel()))
+				if (m_gui.toNextLevel.set(32, U"次のレベルへ", canContinue)
 									  .setPosition(Arg::bottomRight = (Scene::Size() - Vec2{ 10.0, 10.0 })).isPressed())
 				{
 					// 次に進む場合は、レベルデータにもクリア情報を反映
@@ -294,26 +299,27 @@ namespace UFOCat
 				}
 
 				// タイトルへ戻るボタン
-				if (m_gui.toResult.set(FontAsset(U"Test"), U"結果 / タイトルへ")
+				if (m_gui.toResult.set(32, U"結果 / タイトルへ")
 								  .setPosition(Arg::bottomLeft = Vec2{ 10.0, Scene::Height() - 10.0 })
 								  .isPressed())
 				{
-					if (not m_isAvailableNextLevel())
+					if (canContinue)
 					{
-						// 次のレベルが存在しないためにタイトルへ戻らなければならない場合は、
+						// 次へ行けるのにやめようとしてる人には、ダイアログを出す
+						m_gui.dialog.set(22, U"本当に戻りますか？\nここまでのデータは失われます").open();
+					}
+					else
+					{
+						// 次のレベルが存在しないためにタイトルへ戻らなければならない場合もあるので、
 						// レベルデータにもクリア情報を反映
+						// （はなから間違えていれば false になるだけ）
 						m_currentLevel().isCleared = m_score.isCorrect;
 
 						// スコアを格納する
 						m_currentScoreDatas()[getData().levelIndex] = m_score;
 
 						// 結果シーンへ
-						changeScene(UFOCat::State::Result);
-					}
-					else
-					{
-						// ダイアログへ
-						m_gui.dialog.set(FontAsset(U"Test"), U"本当に戻りますか？\nここまでのデータは失われます").open();
+						changeScene(UFOCat::State::Result, 1s);
 					}
 				}
 
@@ -324,7 +330,7 @@ namespace UFOCat
 					m_currentScoreDatas()[getData().levelIndex] = m_score;
 
 					// 結果シーンへ
-					changeScene(UFOCat::State::Result);
+					changeScene(UFOCat::State::Result, 1s);
 				}
 
 				m_gui.dialog.isPressedCancel();
@@ -367,6 +373,18 @@ namespace UFOCat
 				getData().timer.reset();
 				changeScene(UFOCat::State::Result);
 			}
+
+			if (KeyQ.pressed())
+			{
+				if (getData().timer.isRunning())
+				{
+					getData().timer.pause();
+				}
+				else
+				{
+					getData().timer.start();
+				}
+			}
 		}
 # endif
 	}
@@ -382,22 +400,37 @@ namespace UFOCat
 					continue;
 				}
 
-				cat->draw().drawHitArea();
+				cat->draw();
 			}
 		}
 
 		// # ステート依存処理
 		switch (m_state)
 		{
+			// TODO: 今のレベルとか書く
 			case UFOCat::Level::State::Playing:
 			{
-				FontAsset(U"Test")(U"のこり {} 秒"_fmt(getData().timer.s())).draw(10, 10);
+				{
+					// 中心 (60, 60) としてストップウォッチのテクスチャを最大 60px で描画
+					RectF swRegion = m_gui.stopwatch.resized(60).drawAt(Point{ 60, 60 });
+
+					// 針の角度
+					double angle = 2 * Math::Pi * getData().timer.sF() / m_currentLevel().timeLimit.count();
+
+					// 針を描画 ストップウォッチの中心からちょっとずらした位置
+					// 角度は逆方向に回っていたので、更に反転させておいた
+					Line{ Vec2{ swRegion.centerX(), swRegion.centerY() + 4.0 }, Arg::angle = -angle, 16.0 }.draw(LineStyle::RoundCap, 4.0, Palette::Salmon);
+
+					FontAsset(FontName::YuseiMagic)(U"のこり").draw(20, swRegion.tr().x + 10, swRegion.tr().y - 10);
+					RectF tRegion = FontAsset(FontName::YuseiMagic)(U"{}"_fmt(getData().timer.s())).drawBase(36, Vec2{ swRegion.br().x + 10, swRegion.br().y - 5 });
+					FontAsset(FontName::YuseiMagic)(U"秒").drawBase(24, Vec2{ tRegion.br().x + 10, swRegion.br().y - 5 });
+				}
 			}
 			break;
 
 			case UFOCat::Level::State::Finish:
 			{
-				FontAsset(U"Test")(U"Finish!!").drawAt(Scene::Center());
+				FontAsset(U"KoharuiroSunray")(U"Finish!!").drawAt(120, Scene::Center()).drawShadow(Vec2{ 1, 1 }, 3);
 			}
 			break;
 
@@ -415,14 +448,14 @@ namespace UFOCat
 
 						image.drawAt(Scene::CenterF() - SizeF(image.size.x, 0));
 
-						FontAsset(U"Test")(U"キミが捕まえた猫").drawAt(Scene::CenterF() + SizeF(-image.size.x, -150));
+						FontAsset(FontName::YuseiMagic)(U"キミが捕まえた猫").drawAt(Scene::CenterF() + SizeF(-image.size.x, -150));
 					}
 				}
 				// 画面右側 ターゲットを表示
 				{
 					auto &&image = m_target->getTexture().scaled(m_CatImageScale);
 					image.drawAt(Scene::CenterF() + SizeF(image.size.x, 0));
-					FontAsset(U"Test")(U"ターゲット").drawAt(Scene::CenterF() + SizeF(image.size.x, -150));
+					FontAsset(FontName::YuseiMagic)(U"ターゲット").drawAt(Scene::CenterF() + SizeF(image.size.x, -150));
 				}
 				// 画面中央下部 結果表示
 				{
@@ -432,16 +465,16 @@ namespace UFOCat
 						// 合っていたかどうかでも分岐
 						if (m_score.isCorrect)
 						{
-							FontAsset(U"Test")(U"正解！").drawAt(Scene::CenterF().x, Scene::CenterF().y + 150);
+							FontAsset(FontName::YuseiMagic)(U"正解！").drawAt(Scene::CenterF().x, Scene::CenterF().y + 150);
 						}
 						else
 						{
-							FontAsset(U"Test")(U"不正解...").drawAt(Scene::CenterF().x, Scene::CenterF().y + 150);
+							FontAsset(FontName::YuseiMagic)(U"不正解...").drawAt(Scene::CenterF().x, Scene::CenterF().y + 150);
 						}
 					}
 					else
 					{
-						FontAsset(U"Test")(U"時間切れ！").drawAt(Scene::CenterF().x, Scene::CenterF().y + 150);
+						FontAsset(FontName::YuseiMagic)(U"時間切れ！").drawAt(Scene::CenterF().x, Scene::CenterF().y + 150);
 					}
 
 					m_gui.toResult.draw();

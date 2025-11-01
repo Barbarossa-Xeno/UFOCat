@@ -125,6 +125,7 @@
     <ClCompile Include="Level.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="LevelData.cpp" />
+    <ClCompile Include="MessageBox.cpp" />
     <ClCompile Include="ProgressBar.cpp" />
     <ClCompile Include="Result.cpp" />
     <ClCompile Include="Scrollable.cpp" />
@@ -376,6 +377,7 @@
   <ItemGroup>
     <Font Include="App\example\font\DotGothic16\DotGothic16-Regular.ttf" />
     <Font Include="App\example\font\RocknRoll\RocknRollOne-Regular.ttf" />
+    <Font Include="App\font\YuseiMagic-Regular.ttf" />
   </ItemGroup>
   <ItemGroup>
     <Xml Include="App\example\objdetect\haarcascade\eye.xml" />
@@ -386,6 +388,7 @@
     <Xml Include="App\example\xml\test.xml" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="FontName.hpp" />
     <ClInclude Include="GUI.hpp" />
     <ClInclude Include="CatAction.hpp" />
     <ClCompile Include="CatData.hpp" />

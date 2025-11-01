@@ -43,7 +43,7 @@ namespace UFOCat
 		{
 			// スコアと称号ゲージを増やす
 			if (const size_t total = getData().scores.back().total;
-				m_scoreCount < total)
+				m_ScoreCount < total)
 			{
 				// インターバルは 2.0s を目指すが、引き算の結果がデルタタイムより小さくなった場合は、デルタタイムを使用する
 				double interval = Max(2.0 / total - Scene::DeltaTime(), Scene::DeltaTime());
@@ -52,20 +52,20 @@ namespace UFOCat
 				m_scoreCountUpWatch.setInterval([&]()
 					{
 						// 実際の総得点とカウントとの差が10を切るまで、スピードを上げてカウントアップ
-						if (total - m_scoreCount >= 10)
+						if (total - m_ScoreCount >= 10)
 						{
 							// 速度（デルタタイムの足し上げ）の切り上げを変化にする
-							m_scoreCount += static_cast<size_t>(Ceil(countUpSpeed));
+							m_ScoreCount += static_cast<size_t>(Ceil(m_countUpAcceleration));
 						}
 						// 最後は1つずつ足し上げて誤差がないように終了
 						else
 						{
-							++m_scoreCount;
+							++m_ScoreCount;
 						}
 						
 
-						// デルタタイムの足し上げを速度とする
-						countUpSpeed += Scene::DeltaTime();
+						// 前回の速度 x デルタタイムの足し上げ -> 加速度的
+						m_countUpAcceleration += m_countUpAcceleration * Scene::DeltaTime();
 
 						// 閾値の割合がデカいほうから順に走査
 						for (auto itr = Score::Titles.begin(); itr != Score::Titles.end(); ++itr)
@@ -74,7 +74,7 @@ namespace UFOCat
 							// （カウント / 理論値 が 1.0 以下になる状況）のとき、
 							// ゲージを加算する
 							if (double realThreshold = itr->threshold * ScoreData::GetMaxTheoretical();
-								m_scoreCount <= realThreshold)
+								m_ScoreCount <= realThreshold)
 							{
 								// パラメータ
 								double t = 0.0;
@@ -82,18 +82,22 @@ namespace UFOCat
 								// 一番下の称号の場合、そのまま進捗を設定
 								if (itr == Score::Titles.begin())
 								{
-									t = static_cast<double>(m_scoreCount) / realThreshold;
+									t = static_cast<double>(m_ScoreCount) / realThreshold;
 								}
 								// それ以外の場合、前の称号の閾値を引いた分だけ進捗を設定
 								else
 								{
 									// 一個下の閾値をフィードバック
 									const double prev = std::prev(itr)->threshold * ScoreData::GetMaxTheoretical();
-									const double num = static_cast<double>(m_scoreCount) - prev;
+									const double num = static_cast<double>(m_ScoreCount) - prev;
 									const double den = realThreshold - prev;
 									t = num / den;
 								}
 
+								// 称号を更新
+								m_currentTitle = *itr;
+
+								// ゲージを更新
 								m_gui.scoreTitleGauge.setProgress(Easing::Sine(t));
 
 								// 更新したら走査やめる
@@ -108,15 +112,14 @@ namespace UFOCat
 
 		// # GUI 更新処理
 		{
-			m_gui.scoreTitleGauge.set({ 0.7 * Scene::Width(), 150.0 }, SizeF{ 0.9, 0.1 })
-				.setPosition(Arg::topCenter = Vec2{ Scene::Center().x, Scene::Center().y + 40 });
-
-			if (m_gui.toTitle.set(FontAsset(U"Test"), U"タイトルへ")
+			m_gui.scoreTitleGauge.set({ 0.65 * Scene::Width(), 15.0 })
+				.setPosition(Arg::topCenter = Vec2{ Scene::Center().x, Scene::Center().y + 110 });
+			if (m_gui.toTitle.set(32, U"タイトルへ")
 							  .setPosition(Arg::bottomLeft = Vec2{ 10.0, Scene::Height() - 10.0 })
 							  .isPressed())
 			{
 				// リセット処理は、タイトル側で行う
-				changeScene(UFOCat::State::Title);
+				changeScene(UFOCat::State::Title, 1.5s);
 			}
 		}
 
@@ -124,7 +127,7 @@ namespace UFOCat
 		// デバッグ機能：Ctrl + Shift + S でスキップ
 		if (KeyControl.pressed() and KeyShift.pressed() and KeyR.pressed())
 		{
-			changeScene(State::Result);
+			changeScene(State::Result, 1s);
 		}
 # endif
 	}
@@ -174,18 +177,29 @@ namespace UFOCat
 			// TODO: ほんとはこういうサイズもレスポンシブにすべきなんだろうな
 
 			// 点数表示
-			FontAsset(U"Test")(U"{}"_fmt(m_scoreCount)).draw(120, Arg::bottomCenter = Scene::Center());
+			FontAsset(FontName::KoharuiroSunray)(U"{}"_fmt(m_ScoreCount)).draw(120, Arg::bottomCenter = Scene::Center());
 
-			const RectF& maxRegion = FontAsset(U"Test")(U"{}"_fmt(ScoreData::GetMaxTheoretical())).region(120, Arg::bottomCenter = Scene::Center());
+			const RectF& maxRegion = FontAsset(FontName::KoharuiroSunray)(U"{}"_fmt(ScoreData::GetMaxTheoretical())).region(120, Arg::bottomCenter = Scene::Center());
 
 			// 回転座標系
 			{
 				const Transformer2D tr{ Mat3x2::Rotate(-15_deg, maxRegion.left().end) };
-				FontAsset(U"Test")(U"今回の評価").draw(40, Arg::bottomCenter = Vec2{ maxRegion.x, maxRegion.y });
+				FontAsset(FontName::YuseiMagic)(U"今回の評価").draw(40, Arg::bottomCenter = Vec2{ maxRegion.x, maxRegion.y });
 			}
 
-			// 称号ゲージ更新
-			m_gui.scoreTitleGauge.draw();
+			{
+				// RoundRect{ Vec2{ }, SizeF(0.65 * Scene::Width(), 150.0), 12.0};
+
+				const RectF &region1 = FontAsset(FontName::YuseiMagic)(U"キミは").draw(26, Arg::bottomLeft = (m_gui.scoreTitleGauge.getRegion().tl() - Point{ 0, 20 }));
+
+				const RectF &region2 = FontAsset(FontName::KoharuiroSunray)(U"{}"_fmt(m_currentTitle.kanjiName)).drawBase(60, (region1.br() + Point{ 10, 5 }));
+
+				FontAsset(FontName::YuseiMagic)(U"UFO猫ハンターだ！！").draw(26, Arg::bottomLeft = Vec2{ (region2.br().x + 10), region1.br().y });
+
+				// 称号ゲージ更新
+				m_gui.scoreTitleGauge.draw();
+			}
+			
 		}
 
 		/*{

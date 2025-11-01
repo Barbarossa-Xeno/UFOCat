@@ -2,30 +2,29 @@
 
 namespace UFOCat::Component::GUI
 {
-	Dialog &Dialog::set(const Font &font, const String &text, const SizeF &size)
+	Dialog &Dialog::set(double fontSize, const String &text, const SizeF &windowSize)
 	{
+		// 基底クラス呼び出し
+		MessageBox::set(fontSize, text, windowSize);
 
-		m_font = font;
-		m_text = text;
-		m_size = size;
-		m_region = RectF{ Arg::center(Scene::Center()), size };
-
-		// ボタンは再確保せず中身を更新
-		Console << m_okButton.getRegion();
-		m_okButton.set(font, U"Yes").setPosition(Arg::bottomCenter = Vec2{ m_region.centerX() - m_region.w / 4.0, m_region.bottomCenter().y - 20 });
-		m_cancelButton.set(font, U"No").setPosition(Arg::bottomCenter = Vec2{ m_region.centerX() + m_region.w / 4.0, m_region.bottomCenter().y - 20 });
+		// ボタンは位置が変わったりテキストが変わったりするので個別に再セット
+		// ウィンドウ下のほうに均等に配置する
+		m_okButton.set(Ceil(m_getButtonTextSize()), U"Yes")
+				  .setPosition(Arg::bottomCenter = Vec2{ m_region.centerX() - m_region.w / 4.0, m_region.bottomCenter().y - 20 });
+		m_cancelButton.set(Ceil(m_getButtonTextSize()), U"No")
+					  .setPosition(Arg::bottomCenter = Vec2{m_region.centerX() + m_region.w / 4.0, m_region.bottomCenter().y - 20});
 
 		return *this;
 	}
 
-	Dialog::Dialog(const Font &font, const String &text, const SizeF &size)
-		: m_font{ font }
-		, m_text{ text }
-		, m_okButton{ font, U"No!" }
-		, m_cancelButton{ font, U"Yes!" }
-		, m_size{ size }
-		, m_region{ Arg::center(Scene::Center()), size }
-	{}
+	Dialog::Dialog(const Font &font, double fontSize, const String &text, const SizeF &windowSize)
+		: MessageBox{ font, fontSize, text, windowSize }
+		, m_cancelButton{ font, Ceil(m_getButtonTextSize()), U"No" }
+	{
+		// 上書き
+		m_okButton.set(Ceil(m_getButtonTextSize()), U"Yes")
+				  .setPosition(Arg::bottomCenter = Vec2{ m_region.centerX() - m_region.w / 4.0, m_region.bottomCenter().y - 20 });
+	}
 
 	bool Dialog::isPressedOK()
 	{
@@ -37,45 +36,20 @@ namespace UFOCat::Component::GUI
 		// 押されたとき、ダイアログが消える
 		if (m_cancelButton.isPressed())
 		{
-			m_isOpen = false;
+			close();
 			return true;
 		}
-		else
-		{
-			return false;
-		}
-	}
-
-	void Dialog::open()
-	{
-		m_isOpen = true;
+		return false;
 	}
 
 	void Dialog::draw() const
 	{
-		// フラグが立っていないときは描画しない
-		if (not m_isOpen)
+		MessageBox::draw();
+
+		if (m_isOpen)
 		{
-			return;
+			// キャンセルボタン
+			m_cancelButton.draw();
 		}
-
-		// 背景
-		m_region.rounded(12)
-				.drawShadow(Vec2{ 4, 4 }, 16, 0)
-				.draw(ColorF{ 0.95, 0.9, 0.8 });
-
-		// OKボタン
-		m_okButton.draw();
-		
-		// キャンセルボタン
-		m_cancelButton.draw();
-
-		// 区切り線
-		RoundRect line{ RectF{ Arg::center(Scene::CenterF().x, m_okButton.getRegion().topY() - 20), SizeF(0.9, 0.01) * m_region.size }, 4 };
-
-		line.draw(ColorF{ 0.8, 0.7, 0.6 });
-
-		// テキストは区切り線と背景上との中央に描画
-		m_font(m_text).drawAt(m_region.center().x, m_region.topY() + (line.topCenter().y - m_region.topY()) / 2, ColorF{ 0.4, 0.3, 0.2 });
 	}
 }

@@ -4,9 +4,9 @@ const std::array<UFOCat::ScoreTitleData, 5> UFOCat::Score::Titles =
 { {
 	{ U"新米", U"しんまい", 0.25 },
 	{ U"逸材", U"いつざい", 0.5 },
-	{ U"中堅", U"ちゅうけん", 0.75 },
-	{ U"達人", U"たつじん", 0.9 },
-	{ U"英傑", U"えいけつ", 1.0 }
+	{ U"手練", U"てだれ", 0.75 },
+	{ U"究極", U"きゅうきょく", 0.9 },
+	{ U"神秘", U"しんぴ", 1.0 }
 } };
 
 UFOCat::ScoreData::ScoreData() = default;

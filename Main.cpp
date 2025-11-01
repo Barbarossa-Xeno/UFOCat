@@ -1,17 +1,24 @@
-﻿#include "game_manager.hpp"
-#include <Siv3D.hpp> // Siv3D v0.6.16
+﻿#include <Siv3D.hpp> // Siv3D v0.6.16
 # include "Common.hpp"
 # include "Title.hpp"
 # include "Wanted.hpp"
 # include "Level.hpp"
 # include "Result.hpp"
+# include "FontName.hpp"
 
 using namespace UFOCat;
 
 void Main()
 {
-	// テスト用フォント
-	FontAsset::Register(U"Test", 36);
+	// フォントアセットの登録
+	FontAsset::Register(FontName::YuseiMagic, FontMethod::SDF, 48, U"font/YuseiMagic-Regular.ttf");
+	FontAsset::Register(FontName::KoharuiroSunray, FontMethod::SDF, 48, U"font/GN-Koharuiro_Sunray.ttf");
+
+	// ウィンドウの設定
+	Window::SetTitle(U"UFO猫をつかまえろ!!");
+	Window::SetStyle(WindowStyle::Sizable);
+
+	Scene::SetResizeMode(ResizeMode::Keep);
 
 	App app;
 
@@ -19,6 +26,8 @@ void Main()
 	app.add<Wanted>(State::Wanted);
 	app.add<Level>(State::Level);
 	app.add<Result>(State::Result);
+
+	app.init(State::Title, 1s);
 
 	// 動作確認用のコピー
 	/*GameManager& game = GameManager::Instance();

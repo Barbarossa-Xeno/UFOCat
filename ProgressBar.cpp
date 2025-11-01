@@ -2,17 +2,20 @@
 
 namespace UFOCat::Component::GUI
 {
-	ProgressBar::ProgressBar(const SizeF &size, const SizeF &barScale, double roundness, double progress)
+	ProgressBar::ProgressBar(const SizeF &size, double roundness, double progress)
 		: m_region{ size }
-		, m_barScale{ barScale }
 		, m_roundness{ roundness }
 		, m_progress{ progress }
 	{}
 
-	ProgressBar &ProgressBar::set(const SizeF &size, const SizeF &barScale, double roundness)
+	RectF ProgressBar::getRegion() const
+	{
+		return m_region;
+	}
+
+	ProgressBar &ProgressBar::set(const SizeF &size, double roundness)
 	{
 		m_region = RectF{ size };
-		m_barScale = barScale;
 		m_roundness = roundness;
 		return *this;
 	}
@@ -25,11 +28,8 @@ namespace UFOCat::Component::GUI
 
 	void ProgressBar::draw() const
 	{
-		// 角丸四角形を描画
-		m_region.rounded(m_roundness).draw();
-
 		// バーの大きさを定義する
-		RoundRect bar = m_region.scaled(m_barScale).rounded(0.75 * m_roundness);
+		RoundRect bar = m_region.rounded(0.75 * m_roundness);
 
 		// バーの枠
 		bar.drawFrame(2, Palette::Dimgray);
@@ -38,7 +38,7 @@ namespace UFOCat::Component::GUI
 		const RoundRect full = bar.stretched(-2);
 
 		// 線形補間
-		RoundRect{ bar.rect.pos, SizeF{ 0.0, bar.h }, bar.r }.lerp(full, m_progress).draw(Palette::Bisque);
+		RoundRect{ bar.rect.pos, SizeF{ 0.0, bar.h }, bar.r }.lerp(full, m_progress).draw(ColorF{ 0.4, 0.3, 0.2 });
 	}
 
 	ProgressBar &ProgressBar::setPosition(const Vec2 &position)

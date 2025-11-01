@@ -1,5 +1,6 @@
 ﻿# pragma once
 # include "GUI.hpp"
+# include "FontName.hpp"
 # include "CatObject.hpp"
 # include "LevelData.hpp"
 

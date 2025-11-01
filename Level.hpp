@@ -63,6 +63,8 @@ namespace UFOCat
 			Component::GUI::Button toNextLevel;
 
 			Component::GUI::Dialog dialog;
+
+			Texture stopwatch;
 		} m_gui;
 
 		/* -- ゲッター / セッター -- */

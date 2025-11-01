@@ -9,6 +9,12 @@ namespace UFOCat
 
 		std::unique_ptr<CatObject> m_target = nullptr;
 
+		struct
+		{
+			Component::GUI::ProgressBar levelBar;
+		}
+		m_gui;
+
 	public:
 
 		Wanted(const InitData &init);

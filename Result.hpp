@@ -6,11 +6,14 @@ namespace UFOCat
 {
 	class Result : public App::Scene
 	{
-		/// @brief スコア表示のカウントアップに使う変数
-		size_t m_scoreCount = 0;
+		/// @brief カウントアップさせるスコア
+		size_t m_ScoreCount = 0;
 
-		/// @brief カウントアップさせるときのスピード（倍率）
-		double countUpSpeed = 1.0;
+		/// @brief カウントアップに応じて変わる称号データを保持する
+		ScoreTitleData m_currentTitle = Score::Titles[0];
+
+		/// @brief カウントアップさせるときの加速度 随時加算
+		double m_countUpAcceleration = 1.0;
 
 		/// @brief カウントアップするためのストップウォッチ
 		DeltaStopwatch m_scoreCountUpWatch;

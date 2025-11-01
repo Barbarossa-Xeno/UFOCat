@@ -1,12 +1,16 @@
 ﻿# pragma once
+# include "FontName.hpp"
 
 namespace UFOCat::Component::GUI
 {
-	/// @brief ボタンコンポーネント
+	/// @brief ボタンコンポーネント @n
+	/// デフォルトのフォントは 油性マジック を使用する
 	class Button
 	{
 
-		Font m_font;
+		Font m_font = FontAsset(FontName::YuseiMagic);
+
+		double m_fontSize;
 
 		String m_text;
 
@@ -26,22 +30,34 @@ namespace UFOCat::Component::GUI
 		// TODO: フォントサイズを指定できるようにしてもいいかも
 		/// @brief ボタンを初期化する
 		/// @param font テキストに使うフォント
+		/// @param fontSize
 		/// @param text テキスト
 		/// @param isEnabled 有効かどうか
 		/// @param padding ボタンの内側余白 (デフォルトは (30, 10))
 		/// @note https://siv3d.github.io/ja-jp/tutorial2/button/ を参考に改変
-		Button(const Font &font, const String &text, bool isEnabled = true, const Vec2 &padding = { 30.0, 10.0 });
+		Button(const Font &font, double fontSize, const String &text, bool isEnabled = true, const Vec2 &padding = { 30.0, 10.0 });
 
 		/// @brief ボタンの描画範囲を取得する
 		/// @return 描画範囲
 		RectF getRegion() const;
 
 		/// @brief ボタンの各種パラメータを一括で設定する
-		/// @param font テキストに使うフォント
+		/// @param fontSize 
 		/// @param text テキスト
 		/// @param isEnabled 有効かどうか
 		/// @param padding ボタンの内側余白 (デフォルトは (30, 10))
-		Button& set(const Font& font, const String& text, bool isEnabled = true, const Vec2& padding = { 30.0, 10.0 });
+		Button &set(double fontSize, const String& text, bool isEnabled = true, const Vec2& padding = { 30.0, 10.0 });
+
+		/// @brief ボタンに表示するフォントを設定する
+		/// デフォルトの表示フォントを変えたいときはこのメソッドから明示的に行うこと
+		/// @param font フォント
+		/// @return 
+		Button &setFont(const Font &font);
+
+		/// @brief ボタンに表示するテキストを設定する
+		/// @param text テキスト
+		/// @return 
+		Button &setText(const String &text);
 
 		/// @brief 描画位置に左上位置を指定する
 		/// @param position 左上位置
@@ -87,7 +103,7 @@ namespace UFOCat::Component::GUI
 		void draw() const;
 	};
 
-	/// @brief プログレスバーとその下地の背景を描画するコンポーネント
+	/// @brief プログレスバーを描画するコンポーネント
 	class ProgressBar
 	{
 		RectF m_region;
@@ -95,24 +111,24 @@ namespace UFOCat::Component::GUI
 		/// @brief 進捗状況 (0 ~ 1)
 		double m_progress = 0.0;
 
-		/// @brief プログレスバーの背景領域全体に対する、バー自体の長さと高さの倍率
-		SizeF m_barScale;
-
 		/// @brief 角丸の丸み
-		double m_roundness = 12.0;
+		double m_roundness = 9.0;
 
 	public:
 
 		ProgressBar() = default;
 
-		ProgressBar(const SizeF& size, const SizeF &barScale, double roundness = 12.0, double progress = 0.0);
+		ProgressBar(const SizeF& size, double roundness = 9.0, double progress = 0.0);
+
+		/// @brief プログレスバーの領域を取得する
+		/// @return 
+		RectF getRegion() const;
 
 		/// @brief 各パラメータを設定する
 		/// @param size プログレスバーの背景領域の大きさ
-		/// @param barScale プログレスバーの背景領域全体に対する、バー自体の長さと高さの倍率
-		/// @param roundness 角丸の丸み (デフォルトは 12.0)
+		/// @param roundness 角丸の丸み (デフォルトは 9.0)
 		/// @return 
-		ProgressBar &set(const SizeF &size, const SizeF& barScale, double roundness = 12.0);
+		ProgressBar &set(const SizeF &size, double roundness = 9.0);
 
 		/// @brief プログレスバーの値を設定する
 		/// @param progress パラメータ (0.0 〜 1.0)
@@ -158,49 +174,96 @@ namespace UFOCat::Component::GUI
 		void draw() const;
 	};
 
-	/// @brief 画面中央にダイアログウィンドウを表示するコンポーネント
-	class Dialog
+	/// @brief 簡単なテキストをウィンドウとして 画面中央に表示し、1ボタンで閉じるコンポーネント
+	/// デフォルトのフォントは 油性マジック を使用する
+	/// 現時点ではボタンのフォントを変更することはできない（しないと思う）し、ボタンのフォントサイズはウィンドウ幅によって決まります
+	class MessageBox
 	{
-
+	protected:
 		RectF m_region;
 
-		Font m_font;
+		Font m_font = FontAsset(FontName::YuseiMagic);
+
+		double m_fontSize;
 
 		String m_text;
 
 		/// @brief OK ボタン
 		Button m_okButton;
 
-		/// @brief キャンセルボタン
-		Button m_cancelButton;
-
-		/// @brief ダイアログウィンドウの大きさ
-		SizeF m_size;
+		/// @brief グウィンドウの大きさ
+		SizeF m_windowSize;
 
 		/// @brief 開いているか
 		bool m_isOpen = false;
+
+		/// @brief ボタンのテキスト（フォント）サイズを返す
+		/// @return サイズ
+		double m_getButtonTextSize() const;
+
+	public:
+		MessageBox() = default;
+
+		MessageBox(const Font &font, double fontSize, const String &text, const SizeF &windowSize = { 350, 300 });
+
+		virtual MessageBox &set(double fontSize, const String &text, const SizeF &windowSize = { 350, 300 });
+
+		MessageBox &setFont(const Font &font);
+
+		/// @brief 開いているか
+		/// @return 
+		bool isOpen() const;
+
+		/// @brief ダイアログを開く
+		void open();
+
+		/// @brief ダイアログを閉じる
+		void close();
+
+		/// @brief ボタンが押されたか（押されたら閉じる）
+		/// @return 押されたら `true`
+		virtual bool isPressedOK();
+
+		/// @brief 描画する
+		virtual void draw() const;
+
+	protected:
+
+		/// @brief 背景を描画する
+		void m_drawBackground() const;
+
+		/// @brief 区切り線とテキストを描画する @n
+		/// 区切り線はボタン上端部の Y 座標を基準に配置、テキストはそれと背景の上端部との中央に配置される
+		/// @param buttonsTopY ボタン上端部の Y 座標
+		void m_drawSeparatorAndText(double buttonsTopY) const;
+	};
+
+	/// @brief 2ボタン（Yes / No）でプレイヤーの意思を確認するためのダイアログを表示するコンポーネント
+	class Dialog : public MessageBox
+	{
+	protected:
+
+		/// @brief キャンセルボタン
+		Button m_cancelButton;
 
 	public:
 
 		Dialog() = default;
 
-		Dialog(const Font &font, const String &text, const SizeF &size = { 350, 300 });
+		Dialog(const Font &font, double fontSize, const String &text, const SizeF &windowSize = { 350, 300 });
 
-		Dialog &set(const Font &font, const String &text, const SizeF &size = { 350, 300 });
-
-		/// @brief ダイアログを開く
-		void open();
+		Dialog &set(double fontSize, const String &text, const SizeF &windowSize = { 350, 300 }) override;
 
 		/// @brief OKボタンが押されたか
 		/// @return 押されたら `true`
-		bool isPressedOK();
+		bool isPressedOK() override;
 
 		/// @brief キャンセルボタンが押された
 		/// @return 押されたら `true`
 		bool isPressedCancel();
 
 		/// @brief 描画する
-		void draw() const;
+		void draw() const override;
 	};
 
 	// TODO: 後で作る！！

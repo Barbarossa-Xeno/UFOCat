@@ -25,19 +25,41 @@ namespace UFOCat
 			// 読み込んでいるレベルデータのクリアフラグをリセット
 			getData().levels.each([](LevelData &level) { level.isCleared = false; });
 		}
+
+		// # GUI 位置設定
+		{
+			m_gui.toLevel.set(36, U"あそぶ", true, { 96, 10 })
+						 .setPositionAt(Scene::Center() + Vec2{ 0, 60 });
+
+			m_gui.howToPlayButton.set(36, U"あそび方", true, { 60, 10 })
+						   .setPositionAt(Scene::Center() + Vec2{ 0, 160 });
+		}
 	}
 
 	void Title::update()
 	{
-		if (MouseR.down())
+		// # GUI 更新処理
 		{
-			// とりあえずタイトルまだ作ってないのですぐに wanted シーンへ移動
-			changeScene(State::Wanted);
-		}	
+			if (m_gui.toLevel.isPressed() and (not m_gui.howToPlay.isOpen()))
+			{
+				changeScene(State::Wanted, 1s);
+			}
+
+			if (m_gui.howToPlayButton.isPressed())
+			{
+				m_gui.howToPlay.set(16, m_howToPlayText, { 700, 550 }).open();
+			}
+
+			m_gui.howToPlay.isPressedOK();
+		}
 	}
 
 	void Title::draw() const
 	{
-		FontAsset(U"Test")(U"タイトル").drawAt(Scene::Center());
+		FontAsset(FontName::YuseiMagic)(U"UFO猫を\n　つかまえろ!!").draw(72, Arg::topCenter = Vec2{ Scene::Center().x, 50 });
+
+		m_gui.toLevel.draw();
+		m_gui.howToPlayButton.draw();
+		m_gui.howToPlay.draw();
 	}
 }
