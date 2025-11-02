@@ -112,7 +112,7 @@ namespace UFOCat
 
 		// # GUI 更新処理
 		{
-			m_gui.scoreTitleGauge.set({ 0.65 * Scene::Width(), 15.0 })
+			m_gui.scoreTitleGauge.set({ 0.65 * Scene::Width(), 15.0 }, Colors::LightBrown)
 				.setPosition(Arg::topCenter = Vec2{ Scene::Center().x, Scene::Center().y + 110 });
 			if (m_gui.toTitle.set(32, U"タイトルへ")
 							  .setPosition(Arg::bottomLeft = Vec2{ 10.0, Scene::Height() - 10.0 })
@@ -134,6 +134,10 @@ namespace UFOCat
 
 	void Result::draw() const
 	{
+		Scene::Rect().draw(Colors::Brown);
+		DrawPolkaDotBackground(30, 0.3, Colors::LightBrownAlt);
+		Scene::Rect().draw(ColorF{ 0.0, 0.5 });
+
 		// TODO: 進んだレベル分だけ表示、アニメーションスクロール、終わった後自分でスクロール可
 
 		/*if (m_currentScoreData().isCaught)

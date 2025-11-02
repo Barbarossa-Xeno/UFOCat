@@ -114,14 +114,14 @@ namespace UFOCat::Component::GUI
 
 		// 影と背景を描く
 		roundRect.drawShadow(Vec2{ 2, 2 }, 12, 0)
-			.draw(ColorF{ 0.9, 0.8, 0.6 });
+			.draw(Colors::LightBrown);
 
 		// 枠を描く
 		m_region.stretched(-3).rounded(3)
-			.drawFrame(2, ColorF{ 0.4, 0.3, 0.2 });
+			.drawFrame(2, Colors::Brown);
 
 		// テキストを描く
-		m_font(m_text).drawAt(m_fontSize, roundRect.center(), ColorF{ 0.4, 0.3, 0.2 });
+		m_font(m_text).drawAt(m_fontSize, roundRect.center(), Colors::Brown);
 		
 		// 無効の場合は
 		if (not m_isEnabled)

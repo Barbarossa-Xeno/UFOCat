@@ -208,6 +208,9 @@
     <Image Include="App\texture\41.png" />
     <Image Include="App\texture\42.png" />
     <Image Include="App\texture\43.png" />
+    <Image Include="App\texture\background\cafe.png" />
+    <Image Include="App\texture\background\space.png" />
+    <Image Include="App\texture\background\town.png" />
     <Image Include="App\texture\cat\00.png" />
     <Image Include="App\texture\cat\01.png" />
     <Image Include="App\texture\cat\02.png" />
@@ -253,6 +256,7 @@
     <Image Include="App\texture\cat\42.png" />
     <Image Include="App\texture\cat\43.png" />
     <Image Include="App\texture\flyer.png" />
+    <Image Include="App\texture\logo.png" />
     <Image Include="App\texture\stopwatch.png" />
   </ItemGroup>
   <ItemGroup>
@@ -438,6 +442,7 @@
     <Xml Include="App\example\xml\test.xml" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Colors.hpp" />
     <ClInclude Include="FontName.hpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>

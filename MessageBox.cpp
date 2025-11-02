@@ -9,7 +9,7 @@ namespace UFOCat::Component::GUI
 	}
 
 	MessageBox::MessageBox(const Font &font, double fontSize, const String &text, const SizeF &windowSize)
-		: m_region{ Arg::center(Scene::Center()), windowSize }
+		: m_region{ Arg::center = Scene::Center(), windowSize }
 		, m_font{ font }
 		, m_fontSize{ fontSize }
 		, m_text{ text }
@@ -71,10 +71,11 @@ namespace UFOCat::Component::GUI
 
 	void MessageBox::m_drawBackground() const
 	{
+		ColorF lightBrown2{ 0.95, 0.85, 0.65 };
 		// ウィンドウ範囲を角丸にして背景
 		m_region.rounded(12)
 				.drawShadow(Vec2{ 4, 4 }, 16, 0)
-				.draw(ColorF{ 0.95, 0.9, 0.8 });
+				.draw(Colors::LightBrownAlt);
 	}
 
 	void MessageBox::m_drawSeparatorAndText(double buttonsTopY) const
@@ -90,7 +91,9 @@ namespace UFOCat::Component::GUI
 			4
 		};
 
-		line.draw(ColorF{ 0.8, 0.7, 0.6 });
+		ColorF brown2 = Colors::Brown;
+		brown2.a = 0.6;
+		line.draw(brown2);
 
 		// テキストは区切り線と背景上との中央に描画
 		m_font(m_text).drawAt
@@ -98,7 +101,7 @@ namespace UFOCat::Component::GUI
 			m_fontSize,
 			m_region.center().x,
 			m_region.topY() + (line.topCenter().y - m_region.topY()) / 2,
-			ColorF{ 0.4, 0.3, 0.2 }
+			Colors::Brown
 		);
 	}
 

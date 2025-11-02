@@ -6,7 +6,7 @@ namespace UFOCat
 		: IScene{ init }
 	{
 		getData().targetIndex = Random(getData().cats.size() - 1);
-		m_target = std::make_unique<CatObject>(getData().cats[getData().targetIndex]);
+		m_target = std::make_unique<CatObject>(getData().cats[getData().targetIndex].clone());
 
 		// 現在行っているレベルのインデックスは、クリアしているレベルの数と同じなのを利用する
 		// （そのレベルが終わり次第、isCleared のフラグを上げるため）
@@ -18,7 +18,7 @@ namespace UFOCat
 
 		// # GUI 初期化
 		{
-			m_gui.levelBar.set({ 0.85 * 180, 10 })
+			m_gui.levelBar.set({ 0.85 * 180, 10 }, Colors::Brown)
 						  .setPosition(Arg::bottomCenter = Vec2{ 180.0 / 2 + 5, 100 - 5 - 10 })
 						  .setProgress((getData().levelIndex + 1) / 10.0);
 

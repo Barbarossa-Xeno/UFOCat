@@ -1,5 +1,6 @@
 ﻿# pragma once
 # include "FontName.hpp"
+# include "Colors.hpp"
 
 namespace UFOCat::Component::GUI
 {
@@ -114,11 +115,14 @@ namespace UFOCat::Component::GUI
 		/// @brief 角丸の丸み
 		double m_roundness = 9.0;
 
+		/// @brief 
+		ColorF m_color;
+
 	public:
 
 		ProgressBar() = default;
 
-		ProgressBar(const SizeF& size, double roundness = 9.0, double progress = 0.0);
+		ProgressBar(const SizeF& size, ColorF color, double roundness = 9.0, double progress = 0.0);
 
 		/// @brief プログレスバーの領域を取得する
 		/// @return 
@@ -126,9 +130,10 @@ namespace UFOCat::Component::GUI
 
 		/// @brief 各パラメータを設定する
 		/// @param size プログレスバーの背景領域の大きさ
+		/// @param color
 		/// @param roundness 角丸の丸み (デフォルトは 9.0)
 		/// @return 
-		ProgressBar &set(const SizeF &size, double roundness = 9.0);
+		ProgressBar &set(const SizeF &size, ColorF color, double roundness = 9.0);
 
 		/// @brief プログレスバーの値を設定する
 		/// @param progress パラメータ (0.0 〜 1.0)

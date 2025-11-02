@@ -2,8 +2,9 @@
 
 namespace UFOCat::Component::GUI
 {
-	ProgressBar::ProgressBar(const SizeF &size, double roundness, double progress)
+	ProgressBar::ProgressBar(const SizeF &size, ColorF color, double roundness, double progress)
 		: m_region{ size }
+		, m_color{ color }
 		, m_roundness{ roundness }
 		, m_progress{ progress }
 	{}
@@ -13,9 +14,10 @@ namespace UFOCat::Component::GUI
 		return m_region;
 	}
 
-	ProgressBar &ProgressBar::set(const SizeF &size, double roundness)
+	ProgressBar &ProgressBar::set(const SizeF &size, ColorF color, double roundness)
 	{
 		m_region = RectF{ size };
+		m_color = color;
 		m_roundness = roundness;
 		return *this;
 	}
@@ -38,7 +40,7 @@ namespace UFOCat::Component::GUI
 		const RoundRect full = bar.stretched(-2);
 
 		// 線形補間
-		RoundRect{ bar.rect.pos, SizeF{ 0.0, bar.h }, bar.r }.lerp(full, m_progress).draw(ColorF{ 0.4, 0.3, 0.2 });
+		RoundRect{ bar.rect.pos, SizeF{ 0.0, bar.h }, bar.r }.lerp(full, m_progress).draw(m_color);
 	}
 
 	ProgressBar &ProgressBar::setPosition(const Vec2 &position)

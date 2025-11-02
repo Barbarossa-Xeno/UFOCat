@@ -13,8 +13,12 @@ namespace UFOCat
 			Component::GUI::Button howToPlayButton;
 
 			Component::GUI::MessageBox howToPlay;
+
+			Texture logo;
 		}
 		m_gui;
+
+		Texture m_background;
 
 		const String m_howToPlayText =
 			U"「UFO猫」をつかまえるゲームです！\n"

@@ -1,6 +1,5 @@
 ﻿# pragma once
 # include "GUI.hpp"
-# include "FontName.hpp"
 # include "CatObject.hpp"
 # include "LevelData.hpp"
 
@@ -110,6 +109,8 @@ namespace UFOCat
 
 		Array<Score> scores;
 
+		Array<Texture> backgrounds;
+
 		size_t targetIndex = InvalidIndex;
 
 		size_t levelIndex = InvalidIndex;
@@ -121,6 +122,13 @@ namespace UFOCat
 	/// @brief マウスカーソルの周囲を明るくする（画面幅 or 高さの大きいほうの 2% 分の半径）
 	void BrightenCursor();
 
+	/// @brief 水玉模様の背景を描画する
+	/// @param cellSize セルのサイズ
+	/// @param circleScale 円のスケール
+	/// @param color 色
+	/// @note https://siv3d.github.io/ja-jp/reference/game_tips/
+	void DrawPolkaDotBackground(int32 cellSize, double circleScale, const ColorF& color);
+
 	/// @brief UFO猫のデータをJSONから読み込んでそれら全てのインスタンスを作成する
 	/// @return 全てのUFO猫のインスタンス配列
 	Array<CatObject> LoadCatData();
@@ -128,6 +136,8 @@ namespace UFOCat
 	/// @brief 各フェーズのデータをJSONから読み込んでそれらすべてのインスタンスを作成する
 	/// @return 全てのフェーズの配列
 	Array<LevelData> LoadLevelData();
+
+	Array<Texture> LoadBackgrounds();
 
 	using App = SceneManager<State, GameData>;
 }

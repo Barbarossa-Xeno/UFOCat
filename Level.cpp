@@ -47,6 +47,7 @@ namespace UFOCat
 		// テクスチャ取得
 		{
 			m_gui.stopwatch = Texture{ U"texture/stopwatch.png", TextureDesc::Mipped };
+			m_background = getData().backgrounds.choice();
 		}
 
 		// 前回レベルでスポーンした猫を吹っ飛ばし、unique_ptr も解放する
@@ -163,36 +164,8 @@ namespace UFOCat
 		{
 			case Level::State::Before:
 			{
-				// タイマー稼働中
-				if (getData().timer.isRunning())
-				{
-					// 秒数表示
-					String text = U"";
-
-					// 線形補間のパラメータ
-					// sF() は小数点以下も含めた秒数、s() は切り捨ての整数秒数であることを利用して
-					// 1.0 -> 0.0 に向かう値を得る
-					double t = Clamp(getData().timer.sF() - getData().timer.s(), 0.0, 1.0);
-
-					double textSize = 200.0;
-
-					// GO! のほう
-					if (getData().timer.s() == 0)
-					{
-						text = U"GO!";
-					}
-					// 3、2、1 のほう
-					else
-					{
-						text = U"{}"_fmt(getData().timer.s());
-
-						// テキストサイズをイージングで小さいほうに変化させる
-						textSize = std::lerp(40.0, 200.0, EaseOutQuart(t));
-					}
-
-					FontAsset(FontName::KoharuiroSunray)(text).drawAt(textSize, Scene::Center(), ColorF{ 1.0, EaseOutExpo(t) });
-				}
-				else
+				// タイマー稼働してない
+				if (not getData().timer.isRunning())
 				{
 					// 停止していて、残り時間が0でない場合は、
 					// 初期化時にタイマーをセットしていたということなので
@@ -457,8 +430,11 @@ namespace UFOCat
 
 	void Level::draw() const
 	{
+		m_background.fitted(Scene::Size()).draw();
+
 		// # 共通処理（背面）
 		{
+
 			for (const auto& cat : getData().spawns)
 			{
 				if (not cat)
@@ -474,6 +450,36 @@ namespace UFOCat
 		switch (m_state)
 		{
 			// TODO: 今のレベルとか書く
+			case UFOCat::Level::State::Before:	
+			{
+				// 秒数表示
+				String text = U"";
+
+				// 線形補間のパラメータ
+				// sF() は小数点以下も含めた秒数、s() は切り捨ての整数秒数であることを利用して
+				// 1.0 -> 0.0 に向かう値を得る
+				double t = Clamp(getData().timer.sF() - getData().timer.s(), 0.0, 1.0);
+
+				double textSize = 200.0;
+
+				// GO! のほう
+				if (getData().timer.s() == 0)
+				{
+					text = U"GO!";
+				}
+				// 3、2、1 のほう
+				else
+				{
+					text = U"{}"_fmt(getData().timer.s());
+
+					// テキストサイズをイージングで小さいほうに変化させる
+					textSize = std::lerp(40.0, 200.0, EaseOutQuart(t));
+				}
+
+				FontAsset(FontName::KoharuiroSunray)(text).drawAt(textSize, Scene::Center(), ColorF{ 1.0, EaseOutExpo(t) });
+			}
+			break;
+
 			case UFOCat::Level::State::Playing:
 			{
 				{

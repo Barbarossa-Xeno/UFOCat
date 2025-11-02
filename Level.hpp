@@ -67,6 +67,8 @@ namespace UFOCat
 			Texture stopwatch;
 		} m_gui;
 
+		Texture m_background;
+
 		/* -- ゲッター / セッター -- */
 
 		/// @brief 現在のレベル (非 const)

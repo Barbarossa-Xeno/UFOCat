@@ -533,6 +533,18 @@
     <Image Include="App\texture\cat\43.png">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="App\texture\logo.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="App\texture\background\cafe.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="App\texture\background\space.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="App\texture\background\town.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="App\Resource.rc">
@@ -1168,6 +1180,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="FontName.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Colors.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

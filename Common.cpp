@@ -82,6 +82,20 @@ void UFOCat::BrightenCursor()
 	}
 }
 
+void UFOCat::DrawPolkaDotBackground(int32 cellSize, double circleScale, const ColorF& color)
+{
+	for (int32 y = 0; y < (Scene::Height() / cellSize); ++y)
+	{
+		for (int32 x = 0; x < (Scene::Width() / cellSize); ++x)
+		{
+			if (IsEven(x + y))
+			{
+				Circle{ (Vec2{ (x + 0.5), (y + 0.5) } *cellSize), (cellSize * circleScale) }.draw(color);
+			}
+		}
+	}
+}
+
 Array<CatObject> UFOCat::LoadCatData()
 {
 	// JSON ファイルからデータを読み込む
@@ -580,4 +594,9 @@ Array<LevelData> UFOCat::LoadLevelData()
 		return result;
 	}
 	throw Error(U"`level_data.json is invalid format.`");
+}
+
+Array<Texture> UFOCat::LoadBackgrounds()
+{
+	return FileSystem::DirectoryContents(U"texture/background").map([](const String& path) { return Texture{ path }; });
 }

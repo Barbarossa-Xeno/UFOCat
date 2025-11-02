@@ -6,11 +6,12 @@ namespace UFOCat
 		: IScene{ init }
 	{
 		// 初回起動時
-		if (getData().cats.isEmpty() or getData().levels.isEmpty())
+		if (getData().cats.isEmpty() or getData().levels.isEmpty() or getData().backgrounds.isEmpty())
 		{
 			// データがまだ読み込まれていなければ読み込む
 			getData().cats = LoadCatData();
 			getData().levels = LoadLevelData();
+			getData().backgrounds = LoadBackgrounds();
 
 			// 最大レベル数の情報をスコアデータに共通のものとして設定しておく
 			ScoreData::SetLevelCount(getData().levels.size());
@@ -33,7 +34,11 @@ namespace UFOCat
 
 			m_gui.howToPlayButton.set(36, U"あそび方", true, { 60, 10 })
 						   .setPositionAt(Scene::Center() + Vec2{ 0, 160 });
+
+			m_gui.logo = Texture{ U"texture/logo.png", TextureDesc::Mipped };
 		}
+
+		m_background = getData().backgrounds.choice();
 	}
 
 	void Title::update()
@@ -47,6 +52,7 @@ namespace UFOCat
 
 			if (m_gui.howToPlayButton.isPressed())
 			{
+				// TODO: なぜ初めにダイアログを表示すると中心基準にならないのか調べる
 				m_gui.howToPlay.set(16, m_howToPlayText, { 700, 550 }).open();
 			}
 
@@ -56,8 +62,9 @@ namespace UFOCat
 
 	void Title::draw() const
 	{
-		FontAsset(FontName::YuseiMagic)(U"UFO猫を\n　つかまえろ!!").draw(72, Arg::topCenter = Vec2{ Scene::Center().x, 50 });
+		m_background.fitted(Scene::Size()).draw();
 
+		m_gui.logo.resized(Scene::Width() * 0.6).draw(Arg::topCenter = Vec2{ Scene::Center().x, 50 });
 		m_gui.toLevel.draw();
 		m_gui.howToPlayButton.draw();
 		m_gui.howToPlay.draw();
