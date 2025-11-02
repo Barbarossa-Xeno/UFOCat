@@ -202,15 +202,8 @@ namespace UFOCat
 			
 		}
 
-		/*{
-			RectF back{ Arg::topCenter(Scene::Center().x, Scene::Center().y + 40), 0.7 * Scene::Width(), 150.0 };
-			back.rounded(12).draw();
-
-			RoundRect bar = back.scaled(0.9, 0.1).rounded(9);
-			bar.drawFrame(2, Palette::Dimgray);
-			bar.stretched(-2).draw(Palette::Bisque);
-		}*/
-
 		m_gui.toTitle.draw();
+
+		BrightenCursor();
 	}
 }

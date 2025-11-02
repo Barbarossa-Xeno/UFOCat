@@ -4,7 +4,6 @@
 # include "Wanted.hpp"
 # include "Level.hpp"
 # include "Result.hpp"
-# include "FontName.hpp"
 
 using namespace UFOCat;
 
@@ -13,6 +12,10 @@ void Main()
 	// フォントアセットの登録
 	FontAsset::Register(FontName::YuseiMagic, FontMethod::SDF, 48, U"font/YuseiMagic-Regular.ttf");
 	FontAsset::Register(FontName::KoharuiroSunray, FontMethod::SDF, 48, U"font/GN-Koharuiro_Sunray.ttf");
+
+	// バッファサイズの設定
+	FontAsset(FontName::YuseiMagic).setBufferThickness(4);
+	FontAsset(FontName::KoharuiroSunray).setBufferThickness(4);
 
 	// ウィンドウの設定
 	Window::SetTitle(U"UFO猫をつかまえろ!!");

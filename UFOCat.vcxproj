@@ -116,7 +116,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Button.cpp" />
-    <ClCompile Include="CatData.cpp" />
+    <ClCompile Include="CatData.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="CatObject.cpp" />
     <ClCompile Include="Common.cpp" />
     <ClCompile Include="DeltaStopWatch.cpp" />
@@ -205,6 +208,52 @@
     <Image Include="App\texture\41.png" />
     <Image Include="App\texture\42.png" />
     <Image Include="App\texture\43.png" />
+    <Image Include="App\texture\cat\00.png" />
+    <Image Include="App\texture\cat\01.png" />
+    <Image Include="App\texture\cat\02.png" />
+    <Image Include="App\texture\cat\03.png" />
+    <Image Include="App\texture\cat\04.png" />
+    <Image Include="App\texture\cat\05.png" />
+    <Image Include="App\texture\cat\06.png" />
+    <Image Include="App\texture\cat\07.png" />
+    <Image Include="App\texture\cat\08.png" />
+    <Image Include="App\texture\cat\09.png" />
+    <Image Include="App\texture\cat\10.png" />
+    <Image Include="App\texture\cat\11.png" />
+    <Image Include="App\texture\cat\12.png" />
+    <Image Include="App\texture\cat\13.png" />
+    <Image Include="App\texture\cat\14.png" />
+    <Image Include="App\texture\cat\15.png" />
+    <Image Include="App\texture\cat\16.png" />
+    <Image Include="App\texture\cat\17.png" />
+    <Image Include="App\texture\cat\18.png" />
+    <Image Include="App\texture\cat\19.png" />
+    <Image Include="App\texture\cat\20.png" />
+    <Image Include="App\texture\cat\21.png" />
+    <Image Include="App\texture\cat\22.png" />
+    <Image Include="App\texture\cat\23.png" />
+    <Image Include="App\texture\cat\24.png" />
+    <Image Include="App\texture\cat\25.png" />
+    <Image Include="App\texture\cat\26.png" />
+    <Image Include="App\texture\cat\27.png" />
+    <Image Include="App\texture\cat\28.png" />
+    <Image Include="App\texture\cat\29.png" />
+    <Image Include="App\texture\cat\30.png" />
+    <Image Include="App\texture\cat\31.png" />
+    <Image Include="App\texture\cat\32.png" />
+    <Image Include="App\texture\cat\33.png" />
+    <Image Include="App\texture\cat\34.png" />
+    <Image Include="App\texture\cat\35.png" />
+    <Image Include="App\texture\cat\36.png" />
+    <Image Include="App\texture\cat\37.png" />
+    <Image Include="App\texture\cat\38.png" />
+    <Image Include="App\texture\cat\39.png" />
+    <Image Include="App\texture\cat\40.png" />
+    <Image Include="App\texture\cat\41.png" />
+    <Image Include="App\texture\cat\42.png" />
+    <Image Include="App\texture\cat\43.png" />
+    <Image Include="App\texture\flyer.png" />
+    <Image Include="App\texture\stopwatch.png" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="App\Resource.rc" />
@@ -377,6 +426,7 @@
   <ItemGroup>
     <Font Include="App\example\font\DotGothic16\DotGothic16-Regular.ttf" />
     <Font Include="App\example\font\RocknRoll\RocknRollOne-Regular.ttf" />
+    <Font Include="App\font\GN-Koharuiro_Sunray.ttf" />
     <Font Include="App\font\YuseiMagic-Regular.ttf" />
   </ItemGroup>
   <ItemGroup>
@@ -388,10 +438,13 @@
     <Xml Include="App\example\xml\test.xml" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="FontName.hpp" />
+    <ClInclude Include="FontName.hpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="GUI.hpp" />
     <ClInclude Include="CatAction.hpp" />
-    <ClCompile Include="CatData.hpp" />
+    <ClInclude Include="CatData.hpp" />
     <ClInclude Include="CatObject.hpp" />
     <ClInclude Include="Common.hpp" />
     <ClInclude Include="DeltaStopwatch.hpp" />

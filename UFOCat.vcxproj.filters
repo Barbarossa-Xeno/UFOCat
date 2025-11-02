@@ -147,9 +147,6 @@
     <ClCompile Include="game_manager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="CatData.hpp">
-      <Filter>Header Files</Filter>
-    </ClCompile>
     <ClCompile Include="CatData.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -396,6 +393,144 @@
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="App\texture\43.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="App\texture\flyer.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="App\texture\stopwatch.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="App\texture\cat\00.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="App\texture\cat\01.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="App\texture\cat\02.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="App\texture\cat\03.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="App\texture\cat\04.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="App\texture\cat\05.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="App\texture\cat\06.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="App\texture\cat\07.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="App\texture\cat\08.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="App\texture\cat\09.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="App\texture\cat\10.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="App\texture\cat\11.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="App\texture\cat\12.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="App\texture\cat\13.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="App\texture\cat\14.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="App\texture\cat\15.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="App\texture\cat\16.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="App\texture\cat\17.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="App\texture\cat\18.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="App\texture\cat\19.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="App\texture\cat\20.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="App\texture\cat\21.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="App\texture\cat\22.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="App\texture\cat\23.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="App\texture\cat\24.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="App\texture\cat\25.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="App\texture\cat\26.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="App\texture\cat\27.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="App\texture\cat\28.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="App\texture\cat\29.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="App\texture\cat\30.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="App\texture\cat\31.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="App\texture\cat\32.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="App\texture\cat\33.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="App\texture\cat\34.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="App\texture\cat\35.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="App\texture\cat\36.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="App\texture\cat\37.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="App\texture\cat\38.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="App\texture\cat\39.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="App\texture\cat\40.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="App\texture\cat\41.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="App\texture\cat\42.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="App\texture\cat\43.png">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>
@@ -968,6 +1103,9 @@
       <Filter>Resource Files\example\font\RocknRoll</Filter>
     </Font>
     <Font Include="App\font\YuseiMagic-Regular.ttf" />
+    <Font Include="App\font\GN-Koharuiro_Sunray.ttf">
+      <Filter>Resource Files</Filter>
+    </Font>
   </ItemGroup>
   <ItemGroup>
     <Xml Include="App\example\objdetect\haarcascade\face_anime.xml">
@@ -1024,6 +1162,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Result.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CatData.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="FontName.hpp">

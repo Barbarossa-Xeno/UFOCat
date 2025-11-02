@@ -42,7 +42,7 @@ namespace UFOCat
 		{
 			if (m_gui.toLevel.isPressed() and (not m_gui.howToPlay.isOpen()))
 			{
-				changeScene(State::Wanted, 1s);
+				changeScene(State::Wanted, 0.7s);
 			}
 
 			if (m_gui.howToPlayButton.isPressed())
@@ -61,5 +61,7 @@ namespace UFOCat
 		m_gui.toLevel.draw();
 		m_gui.howToPlayButton.draw();
 		m_gui.howToPlay.draw();
+
+		BrightenCursor();
 	}
 }

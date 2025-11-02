@@ -12,6 +12,8 @@ namespace UFOCat
 		struct
 		{
 			Component::GUI::ProgressBar levelBar;
+
+			Texture flyer;
 		}
 		m_gui;
 

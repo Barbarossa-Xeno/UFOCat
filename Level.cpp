@@ -147,15 +147,13 @@ namespace UFOCat
 		// 最終的に catsInPhase にまとめて
 		m_selections.append(similars).append(others);
 
-		// ステートをプレイ中に変更する
-		m_state = Level::State::Playing;
-
-		// 制限時間を決めて、タイマー開始
-		// 0.5s 猶予を持たせて、気持ち長めにすることで間に入る処理の影響を減らす
-		getData().timer.restart(m_currentLevel().timeLimit + 0.5s);
-
 		// 現在のレベルに合わせてターゲットの出現時刻を設定
 		m_setTargetSpawnTime(getData().levelIndex + 1);
+
+		// 3、2、1、GO! のカウントダウンを入れるための待機時間をセット
+		// シーンのフェードインアウト時間を考慮して少し長めに取る
+		getData().timer.pause();
+		getData().timer.set(4s);
 	}
 
 	void Level::update()
@@ -163,183 +161,251 @@ namespace UFOCat
 		// # ステート依存処理
 		switch (m_state)
 		{
-		case Level::State::Playing:
-		{
-			// ## スポーン処理
-			m_watch.setInterval([this]()
+			case Level::State::Before:
+			{
+				// タイマー稼働中
+				if (getData().timer.isRunning())
 				{
-				// ターゲットの出現時刻を超えていて、ターゲットがまだ出現していなかったら
-				if (getData().timer.remaining() <= m_targetAppearTime and (not m_hasAppearedTarget()))
-				{
-					// ターゲットを（コピーして）湧かせる
-					getData().spawns[0] = std::make_unique<CatObject>(m_target->clone());
-					// ターゲットにも同様にアクションと速度の設定を行う
-					getData().spawns[0]->setAction(DiscreteSample(m_currentLevel().actionDataList, m_actionProbabilities)).setRandomVelocity(getData().levelIndex + 1);
+					// 秒数表示
+					String text = U"";
+
+					// 線形補間のパラメータ
+					// sF() は小数点以下も含めた秒数、s() は切り捨ての整数秒数であることを利用して
+					// 1.0 -> 0.0 に向かう値を得る
+					double t = Clamp(getData().timer.sF() - getData().timer.s(), 0.0, 1.0);
+
+					double textSize = 200.0;
+
+					// GO! のほう
+					if (getData().timer.s() == 0)
+					{
+						text = U"GO!";
+					}
+					// 3、2、1 のほう
+					else
+					{
+						text = U"{}"_fmt(getData().timer.s());
+
+						// テキストサイズをイージングで小さいほうに変化させる
+						textSize = std::lerp(40.0, 200.0, EaseOutQuart(t));
+					}
+
+					FontAsset(FontName::KoharuiroSunray)(text).drawAt(textSize, Scene::Center(), ColorF{ 1.0, EaseOutExpo(t) });
 				}
 				else
 				{
-					// ターゲット以外の猫をランダムに指定個選んで（コピーして）追加
-					for (uint32 i = 0; i < m_currentLevel().intervalData.count; i++)
+					// 停止していて、残り時間が0でない場合は、
+					// 初期化時にタイマーをセットしていたということなので
+					if (not getData().timer.reachedZero())
 					{
-						getData().spawns << std::make_unique<CatObject>
-							(
-								// アクションを抽選してセットし、現在のレベルに合わせて速度もランダムに決める
-								m_selections.choice()->clone()
-									.setAction(DiscreteSample(m_currentLevel().actionDataList, m_actionProbabilities))
-										.setRandomVelocity(getData().levelIndex + 1)
-							);
+						getData().timer.start();
 					}
-				}
-				}, m_currentLevel().intervalData.period);
-
-			// ## 制限時間内と時間超過後での処理
-			if (not getData().timer.reachedZero())
-			{
-				// ターゲットから順に捜査する
-				for (const auto& cat : getData().spawns)
-				{
-					if (not cat)
+					// 次にもう一回 0 になったら
+					else
 					{
-						continue;
+						// ステートをプレイ中に変更する
+						m_state = Level::State::Playing;
+
+						// 制限時間を決めて、タイマー開始
+						// 0.5s 猶予を持たせて、気持ち長めにすることで間に入る処理の影響を減らす
+						getData().timer.restart(m_currentLevel().timeLimit + 0.5s);
 					}
-
-					// 猫をタッチしたら、その正誤を代入
-					if (cat->act().checkCatchable(m_target->getCatData(), &m_score.isCorrect))
-					{
-						// 捕まえた猫を記録
-						m_caught = &cat;
-
-						// ターゲットとの正誤にかかわらず、触ったことにはしておく
-						m_score.isCaught = true;
-
-						// 反応時間を記録
-						m_score.response = (m_targetAppearTime - getData().timer.remaining()).count();
-
-						// 連続正解数を記録
-
-						// 仮変数
-						uint32 temp_consecutive = 0;
-
-						for (size_t i = 0; i < m_currentScoreDatas().size() - 1; i++)
-						{
-							// 次のスコアデータが存在しない場合は終了
-							if (m_currentScoreDatas()[i + 1].level == InvalidIndex)
-							{
-								break;
-							}
-
-							// 今のレベルと次のレベルの両方で正解していたら増やす
-							if (m_currentScoreDatas()[i].isCorrect and m_currentScoreDatas()[i + 1].isCorrect)
-							{
-								++temp_consecutive;
-							}
-							else
-							{
-								temp_consecutive = 0;
-							}
-						}
-
-						// 記録
-						m_score.consecutiveCorrect = temp_consecutive;
-
-						// プレイ終了へ
-						m_state = Level::State::Finish;
-						m_watch.reset();
-						break;
-					}
-				}
-
-				// ターゲットが初めて画面上に見えたかどうかを記録する
-				if (getData().spawns[0] and (not m_targetFirstVisible))
-				{
-					m_targetFirstVisible = getData().spawns[0]->isVisible();
-
-					// 初めて見えた時点での残り時間に変更しておく
-					m_targetAppearTime = getData().timer.remaining();
+					
 				}
 			}
-			else
+			break;
+
+			case Level::State::Playing:
 			{
-				// 制限時間が終わったら、終了表示を出しに行く
-				m_state = Level::State::Finish;
-			}
-		}
-		break;
-
-		case Level::State::Finish:
-		{
-			// 3s 経ったらレベル終わり画面を出しに行く
-			m_watch.setTimeout([this]()
-				{
-				m_state = Level::State::After;
-				}, 3s);
-		}
-		break;
-
-		case Level::State::After:
-		{
-			// # GUI 処理
-			{
-				// 次のレベルへ進めるかは、今回が合っていて かつ 次のレベルが存在する必要がある
-				bool canContinue = (m_score.isCorrect and m_isAvailableNextLevel());
-
-				// 次のレベルへ進むボタン
-				if (m_gui.toNextLevel.set(32, U"次のレベルへ", canContinue)
-									  .setPosition(Arg::bottomRight = (Scene::Size() - Vec2{ 10.0, 10.0 })).isPressed())
-				{
-					// 次に進む場合は、レベルデータにもクリア情報を反映
-					// これにより、Wanted シーンの初期化で自動的に次のレベルへ進む
-					m_currentLevel().isCleared = m_score.isCorrect;
-
-					// スコアを格納する
-					m_currentScoreDatas()[getData().levelIndex] = m_score;
-
-					// 次のレベル初期化へ
-					changeScene(UFOCat::State::Wanted);
-				}
-
-				// タイトルへ戻るボタン
-				if (m_gui.toResult.set(32, U"結果 / タイトルへ")
-								  .setPosition(Arg::bottomLeft = Vec2{ 10.0, Scene::Height() - 10.0 })
-								  .isPressed())
-				{
-					if (canContinue)
+				// ## スポーン処理
+				m_watch.setInterval([this]()
 					{
-						// 次へ行けるのにやめようとしてる人には、ダイアログを出す
-						m_gui.dialog.set(22, U"本当に戻りますか？\nここまでのデータは失われます").open();
+					// ターゲットの出現時刻を超えていて、ターゲットがまだ出現していなかったら
+					if (getData().timer.remaining() <= m_targetAppearTime and (not m_hasAppearedTarget()))
+					{
+						// ターゲットを（コピーして）湧かせる
+						getData().spawns[0] = std::make_unique<CatObject>(m_target->clone());
+						// ターゲットにも同様にアクションと速度の設定を行う
+						getData().spawns[0]->setAction(DiscreteSample(m_currentLevel().actionDataList, m_actionProbabilities)).setRandomVelocity(getData().levelIndex + 1);
 					}
 					else
 					{
-						// 次のレベルが存在しないためにタイトルへ戻らなければならない場合もあるので、
-						// レベルデータにもクリア情報を反映
-						// （はなから間違えていれば false になるだけ）
+						// ターゲット以外の猫をランダムに指定個選んで（コピーして）追加
+						for (uint32 i = 0; i < m_currentLevel().intervalData.count; i++)
+						{
+							getData().spawns << std::make_unique<CatObject>
+								(
+									// アクションを抽選してセットし、現在のレベルに合わせて速度もランダムに決める
+									m_selections.choice()->clone()
+										.setAction(DiscreteSample(m_currentLevel().actionDataList, m_actionProbabilities))
+											.setRandomVelocity(getData().levelIndex + 1)
+								);
+						}
+					}
+					}, m_currentLevel().intervalData.period);
+
+				// ## 制限時間内と時間超過後での処理
+				
+				// ### 制限時間内
+
+				if (getData().timer.isRunning())
+				{
+					// ターゲットから順に捜査する
+					for (const auto& cat : getData().spawns)
+					{
+						if (not cat)
+						{
+							continue;
+						}
+
+						// 猫をタッチしたら、その正誤を代入
+						if (cat->act().checkCatchable(m_target->getCatData(), &m_score.isCorrect))
+						{
+							// 捕まえた猫を記録
+							m_caught = &cat;
+
+							// ターゲットとの正誤にかかわらず、触ったことにはしておく
+							m_score.isCaught = true;
+
+							// 反応時間を記録
+							m_score.response = (m_targetAppearTime - getData().timer.remaining()).count();
+
+							// 連続正解数を記録
+
+							// 仮変数
+							uint32 temp_consecutive = 0;
+
+							for (size_t i = 0; i < m_currentScoreDatas().size() - 1; i++)
+							{
+								// 次のスコアデータが存在しない場合は終了
+								if (m_currentScoreDatas()[i + 1].level == InvalidIndex)
+								{
+									break;
+								}
+
+								// 今のレベルと次のレベルの両方で正解していたら増やす
+								if (m_currentScoreDatas()[i].isCorrect and m_currentScoreDatas()[i + 1].isCorrect)
+								{
+									++temp_consecutive;
+								}
+								else
+								{
+									temp_consecutive = 0;
+								}
+							}
+
+							// 記録
+							m_score.consecutiveCorrect = temp_consecutive;
+
+							// プレイ終了へ
+							m_state = Level::State::Finish;
+							m_watch.reset();
+							break;
+						}
+					}
+
+					// ターゲットが初めて画面上に見えたかどうかを記録する
+					if (getData().spawns[0] and (not m_targetFirstVisible))
+					{
+						m_targetFirstVisible = getData().spawns[0]->isVisible();
+
+						// 初めて見えた時点での残り時間に変更しておく
+						m_targetAppearTime = getData().timer.remaining();
+					}
+				}
+				// 時間外
+				else
+				{
+					// タイマーがセットだけされている状態 -> 前のステートからの遷移直後
+					if (not getData().timer.reachedZero())
+					{
+						getData().timer.start();
+					}
+					else
+					{
+						// 制限時間が終わったら、終了表示を出しに行く
+						m_state = Level::State::Finish;
+					}
+				}
+
+				
+			}
+			break;
+
+			case Level::State::Finish:
+			{
+				// 3s 経ったらレベル終わり画面を出しに行く
+				m_watch.setTimeout([this]()
+					{
+						m_state = Level::State::After;
+					}, 3s);
+			}
+			break;
+
+			case Level::State::After:
+			{
+				// # GUI 処理
+				{
+					// 次のレベルへ進めるかは、今回が合っていて かつ 次のレベルが存在する必要がある
+					bool canContinue = (m_score.isCorrect and m_isAvailableNextLevel());
+
+					// 次のレベルへ進むボタン
+					if (m_gui.toNextLevel.set(32, U"次のレベルへ", canContinue)
+										  .setPosition(Arg::bottomRight = (Scene::Size() - Vec2{ 10.0, 10.0 })).isPressed())
+					{
+						// 次に進む場合は、レベルデータにもクリア情報を反映
+						// これにより、Wanted シーンの初期化で自動的に次のレベルへ進む
 						m_currentLevel().isCleared = m_score.isCorrect;
 
+						// スコアを格納する
+						m_currentScoreDatas()[getData().levelIndex] = m_score;
+
+						// 次のレベル初期化へ
+						changeScene(UFOCat::State::Wanted);
+					}
+
+					// タイトルへ戻るボタン
+					if (m_gui.toResult.set(32, U"結果 / タイトルへ")
+									  .setPosition(Arg::bottomLeft = Vec2{ 10.0, Scene::Height() - 10.0 })
+									  .isPressed())
+					{
+						if (canContinue)
+						{
+							// 次へ行けるのにやめようとしてる人には、ダイアログを出す
+							m_gui.dialog.set(22, U"本当に戻りますか？\nここまでのデータは失われます").open();
+						}
+						else
+						{
+							// 次のレベルが存在しないためにタイトルへ戻らなければならない場合もあるので、
+							// レベルデータにもクリア情報を反映
+							// （はなから間違えていれば false になるだけ）
+							m_currentLevel().isCleared = m_score.isCorrect;
+
+							// スコアを格納する
+							m_currentScoreDatas()[getData().levelIndex] = m_score;
+
+							// 結果シーンへ
+							changeScene(UFOCat::State::Result, 1s);
+						}
+					}
+
+					// ダイアログ タイトルへ戻るボタンを押して、ダイアログが開かれた場合にボタン判定が始まる
+					if (m_gui.dialog.isPressedOK())
+					{
 						// スコアを格納する
 						m_currentScoreDatas()[getData().levelIndex] = m_score;
 
 						// 結果シーンへ
 						changeScene(UFOCat::State::Result, 1s);
 					}
+
+					m_gui.dialog.isPressedCancel();
 				}
-
-				// ダイアログ タイトルへ戻るボタンを押して、ダイアログが開かれた場合にボタン判定が始まる
-				if (m_gui.dialog.isPressedOK())
-				{
-					// スコアを格納する
-					m_currentScoreDatas()[getData().levelIndex] = m_score;
-
-					// 結果シーンへ
-					changeScene(UFOCat::State::Result, 1s);
-				}
-
-				m_gui.dialog.isPressedCancel();
-			}
 			
-		}
-		break;
-		default:
+			}
 			break;
+			default:
+				break;
 		}
 
 # if _DEBUG    // デバッグ機能：
@@ -418,7 +484,7 @@ namespace UFOCat
 					double angle = 2 * Math::Pi * getData().timer.sF() / m_currentLevel().timeLimit.count();
 
 					// 針を描画 ストップウォッチの中心からちょっとずらした位置
-					// 角度は逆方向に回っていたので、更に反転させておいた
+					// 角度は反時計回りだったので、更に反転させておいた
 					Line{ Vec2{ swRegion.centerX(), swRegion.centerY() + 4.0 }, Arg::angle = -angle, 16.0 }.draw(LineStyle::RoundCap, 4.0, Palette::Salmon);
 
 					FontAsset(FontName::YuseiMagic)(U"のこり").draw(20, swRegion.tr().x + 10, swRegion.tr().y - 10);
@@ -428,9 +494,26 @@ namespace UFOCat
 			}
 			break;
 
+			// L335より、終了表示は 3s 間
 			case UFOCat::Level::State::Finish:
 			{
-				FontAsset(U"KoharuiroSunray")(U"Finish!!").drawAt(120, Scene::Center()).drawShadow(Vec2{ 1, 1 }, 3);
+				// 移動補間のパラメータ
+				double t = 1.0;
+
+				// 1.7s までの間
+				if (m_watch.now() <= 1.7)
+				{
+					t = Clamp(m_watch.now() / 2.0, 0.0, 1.0);
+				}
+				// それ以外は t = 1.0 として処理
+
+				const DrawableText &view = FontAsset(U"KoharuiroSunray")(U"Finish!!");
+
+				const RectF &region = view.region();
+
+				const Vec2 begin{ -region.w, Scene::Center().y };
+
+				view.drawAt(150.0, begin.lerp(Scene::CenterF(), EaseOutBounce(t)));
 			}
 			break;
 
@@ -489,5 +572,7 @@ namespace UFOCat
 			default:
 				break;
 		}
+
+		BrightenCursor();
 	}
 }
