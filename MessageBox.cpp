@@ -23,7 +23,8 @@ namespace UFOCat::Component::GUI
 	{
 		m_fontSize = fontSize;
 		m_text = text;
-		m_region.setPos(Arg::center = Scene::Center()).setSize(windowSize);
+		// setPos(Arg::center = ...) を使うとなぜか値がバグるので、直接 RectF を再確保
+		m_region = RectF{ Arg::center = Scene::Center(), windowSize };
 
 		// ボタンは再確保せず中身を更新
 		m_okButton.set(Ceil(m_getButtonTextSize()), U"OK")
