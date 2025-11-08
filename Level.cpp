@@ -206,13 +206,14 @@ namespace UFOCat
 						// ターゲット以外の猫をランダムに指定個選んで（コピーして）追加
 						for (uint32 i = 0; i < m_currentLevel().intervalData.count; i++)
 						{
-							getData().spawns << std::make_unique<CatObject>
-								(
-									// アクションを抽選してセットし、現在のレベルに合わせて速度もランダムに決める
-									m_selections.choice()->clone()
-										.setAction(DiscreteSample(m_currentLevel().actionDataList, m_actionProbabilities))
-											.setRandomVelocity(getData().levelIndex + 1)
-								);
+							// アクションを抽選してセットし、現在のレベルに合わせて速度もランダムに決める
+							// "EXCEPTION ACCESS VIOLATION" を防ぐために、いったんオブジェクトのコピーを明示的に変数にいれる
+							CatObject obj = m_selections.choice()->clone();
+							obj.setAction(DiscreteSample(m_currentLevel().actionDataList, m_actionProbabilities))
+							   .setRandomVelocity(getData().levelIndex + 1);
+
+							// スポーンリストに追加
+							getData().spawns << std::make_unique<CatObject>(obj);
 						}
 					}
 					}, m_currentLevel().intervalData.period);
