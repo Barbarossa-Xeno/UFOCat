@@ -28,7 +28,6 @@ namespace UFOCat::Component::GUI
 		Button() = default;
 
 		// TODO: アイコンを引数にとれるようにしたい
-		// TODO: フォントサイズを指定できるようにしてもいいかも
 		/// @brief ボタンを初期化する
 		/// @param font テキストに使うフォント
 		/// @param fontSize
@@ -271,6 +270,6 @@ namespace UFOCat::Component::GUI
 		void draw() const override;
 	};
 
-	// TODO: 後で作る！！
+	// TODO: 後で作る！！これでダイアログとかもスクロールできるようにする
 	class Scrollable;
 }

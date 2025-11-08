@@ -17,8 +17,7 @@ namespace UFOCat
 			ScoreData::SetLevelCount(getData().levels.size());
 
 			// スコアデータはレベル数に合わせて確保してから、1プレイ分として追加しておく
-			getData().scores << Score{ Array<ScoreData>{ getData().levels.size() }, ScoreTitleData{} };
-			//getData().scores.resize(getData().levels.size());			
+			getData().scores << Score{ Array<ScoreData>{ getData().levels.size() }, ScoreTitleData{} };	
 		}
 		// それ以降でタイトルに戻ってきた場合
 		else
@@ -27,7 +26,7 @@ namespace UFOCat
 			getData().levels.each([](LevelData &level) { level.isCleared = false; });
 		}
 
-		// # GUI 位置設定
+		// # GUI 要素設定
 		{
 			m_gui.toLevel.set(36, U"あそぶ", true, { 96, 10 })
 						 .setPositionAt(Scene::Center() + Vec2{ 0, 60 });
@@ -53,17 +52,22 @@ namespace UFOCat
 			if (m_gui.howToPlayButton.isPressed())
 			{
 				// TODO: なぜ初めにダイアログを表示すると中心基準にならないのか調べる
+				// というか、Debug では初回に表示すらされない場合がある
 				m_gui.howToPlay.set(16, m_howToPlayText, { 700, 550 }).open();
 			}
 
 			m_gui.howToPlay.isPressedOK();
 		}
+
+		// TODO: タイトル画面でも猫がふわふわしてるといいよね
 	}
 
 	void Title::draw() const
 	{
+		// 背景描画（4:3 固定）
 		m_background.fitted(Scene::Size()).draw();
 
+		// GUI 要素描画
 		m_gui.logo.resized(Scene::Width() * 0.6).draw(Arg::topCenter = Vec2{ Scene::Center().x, 50 });
 		m_gui.toLevel.draw();
 		m_gui.howToPlayButton.draw();

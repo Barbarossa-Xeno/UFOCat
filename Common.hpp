@@ -27,12 +27,14 @@ namespace UFOCat
 	/// @brief スコアから決められる「称号」のデータ
 	struct ScoreTitleData
 	{
+		/// @brief 称号名（漢字）
 		String kanjiName;
 
+		/// @brief 称号名のフリガナ（ルビ）
 		String ruby;
 
+		/// @brief 称号間の閾値
 		double threshold = 0.0;
-
 	};
 
 	/// @brief レベルごとに集計するスコアのデータ
@@ -58,6 +60,12 @@ namespace UFOCat
 		
 		ScoreData();
 
+		/// @brief コンストラクタ
+		/// @param level レベル (1 ~ )
+		/// @param isCaught 何かしら捕まえたか
+		/// @param isCorrect 正解したか
+		/// @param response 捕まえるのにかかった時間 [s]
+		/// @param consecutiveCorrect ここまでの連続正解数
 		ScoreData(size_t level, bool isCaught, bool isCorrect, double response, size_t consecutiveCorrect);
 
 		/// @brief このレベルでの総合得点を計算する
@@ -80,41 +88,50 @@ namespace UFOCat
 	};
 
 	/// @brief 1ゲームをプレイしたとき全体のスコアのデータ
+	/// @note これが総合スコアとして残る
 	struct Score
 	{
 		/// @brief 各レベルのスコアデータ
 		/// @remarks 途中でレベルをクリアできなかった場合は、そのレベル以降のデータは存在しない
 		Array<ScoreData> scoreDataList;
 
-		/// @brief 
+		/// @brief 称号データ
 		ScoreTitleData titleData;
 
 		size_t total = 0;
 
-		// TODO: インターフェースとかでやるとおもろいかも
 		/// @brief この1ゲーム全体での総合得点（複数レベルの総合得点の合計）を計算する
 		/// @return この1ゲームでの総合得点
 		size_t calculateTotal();
 
+		/// @brief 称号の定義リスト
 		const static std::array<ScoreTitleData, 5> Titles;
 	};
 
 	struct GameData
 	{
+		/// @brief 使用する全てのUFO猫のデータ
 		Array<CatObject> cats;
 
+		/// @brief 使用する全てのレベルデータ
 		Array<LevelData> levels;
 
+		/// @brief スポーンしている猫のリスト
 		Array<std::unique_ptr<CatObject>> spawns;
 
+		/// @brief アプリを起動してから終えるまで集計するスコアのリスト
 		Array<Score> scores;
 
+		/// @brief 使用する全ての背景画像のテクスチャ
 		Array<Texture> backgrounds;
 
+		/// @brief 現在のターゲットのインデックスを格納する変数
 		size_t targetIndex = InvalidIndex;
 
+		/// @brief 現在のレベルのインデックスを格納する変数
 		size_t levelIndex = InvalidIndex;
 
+		/// @brief グローバルタイマー @n 色んな場所で使いまわす
 		Timer timer;
 	};
 	// TODO: 直近のスコアデータを残そうと思えば、二次元Arrayのフィールドを追加してもよい
@@ -130,13 +147,15 @@ namespace UFOCat
 	void DrawPolkaDotBackground(int32 cellSize, double circleScale, const ColorF& color);
 
 	/// @brief UFO猫のデータをJSONから読み込んでそれら全てのインスタンスを作成する
-	/// @return 全てのUFO猫のインスタンス配列
+	/// @return 全てのUFO猫のインスタンスリスト
 	Array<CatObject> LoadCatData();
 
 	/// @brief 各フェーズのデータをJSONから読み込んでそれらすべてのインスタンスを作成する
-	/// @return 全てのフェーズの配列
+	/// @return 全てのフェーズのリスト
 	Array<LevelData> LoadLevelData();
 
+	/// @brief 使用する背景画像を読み込んでそれら全てのテクスチャを作成する
+	/// @return 全ての背景画像のテクスチャリスト
 	Array<Texture> LoadBackgrounds();
 
 	using App = SceneManager<State, GameData>;

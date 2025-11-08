@@ -4,6 +4,7 @@
 
 namespace UFOCat
 {
+	/// @brief レベルシーン
 	class Level : public App::Scene
 	{
 		/// @brief レベルシーン内のステート
@@ -64,7 +65,7 @@ namespace UFOCat
 
 			Component::GUI::Dialog dialog;
 
-			Texture stopwatch;
+			Texture timer;
 		} m_gui;
 
 		Texture m_background;

@@ -257,7 +257,7 @@
     <Image Include="App\texture\cat\43.png" />
     <Image Include="App\texture\flyer.png" />
     <Image Include="App\texture\logo.png" />
-    <Image Include="App\texture\stopwatch.png" />
+    <Image Include="App\texture\timer.png" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="App\Resource.rc" />

@@ -3,23 +3,30 @@
 
 namespace UFOCat
 {
+	/// @brief タイトルシーン
 	class Title : public App::Scene
 	{
-
+		/// @brief GUI要素
 		struct
 		{
+			/// @brief ゲームを始める（レベルシーンに遷移する）ボタン
 			Component::GUI::Button toLevel;
 
+			/// @brief 「あそび方」を開くボタン
 			Component::GUI::Button howToPlayButton;
 
+			/// @brief 「あそび方」のメッセージボックス
 			Component::GUI::MessageBox howToPlay;
 
+			/// @brief ロゴタイプ
 			Texture logo;
 		}
 		m_gui;
 
+		/// @brief 背景画像
 		Texture m_background;
 
+		/// @brief 「あそび方」に表示するテキスト
 		const String m_howToPlayText =
 			U"「UFO猫」をつかまえるゲームです！\n"
 			U"\n"

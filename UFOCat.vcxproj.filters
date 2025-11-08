@@ -398,7 +398,7 @@
     <Image Include="App\texture\flyer.png">
       <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="App\texture\stopwatch.png">
+    <Image Include="App\texture\timer.png">
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="App\texture\cat\00.png">
