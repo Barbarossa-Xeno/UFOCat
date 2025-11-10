@@ -3,353 +3,353 @@
     {
       "id": 0,
       "name": "シロ",
-      "breed": "normal",
+      "breed": "和猫",
       "color": "white",
-      "pattern": "none",
+      "pattern": "なし",
       "isLongHair": false
     },
     {
       "id": 1,
       "name": "グレイ",
-      "breed": "normal",
+      "breed": "和猫",
       "color": "gray",
-      "pattern": "none",
+      "pattern": "なし",
       "isLongHair": false
     },
     {
       "id": 2,
       "name": "センター分け",
-      "breed": "normal",
+      "breed": "和猫",
       "color": "gray|white",
-      "pattern": "none",
+      "pattern": "なし",
       "isLongHair": false
     },
     {
       "id": 3,
       "name": "チャトラ",
-      "breed": "normal",
+      "breed": "和猫",
       "color": "brown",
-      "pattern": "tora",
+      "pattern": "トラ",
       "isLongHair": false
     },
     {
       "id": 4,
       "name": "くりいむ",
-      "breed": "normal",
+      "breed": "和猫",
       "color": "cream",
-      "pattern": "tora",
+      "pattern": "トラ",
       "isLongHair": false
     },
     {
       "id": 5,
       "name": "チャシロ",
-      "breed": "normal",
+      "breed": "和猫",
       "color": "brown|white",
-      "pattern": "tora",
+      "pattern": "トラ",
       "isLongHair": false
     },
     {
       "id": 6,
       "name": "クロ",
-      "breed": "normal",
+      "breed": "和猫",
       "color": "black",
-      "pattern": "none",
+      "pattern": "なし",
       "isLongHair": false
     },
     {
       "id": 7,
       "name": "ハチワレ",
-      "breed": "normal",
+      "breed": "和猫",
       "color": "black|white",
-      "pattern": "hachiware",
+      "pattern": "ハチワレ",
       "isLongHair": false
     },
     {
       "id": 8,
       "name": "サバトラ",
-      "breed": "normal",
+      "breed": "和猫",
       "color": "gray|black",
-      "pattern": "tora",
+      "pattern": "トラ",
       "isLongHair": false
     },
     {
       "id": 9,
       "name": "サバシロ",
-      "breed": "normal",
+      "breed": "和猫",
       "color": "gray|black|white",
-      "pattern": "tora",
+      "pattern": "トラ",
       "isLongHair": false
     },
     {
       "id": 10,
       "name": "サビ",
-      "breed": "normal",
+      "breed": "和猫",
       "color": "ocher|black",
-      "pattern": "sabi",
+      "pattern": "サビ",
       "isLongHair": false
     },
     {
       "id": 11,
       "name": "サビシロ",
-      "breed": "normal",
+      "breed": "和猫",
       "color": "D_ocher|black",
-      "pattern": "sabi",
+      "pattern": "サビ",
       "isLongHair": false
     },
     {
       "id": 12,
       "name": "ミケ",
-      "breed": "normal",
+      "breed": "和猫",
       "color": "black|redbrown|white",
-      "pattern": "mike",
+      "pattern": "三毛",
       "isLongHair": false
     },
     {
       "id": 13,
       "name": "ミケシロ",
-      "breed": "normal",
+      "breed": "和猫",
       "color": "D_black|redbrown|white",
-      "pattern": "mike",
+      "pattern": "三毛",
       "isLongHair": false
     },
     {
       "id": 14,
       "name": "キジトラ",
-      "breed": "normal",
+      "breed": "和猫",
       "color": "kiji|black",
-      "pattern": "tora",
+      "pattern": "トラ",
       "isLongHair": false
     },
     {
       "id": 15,
       "name": "キジシロ",
-      "breed": "normal",
+      "breed": "和猫",
       "color": "kiji|black|white",
-      "pattern": "tora",
+      "pattern": "トラ",
       "isLongHair": false
     },
     {
       "id": 16,
       "name": "アメショシルバー",
-      "breed": "american_short",
+      "breed": "アメリカンショートヘア",
       "color": "shilver|black",
-      "pattern": "tabby",
+      "pattern": "タビー",
       "isLongHair": false
     },
     {
       "id": 17,
       "name": "アメショブラウン",
-      "breed": "american_short",
+      "breed": "アメリカンショートヘア",
       "color": "brown|black",
-      "pattern": "tabby",
+      "pattern": "タビー",
       "isLongHair": false
     },
     {
       "id": 18,
       "name": "アビールディ",
-      "breed": "abyssinian",
+      "breed": "アビシニアン",
       "color": "ruddy",
-      "pattern": "none",
+      "pattern": "なし",
       "isLongHair": false
     },
     {
       "id": 19,
       "name": "アビーレッド",
-      "breed": "abyssinian",
+      "breed": "アビシニアン",
       "color": "redbrown",
-      "pattern": "none",
+      "pattern": "なし",
       "isLongHair": false
     },
     {
       "id": 20,
       "name": "アビーフォーン",
-      "breed": "abyssinian",
+      "breed": "アビシニアン",
       "color": "fawn",
-      "pattern": "none",
+      "pattern": "なし",
       "isLongHair": false
     },
     {
       "id": 21,
       "name": "アビーブルー",
-      "breed": "abyssinian",
+      "breed": "アビシニアン",
       "color": "bluegray",
-      "pattern": "none",
+      "pattern": "なし",
       "isLongHair": false
     },
     {
       "id": 22,
       "name": "バーミアン",
-      "breed": "burmese",
+      "breed": "バーミーズ",
       "color": "brown",
-      "pattern": "none",
+      "pattern": "なし",
       "isLongHair": false
     },
     {
       "id": 23,
       "name": "おそろしあん",
-      "breed": "russian_blue",
+      "breed": "ロシアンブルー",
       "color": "bluegray2",
-      "pattern": "none",
+      "pattern": "なし",
       "isLongHair": false
     },
     {
       "id": 24,
       "name": "社務",
-      "breed": "siamese",
+      "breed": "シャム猫",
       "color": "white|black",
-      "pattern": "none",
+      "pattern": "なし",
       "isLongHair": false
     },
     {
       "id": 25,
       "name": "ラグドール",
-      "breed": "ragdall",
+      "breed": "ラグドール",
       "color": "white|black",
-      "pattern": "none",
+      "pattern": "なし",
       "isLongHair": true
     },
     {
       "id": 26,
       "name": "バーマン",
-      "breed": "birman",
+      "breed": "バーマン",
       "color": "white|black",
-      "pattern": "none",
+      "pattern": "なし",
       "isLongHair": true
     },
     {
       "id": 27,
       "name": "ノルギン",
-      "breed": "norwegian_forest",
+      "breed": "ノルウェージャンフォレスト",
       "color": "shilver|black|white",
-      "pattern": "tabby",
+      "pattern": "タビー",
       "isLongHair": true
     },
     {
       "id": 28,
       "name": "ノルチャ",
-      "breed": "norwegian_forest",
+      "breed": "ノルウェージャンフォレスト",
       "color": "brown|black|white",
-      "pattern": "tabby",
+      "pattern": "タビー",
       "isLongHair": true
     },
     {
       "id": 29,
       "name": "ノルフォーン",
-      "breed": "somali",
+      "breed": "ノルウェージャンフォレスト",
       "color": "fawn",
-      "pattern": "none",
+      "pattern": "なし",
       "isLongHair": true
     },
     {
       "id": 30,
       "name": "ノルブルー",
-      "breed": "somali",
+      "breed": "ノルウェージャンフォレスト",
       "color": "bluegray",
-      "pattern": "none",
+      "pattern": "なし",
       "isLongHair": true
     },
     {
       "id": 31,
       "name": "ソマリルディ",
-      "breed": "somali",
+      "breed": "ソマリ",
       "color": "ruddy",
-      "pattern": "none",
+      "pattern": "なし",
       "isLongHair": true
     },
     {
       "id": 32,
       "name": "ソマリレッド",
-      "breed": "somali",
+      "breed": "ソマリ",
       "color": "redbrown",
-      "pattern": "none",
+      "pattern": "なし",
       "isLongHair": true
     },
     {
       "id": 33,
       "name": "スコうすキャリコ",
-      "breed": "scottish_fold",
+      "breed": "スコティッシュフォールド",
       "color": "D_black|redbrown|white",
-      "pattern": "calico",
+      "pattern": "キャリコ",
       "isLongHair": true
     },
     {
       "id": 34,
       "name": "スコレッド",
-      "breed": "scottish_fold",
+      "breed": "スコティッシュフォールド",
       "color": "redbrown|white",
-      "pattern": "tabby",
+      "pattern": "タビー",
       "isLongHair": true
     },
     {
       "id": 35,
       "name": "スコクリ",
-      "breed": "scottish_fold",
+      "breed": "スコティッシュフォールド",
       "color": "cream|white",
-      "pattern": "tabby",
+      "pattern": "タビー",
       "isLongHair": false
     },
     {
       "id": 36,
       "name": "スコギン",
-      "breed": "scottish_fold",
+      "breed": "スコティッシュフォールド",
       "color": "shilver|white",
-      "pattern": "none",
+      "pattern": "なし",
       "isLongHair": false
     },
     {
       "id": 37,
       "name": "エキゾっちゃ",
-      "breed": "exotic_shorthair",
+      "breed": "エキゾチックショートヘア",
       "color": "brown|black|white",
-      "pattern": "tabby",
+      "pattern": "タビー",
       "isLongHair": false
     },
     {
       "id": 38,
       "name": "エキゾクリーム",
-      "breed": "exotic_shorthair",
+      "breed": "エキゾチックショートヘア",
       "color": "cream|white",
-      "pattern": "tabby",
+      "pattern": "タビー",
       "isLongHair": false
     },
     {
       "id": 39,
       "name": "エキゾブルー",
-      "breed": "exotic_shorthair",
+      "breed": "エキゾチックショートヘア",
       "color": "bluegray",
-      "pattern": "none",
+      "pattern": "なし",
       "isLongHair": false
     },
     {
       "id": 40,
       "name": "ペルシャゴールド",
-      "breed": "persian",
+      "breed": "ペルシャ猫",
       "color": "gold",
-      "pattern": "chinchilla",
+      "pattern": "チンチラ",
       "isLongHair": true
     },
     {
       "id": 41,
       "name": "ペルシャシルバー",
-      "breed": "persian",
+      "breed": "ペルシャ猫",
       "color": "shilver",
-      "pattern": "chinchilla",
+      "pattern": "チンチラ",
       "isLongHair": true
     },
     {
       "id": 42,
       "name": "ペルシロ",
-      "breed": "persian",
+      "breed": "ペルシャ猫",
       "color": "white",
-      "pattern": "none",
+      "pattern": "なし",
       "isLongHair": true
     },
     {
       "id": 43,
       "name": "シャルトリュー",
-      "breed": "chartreux",
+      "breed": "シャルトリュー",
       "color": "bluegray2",
-      "pattern": "none",
+      "pattern": "なし",
       "isLongHair": false
     }
   ]

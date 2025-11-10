@@ -127,7 +127,7 @@ Array<CatObject> UFOCat::LoadCatData()
 
 				// 以後、仮の文字列格納用変数は data_ で始める
 				String data_color = d.value[U"color"].get<String>();
-				String data_pattern = d.value[U"pattern"].get<String>();
+				String pattern = d.value[U"pattern"].get<String>();
 
 				// ダイリュートかどうか
 				bool isDilute = data_color.substr(0, 2) == U"D_";
@@ -208,38 +208,6 @@ Array<CatObject> UFOCat::LoadCatData()
 
 						return temp;
 					});
-
-				// 模様を調べる
-				CatData::Pattern pattern;
-
-				if (data_pattern == U"tora")
-				{
-					pattern = CatData::Pattern::Tora;
-				}
-				else if (data_pattern == U"tabby")
-				{
-					pattern = CatData::Pattern::Tabby;
-				}
-				else if (data_pattern == U"mike")
-				{
-					pattern = CatData::Pattern::Mike;
-				}
-				else if (data_pattern == U"calico")
-				{
-					pattern = CatData::Pattern::Calico;
-				}
-				else if (data_pattern == U"hachiware")
-				{
-					pattern = CatData::Pattern::Hachiware;
-				}
-				else if (data_pattern == U"sabi")
-				{
-					pattern = CatData::Pattern::Sabi;
-				}
-				else
-				{
-					pattern = CatData::Pattern::None;
-				}
 
 				bool isLongHair = d.value[U"isLongHair"].get<bool>();
 
