@@ -25,7 +25,7 @@ namespace UFOCat
 		/// @brief ターゲット
 		std::shared_ptr<CatObject> m_target = nullptr;
 
-		/// @brief このレベルで出現させる猫を絞り込んだリスト
+		/// @brief このレベルで出現させる猫を絞り込んだリスト @n
 		Array<std::shared_ptr<CatObject>> m_selections;
 
 		/// @brief フェーズ中にターゲットが出現する時刻 @n

@@ -139,8 +139,12 @@ namespace UFOCat
 		}
 
 		// others は既定の数から溢れている可能性が高いので、ランダムに削る
+		if (others.size() > otherCount)
+		{
+			others.shuffle().resize(otherCount);
+		}
 		// 既定の数に達しない場合は、それでもよしとする
-		others.shuffle().resize(otherCount);
+		// 無理にほかの種類も含めようとすると、難易度が上がりすぎる可能性がある？
 
 		// レベル中に行うアクションリストの中から、それぞれの発生確率だけを抜き取ったリストで確率分布をつくる
 		m_actionProbabilities = DiscreteDistribution{ m_currentLevel().actionDataList.map([](const LevelData::ActionData& data) { return data.probability; }) };
@@ -193,29 +197,29 @@ namespace UFOCat
 				// ## スポーン処理
 				m_watch.setInterval([this]()
 					{
-					// ターゲットの出現時刻を超えていて、ターゲットがまだ出現していなかったら
-					if (getData().timer.remaining() <= m_targetAppearTime and (not m_hasAppearedTarget()))
-					{
-						// ターゲットを（コピーして）湧かせる
-						getData().spawns[0] = std::make_unique<CatObject>(m_target->clone());
-						// ターゲットにも同様にアクションと速度の設定を行う
-						getData().spawns[0]->setAction(DiscreteSample(m_currentLevel().actionDataList, m_actionProbabilities)).setRandomVelocity(getData().levelIndex + 1);
-					}
-					else
-					{
-						// ターゲット以外の猫をランダムに指定個選んで（コピーして）追加
-						for (uint32 i = 0; i < m_currentLevel().intervalData.count; i++)
+						// ターゲットの出現時刻を超えていて、ターゲットがまだ出現していなかったら
+						if (getData().timer.remaining() <= m_targetAppearTime and (not m_hasAppearedTarget()))
 						{
-							// アクションを抽選してセットし、現在のレベルに合わせて速度もランダムに決める
-							// "EXCEPTION ACCESS VIOLATION" を防ぐために、いったんオブジェクトのコピーを明示的に変数にいれる
-							CatObject obj = m_selections.choice()->clone();
-							obj.setAction(DiscreteSample(m_currentLevel().actionDataList, m_actionProbabilities))
-							   .setRandomVelocity(getData().levelIndex + 1);
-
-							// スポーンリストに追加
-							getData().spawns << std::make_unique<CatObject>(obj);
+							// ターゲットを（コピーして）湧かせる
+							getData().spawns[0] = std::make_unique<CatObject>(m_target->clone());
+							// ターゲットにも同様にアクションと速度の設定を行う
+							getData().spawns[0]->setAction(DiscreteSample(m_currentLevel().actionDataList, m_actionProbabilities)).setRandomVelocity(getData().levelIndex + 1);
 						}
-					}
+						else
+						{
+							// ターゲット以外の猫をランダムに指定個選んで（コピーして）追加
+							for (uint32 i = 0; i < m_currentLevel().intervalData.count; i++)
+							{
+								// アクションを抽選してセットし、現在のレベルに合わせて速度もランダムに決める
+								// "EXCEPTION ACCESS VIOLATION" を防ぐために、いったんオブジェクトのコピーを明示的に変数にいれる
+								CatObject obj = m_selections.choice()->clone();
+								obj.setAction(DiscreteSample(m_currentLevel().actionDataList, m_actionProbabilities))
+								   .setRandomVelocity(getData().levelIndex + 1);
+
+								// スポーンリストに追加
+								getData().spawns << std::make_unique<CatObject>(obj);
+							}
+						}
 					}, m_currentLevel().intervalData.period);
 
 				// ## 制限時間内と時間超過後での処理
@@ -478,7 +482,10 @@ namespace UFOCat
 					textSize = std::lerp(40.0, 200.0, EaseOutQuart(t));
 				}
 
-				FontAsset(FontName::KoharuiroSunray)(text).drawAt(textSize, Scene::Center(), ColorF{ 1.0, EaseOutExpo(t) });
+				FontAsset(FontName::KoharuiroSunray)(text)
+					// 枠線・影設定 -> テキストサイズ（「GO!」の時以外経過時間で縮小） -> 経過時間で透明化 -> 画面中央ぞろえ描画
+					.drawAt(TextStyle::OutlineShadow(0.3, Palette::Black, Vec2{ 1.2, 1.2 }, ColorF{ 0.0, 0.65 }), textSize, Scene::Center(), ColorF{ 1.0, EaseOutExpo(t) });
+					// この TextStyle 流用が頻度高かったら定数化を考える
 			}
 			break;
 
@@ -506,7 +513,7 @@ namespace UFOCat
 			// L335より、終了表示は 3s 間
 			case UFOCat::Level::State::Finish:
 			{
-				// 移動補間のパラメータ
+				// 線形補間のパラメータ
 				double t = 1.0;
 
 				// 1.7s までの間
@@ -516,13 +523,18 @@ namespace UFOCat
 				}
 				// それ以外は t = 1.0 として処理
 
+				// 「Finish!!」という表示データを一旦保存
 				const DrawableText &view = FontAsset(U"KoharuiroSunray")(U"Finish!!");
 
+				// 実際に表示される領域を取得
 				const RectF &region = view.region();
 
+				// 線形補完の始点（画面外に出ている状態）
 				const Vec2 begin{ -region.w, Scene::Center().y };
 
-				view.drawAt(150.0, begin.lerp(Scene::CenterF(), EaseOutBounce(t)));
+				// 経過に合わせて移動させる
+				// イージング関数で跳ねて戻ってくるような移動効果
+				view.drawAt(TextStyle::OutlineShadow(0.3, Palette::Black, Vec2{ 1.2, 1.2 }, ColorF{ 0.0, 0.65 }), 150.0, begin.lerp(Scene::CenterF(), EaseOutElastic(t)));
 			}
 			break;
 
