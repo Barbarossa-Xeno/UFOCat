@@ -4,7 +4,7 @@
       "id": 0,
       "name": "シロ",
       "breed": "和猫",
-      "color": "white",
+      "color": "白",
       "pattern": "なし",
       "isLongHair": false
     },
@@ -12,7 +12,7 @@
       "id": 1,
       "name": "グレイ",
       "breed": "和猫",
-      "color": "gray",
+      "color": "灰",
       "pattern": "なし",
       "isLongHair": false
     },
@@ -20,7 +20,7 @@
       "id": 2,
       "name": "センター分け",
       "breed": "和猫",
-      "color": "gray|white",
+      "color": "灰|白",
       "pattern": "なし",
       "isLongHair": false
     },
@@ -28,7 +28,7 @@
       "id": 3,
       "name": "チャトラ",
       "breed": "和猫",
-      "color": "brown",
+      "color": "うす茶",
       "pattern": "トラ",
       "isLongHair": false
     },
@@ -36,7 +36,7 @@
       "id": 4,
       "name": "くりいむ",
       "breed": "和猫",
-      "color": "cream",
+      "color": "クリーム",
       "pattern": "トラ",
       "isLongHair": false
     },
@@ -44,7 +44,7 @@
       "id": 5,
       "name": "チャシロ",
       "breed": "和猫",
-      "color": "brown|white",
+      "color": "うす茶|白",
       "pattern": "トラ",
       "isLongHair": false
     },
@@ -52,7 +52,7 @@
       "id": 6,
       "name": "クロ",
       "breed": "和猫",
-      "color": "black",
+      "color": "黒",
       "pattern": "なし",
       "isLongHair": false
     },
@@ -60,7 +60,7 @@
       "id": 7,
       "name": "ハチワレ",
       "breed": "和猫",
-      "color": "black|white",
+      "color": "黒|白",
       "pattern": "ハチワレ",
       "isLongHair": false
     },
@@ -68,7 +68,7 @@
       "id": 8,
       "name": "サバトラ",
       "breed": "和猫",
-      "color": "gray|black",
+      "color": "灰|黒",
       "pattern": "トラ",
       "isLongHair": false
     },
@@ -76,7 +76,7 @@
       "id": 9,
       "name": "サバシロ",
       "breed": "和猫",
-      "color": "gray|black|white",
+      "color": "灰|黒|白",
       "pattern": "トラ",
       "isLongHair": false
     },
@@ -84,7 +84,7 @@
       "id": 10,
       "name": "サビ",
       "breed": "和猫",
-      "color": "ocher|black",
+      "color": "おうど|黒",
       "pattern": "サビ",
       "isLongHair": false
     },
@@ -92,7 +92,7 @@
       "id": 11,
       "name": "サビシロ",
       "breed": "和猫",
-      "color": "D_ocher|black",
+      "color": "D_おうど|黒",
       "pattern": "サビ",
       "isLongHair": false
     },
@@ -100,7 +100,7 @@
       "id": 12,
       "name": "ミケ",
       "breed": "和猫",
-      "color": "black|redbrown|white",
+      "color": "黒|オレンジ|白",
       "pattern": "三毛",
       "isLongHair": false
     },
@@ -108,7 +108,7 @@
       "id": 13,
       "name": "ミケシロ",
       "breed": "和猫",
-      "color": "D_black|redbrown|white",
+      "color": "D_黒|オレンジ|白",
       "pattern": "三毛",
       "isLongHair": false
     },
@@ -116,7 +116,7 @@
       "id": 14,
       "name": "キジトラ",
       "breed": "和猫",
-      "color": "kiji|black",
+      "color": "きじ|黒",
       "pattern": "トラ",
       "isLongHair": false
     },
@@ -124,7 +124,7 @@
       "id": 15,
       "name": "キジシロ",
       "breed": "和猫",
-      "color": "kiji|black|white",
+      "color": "きじ|黒|白",
       "pattern": "トラ",
       "isLongHair": false
     },
@@ -132,7 +132,7 @@
       "id": 16,
       "name": "アメショシルバー",
       "breed": "アメリカンショートヘア",
-      "color": "shilver|black",
+      "color": "銀|黒",
       "pattern": "タビー",
       "isLongHair": false
     },
@@ -140,7 +140,7 @@
       "id": 17,
       "name": "アメショブラウン",
       "breed": "アメリカンショートヘア",
-      "color": "brown|black",
+      "color": "うす茶|黒",
       "pattern": "タビー",
       "isLongHair": false
     },
@@ -148,7 +148,7 @@
       "id": 18,
       "name": "アビールディ",
       "breed": "アビシニアン",
-      "color": "ruddy",
+      "color": "茶",
       "pattern": "なし",
       "isLongHair": false
     },
@@ -156,7 +156,7 @@
       "id": 19,
       "name": "アビーレッド",
       "breed": "アビシニアン",
-      "color": "redbrown",
+      "color": "オレンジ",
       "pattern": "なし",
       "isLongHair": false
     },
@@ -164,7 +164,7 @@
       "id": 20,
       "name": "アビーフォーン",
       "breed": "アビシニアン",
-      "color": "fawn",
+      "color": "フォーン",
       "pattern": "なし",
       "isLongHair": false
     },
@@ -172,7 +172,7 @@
       "id": 21,
       "name": "アビーブルー",
       "breed": "アビシニアン",
-      "color": "bluegray",
+      "color": "灰",
       "pattern": "なし",
       "isLongHair": false
     },
@@ -180,7 +180,7 @@
       "id": 22,
       "name": "バーミアン",
       "breed": "バーミーズ",
-      "color": "brown",
+      "color": "うす茶",
       "pattern": "なし",
       "isLongHair": false
     },
@@ -188,7 +188,7 @@
       "id": 23,
       "name": "おそろしあん",
       "breed": "ロシアンブルー",
-      "color": "bluegray2",
+      "color": "灰青",
       "pattern": "なし",
       "isLongHair": false
     },
@@ -196,7 +196,7 @@
       "id": 24,
       "name": "社務",
       "breed": "シャム猫",
-      "color": "white|black",
+      "color": "白|黒",
       "pattern": "なし",
       "isLongHair": false
     },
@@ -204,7 +204,7 @@
       "id": 25,
       "name": "ラグドール",
       "breed": "ラグドール",
-      "color": "white|black",
+      "color": "白|黒",
       "pattern": "なし",
       "isLongHair": true
     },
@@ -212,7 +212,7 @@
       "id": 26,
       "name": "バーマン",
       "breed": "バーマン",
-      "color": "white|black",
+      "color": "白|黒",
       "pattern": "なし",
       "isLongHair": true
     },
@@ -220,7 +220,7 @@
       "id": 27,
       "name": "ノルギン",
       "breed": "ノルウェージャンフォレスト",
-      "color": "shilver|black|white",
+      "color": "銀|黒|白",
       "pattern": "タビー",
       "isLongHair": true
     },
@@ -228,7 +228,7 @@
       "id": 28,
       "name": "ノルチャ",
       "breed": "ノルウェージャンフォレスト",
-      "color": "brown|black|white",
+      "color": "うす茶|黒|白",
       "pattern": "タビー",
       "isLongHair": true
     },
@@ -236,7 +236,7 @@
       "id": 29,
       "name": "ノルフォーン",
       "breed": "ノルウェージャンフォレスト",
-      "color": "fawn",
+      "color": "フォーン",
       "pattern": "なし",
       "isLongHair": true
     },
@@ -244,7 +244,7 @@
       "id": 30,
       "name": "ノルブルー",
       "breed": "ノルウェージャンフォレスト",
-      "color": "bluegray",
+      "color": "灰",
       "pattern": "なし",
       "isLongHair": true
     },
@@ -252,7 +252,7 @@
       "id": 31,
       "name": "ソマリルディ",
       "breed": "ソマリ",
-      "color": "ruddy",
+      "color": "茶",
       "pattern": "なし",
       "isLongHair": true
     },
@@ -260,7 +260,7 @@
       "id": 32,
       "name": "ソマリレッド",
       "breed": "ソマリ",
-      "color": "redbrown",
+      "color": "オレンジ",
       "pattern": "なし",
       "isLongHair": true
     },
@@ -268,7 +268,7 @@
       "id": 33,
       "name": "スコうすキャリコ",
       "breed": "スコティッシュフォールド",
-      "color": "D_black|redbrown|white",
+      "color": "D_黒|オレンジ|白",
       "pattern": "キャリコ",
       "isLongHair": true
     },
@@ -276,7 +276,7 @@
       "id": 34,
       "name": "スコレッド",
       "breed": "スコティッシュフォールド",
-      "color": "redbrown|white",
+      "color": "オレンジ|白",
       "pattern": "タビー",
       "isLongHair": true
     },
@@ -284,7 +284,7 @@
       "id": 35,
       "name": "スコクリ",
       "breed": "スコティッシュフォールド",
-      "color": "cream|white",
+      "color": "クリーム|白",
       "pattern": "タビー",
       "isLongHair": false
     },
@@ -292,7 +292,7 @@
       "id": 36,
       "name": "スコギン",
       "breed": "スコティッシュフォールド",
-      "color": "shilver|white",
+      "color": "銀|白",
       "pattern": "なし",
       "isLongHair": false
     },
@@ -300,7 +300,7 @@
       "id": 37,
       "name": "エキゾっちゃ",
       "breed": "エキゾチックショートヘア",
-      "color": "brown|black|white",
+      "color": "うす茶|黒|白",
       "pattern": "タビー",
       "isLongHair": false
     },
@@ -308,7 +308,7 @@
       "id": 38,
       "name": "エキゾクリーム",
       "breed": "エキゾチックショートヘア",
-      "color": "cream|white",
+      "color": "クリーム|白",
       "pattern": "タビー",
       "isLongHair": false
     },
@@ -316,7 +316,7 @@
       "id": 39,
       "name": "エキゾブルー",
       "breed": "エキゾチックショートヘア",
-      "color": "bluegray",
+      "color": "灰",
       "pattern": "なし",
       "isLongHair": false
     },
@@ -324,7 +324,7 @@
       "id": 40,
       "name": "ペルシャゴールド",
       "breed": "ペルシャ猫",
-      "color": "gold",
+      "color": "金",
       "pattern": "チンチラ",
       "isLongHair": true
     },
@@ -332,7 +332,7 @@
       "id": 41,
       "name": "ペルシャシルバー",
       "breed": "ペルシャ猫",
-      "color": "shilver",
+      "color": "銀",
       "pattern": "チンチラ",
       "isLongHair": true
     },
@@ -340,7 +340,7 @@
       "id": 42,
       "name": "ペルシロ",
       "breed": "ペルシャ猫",
-      "color": "white",
+      "color": "白",
       "pattern": "なし",
       "isLongHair": true
     },
@@ -348,7 +348,7 @@
       "id": 43,
       "name": "シャルトリュー",
       "breed": "シャルトリュー",
-      "color": "bluegray2",
+      "color": "灰青",
       "pattern": "なし",
       "isLongHair": false
     }

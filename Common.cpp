@@ -135,64 +135,61 @@ Array<CatObject> UFOCat::LoadCatData()
 				// ダイリュートなら先頭の "D_" を取り除く
 				data_color = isDilute ? data_color.substr(2) : data_color;
 
-				// 色データを区切り文字で分割して取得
-				auto&& color = data_color.split(U'|').map([&isDilute](const auto& c)
+				// テーブルをつくり、色データを区切り文字で分割して取得しながら記録
+				HashTable<String, Color> colors;
+				data_color.split(U'|').each([&isDilute, &colors](const auto& name)
 					{
 						Color temp = Palette::White;
 
-						if (c == U"white")
+						if (name == U"白")
 						{
 							temp = Color{ U"#f2fafe" };
 						}
-						else if (c == U"black")
+						else if (name == U"黒")
 						{
 							temp = Color{ U"#272a2e" };
 						}
-						else if (c == U"gray")
+						else if (name == U"灰")
 						{
 							temp = Color{ U"#9da5a9" };
 						}
-						else if (c == U"brown")
+						else if (name == U"うす茶")
 						{
 							temp = Color{ U"#e8ae77" };
 						}
-						else if (c == U"ocher")
+						else if (name == U"おうど")
 						{
 							temp = Color{ U"#a87e39" };
 						}
-						else if (c == U"redbrown")
+						else if (name == U"オレンジ")
 						{
 							temp = Color{ U"#d67d36" };
 						}
-						else if (c == U"cream")
+						else if (name == U"クリーム")
 						{
 							temp = Color{ U"#e5d5b6" };
 						}
-						else if (c == U"kiji")
+						else if (name == U"きじ")
 						{
 							temp = Color{ U"#7e7360" };
 						}
-						else if (c == U"shilver")
+						else if (name == U"銀")
 						{
 							temp = Color{ U"#a8b7c1" };
 						}
-						else if (c == U"ruddy")
+						else if (name == U"茶")
 						{
 							temp = Color{ U"#805308" };
 						}
-						else if (c == U"fawn")
+						else if (name == U"フォーン")
 						{
 							temp = Color{ U"#d3c5a8" };
 						}
-						else if (c == U"bluegray")
-						{
-							temp = Color{ U"#90989b" };
-						}
-						else if (c == U"bluegray2")
+						else if (name == U"灰青")
 						{
 							temp = Color{ U"#70748d" };
 						}
-						else if (c == U"gold")
+						else if (name == U"金")
 						{
 							temp = Color{ U"#aa9263" };
 						}
@@ -206,13 +203,13 @@ Array<CatObject> UFOCat::LoadCatData()
 							temp = Color{ hsv };
 						}
 
-						return temp;
+						colors[name] = temp;
 					});
-
+				
 				bool isLongHair = d.value[U"isLongHair"].get<bool>();
 
 				// 作成したインスタンスを格納
-				results << CatObject{ textures[id] }.setCatData(CatData{ id, breed, color, pattern, isLongHair });
+				results << CatObject{ textures[id] }.setCatData(CatData{ id, breed, colors, pattern, isLongHair });
 			}
 		}
 

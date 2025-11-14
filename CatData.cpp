@@ -30,9 +30,9 @@ uint32 CatData::getSameDataCount(const CatData &target) const
 		++count;
 	}
 
-	for (const auto& c : color)
+	for (const auto &[name, color] : colors)
 	{
-		if (target.color.contains(c))
+		if (target.colors.contains(name))
 		{
 			++count;
 		}
