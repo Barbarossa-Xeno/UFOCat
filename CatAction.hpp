@@ -26,7 +26,7 @@ namespace CAct
 		template <typename T>
 		concept ValidSignature =
 			(
-				std::same_as<T, _0> ||
+				std::same_as<T, _0> or
 				std::same_as<T, _1>
 			);
 	}
@@ -62,13 +62,13 @@ namespace CAct
 		template <typename T>
 		concept ValidSignature =
 			(
-				std::same_as<T, _0> ||
-				std::same_as<T, _1> ||
-				std::same_as<T, _2> ||
-				std::same_as<T, _3> ||
-				std::same_as<T, _4> ||
-				std::same_as<T, _5> ||
-				std::same_as<T, _6> ||
+				std::same_as<T, _0> or
+				std::same_as<T, _1> or
+				std::same_as<T, _2> or
+				std::same_as<T, _3> or
+				std::same_as<T, _4> or
+				std::same_as<T, _5> or
+				std::same_as<T, _6> or
 				std::same_as<T, _7>
 			);
 	}
@@ -96,9 +96,9 @@ namespace CAct
 		template <typename T>
 		concept ValidSignature =
 			(
-				std::same_as<T, _0> ||
-				std::same_as<T, _1> ||
-				std::same_as<T, _2> ||
+				std::same_as<T, _0> or
+				std::same_as<T, _1> or
+				std::same_as<T, _2> or
 				std::same_as<T, _3>
 			);
 	}
@@ -115,9 +115,9 @@ namespace CAct
 	template <typename T>
 	concept ValidSignature =
 	(
-		std::same_as<T, std::monostate> ||
-		CAct::cross::ValidSignature<T> ||
-		CAct::appear::ValidSignature<T> ||
+		std::same_as<T, std::monostate> or
+		CAct::cross::ValidSignature<T> or
+		CAct::appear::ValidSignature<T> or
 		CAct::appearFromEdge::ValidSignature<T>
 	);
 }
