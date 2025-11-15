@@ -144,9 +144,6 @@
     <ClCompile Include="stdafx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="game_manager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="CatData.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -1141,9 +1138,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="game_manager.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="CatObject.hpp">

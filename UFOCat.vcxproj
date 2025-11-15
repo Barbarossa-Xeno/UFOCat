@@ -124,7 +124,6 @@
     <ClCompile Include="Common.cpp" />
     <ClCompile Include="DeltaStopWatch.cpp" />
     <ClCompile Include="Dialog.cpp" />
-    <ClCompile Include="game_manager.cpp" />
     <ClCompile Include="Level.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="LevelData.cpp" />
@@ -453,7 +452,6 @@
     <ClInclude Include="CatObject.hpp" />
     <ClInclude Include="Common.hpp" />
     <ClInclude Include="DeltaStopwatch.hpp" />
-    <ClInclude Include="game_manager.hpp" />
     <ClInclude Include="Level.hpp" />
     <ClInclude Include="LevelData.hpp" />
     <ClInclude Include="Result.hpp" />

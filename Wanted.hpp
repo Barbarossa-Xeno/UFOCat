@@ -22,6 +22,8 @@ namespace UFOCat
 		}
 		m_gui;
 
+		void m_showColor();
+
 	public:
 
 		Wanted(const InitData &init);
