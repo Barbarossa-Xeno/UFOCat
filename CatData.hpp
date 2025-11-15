@@ -5,13 +5,16 @@ struct CatData
 {
 	// ID（使わんかも）
 	int32 id;
+
 	// 品種
 	String breed;
+
 	// 色 複数あればその全て
 	HashTable<String, Color> colors;
-	Array<Color> color;
+
 	// 模様の種類
 	String pattern;
+
 	// 長毛か
 	bool isLongHair;
 
@@ -27,7 +30,7 @@ struct CatData
 	CatData(int32 id, String breed, HashTable<String, Color> colors, String pattern, bool isLongHair)
 		: id{ id }
 		, breed{ breed }
-		, color{ color }
+		, colors{ colors }
 		, pattern{ pattern }
 		, isLongHair{ isLongHair }
 	{ }

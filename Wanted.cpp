@@ -2,9 +2,19 @@
 
 namespace UFOCat
 {
-	void Wanted::m_showColor()
+	RectF Wanted::m_showColorData(String name, Color color, Vec2 leftCenter, double size) const
 	{
+		// 色のアイコン (〇 <- こういう感じ)のをつくる
+		const auto &icon = Circle{ leftCenter + Vec2{ size, 0 }, size }.draw(color).drawFrame(1.5, Colors::LightBrown);
 
+		// アイコンと色名表示の間の間隔
+		const double margin = size / 2;
+
+		// そのアイコンの右下隣りくらいに、少し小さく色名を表示する
+		const RectF &nameRegion = FontAsset(FontName::YuseiMagic)(U"{}"_fmt(name)).draw(1.2 * size, Arg::bottomLeft = icon.boundingRect().br() + Vec2{ margin, 0 }, Colors::Brown);
+
+		// アイコンとマージン、色名の表示領域全てを足した範囲を返す
+		return icon.boundingRect().stretched(Arg::right = margin + nameRegion.w);
 	}
 
 	Wanted::Wanted(const InitData& init)
@@ -85,46 +95,79 @@ namespace UFOCat
 		// # チラシ部分
 		{
 			// チラシの描画とその範囲
-			const RectF &backRegion = m_gui.flyer.resized(Scene::Height() - 150).drawAt(Scene::Center());
+			const RectF &flyerRegion = m_gui.flyer.resized(Scene::Height() - 150).drawAt(Scene::Center());
 
 			// ターゲットのテクスチャ描画位置（中央基準）
 			Vec2 targetOrigin{ Scene::Center().x, Scene::Center().y - 20 };
 
-			// シャドウ
-			m_target->getTexture().scaled(0.45).drawAt(targetOrigin + Point{ 5, 5 }, ColorF{ 0.4, 0.3, 0.2 });
-
-			// 実際の
-			m_target->getTexture().scaled(0.45).drawAt(targetOrigin);
-
-			const RectF textBoxRegion{ 0.3 * backRegion.x, 0.4 * backRegion.y };
-
-			// ## 猫種の表示領域
-			// 「猫種」というタイトルとそのバックを塗りつぶすための RectF を計算
-			const RectF &box1 = textBoxRegion.movedBy(backRegion.x + 20, targetOrigin.y + 110).draw(Colors::Brown);
-			FontAsset(FontName::YuseiMagic)(U"猫種").drawAt(20, box1.center(), Colors::LightBrownAlt);
-
-			// 猫種名を表示するエリア、マージン (20) 分調整する
-			const RectF &breedRegion = box1.movedBy(box1.w + 20, 0).setSize(backRegion.w - box1.w - 20 - 20 - 20, box1.h);
-
-			// 名前は短いのから長いのもあるので、
-			// エリアから溢れない範囲でフォントサイズを可変にする
+			// ターゲット猫の表示
 			{
-				double fontSize = 40;
-				// このメソッドは矩形内にすべての文字列が収まらなかったら false を返すので
-				while (not FontAsset(FontName::YuseiMagic)(U"{}"_fmt(m_target->getCatData().breed))
-					.draw(fontSize--, breedRegion, Colors::Brown))
+				// シャドウ
+				m_target->getTexture().scaled(0.45).drawAt(targetOrigin + Point{ 5, 5 }, ColorF{ 0.4, 0.3, 0.2 });
+
+				// 実際の
+				m_target->getTexture().scaled(0.45).drawAt(targetOrigin);
+			}			
+
+			// ## ターゲット猫の各種情報を表示する部分
+			{
+				// 各データのタイトルを表示するためのテキストボックス範囲
+				// チラシ全体の 30% x 40% の大きさにして、この大きさを基準とする
+				const RectF textBox{ 0.3 * flyerRegion.x, 0.4 * flyerRegion.y };
+
+				RectF breedBox{}, colorBox{}, patternBox{};
+
+				// ### 猫種の表示領域
 				{
-					// そのとき、描画されてしまった文字列を上から塗りつぶして隠す
-					breedRegion.draw(Colors::LightBrownAlt);
+					// 「猫種」というタイトルとそのバックを塗りつぶすための RectF を計算
+					// チラシの端から 20 だけ横に
+					breedBox = textBox.movedBy(flyerRegion.x + 20, targetOrigin.y + 110).draw(Colors::Brown);
+
+					// その上からテキスト
+					FontAsset(FontName::YuseiMagic)(U"猫種").drawAt(20, breedBox.center(), Colors::LightBrownAlt);
+
+					// 猫種名を表示するエリア、マージン (20) 分調整する
+					const RectF& breedRegion = breedBox.movedBy(breedBox.w + 20, 0).setSize(flyerRegion.w - breedBox.w - 20 - 20 - 20, breedBox.h);
+
+					// 名前は短いのから長いのもあるので、
+					// エリアから溢れない範囲でフォントサイズを可変にする
+					double fontSize = 40;
+					// このメソッドは矩形内にすべての文字列が収まらなかったら false を返すので
+					while (not FontAsset(FontName::YuseiMagic)(U"{}"_fmt(m_target->getCatData().breed))
+						.draw(fontSize--, breedRegion, Colors::Brown))
+					{
+						// そのとき、描画されてしまった文字列を上から塗りつぶして隠す
+						breedRegion.draw(Colors::LightBrownAlt);
+					}
+				}
+
+				// ### 毛色の表示領域
+				{
+					// さっきのを下に動かしたもの
+					colorBox = breedBox.movedBy(0, 40).draw(Colors::Brown);
+					FontAsset(FontName::YuseiMagic)(U"毛色").drawAt(20, colorBox.center(), Colors::LightBrownAlt);
+
+					// 次々と色情報を表示する際に、基準にする前の表示範囲を保持する
+					RectF previousRegion{ colorBox };
+
+					for (const auto& [name, color] : m_target->getCatData().colors)
+					{
+						// 表示しながら、前の範囲を定める
+						previousRegion = m_showColorData(name, color, previousRegion.rightCenter() + Point{ 20, 0 }, 10);
+					}
+				}
+
+				// ### 模様の表示領域
+				{
+					patternBox = colorBox.movedBy(0, 40).draw(Colors::Brown);
+					FontAsset(FontName::YuseiMagic)(U"模様").drawAt(20, patternBox.center(), Colors::LightBrownAlt);
+
+					// 模様名を表示するエリア、マージン (20) 分調整する
+					const RectF& patternRegion = patternBox.movedBy(patternBox.w + 20, 0).setSize(flyerRegion.w - patternBox.w - 20 - 20 - 20, patternBox.h);
+
+					FontAsset(FontName::YuseiMagic)(U"{}"_fmt(m_target->getCatData().pattern)).draw(20, Arg::leftCenter = patternRegion.leftCenter(), Colors::Brown);
 				}
 			}
-			
-			// ## 毛色の表示領域
-
-			const RectF &box2 = box1.movedBy(0, 40).draw(Colors::Brown);
-			FontAsset(FontName::YuseiMagic)(U"毛色").drawAt(20, box2.center(), Colors::LightBrownAlt);
-			
-
 		}		
 
 		BrightenCursor();

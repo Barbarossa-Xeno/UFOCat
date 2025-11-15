@@ -138,73 +138,73 @@ Array<CatObject> UFOCat::LoadCatData()
 				// テーブルをつくり、色データを区切り文字で分割して取得しながら記録
 				HashTable<String, Color> colors;
 				data_color.split(U'|').each([&isDilute, &colors](const auto& name)
+				{
+					Color temp = Palette::White;
+
+					if (name == U"白")
 					{
-						Color temp = Palette::White;
+						temp = Color{ U"#f2fafe" };
+					}
+					else if (name == U"黒")
+					{
+						temp = Color{ U"#272a2e" };
+					}
+					else if (name == U"灰")
+					{
+						temp = Color{ U"#9da5a9" };
+					}
+					else if (name == U"うす茶")
+					{
+						temp = Color{ U"#e8ae77" };
+					}
+					else if (name == U"おうど")
+					{
+						temp = Color{ U"#a87e39" };
+					}
+					else if (name == U"オレンジ")
+					{
+						temp = Color{ U"#d67d36" };
+					}
+					else if (name == U"クリーム")
+					{
+						temp = Color{ U"#e5d5b6" };
+					}
+					else if (name == U"きじ")
+					{
+						temp = Color{ U"#7e7360" };
+					}
+					else if (name == U"銀")
+					{
+						temp = Color{ U"#a8b7c1" };
+					}
+					else if (name == U"茶")
+					{
+						temp = Color{ U"#805308" };
+					}
+					else if (name == U"フォーン")
+					{
+						temp = Color{ U"#d3c5a8" };
+					}
+					else if (name == U"灰青")
+					{
+						temp = Color{ U"#70748d" };
+					}
+					else if (name == U"金")
+					{
+						temp = Color{ U"#aa9263" };
+					}
 
-						if (name == U"白")
-						{
-							temp = Color{ U"#f2fafe" };
-						}
-						else if (name == U"黒")
-						{
-							temp = Color{ U"#272a2e" };
-						}
-						else if (name == U"灰")
-						{
-							temp = Color{ U"#9da5a9" };
-						}
-						else if (name == U"うす茶")
-						{
-							temp = Color{ U"#e8ae77" };
-						}
-						else if (name == U"おうど")
-						{
-							temp = Color{ U"#a87e39" };
-						}
-						else if (name == U"オレンジ")
-						{
-							temp = Color{ U"#d67d36" };
-						}
-						else if (name == U"クリーム")
-						{
-							temp = Color{ U"#e5d5b6" };
-						}
-						else if (name == U"きじ")
-						{
-							temp = Color{ U"#7e7360" };
-						}
-						else if (name == U"銀")
-						{
-							temp = Color{ U"#a8b7c1" };
-						}
-						else if (name == U"茶")
-						{
-							temp = Color{ U"#805308" };
-						}
-						else if (name == U"フォーン")
-						{
-							temp = Color{ U"#d3c5a8" };
-						}
-						else if (name == U"灰青")
-						{
-							temp = Color{ U"#70748d" };
-						}
-						else if (name == U"金")
-						{
-							temp = Color{ U"#aa9263" };
-						}
+					if (isDilute)
+					{
+						HSV hsv{ temp };
+						// 彩度を半分に、明度を少し上げる
+						hsv.s *= 0.5;
+						hsv.v += 0.1;
+						temp = Color{ hsv };
+					}
 
-						if (isDilute)
-						{
-							HSV hsv{ temp };
-							// 彩度を半分に、明度を少し上げる
-							hsv.s *= 0.5;
-							hsv.v += 0.1;
-							temp = Color{ hsv };
-						}
-
-						colors[name] = temp;
-					});
+					colors[name] = temp;
+				});
 				
 				bool isLongHair = d.value[U"isLongHair"].get<bool>();
 
