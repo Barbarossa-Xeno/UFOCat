@@ -16,6 +16,7 @@ struct CatData
 	String pattern;
 
 	// 長毛か
+	// 表示はしないけど、類似条件のためのデータとして使う
 	bool isLongHair;
 
 	/// @brief デフォルトコンストラクタ
