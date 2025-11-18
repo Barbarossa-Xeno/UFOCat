@@ -1,6 +1,6 @@
 ﻿# pragma once
 
-namespace UFOCat
+namespace UFOCat::Core
 {
 	/// @brief UFO猫のデータ（品種や模様など）
 	struct CatData

@@ -1,7 +1,7 @@
 ﻿# include "LevelData.hpp"
 # include <regex>
 
-namespace UFOCat
+namespace UFOCat::Core
 {
 	bool LevelData::IsDuration(const String &str)
 	{

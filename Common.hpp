@@ -3,6 +3,8 @@
 # include "CatObject.hpp"
 # include "LevelData.hpp"
 
+using namespace UFOCat::Core;
+
 namespace UFOCat
 {
 	/// @brief インデックスを保存する変数のための無効値 @n

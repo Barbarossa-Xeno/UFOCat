@@ -1,6 +1,6 @@
 ﻿# include "DeltaStopwatch.hpp"
 
-namespace UFOCat
+namespace UFOCat::Util
 {
 	const double &DeltaStopwatch::now() const noexcept
 	{

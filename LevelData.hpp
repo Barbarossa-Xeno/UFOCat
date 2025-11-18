@@ -1,7 +1,7 @@
 ﻿# pragma once
 # include "Action.hpp"
 
-namespace UFOCat
+namespace UFOCat::Core
 {
 	/// @brief ゲームの1フェーズに関するデータを持つクラス
 	class LevelData

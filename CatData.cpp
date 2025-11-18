@@ -1,6 +1,6 @@
 ﻿# include "CatData.hpp"
 
-namespace UFOCat
+namespace UFOCat::Core
 {
 	uint32 CatData::getSameDataCount(const CatData& target) const
 	{

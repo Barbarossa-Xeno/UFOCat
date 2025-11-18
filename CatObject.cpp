@@ -1,6 +1,6 @@
 ﻿#include "CatObject.hpp"
 
-namespace UFOCat
+namespace UFOCat::Core
 {
 	CatObject &CatObject::InvokeAction::operator()(const Action::ValidSignature auto &value) const
 	{

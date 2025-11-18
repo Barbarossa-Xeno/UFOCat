@@ -1,6 +1,6 @@
 ﻿# pragma once
 
-namespace UFOCat
+namespace UFOCat::Util
 {
 	/// @brief Scene::DeltaTime() を積算することで動く自作ストップウォッチ @n
 	class DeltaStopwatch

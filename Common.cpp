@@ -96,7 +96,7 @@ void UFOCat::DrawPolkaDotBackground(int32 cellSize, double circleScale, const Co
 	}
 }
 
-Array<UFOCat::CatObject> UFOCat::LoadCatData()
+Array<UFOCat::Core::CatObject> UFOCat::LoadCatData()
 {
 	// JSON ファイルからデータを読み込む
 	const JSON json = JSON::Load(U"cat_data.json");
@@ -219,7 +219,7 @@ Array<UFOCat::CatObject> UFOCat::LoadCatData()
 	throw Error{ U"Parameter is not JSONValueType::Array." };
 }
 
-Array<UFOCat::LevelData> UFOCat::LoadLevelData()
+Array<UFOCat::Core::LevelData> UFOCat::LoadLevelData()
 {
 	// JSON からデータを読み込む
 	const JSON json = JSON::Load(U"level_data.json");

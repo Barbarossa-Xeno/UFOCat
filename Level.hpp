@@ -43,7 +43,7 @@ namespace UFOCat
 		Level::State m_state = Level::State::Before;
 
 		/// @brief スポーン間隔の計測やシーン内ステートの遷移などに使う内部ストップウォッチ
-		DeltaStopwatch m_watch;
+		Util::DeltaStopwatch m_watch;
 
 		/// @brief このレベルでのスコア
 		ScoreData m_score;
