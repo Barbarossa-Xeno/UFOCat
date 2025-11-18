@@ -181,24 +181,24 @@ namespace UFOCat
 			// TODO: ほんとはこういうサイズもレスポンシブにすべきなんだろうな
 
 			// 点数表示
-			FontAsset(FontName::KoharuiroSunray)(U"{}"_fmt(m_ScoreCount)).draw(120, Arg::bottomCenter = Scene::Center());
+			FontAsset(FontFamily::KoharuiroSunray)(U"{}"_fmt(m_ScoreCount)).draw(120, Arg::bottomCenter = Scene::Center());
 
-			const RectF& maxRegion = FontAsset(FontName::KoharuiroSunray)(U"{}"_fmt(ScoreData::GetMaxTheoretical())).region(120, Arg::bottomCenter = Scene::Center());
+			const RectF& maxRegion = FontAsset(FontFamily::KoharuiroSunray)(U"{}"_fmt(ScoreData::GetMaxTheoretical())).region(120, Arg::bottomCenter = Scene::Center());
 
 			// 回転座標系
 			{
 				const Transformer2D tr{ Mat3x2::Rotate(-15_deg, maxRegion.left().end) };
-				FontAsset(FontName::YuseiMagic)(U"今回の評価").draw(40, Arg::bottomCenter = Vec2{ maxRegion.x, maxRegion.y });
+				FontAsset(FontFamily::YuseiMagic)(U"今回の評価").draw(40, Arg::bottomCenter = Vec2{ maxRegion.x, maxRegion.y });
 			}
 
 			{
 				// RoundRect{ Vec2{ }, SizeF(0.65 * Scene::Width(), 150.0), 12.0};
 
-				const RectF &region1 = FontAsset(FontName::YuseiMagic)(U"キミは").draw(26, Arg::bottomLeft = (m_gui.scoreTitleGauge.getRegion().tl() - Point{ 0, 20 }));
+				const RectF &region1 = FontAsset(FontFamily::YuseiMagic)(U"キミは").draw(26, Arg::bottomLeft = (m_gui.scoreTitleGauge.getRegion().tl() - Point{ 0, 20 }));
 
-				const RectF &region2 = FontAsset(FontName::KoharuiroSunray)(U"{}"_fmt(m_currentTitle.kanjiName)).drawBase(60, (region1.br() + Point{ 10, 5 }));
+				const RectF &region2 = FontAsset(FontFamily::KoharuiroSunray)(U"{}"_fmt(m_currentTitle.kanjiName)).drawBase(60, (region1.br() + Point{ 10, 5 }));
 
-				FontAsset(FontName::YuseiMagic)(U"UFO猫ハンターだ！！").draw(26, Arg::bottomLeft = Vec2{ (region2.br().x + 10), region1.br().y });
+				FontAsset(FontFamily::YuseiMagic)(U"UFO猫ハンターだ！！").draw(26, Arg::bottomLeft = Vec2{ (region2.br().x + 10), region1.br().y });
 
 				// 称号ゲージ更新
 				m_gui.scoreTitleGauge.draw();

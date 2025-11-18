@@ -1,15 +1,15 @@
 ﻿# pragma once
-# include "FontName.hpp"
+# include "FontFamily.hpp"
 # include "Colors.hpp"
 
-namespace UFOCat::Component::GUI
+namespace UFOCat::GUI
 {
 	/// @brief ボタンコンポーネント @n
 	/// デフォルトのフォントは 油性マジック を使用する
 	class Button
 	{
 
-		Font m_font = FontAsset(FontName::YuseiMagic);
+		Font m_font = FontAsset(FontFamily::YuseiMagic);
 
 		double m_fontSize;
 
@@ -186,7 +186,7 @@ namespace UFOCat::Component::GUI
 	protected:
 		RectF m_region;
 
-		Font m_font = FontAsset(FontName::YuseiMagic);
+		Font m_font = FontAsset(FontFamily::YuseiMagic);
 
 		double m_fontSize;
 

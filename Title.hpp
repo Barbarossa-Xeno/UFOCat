@@ -10,13 +10,13 @@ namespace UFOCat
 		struct
 		{
 			/// @brief ゲームを始める（レベルシーンに遷移する）ボタン
-			Component::GUI::Button toLevel;
+			GUI::Button toLevel;
 
 			/// @brief 「あそび方」を開くボタン
-			Component::GUI::Button howToPlayButton;
+			GUI::Button howToPlayButton;
 
 			/// @brief 「あそび方」のメッセージボックス
-			Component::GUI::MessageBox howToPlay;
+			GUI::MessageBox howToPlay;
 
 			/// @brief ロゴタイプ
 			Texture logo;

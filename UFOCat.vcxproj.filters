@@ -1173,7 +1173,7 @@
     <ClInclude Include="CatData.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="FontName.hpp">
+    <ClInclude Include="FontFamily.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Colors.hpp">

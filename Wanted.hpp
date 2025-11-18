@@ -15,7 +15,7 @@ namespace UFOCat
 		struct
 		{
 			/// @brief 現在のレベルを表現するバー
-			Component::GUI::ProgressBar levelBar;
+			GUI::ProgressBar levelBar;
 
 			/// @brief 「UFO猫を探しています」のチラシのテクスチャ
 			Texture flyer;

@@ -482,7 +482,7 @@ namespace UFOCat
 					textSize = std::lerp(40.0, 200.0, EaseOutQuart(t));
 				}
 
-				FontAsset(FontName::KoharuiroSunray)(text)
+				FontAsset(FontFamily::KoharuiroSunray)(text)
 					// 枠線・影設定 -> テキストサイズ（「GO!」の時以外経過時間で縮小） -> 経過時間で透明化 -> 画面中央ぞろえ描画
 					.drawAt(TextStyle::OutlineShadow(0.3, Colors::Brown, Vec2{ 1.2, 1.2 }, ColorF{ 0.0, 0.65 }), textSize, Scene::Center(), ColorF{ 1.0, EaseOutExpo(t) });
 					// この TextStyle 流用が頻度高かったら定数化を考える
@@ -503,9 +503,9 @@ namespace UFOCat
 					// 角度は反時計回りだったので、更に反転させておいた
 					Line{ Vec2{ swRegion.centerX(), swRegion.centerY() + 4.0 }, Arg::angle = -angle, 16.0 }.draw(LineStyle::RoundCap, 4.0, Palette::Salmon);
 
-					FontAsset(FontName::YuseiMagic)(U"のこり").draw(20, swRegion.tr().x + 10, swRegion.tr().y - 10);
-					RectF tRegion = FontAsset(FontName::YuseiMagic)(U"{}"_fmt(getData().timer.s())).drawBase(36, Vec2{ swRegion.br().x + 10, swRegion.br().y - 5 });
-					FontAsset(FontName::YuseiMagic)(U"秒").drawBase(24, Vec2{ tRegion.br().x + 10, swRegion.br().y - 5 });
+					FontAsset(FontFamily::YuseiMagic)(U"のこり").draw(20, swRegion.tr().x + 10, swRegion.tr().y - 10);
+					RectF tRegion = FontAsset(FontFamily::YuseiMagic)(U"{}"_fmt(getData().timer.s())).drawBase(36, Vec2{ swRegion.br().x + 10, swRegion.br().y - 5 });
+					FontAsset(FontFamily::YuseiMagic)(U"秒").drawBase(24, Vec2{ tRegion.br().x + 10, swRegion.br().y - 5 });
 				}
 			}
 			break;
@@ -552,14 +552,14 @@ namespace UFOCat
 
 						image.drawAt(Scene::CenterF() - SizeF(image.size.x, 0));
 
-						FontAsset(FontName::YuseiMagic)(U"キミが捕まえた猫").drawAt(Scene::CenterF() + SizeF(-image.size.x, -150));
+						FontAsset(FontFamily::YuseiMagic)(U"キミが捕まえた猫").drawAt(Scene::CenterF() + SizeF(-image.size.x, -150));
 					}
 				}
 				// 画面右側 ターゲットを表示
 				{
 					auto &&image = m_target->getTexture().scaled(m_CatImageScale);
 					image.drawAt(Scene::CenterF() + SizeF(image.size.x, 0));
-					FontAsset(FontName::YuseiMagic)(U"ターゲット").drawAt(Scene::CenterF() + SizeF(image.size.x, -150));
+					FontAsset(FontFamily::YuseiMagic)(U"ターゲット").drawAt(Scene::CenterF() + SizeF(image.size.x, -150));
 				}
 				// 画面中央下部 結果表示
 				{
@@ -569,16 +569,16 @@ namespace UFOCat
 						// 合っていたかどうかでも分岐
 						if (m_score.isCorrect)
 						{
-							FontAsset(FontName::YuseiMagic)(U"正解！").drawAt(Scene::CenterF().x, Scene::CenterF().y + 150);
+							FontAsset(FontFamily::YuseiMagic)(U"正解！").drawAt(Scene::CenterF().x, Scene::CenterF().y + 150);
 						}
 						else
 						{
-							FontAsset(FontName::YuseiMagic)(U"不正解...").drawAt(Scene::CenterF().x, Scene::CenterF().y + 150);
+							FontAsset(FontFamily::YuseiMagic)(U"不正解...").drawAt(Scene::CenterF().x, Scene::CenterF().y + 150);
 						}
 					}
 					else
 					{
-						FontAsset(FontName::YuseiMagic)(U"時間切れ！").drawAt(Scene::CenterF().x, Scene::CenterF().y + 150);
+						FontAsset(FontFamily::YuseiMagic)(U"時間切れ！").drawAt(Scene::CenterF().x, Scene::CenterF().y + 150);
 					}
 
 					m_gui.toResult.draw();

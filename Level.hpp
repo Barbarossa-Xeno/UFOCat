@@ -59,11 +59,11 @@ namespace UFOCat
 		struct
 		{
 			/// @brief 結果シーンに進むボタン
-			Component::GUI::Button toResult;
+			GUI::Button toResult;
 
-			Component::GUI::Button toNextLevel;
+			GUI::Button toNextLevel;
 
-			Component::GUI::Dialog dialog;
+			GUI::Dialog dialog;
 
 			Texture timer;
 		} m_gui;
