@@ -1,6 +1,6 @@
 ﻿#pragma once
 #include "CatData.hpp"
-#include "DeltaStopwatch.hpp"
+#include "Stopwatch.hpp"
 #include "LevelData.hpp"
 
 namespace UFOCat::Core
@@ -100,7 +100,7 @@ namespace UFOCat::Core
 
 		/// @brief `appear()` などで出現時間の計算に使う内部ストップウォッチ @n
 		/// @remarks 全ての時間を計測するメソッドで共有されるので、それらのメソッドを複数同時に呼び出してはいけない
-		DeltaStopwatch m_stopwatch;
+		Util::Stopwatch m_stopwatch;
 
 		/// @brief このオブジェクトがどんな外見状態にあるか
 		AppearanceState m_appearanceState = AppearanceState::Hidden;

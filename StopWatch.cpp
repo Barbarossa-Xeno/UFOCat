@@ -1,19 +1,19 @@
-﻿# include "DeltaStopwatch.hpp"
+﻿# include "Stopwatch.hpp"
 
 namespace UFOCat::Util
 {
-	const double &DeltaStopwatch::now() const noexcept
+	const double &Stopwatch::now() const noexcept
 	{
 		return m_elapsedTime;
 	}
 
-	const double &DeltaStopwatch::forward() noexcept
+	const double &Stopwatch::forward() noexcept
 	{
 		m_elapsedTime += Scene::DeltaTime();
 		return m_elapsedTime;
 	}
 
-	const double &DeltaStopwatch::resetTime(double time) noexcept
+	const double &Stopwatch::resetTime(double time) noexcept
 	{
 		// もし m_elapsedTime が time とほぼ同じくらいならこの演算で 0 くらいになる
 		// DeltaTime の誤差は考慮しない
@@ -21,29 +21,29 @@ namespace UFOCat::Util
 		return m_elapsedTime;
 	}
 
-	const double &DeltaStopwatch::resetTime(const Duration &time) noexcept
+	const double &Stopwatch::resetTime(const Duration &time) noexcept
 	{
 		return resetTime(time.count());
 	}
 
-	const double &DeltaStopwatch::resetTime() noexcept
+	const double &Stopwatch::resetTime() noexcept
 	{
 		m_elapsedTime = 0;
 		return m_elapsedTime;
 	}
 
-	void DeltaStopwatch::resetOverCount() noexcept
+	void Stopwatch::resetOverCount() noexcept
 	{
 		m_overCount = 0;
 	}
 
-	void DeltaStopwatch::reset() noexcept
+	void Stopwatch::reset() noexcept
 	{
 		resetTime();
 		resetOverCount();
 	}
 
-	bool DeltaStopwatch::isOver(double time, bool isAutoReset) noexcept
+	bool Stopwatch::isOver(double time, bool isAutoReset) noexcept
 	{
 		bool result = m_elapsedTime >= time;
 
@@ -63,7 +63,7 @@ namespace UFOCat::Util
 		return result;
 	}
 
-	bool DeltaStopwatch::isOver(const Duration& time, bool isAutoReset) noexcept
+	bool Stopwatch::isOver(const Duration& time, bool isAutoReset) noexcept
 	{
 		return isOver(time.count(), isAutoReset);
 	}

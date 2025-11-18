@@ -3,7 +3,7 @@
 namespace UFOCat::Util
 {
 	/// @brief Scene::DeltaTime() を積算することで動く自作ストップウォッチ @n
-	class DeltaStopwatch
+	class Stopwatch
 	{
 	private:
 		/// @brief 内部で使う経過時間

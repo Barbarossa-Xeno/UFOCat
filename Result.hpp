@@ -16,7 +16,7 @@ namespace UFOCat
 		double m_countUpAcceleration = 1.0;
 
 		/// @brief カウントアップするためのストップウォッチ
-		Util::DeltaStopwatch m_scoreCountUpWatch;
+		Util::Stopwatch m_scoreCountUpWatch;
 
 		struct
 		{
