@@ -449,7 +449,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="GUI.hpp" />
-    <ClInclude Include="CatAction.hpp" />
+    <ClInclude Include="Action.hpp" />
     <ClInclude Include="CatData.hpp" />
     <ClInclude Include="CatObject.hpp" />
     <ClInclude Include="Common.hpp" />

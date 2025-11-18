@@ -1,14 +1,13 @@
 ﻿#pragma once
 
 /// @brief UFO猫がとるアクションについて定義した名前空間
-/// @details cat_action の略で CAct
-namespace CAct
+namespace UFOCat::Action
 {
 	/// @brief Siv3D のイージング関数の型
 	using EasingFunction = std::function<double(double)>;
 
 	/// @brief `CatObject::cross()` のシグネチャなど
-	namespace cross
+	namespace Cross
 	{
 		/// @brief `CatObject::cross(Duration period, uint32 count)` を表すタプル
 		using _0 = std::tuple<Duration, uint32>;
@@ -32,7 +31,7 @@ namespace CAct
 	}
 
 	/// @brief `CatObject::appear()` のシグネチャなど
-	namespace appear
+	namespace Appear
 	{
 		/// @brief `CatObject::appear(Duration period, EasingFunction fadeInFunc, Duration fadeIn, EasingFunction fadeOutFunc, Duration fadeOut, const Rect &range)` を表すタプル
 		using _0 = std::tuple<Duration, EasingFunction, Duration, EasingFunction, Duration, Rect>;
@@ -74,7 +73,7 @@ namespace CAct
 	}
 
 	/// @brief /// @brief `CatObject::appearFromEdge()` のシグネチャなど
-	namespace appearFromEdge
+	namespace AppearFromEdge
 	{
 		/// @brief `CatObject::appearFromEdge(Duration period, EasingFunction inFunc, Duration in, EasingFunction outFunc, Duration out, const std::array<double, 4> &overflow)` を表すタプル
 		using _0 = std::tuple<Duration, EasingFunction, Duration, EasingFunction, Duration, std::array<double, 4>>;
@@ -106,9 +105,9 @@ namespace CAct
 	/// @brief `CatObject` 内全ての行動系メソッドのシグネチャ（猫を行動させるパラメータ）が入る万能型
 	using Generic = std::variant<
 		std::monostate,
-		cross::_0, cross::_1,
-		appear::_0, appear::_1, appear::_2, appear::_3, appear::_4, appear::_5, appear::_6, appear::_7,
-		appearFromEdge::_0, appearFromEdge::_1, appearFromEdge::_2, appearFromEdge::_3>;
+		Cross::_0, Cross::_1,
+		Appear::_0, Appear::_1, Appear::_2, Appear::_3, Appear::_4, Appear::_5, Appear::_6, Appear::_7,
+		AppearFromEdge::_0, AppearFromEdge::_1, AppearFromEdge::_2, AppearFromEdge::_3>;
 
 	/// @brief `CatObject` 内いずれかの行動系メソッドに有効なシグネチャの条件
 	/// @tparam 有効なシグネチャとの比較対象を入れる
@@ -116,8 +115,8 @@ namespace CAct
 	concept ValidSignature =
 	(
 		std::same_as<T, std::monostate> or
-		CAct::cross::ValidSignature<T> or
-		CAct::appear::ValidSignature<T> or
-		CAct::appearFromEdge::ValidSignature<T>
+		Action::Cross::ValidSignature<T> or
+		Action::Appear::ValidSignature<T> or
+		Action::AppearFromEdge::ValidSignature<T>
 	);
 }

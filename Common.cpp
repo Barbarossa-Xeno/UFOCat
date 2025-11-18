@@ -313,7 +313,7 @@ Array<UFOCat::LevelData> UFOCat::LoadLevelData()
 						/* -- こっから実際の引数として使えるタプルにするためのパース処理 -- */
 
 						// 引数リスト
-						CAct::Generic params;
+						Action::Generic params;
 
 						// 配列形式であることを確認
 						if (data_params.isArray())
@@ -350,24 +350,24 @@ Array<UFOCat::LevelData> UFOCat::LoadLevelData()
 								{
 								case 0:
 								{
-									auto p = LevelData::ParseParameters<CAct::cross::_0>(data_params);
+									auto p = LevelData::ParseParameters<Action::Cross::_0>(data_params);
 									params = std::make_tuple(
-										get_at.operator()<0, CAct::cross::_0>(p),
-										get_at.operator()<1, CAct::cross::_0>(p)
+										get_at.operator()<0, Action::Cross::_0>(p),
+										get_at.operator()<1, Action::Cross::_0>(p)
 									);
 									break;
 								}
 								case 1:
 								{
-									auto p = LevelData::ParseParameters<CAct::cross::_1>(data_params);
+									auto p = LevelData::ParseParameters<Action::Cross::_1>(data_params);
 									params = std::make_tuple(
-										get_at.operator()<0, CAct::cross::_1>(p)
+										get_at.operator()<0, Action::Cross::_1>(p)
 									);
 									break;
 								}
 								default:
 								{
-									throw Error(U"`cross` overload index is invalid. (valid range: 0 ~ {})"_fmt(CAct::cross::Count - 1));
+									throw Error(U"`cross` overload index is invalid. (valid range: 0 ~ {})"_fmt(Action::Cross::Count - 1));
 								}
 								}
 							}
@@ -377,103 +377,103 @@ Array<UFOCat::LevelData> UFOCat::LoadLevelData()
 								{
 								case 0:
 								{
-									auto p = LevelData::ParseParameters<CAct::appear::_0>(data_params);
+									auto p = LevelData::ParseParameters<Action::Appear::_0>(data_params);
 									// 直書きでタプル作るのはちょっとダサいけど
 									// 固定長で作るという制約上しゃあないところが大きい
 									params = std::make_tuple
 									(
-										get_at.operator()<0, CAct::appear::_0>(p),
-										get_at.operator()<1, CAct::appear::_0>(p),
-										get_at.operator()<2, CAct::appear::_0>(p),
-										get_at.operator()<3, CAct::appear::_0>(p),
-										get_at.operator()<4, CAct::appear::_0>(p),
-										get_at.operator()<5, CAct::appear::_0>(p)
+										get_at.operator()<0, Action::Appear::_0>(p),
+										get_at.operator()<1, Action::Appear::_0>(p),
+										get_at.operator()<2, Action::Appear::_0>(p),
+										get_at.operator()<3, Action::Appear::_0>(p),
+										get_at.operator()<4, Action::Appear::_0>(p),
+										get_at.operator()<5, Action::Appear::_0>(p)
 									);
 									break;
 								}
 								case 1:
 								{
-									auto p = LevelData::ParseParameters<CAct::appear::_1>(data_params);
+									auto p = LevelData::ParseParameters<Action::Appear::_1>(data_params);
 									params = std::make_tuple
 									(
-										get_at.operator()<0, CAct::appear::_1>(p),
-										get_at.operator()<1, CAct::appear::_1>(p),
-										get_at.operator()<2, CAct::appear::_1>(p),
-										get_at.operator()<3, CAct::appear::_1>(p)
+										get_at.operator()<0, Action::Appear::_1>(p),
+										get_at.operator()<1, Action::Appear::_1>(p),
+										get_at.operator()<2, Action::Appear::_1>(p),
+										get_at.operator()<3, Action::Appear::_1>(p)
 									);
 									break;
 								}
 								case 2:
 								{
-									auto p = LevelData::ParseParameters<CAct::appear::_2>(data_params);
+									auto p = LevelData::ParseParameters<Action::Appear::_2>(data_params);
 									params = std::make_tuple
 									(
-										get_at.operator()<0, CAct::appear::_2>(p),
-										get_at.operator()<1, CAct::appear::_2>(p),
-										get_at.operator()<2, CAct::appear::_2>(p),
-										get_at.operator()<3, CAct::appear::_2>(p)
+										get_at.operator()<0, Action::Appear::_2>(p),
+										get_at.operator()<1, Action::Appear::_2>(p),
+										get_at.operator()<2, Action::Appear::_2>(p),
+										get_at.operator()<3, Action::Appear::_2>(p)
 									);
 									break;
 								}
 								case 3:
 								{
-									auto p = LevelData::ParseParameters<CAct::appear::_3>(data_params);
+									auto p = LevelData::ParseParameters<Action::Appear::_3>(data_params);
 									params = std::make_tuple
 									(
-										get_at.operator()<0, CAct::appear::_3>(p),
-										get_at.operator()<1, CAct::appear::_3>(p),
-										get_at.operator()<2, CAct::appear::_3>(p)
+										get_at.operator()<0, Action::Appear::_3>(p),
+										get_at.operator()<1, Action::Appear::_3>(p),
+										get_at.operator()<2, Action::Appear::_3>(p)
 									);
 									break;
 								}
 								case 4:
 								{
-									auto p = LevelData::ParseParameters<CAct::appear::_4>(data_params);
+									auto p = LevelData::ParseParameters<Action::Appear::_4>(data_params);
 									params = std::make_tuple
 									(
-										get_at.operator()<0, CAct::appear::_4>(p),
-										get_at.operator()<1, CAct::appear::_4>(p),
-										get_at.operator()<2, CAct::appear::_4>(p),
-										get_at.operator()<3, CAct::appear::_4>(p),
-										get_at.operator()<4, CAct::appear::_4>(p)
+										get_at.operator()<0, Action::Appear::_4>(p),
+										get_at.operator()<1, Action::Appear::_4>(p),
+										get_at.operator()<2, Action::Appear::_4>(p),
+										get_at.operator()<3, Action::Appear::_4>(p),
+										get_at.operator()<4, Action::Appear::_4>(p)
 									);
 									break;
 								}
 								case 5:
 								{
-									auto p = LevelData::ParseParameters<CAct::appear::_5>(data_params);
+									auto p = LevelData::ParseParameters<Action::Appear::_5>(data_params);
 									params = std::make_tuple
 									(
-										get_at.operator()<0, CAct::appear::_5>(p),
-										get_at.operator()<1, CAct::appear::_5>(p),
-										get_at.operator()<2, CAct::appear::_5>(p)
+										get_at.operator()<0, Action::Appear::_5>(p),
+										get_at.operator()<1, Action::Appear::_5>(p),
+										get_at.operator()<2, Action::Appear::_5>(p)
 									);
 									break;
 								}
 								case 6:
 								{
-									auto p = LevelData::ParseParameters<CAct::appear::_6>(data_params);
+									auto p = LevelData::ParseParameters<Action::Appear::_6>(data_params);
 									params = std::make_tuple
 									(
-										get_at.operator()<0, CAct::appear::_6>(p),
-										get_at.operator()<1, CAct::appear::_6>(p),
-										get_at.operator()<2, CAct::appear::_6>(p)
+										get_at.operator()<0, Action::Appear::_6>(p),
+										get_at.operator()<1, Action::Appear::_6>(p),
+										get_at.operator()<2, Action::Appear::_6>(p)
 									);
 									break;
 								}
 								case 7:
 								{
-									auto p = LevelData::ParseParameters<CAct::appear::_7>(data_params);
+									auto p = LevelData::ParseParameters<Action::Appear::_7>(data_params);
 									params = std::make_tuple
 									(
-										get_at.operator()<0, CAct::appear::_7>(p),
-										get_at.operator()<1, CAct::appear::_7>(p)
+										get_at.operator()<0, Action::Appear::_7>(p),
+										get_at.operator()<1, Action::Appear::_7>(p)
 									);
 									break;
 								}
 								default:
 								{
-									throw Error(U"`appear` overload index is invalid. (valid range: 0 ~ {})"_fmt(CAct::appear::Count - 1));
+									throw Error(U"`appear` overload index is invalid. (valid range: 0 ~ {})"_fmt(Action::Appear::Count - 1));
 								}
 								}
 							}
@@ -483,56 +483,56 @@ Array<UFOCat::LevelData> UFOCat::LoadLevelData()
 								{
 								case 0:
 								{
-									auto p = LevelData::ParseParameters<CAct::appearFromEdge::_0>(data_params);
+									auto p = LevelData::ParseParameters<Action::AppearFromEdge::_0>(data_params);
 									params = std::make_tuple
 									(
-										get_at.operator()<0, CAct::appearFromEdge::_0>(p),
-										get_at.operator()<1, CAct::appearFromEdge::_0>(p),
-										get_at.operator()<2, CAct::appearFromEdge::_0>(p),
-										get_at.operator()<3, CAct::appearFromEdge::_0>(p),
-										get_at.operator()<4, CAct::appearFromEdge::_0>(p),
-										get_at.operator()<5, CAct::appearFromEdge::_0>(p)
+										get_at.operator()<0, Action::AppearFromEdge::_0>(p),
+										get_at.operator()<1, Action::AppearFromEdge::_0>(p),
+										get_at.operator()<2, Action::AppearFromEdge::_0>(p),
+										get_at.operator()<3, Action::AppearFromEdge::_0>(p),
+										get_at.operator()<4, Action::AppearFromEdge::_0>(p),
+										get_at.operator()<5, Action::AppearFromEdge::_0>(p)
 									);
 									break;
 								}
 								case 1:
 								{
-									auto p = LevelData::ParseParameters<CAct::appearFromEdge::_1>(data_params);
+									auto p = LevelData::ParseParameters<Action::AppearFromEdge::_1>(data_params);
 									params = std::make_tuple
 									(
-										get_at.operator()<0, CAct::appearFromEdge::_1>(p),
-										get_at.operator()<1, CAct::appearFromEdge::_1>(p),
-										get_at.operator()<2, CAct::appearFromEdge::_1>(p),
-										get_at.operator()<3, CAct::appearFromEdge::_1>(p)
+										get_at.operator()<0, Action::AppearFromEdge::_1>(p),
+										get_at.operator()<1, Action::AppearFromEdge::_1>(p),
+										get_at.operator()<2, Action::AppearFromEdge::_1>(p),
+										get_at.operator()<3, Action::AppearFromEdge::_1>(p)
 									);
 									break;
 								}
 								case 2:
 								{
-									auto p = LevelData::ParseParameters<CAct::appearFromEdge::_2>(data_params);
+									auto p = LevelData::ParseParameters<Action::AppearFromEdge::_2>(data_params);
 									params = std::make_tuple
 									(
-										get_at.operator()<0, CAct::appearFromEdge::_2>(p),
-										get_at.operator()<1, CAct::appearFromEdge::_2>(p),
-										get_at.operator()<2, CAct::appearFromEdge::_2>(p),
-										get_at.operator()<3, CAct::appearFromEdge::_2>(p)
+										get_at.operator()<0, Action::AppearFromEdge::_2>(p),
+										get_at.operator()<1, Action::AppearFromEdge::_2>(p),
+										get_at.operator()<2, Action::AppearFromEdge::_2>(p),
+										get_at.operator()<3, Action::AppearFromEdge::_2>(p)
 									);
 									break;
 								}
 								case 3:
 								{
-									auto p = LevelData::ParseParameters<CAct::appearFromEdge::_3>(data_params);
+									auto p = LevelData::ParseParameters<Action::AppearFromEdge::_3>(data_params);
 									params = std::make_tuple
 									(
-										get_at.operator()<0, CAct::appearFromEdge::_3>(p),
-										get_at.operator()<1, CAct::appearFromEdge::_3>(p),
-										get_at.operator()<2, CAct::appearFromEdge::_3>(p)
+										get_at.operator()<0, Action::AppearFromEdge::_3>(p),
+										get_at.operator()<1, Action::AppearFromEdge::_3>(p),
+										get_at.operator()<2, Action::AppearFromEdge::_3>(p)
 									);
 									break;
 								}
 								default:
 								{
-									throw Error(U"`appearFromEdge` overload index is invalid. (valid range: 0 ~ {})"_fmt(CAct::appearFromEdge::Count - 1));
+									throw Error(U"`appearFromEdge` overload index is invalid. (valid range: 0 ~ {})"_fmt(Action::AppearFromEdge::Count - 1));
 								}
 								}
 							}

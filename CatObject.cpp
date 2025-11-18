@@ -2,7 +2,7 @@
 
 namespace UFOCat
 {
-	CatObject &CatObject::InvokeAction::operator()(const CAct::ValidSignature auto &value) const
+	CatObject &CatObject::InvokeAction::operator()(const Action::ValidSignature auto &value) const
 	{
 		// 引数の型を取得（const や参照は削除する）
 		using Type = std::remove_cvref_t<decltype(value)>;
@@ -12,18 +12,18 @@ namespace UFOCat
 		{
 			return target->bound();
 		}
-		// CAct::cross のコンセプトに適合していたら cross() を呼び出す
-		else if constexpr (CAct::cross::ValidSignature<Type>)
+		// Action::Cross のコンセプトに適合していたら cross() を呼び出す
+		else if constexpr (Action::Cross::ValidSignature<Type>)
 		{
 			return std::apply([this](auto &&...args) -> CatObject& { return target->cross(args...); }, value);
 		}
-		// CAct::appear のコンセプトに適合していたら appear() を呼び出す
-		else if constexpr (CAct::appear::ValidSignature<Type>)
+		// Action::Appear のコンセプトに適合していたら appear() を呼び出す
+		else if constexpr (Action::Appear::ValidSignature<Type>)
 		{
 			return std::apply([this](auto &&...args) -> CatObject& { return target->appear(args...); }, value);
 		}
-		// CAct::appearFromEdge のコンセプトに適合していたら appearFromEdge() を呼び出す
-		else if constexpr (CAct::appearFromEdge::ValidSignature<Type>)
+		// Action::AppearFromEdge のコンセプトに適合していたら appearFromEdge() を呼び出す
+		else if constexpr (Action::AppearFromEdge::ValidSignature<Type>)
 		{
 			return std::apply([this](auto &&...args) -> CatObject& { return target->appearFromEdge(args...); }, value);
 		}
@@ -229,7 +229,7 @@ namespace UFOCat
 		return *this;
 	}
 
-	CatObject &CatObject::appear(Duration period, CAct::EasingFunction fadeInFunc, Duration fadeIn, CAct::EasingFunction fadeOutFunc, Duration fadeOut, const Rect& range)
+	CatObject &CatObject::appear(Duration period, Action::EasingFunction fadeInFunc, Duration fadeIn, Action::EasingFunction fadeOutFunc, Duration fadeOut, const Rect& range)
 	{
 		// 外観の状態によって挙動を変える
 		switch (m_appearanceState)
@@ -319,7 +319,7 @@ namespace UFOCat
 		return appear(period, Easing::Linear, fadeIn, Easing::Linear, fadeOut, range);
 	}
 
-	CatObject &CatObject::appear(Duration period, CAct::EasingFunction fadeFunc, Duration fade, const Rect& range)
+	CatObject &CatObject::appear(Duration period, Action::EasingFunction fadeFunc, Duration fade, const Rect& range)
 	{
 		return appear(period, fadeFunc, fade, fadeFunc, fade, range);
 	}
@@ -329,7 +329,7 @@ namespace UFOCat
 		return appear(period, fade, fade, range);
 	}
 
-	CatObject &CatObject::appear(Duration period, CAct::EasingFunction fadeInFunc, Duration fadeIn, CAct::EasingFunction fadeOutFunc, Duration fadeOut)
+	CatObject &CatObject::appear(Duration period, Action::EasingFunction fadeInFunc, Duration fadeIn, Action::EasingFunction fadeOutFunc, Duration fadeOut)
 	{
 		return appear(period, fadeInFunc, fadeIn, fadeOutFunc, fadeOut, getMaxDisplayedArea());
 	}
@@ -339,7 +339,7 @@ namespace UFOCat
 		return appear(period, Easing::Linear, fadeIn, Easing::Linear, fadeOut);
 	}
 
-	CatObject &CatObject::appear(Duration period, CAct::EasingFunction fadeFunc, Duration fade)
+	CatObject &CatObject::appear(Duration period, Action::EasingFunction fadeFunc, Duration fade)
 	{
 		return appear(period, fadeFunc, fade, fadeFunc, fade);
 	}
@@ -349,7 +349,7 @@ namespace UFOCat
 		return appear(period, Easing::Linear, fade, Easing::Linear, fade);
 	}
 
-	CatObject &CatObject::appearFromEdge(Duration period, CAct::EasingFunction inFunc, Duration in, CAct::EasingFunction outFunc, Duration out, const std::array<double, 4> &overflow)
+	CatObject &CatObject::appearFromEdge(Duration period, Action::EasingFunction inFunc, Duration in, Action::EasingFunction outFunc, Duration out, const std::array<double, 4> &overflow)
 	{
 		// はみだし量が全て 0 に指定されていないかどうか調べる
 		bool isAllZero = true;
@@ -552,7 +552,7 @@ namespace UFOCat
 		return appearFromEdge(period, Easing::Linear, in, Easing::Linear, out, overflow);
 	}
 
-	CatObject &CatObject::appearFromEdge(Duration period, CAct::EasingFunction inAndOutFunc, Duration inAndOut, const std::array<double, 4>& overflow)
+	CatObject &CatObject::appearFromEdge(Duration period, Action::EasingFunction inAndOutFunc, Duration inAndOut, const std::array<double, 4>& overflow)
 	{
 		return appearFromEdge(period, inAndOutFunc, inAndOut, inAndOutFunc, inAndOut, overflow);
 	}

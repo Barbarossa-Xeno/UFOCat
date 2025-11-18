@@ -47,7 +47,7 @@ private:
 		/// @brief 関数を呼び出す
 		/// @param value `CAct::ValidSignature` に適合している引数値
 		/// @return ターゲットインスタンスの参照
-		CatObject &operator()(const CAct::ValidSignature auto &value) const;
+		CatObject &operator()(const Action::ValidSignature auto &value) const;
 	};
 
 	/* -- フィールド -- */
@@ -270,7 +270,7 @@ public:
 	/// @param fadeOut フェードアウト時間
 	/// @param range 出現範囲
 	/// @return 自分自身の参照
-	CatObject &appear(Duration period, CAct::EasingFunction fadeInFunc, Duration fadeIn, CAct::EasingFunction fadeOutFunc, Duration fadeOut, const Rect &range);
+	CatObject &appear(Duration period, Action::EasingFunction fadeInFunc, Duration fadeIn, Action::EasingFunction fadeOutFunc, Duration fadeOut, const Rect &range);
 
 	/// @brief 指定した範囲内のランダムな位置に指定した周期で出現し、線形的にそれぞれの時間でフェードインアウトする
 	/// @param period 出現周期（消えている時間と現れている時間）
@@ -286,7 +286,7 @@ public:
 	/// @param fade フェードインアウト時間
 	/// @param range 出現範囲
 	/// @return 自分自身の参照
-	CatObject &appear(Duration period, CAct::EasingFunction fadeFunc, Duration fade, const Rect &range);
+	CatObject &appear(Duration period, Action::EasingFunction fadeFunc, Duration fade, const Rect &range);
 
 	/// @brief 指定した範囲内のランダムな位置に指定した周期で出現し、線形的に同じ時間でフェードインアウトする
 	/// @param period 出現周期（消えている時間と現れている時間）
@@ -302,7 +302,7 @@ public:
 	/// @param fadeOutFunc フェードアウトのイージング関数
 	/// @param fadeOut フェードアウト時間
 	/// @return 自分自身の参照
-	CatObject &appear(Duration period, CAct::EasingFunction fadeInFunc, Duration fadeIn, CAct::EasingFunction fadeOutFunc, Duration fadeOut);
+	CatObject &appear(Duration period, Action::EasingFunction fadeInFunc, Duration fadeIn, Action::EasingFunction fadeOutFunc, Duration fadeOut);
 
 	/// @brief 自分自身が全て映る最大の範囲内のランダムな位置に指定した周期で出現し、線形的にそれぞれの時間でフェードインアウトする
 	/// @param period 出現周期（消えている時間と現れている時間）
@@ -316,7 +316,7 @@ public:
 	/// @param fadeFunc フェードインアウトのイージング関数
 	/// @param fade フェードインアウト時間
 	/// @return 自分自身の参照
-	CatObject &appear(Duration period, CAct::EasingFunction fadeFunc, Duration fade);
+	CatObject &appear(Duration period, Action::EasingFunction fadeFunc, Duration fade);
 
 	/// @brief 自分自身が全て映る最大の範囲内のランダムな位置に指定した周期で出現し、線形的に同じ時間でフェードインアウトする
 	/// @param period 出現周期（消えている時間と現れている時間）
@@ -333,7 +333,7 @@ public:
 	/// @param out 退去にかかる時間
 	/// @param overflow 画面端からのはみだし量 サイズ4の `double` 配列で、0番目が上、1番目が右、2番目が下、3番目が左 のはみだし量を意味する
 	/// @return 自分自身の参照
-	CatObject &appearFromEdge(Duration period, CAct::EasingFunction inFunc, Duration in, CAct::EasingFunction outFunc, Duration out, const std::array<double, 4> &overflow);
+	CatObject &appearFromEdge(Duration period, Action::EasingFunction inFunc, Duration in, Action::EasingFunction outFunc, Duration out, const std::array<double, 4> &overflow);
 
 	/// @brief 上、右、下、左側のうちいずれかの画面端から、指定したはみだし量の位置及び時間、出現周期でランダムで[線形的に]出現し、退去する @n
 	/// 画面端からのはみだし量は 0 を指定するとその部分からは出現しなくなる
@@ -351,7 +351,7 @@ public:
 	/// @param inAndOut 出現、退去にかかる時間
 	/// @param overflow 画面端からのはみだし量 サイズ4の `double` 配列で、0番目が上、1番目が右、2番目が下、3番目が左 のはみだし量を意味する
 	/// @return 自分自身の参照
-	CatObject &appearFromEdge(Duration period, CAct::EasingFunction inAndOutFunc, Duration inAndOut, const std::array<double, 4> &overflow);
+	CatObject &appearFromEdge(Duration period, Action::EasingFunction inAndOutFunc, Duration inAndOut, const std::array<double, 4> &overflow);
 
 	/// @brief 上、右、下、左側のうちいずれかの画面端から、指定したはみだし量の位置及び時間、出現周期でランダムで[線形的に]出現し、[同様に]退去する @n
 	/// 画面端からのはみだし量は 0 を指定するとその部分からは出現しなくなる

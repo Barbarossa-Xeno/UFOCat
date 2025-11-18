@@ -1,5 +1,5 @@
 ﻿# pragma once
-# include "CatAction.hpp"
+# include "Action.hpp"
 
 namespace UFOCat
 {
@@ -44,7 +44,7 @@ namespace UFOCat
 
 			/// @brief メソッドを実行させるときのパラメータ情報 @n
 			/// CatObject のすべての動作系メソッドの引数に対応するタプル型を格納できる
-			CAct::Generic params;
+			Action::Generic params;
 
 			/// @brief このアクションが選択される確率（0.0 ～ 1.0）
 			double probability = 0.0;
@@ -117,16 +117,16 @@ namespace UFOCat
 		/// @brief 文字列を Siv3D 規定のイージング関数へ変換する
 		/// @param str 対象文字列 'e_' で始まる必要がある
 		/// @return 変換したイージング関数のオブジェクト、変換できなければ例外が投げられる
-		static CAct::EasingFunction ParseEasing(const String &str);
+		static Action::EasingFunction ParseEasing(const String &str);
 
 		/// @brief JSON 配列に対して指定したタプル型 TTuple に対応する値を検証して、アクションの引数として取りうる型およびその要素が入った std::tuple に変換する（中身が std::variant）@n
 		/// paramData は アクションを実行するための引数情報を JSON 配列として表現したものであることが想定されており、その各要素を制約通りにパースした結果をタプルとして返す @n
 		/// このタプルを展開して CatObject のアクションメソッドに渡すことで、** JSON データからアクションを実行できるようになる **
 		/// @tparam TTuple 変換したい引数の構成となるタプル型 名前空間 `cact` に定義されている各アクション（`bound` 以外）のシグネチャを指定する
 		/// @param paramData 解析対象の JSON 配列 TTupleの要素数と一致していなければならない @n
-		/// 各要素は: 数値 (uint32 として扱う)、文字列 (Duration, Rect, または CAct::EasingFunction を表す形式)、または長さ4の配列 (std::array<double,4>) であることが期待され、合わない場合は例外を投げる
+		/// 各要素は: 数値 (uint32 として扱う)、文字列 (Duration, Rect, または Action::EasingFunction を表す形式)、または長さ4の配列 (std::array<double,4>) であることが期待され、合わない場合は例外を投げる
 		/// @return 各要素が TTuple に合う形で構成した tuple（中身 variant） @n 配列の長さや各要素の型が期待と一致しない場合は例外を投げる
-		template <CAct::ValidSignature TTuple>
+		template <Action::ValidSignature TTuple>
 		static auto ParseParameters(const JSON &paramData)
 		{
 			// JSON 配列の長さと 希望のタプル型の要素数が一致していなかったらエラー
@@ -141,7 +141,7 @@ namespace UFOCat
 					uint32,
 					Duration,
 					Rect,
-					CAct::EasingFunction,
+					Action::EasingFunction,
 					std::array<double, 4>
 				>,
 				std::tuple_size_v<TTuple>

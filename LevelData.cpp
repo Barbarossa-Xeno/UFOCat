@@ -65,7 +65,7 @@ namespace UFOCat
 		}
 	}
 
-	CAct::EasingFunction LevelData::ParseEasing(const String &str)
+	Action::EasingFunction LevelData::ParseEasing(const String &str)
 	{
 		if (str.substr(0, 2) == U"e_")
 		{

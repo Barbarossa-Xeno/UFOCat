@@ -1149,7 +1149,7 @@
     <ClInclude Include="DeltaStopwatch.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="CatAction.hpp">
+    <ClInclude Include="Action.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Common.hpp">
