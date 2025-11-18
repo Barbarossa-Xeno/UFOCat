@@ -10,12 +10,12 @@ using namespace UFOCat;
 void Main()
 {
 	// フォントアセットの登録
-	FontAsset::Register(FontFamily::YuseiMagic, FontMethod::SDF, 48, U"font/YuseiMagic-Regular.ttf");
-	FontAsset::Register(FontFamily::KoharuiroSunray, FontMethod::SDF, 48, U"font/GN-Koharuiro_Sunray.ttf");
+	FontAsset::Register(Util::FontFamily::YuseiMagic, FontMethod::SDF, 48, U"font/YuseiMagic-Regular.ttf");
+	FontAsset::Register(Util::FontFamily::KoharuiroSunray, FontMethod::SDF, 48, U"font/GN-Koharuiro_Sunray.ttf");
 
 	// バッファサイズの設定
-	FontAsset(FontFamily::YuseiMagic).setBufferThickness(4);
-	FontAsset(FontFamily::KoharuiroSunray).setBufferThickness(4);
+	FontAsset(Util::FontFamily::YuseiMagic).setBufferThickness(4);
+	FontAsset(Util::FontFamily::KoharuiroSunray).setBufferThickness(4);
 
 	// ウィンドウの設定
 	Window::SetTitle(U"UFO猫をつかまえろ!!");

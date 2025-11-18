@@ -9,7 +9,7 @@ namespace UFOCat::GUI
 	class Button
 	{
 
-		Font m_font = FontAsset(FontFamily::YuseiMagic);
+		Font m_font = FontAsset(Util::FontFamily::YuseiMagic);
 
 		double m_fontSize;
 
@@ -186,7 +186,7 @@ namespace UFOCat::GUI
 	protected:
 		RectF m_region;
 
-		Font m_font = FontAsset(FontFamily::YuseiMagic);
+		Font m_font = FontAsset(Util::FontFamily::YuseiMagic);
 
 		double m_fontSize;
 

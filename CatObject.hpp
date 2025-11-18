@@ -3,6 +3,7 @@
 #include "Stopwatch.hpp"
 #include "LevelData.hpp"
 
+/// @brief インゲームを動作させるためのコア機能群
 namespace UFOCat::Core
 {
 	/// @brief オブジェクトとしてのUFO猫のクラス
