@@ -96,7 +96,7 @@ void UFOCat::DrawPolkaDotBackground(int32 cellSize, double circleScale, const Co
 	}
 }
 
-Array<CatObject> UFOCat::LoadCatData()
+Array<UFOCat::CatObject> UFOCat::LoadCatData()
 {
 	// JSON ファイルからデータを読み込む
 	const JSON json = JSON::Load(U"cat_data.json");
@@ -219,7 +219,7 @@ Array<CatObject> UFOCat::LoadCatData()
 	throw Error{ U"Parameter is not JSONValueType::Array." };
 }
 
-Array<LevelData> UFOCat::LoadLevelData()
+Array<UFOCat::LevelData> UFOCat::LoadLevelData()
 {
 	// JSON からデータを読み込む
 	const JSON json = JSON::Load(U"level_data.json");
@@ -322,17 +322,17 @@ Array<LevelData> UFOCat::LoadLevelData()
 							// tparam: N - 取り出す要素のインデックス
 							// tparam: TTuple - 取り出す対象のタプル型
 							// param: source - `Phase::ParseParameters()` の戻り値として得られた tuple (中身 variant)
-							const auto get_at = []<size_t N, typename TTuple>(const auto& source)
+							const auto get_at = []<size_t N, typename TTuple>(const auto &source)
 							{
 								// source (タプル) の N 番目の要素を取り出す
 								// これは、variant<> であることが期待される
-								auto&& element = std::get<N>(source);
+								auto &&element = std::get<N>(source);
 
 								// TTuple の N 番目の要素の型を取得
 								// この型は、element の variant に格納されている本来の型と同じはず
 								using RealType = std::tuple_element_t<N, TTuple>;
 
-								// つまりこれはvariant を外す処理となる
+								// つまりこれは variant を外す処理となる
 								return std::get<RealType>(element);
 							};
 							// ジェネリックラムダのテンプレートは、実質ローカル関数でもテンプレートが使えるので便利だけど

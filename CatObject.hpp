@@ -3,7 +3,9 @@
 #include "DeltaStopwatch.hpp"
 #include "LevelData.hpp"
 
-/// @brief オブジェクトとしてのUFO猫のクラス
+namespace UFOCat
+{
+	/// @brief オブジェクトとしてのUFO猫のクラス
 class CatObject
 {
 	/* -- クラスなど -- */
@@ -45,39 +47,8 @@ private:
 		/// @brief 関数を呼び出す
 		/// @param value `CAct::ValidSignature` に適合している引数値
 		/// @return ターゲットインスタンスの参照
-		CatObject &operator()(const CAct::ValidSignature auto &value) const
-		{
-			// 引数の型を取得（const や参照は削除する）
-			using Type = std::remove_cvref_t<decltype(value)>;
-
-			// std::monostate = 引数なし なら bound() を呼び出す
-			if constexpr (std::same_as<Type, std::monostate>)
-			{
-				return target->bound();
-			}
-			// CAct::cross のコンセプトに適合していたら cross() を呼び出す
-			else if constexpr (CAct::cross::ValidSignature<Type>)
-			{
-				return std::apply([this](auto &&...args) -> CatObject& { return target->cross(args...); }, value);
-			}
-			// CAct::appear のコンセプトに適合していたら appear() を呼び出す
-			else if constexpr (CAct::appear::ValidSignature<Type>)
-			{
-				return std::apply([this](auto &&...args) -> CatObject& { return target->appear(args...); }, value);
-			}
-			// CAct::appearFromEdge のコンセプトに適合していたら appearFromEdge() を呼び出す
-			else if constexpr (CAct::appearFromEdge::ValidSignature<Type>)
-			{
-				return std::apply([this](auto &&...args) -> CatObject& { return target->appearFromEdge(args...); }, value);
-			}
-		}
+		CatObject &operator()(const CAct::ValidSignature auto &value) const;
 	};
-
-	/* -- エイリアス -- */
-public:
-
-	/// @brief Siv3D のイージング関数の型
-	using EasingFunction = CAct::EasingFunction;
 
 	/* -- フィールド -- */
 
@@ -206,7 +177,7 @@ public:
 	/// 出力先変数の指定が可能
 	/// @param out 出力先変数（デフォルト `nullptr`） 新しいオブジェクトが格納される
 	/// @return このオブジェクトが持つ CatData の読み取り専用左辺参照
-	const CatData& getCatData(CatData *out = nullptr) const;
+	const CatData &getCatData(CatData *out = nullptr) const;
 
 	/// @brief 左上を基準としたときにこのオブジェクトがはみ出さずに描画できる最大の領域を取得する
 	/// @return 最大の領域を表す `Rect`
@@ -223,12 +194,12 @@ public:
 	/// @brief UFO猫のデータを登録する
 	/// @param data データ
 	/// @return （変更を反映した）自分自身の参照
-	CatObject& setCatData(CatData &&data);
+	CatObject &setCatData(CatData &&data);
 
-	/// @brief 
-	/// @param actionData 
-	/// @return 
-	CatObject& setAction(const LevelData::ActionData &actionData);
+	/// @brief UFO猫が行う動作（このクラスに定義された行動系メソッドのいずれかとそのオプション）を登録する
+	/// @param actionData アクションデータ
+	/// @return 自分自身の参照
+	CatObject &setAction(const LevelData::ActionData &actionData);
 
 	/* -- コンストラクタ -- */
 public:
@@ -283,13 +254,13 @@ public:
 
 	/// @brief 画面端で跳ね返るようにする
 	/// @return 自分自身の参照
-	CatObject& bound();
+	CatObject &bound();
 
 	/// @brief 画面内を設定された速度 (`velocity`) で横切る
 	/// @param period 出現周期（消えた状態から現れるまでの時間）
 	/// @param count 横切る回数
 	/// @return 自分自身の参照
-	CatObject& cross(Duration period = 0s, uint32 count = std::numeric_limits<int32>::infinity());
+	CatObject &cross(Duration period = 0s, uint32 count = std::numeric_limits<int32>::infinity());
 
 	/// @brief 指定した範囲内のランダムな位置に指定した周期で出現し、指定したイージング関数と時間でそれぞれフェードインアウトする
 	/// @param period 出現周期（消えている時間と現れている時間）
@@ -299,7 +270,7 @@ public:
 	/// @param fadeOut フェードアウト時間
 	/// @param range 出現範囲
 	/// @return 自分自身の参照
-	CatObject& appear(Duration period, EasingFunction fadeInFunc, Duration fadeIn, EasingFunction fadeOutFunc, Duration fadeOut, const Rect &range);
+	CatObject &appear(Duration period, CAct::EasingFunction fadeInFunc, Duration fadeIn, CAct::EasingFunction fadeOutFunc, Duration fadeOut, const Rect &range);
 
 	/// @brief 指定した範囲内のランダムな位置に指定した周期で出現し、線形的にそれぞれの時間でフェードインアウトする
 	/// @param period 出現周期（消えている時間と現れている時間）
@@ -307,7 +278,7 @@ public:
 	/// @param fadeOut フェードアウト時間
 	/// @param range 出現範囲
 	/// @return 自分自身の参照
-	CatObject& appear(Duration period, Duration fadeIn, Duration fadeOut, const Rect &range);
+	CatObject &appear(Duration period, Duration fadeIn, Duration fadeOut, const Rect &range);
 
 	/// @brief 指定した範囲内のランダムな位置に指定した周期で出現し、指定した同じイージング関数と時間でフェードインアウトする
 	/// @param period 出現周期（消えている時間と現れている時間）
@@ -315,14 +286,14 @@ public:
 	/// @param fade フェードインアウト時間
 	/// @param range 出現範囲
 	/// @return 自分自身の参照
-	CatObject& appear(Duration period, EasingFunction fadeFunc, Duration fade, const Rect &range);
+	CatObject &appear(Duration period, CAct::EasingFunction fadeFunc, Duration fade, const Rect &range);
 
 	/// @brief 指定した範囲内のランダムな位置に指定した周期で出現し、線形的に同じ時間でフェードインアウトする
 	/// @param period 出現周期（消えている時間と現れている時間）
 	/// @param fade フェードインアウト時間
 	/// @param range 出現範囲
 	/// @return 自分自身の参照
-	CatObject& appear(Duration period, Duration fade, const Rect &range);
+	CatObject &appear(Duration period, Duration fade, const Rect &range);
 
 	/// @brief 自分自身が全て映る最大の範囲内のランダムな位置に指定した周期で出現し、指定したイージング関数と時間でそれぞれフェードインアウトする
 	/// @param period 出現周期（消えている時間と現れている時間）
@@ -331,27 +302,27 @@ public:
 	/// @param fadeOutFunc フェードアウトのイージング関数
 	/// @param fadeOut フェードアウト時間
 	/// @return 自分自身の参照
-	CatObject& appear(Duration period, EasingFunction fadeInFunc, Duration fadeIn, EasingFunction fadeOutFunc, Duration fadeOut);
+	CatObject &appear(Duration period, CAct::EasingFunction fadeInFunc, Duration fadeIn, CAct::EasingFunction fadeOutFunc, Duration fadeOut);
 
 	/// @brief 自分自身が全て映る最大の範囲内のランダムな位置に指定した周期で出現し、線形的にそれぞれの時間でフェードインアウトする
 	/// @param period 出現周期（消えている時間と現れている時間）
 	/// @param fadeIn フェードイン時間
 	/// @param fadeOut フェードアウト時間
 	/// @return 自分自身の参照
-	CatObject& appear(Duration period, Duration fadeIn, Duration fadeOut);
+	CatObject &appear(Duration period, Duration fadeIn, Duration fadeOut);
 
 	/// @brief 自分自身が全て映る最大の範囲内のランダムな位置に指定した周期で出現し、指定した同じイージング関数と時間でフェードインアウトする
 	/// @param period 出現周期（消えている時間と現れている時間）
 	/// @param fadeFunc フェードインアウトのイージング関数
 	/// @param fade フェードインアウト時間
 	/// @return 自分自身の参照
-	CatObject& appear(Duration period, EasingFunction fadeFunc, Duration fade);
+	CatObject &appear(Duration period, CAct::EasingFunction fadeFunc, Duration fade);
 
 	/// @brief 自分自身が全て映る最大の範囲内のランダムな位置に指定した周期で出現し、線形的に同じ時間でフェードインアウトする
 	/// @param period 出現周期（消えている時間と現れている時間）
 	/// @param fade フェードインアウト時間
 	/// @return 自分自身の参照
-	CatObject& appear(Duration period, Duration fade);
+	CatObject &appear(Duration period, Duration fade);
 
 	/// @brief 上、右、下、左側のうちいずれかの画面端から、指定したはみだし量の位置及び時間、出現周期でランダムで出現し、退去する @n
 	/// 画面端からのはみだし量は 0 を指定するとその部分からは出現しなくなる
@@ -362,7 +333,7 @@ public:
 	/// @param out 退去にかかる時間
 	/// @param overflow 画面端からのはみだし量 サイズ4の `double` 配列で、0番目が上、1番目が右、2番目が下、3番目が左 のはみだし量を意味する
 	/// @return 自分自身の参照
-	CatObject& appearFromEdge(Duration period, EasingFunction inFunc, Duration in, EasingFunction outFunc, Duration out, const std::array<double, 4> &overflow);
+	CatObject &appearFromEdge(Duration period, CAct::EasingFunction inFunc, Duration in, CAct::EasingFunction outFunc, Duration out, const std::array<double, 4> &overflow);
 
 	/// @brief 上、右、下、左側のうちいずれかの画面端から、指定したはみだし量の位置及び時間、出現周期でランダムで[線形的に]出現し、退去する @n
 	/// 画面端からのはみだし量は 0 を指定するとその部分からは出現しなくなる
@@ -371,7 +342,7 @@ public:
 	/// @param out 退去にかかる時間
 	/// @param overflow 画面端からのはみだし量 サイズ4の `double` 配列で、0番目が上、1番目が右、2番目が下、3番目が左 のはみだし量を意味する
 	/// @return 自分自身の参照
-	CatObject& appearFromEdge(Duration period, Duration in, Duration out, const std::array<double, 4> &overflow);
+	CatObject &appearFromEdge(Duration period, Duration in, Duration out, const std::array<double, 4> &overflow);
 
 	/// @brief 上、右、下、左側のうちいずれかの画面端から、指定したはみだし量の位置及び時間、出現周期でランダムで出現し、[同様に]退去する @n
 	/// 画面端からのはみだし量は 0 を指定するとその部分からは出現しなくなる
@@ -380,7 +351,7 @@ public:
 	/// @param inAndOut 出現、退去にかかる時間
 	/// @param overflow 画面端からのはみだし量 サイズ4の `double` 配列で、0番目が上、1番目が右、2番目が下、3番目が左 のはみだし量を意味する
 	/// @return 自分自身の参照
-	CatObject& appearFromEdge(Duration period, EasingFunction inAndOutFunc, Duration inAndOut, const std::array<double, 4> &overflow);
+	CatObject &appearFromEdge(Duration period, CAct::EasingFunction inAndOutFunc, Duration inAndOut, const std::array<double, 4> &overflow);
 
 	/// @brief 上、右、下、左側のうちいずれかの画面端から、指定したはみだし量の位置及び時間、出現周期でランダムで[線形的に]出現し、[同様に]退去する @n
 	/// 画面端からのはみだし量は 0 を指定するとその部分からは出現しなくなる
@@ -388,7 +359,7 @@ public:
 	/// @param inAndOut 出現、退去にかかる時間
 	/// @param overflow 画面端からのはみだし量 サイズ4の `double` 配列で、0番目が上、1番目が右、2番目が下、3番目が左 のはみだし量を意味する
 	/// @return 自分自身の参照
-	CatObject& appearFromEdge(Duration period, Duration inAndOut, const std::array<double, 4> &overflow);
+	CatObject &appearFromEdge(Duration period, Duration inAndOut, const std::array<double, 4> &overflow);
 
 	// TODO: チャッピーとQiitaを参考に overflow~ を可変長引数で省略可能にもできるような宣言と定義をする！ -> 参考にしてもパラメータパックの意味がわからんくて無理
  	// 本当は Arg::top_, Arg::right_, Arg::bottom_, Arg::left_ を使いたかった
@@ -396,15 +367,15 @@ public:
 	/// @brief 登録されたアクションを実行する
 	/// @details `m_actionData` に登録されたアクションを実行する
 	/// @return 自分自身の参照
-	CatObject& act();
+	CatObject &act();
 
 	/// @brief オブジェクトを描画する
 	/// @return 自分自身の参照
-	CatObject& draw();
+	CatObject &draw();
 
 	/// @brief 当たり判定領域を描画する（デバッグ用）
 	/// @return 自分自身の参照
-	CatObject& drawHitArea();
+	CatObject &drawHitArea();
 
 	/// @brief オブジェクトが現在画面上に見えているかどうかを取得する
 	/// @return 見えているなら `true`
@@ -429,3 +400,4 @@ private:
 	/// @return 開始点と終了点のタプル  [0] が開始点、[1] が終了点
 	std::tuple<Vec2, Vec2> m_changeScreenEdgePosition();
 };
+}
