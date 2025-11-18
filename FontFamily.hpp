@@ -1,6 +1,6 @@
 ﻿# pragma once
 
-namespace UFOCat::FontName
+namespace UFOCat::FontFamily
 {
 	const String YuseiMagic = U"YuseiMagic";
 
