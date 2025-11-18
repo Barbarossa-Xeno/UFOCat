@@ -1,6 +1,6 @@
 ﻿# include "GUI.hpp"
 
-namespace UFOCat::Component
+namespace UFOCat::GUI
 {
 
 }

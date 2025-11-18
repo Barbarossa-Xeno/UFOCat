@@ -1,6 +1,6 @@
 ﻿# include "GUI.hpp"
 
-namespace UFOCat::Component::GUI
+namespace UFOCat::GUI
 {
 	Dialog &Dialog::set(double fontSize, const String &text, const SizeF &windowSize)
 	{

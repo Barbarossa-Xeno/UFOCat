@@ -1,6 +1,6 @@
 ﻿# include "GUI.hpp"
 
-namespace UFOCat::Component::GUI
+namespace UFOCat::GUI
 {
 	Button::Button(const Font& font, double fontSize, const String& text, bool isEnabled, const Vec2& padding)
 		: m_font(font)

@@ -1,6 +1,6 @@
 ﻿# include "GUI.hpp"
 
-namespace UFOCat::Component::GUI
+namespace UFOCat::GUI
 {
 	double MessageBox::m_getButtonTextSize() const
 	{
