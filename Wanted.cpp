@@ -5,13 +5,13 @@ namespace UFOCat
 	RectF Wanted::m_showColorData(String name, Color color, Vec2 leftCenter, double size) const
 	{
 		// 色のアイコン (〇 <- こういう感じ)のをつくる
-		const auto &icon = Circle{ leftCenter + Vec2{ size, 0 }, size }.draw(color).drawFrame(1.5, Colors::LightBrown);
+		const auto &icon = Circle{ leftCenter + Vec2{ size, 0 }, size }.draw(color).drawFrame(1.5, Util::Palette::LightBrown);
 
 		// アイコンと色名表示の間の間隔
 		const double margin = size / 2;
 
 		// そのアイコンの右下隣りくらいに、少し小さく色名を表示する
-		const RectF &nameRegion = FontAsset(FontFamily::YuseiMagic)(U"{}"_fmt(name)).draw(1.2 * size, Arg::bottomLeft = icon.boundingRect().br() + Vec2{ margin, 0 }, Colors::Brown);
+		const RectF &nameRegion = FontAsset(FontFamily::YuseiMagic)(U"{}"_fmt(name)).draw(1.2 * size, Arg::bottomLeft = icon.boundingRect().br() + Vec2{ margin, 0 }, Util::Palette::Brown);
 
 		// アイコンとマージン、色名の表示領域全てを足した範囲を返す
 		return icon.boundingRect().stretched(Arg::right = margin + nameRegion.w);
@@ -34,7 +34,7 @@ namespace UFOCat
 
 		// # GUI 初期化
 		{
-			m_gui.levelBar.set(SizeF{ 0.85 * 180, 10 }, Colors::Brown)
+			m_gui.levelBar.set(SizeF{ 0.85 * 180, 10 }, Util::Palette::Brown)
 						  .setPosition(Arg::bottomCenter = Vec2{ 180.0 / 2 + 5, 100 - 5 - 10 })
 						  .setProgress((getData().levelIndex + 1) / 10.0);
 
@@ -121,10 +121,10 @@ namespace UFOCat
 				{
 					// 「猫種」というタイトルとそのバックを塗りつぶすための RectF を計算
 					// チラシの端から 20 だけ横に
-					breedBox = textBox.movedBy(flyerRegion.x + 20, targetOrigin.y + 110).draw(Colors::Brown);
+					breedBox = textBox.movedBy(flyerRegion.x + 20, targetOrigin.y + 110).draw(Util::Palette::Brown);
 
 					// その上からテキスト
-					FontAsset(FontFamily::YuseiMagic)(U"猫種").drawAt(20, breedBox.center(), Colors::LightBrownAlt);
+					FontAsset(FontFamily::YuseiMagic)(U"猫種").drawAt(20, breedBox.center(), Util::Palette::LightBrownAlt);
 
 					// 猫種名を表示するエリア、マージン (20) 分調整する
 					const RectF& breedRegion = breedBox.movedBy(breedBox.w + 20, 0).setSize(flyerRegion.w - breedBox.w - 20 - 20 - 20, breedBox.h);
@@ -134,18 +134,18 @@ namespace UFOCat
 					double fontSize = 40;
 					// このメソッドは矩形内にすべての文字列が収まらなかったら false を返すので
 					while (not FontAsset(FontFamily::YuseiMagic)(U"{}"_fmt(m_target->getCatData().breed))
-						.draw(fontSize--, breedRegion, Colors::Brown))
+						.draw(fontSize--, breedRegion, Util::Palette::Brown))
 					{
 						// そのとき、描画されてしまった文字列を上から塗りつぶして隠す
-						breedRegion.draw(Colors::LightBrownAlt);
+						breedRegion.draw(Util::Palette::LightBrownAlt);
 					}
 				}
 
 				// ### 毛色の表示領域
 				{
 					// さっきのを下に動かしたもの
-					colorBox = breedBox.movedBy(0, 40).draw(Colors::Brown);
-					FontAsset(FontFamily::YuseiMagic)(U"毛色").drawAt(20, colorBox.center(), Colors::LightBrownAlt);
+					colorBox = breedBox.movedBy(0, 40).draw(Util::Palette::Brown);
+					FontAsset(FontFamily::YuseiMagic)(U"毛色").drawAt(20, colorBox.center(), Util::Palette::LightBrownAlt);
 
 					// 次々と色情報を表示する際に、基準にする前の表示範囲を保持する
 					RectF previousRegion{ colorBox };
@@ -159,13 +159,13 @@ namespace UFOCat
 
 				// ### 模様の表示領域
 				{
-					patternBox = colorBox.movedBy(0, 40).draw(Colors::Brown);
-					FontAsset(FontFamily::YuseiMagic)(U"模様").drawAt(20, patternBox.center(), Colors::LightBrownAlt);
+					patternBox = colorBox.movedBy(0, 40).draw(Util::Palette::Brown);
+					FontAsset(FontFamily::YuseiMagic)(U"模様").drawAt(20, patternBox.center(), Util::Palette::LightBrownAlt);
 
 					// 模様名を表示するエリア、マージン (20) 分調整する
 					const RectF& patternRegion = patternBox.movedBy(patternBox.w + 20, 0).setSize(flyerRegion.w - patternBox.w - 20 - 20 - 20, patternBox.h);
 
-					FontAsset(FontFamily::YuseiMagic)(U"{}"_fmt(m_target->getCatData().pattern)).draw(20, Arg::leftCenter = patternRegion.leftCenter(), Colors::Brown);
+					FontAsset(FontFamily::YuseiMagic)(U"{}"_fmt(m_target->getCatData().pattern)).draw(20, Arg::leftCenter = patternRegion.leftCenter(), Util::Palette::Brown);
 				}
 			}
 		}		

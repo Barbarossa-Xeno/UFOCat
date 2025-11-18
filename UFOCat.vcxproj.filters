@@ -1176,7 +1176,7 @@
     <ClInclude Include="FontFamily.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Colors.hpp">
+    <ClInclude Include="Palette.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

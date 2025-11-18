@@ -484,7 +484,7 @@ namespace UFOCat
 
 				FontAsset(FontFamily::KoharuiroSunray)(text)
 					// 枠線・影設定 -> テキストサイズ（「GO!」の時以外経過時間で縮小） -> 経過時間で透明化 -> 画面中央ぞろえ描画
-					.drawAt(TextStyle::OutlineShadow(0.3, Colors::Brown, Vec2{ 1.2, 1.2 }, ColorF{ 0.0, 0.65 }), textSize, Scene::Center(), ColorF{ 1.0, EaseOutExpo(t) });
+					.drawAt(TextStyle::OutlineShadow(0.3, Util::Palette::Brown, Vec2{ 1.2, 1.2 }, ColorF{ 0.0, 0.65 }), textSize, Scene::Center(), ColorF{ 1.0, EaseOutExpo(t) });
 					// この TextStyle 流用が頻度高かったら定数化を考える
 			}
 			break;
@@ -534,7 +534,7 @@ namespace UFOCat
 
 				// 経過に合わせて移動させる
 				// イージング関数で跳ねて戻ってくるような移動効果
-				view.drawAt(TextStyle::OutlineShadow(0.3, Colors::Brown, Vec2{ 1.2, 1.2 }, ColorF{ 0.0, 0.65 }), 150.0, begin.lerp(Scene::CenterF(), EaseOutElastic(t)));
+				view.drawAt(TextStyle::OutlineShadow(0.3, Util::Palette::Brown, Vec2{ 1.2, 1.2 }, ColorF{ 0.0, 0.65 }), 150.0, begin.lerp(Scene::CenterF(), EaseOutElastic(t)));
 			}
 			break;
 

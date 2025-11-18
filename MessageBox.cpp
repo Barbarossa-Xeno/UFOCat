@@ -76,7 +76,7 @@ namespace UFOCat::GUI
 		// ウィンドウ範囲を角丸にして背景
 		m_region.rounded(12)
 				.drawShadow(Vec2{ 4, 4 }, 16, 0)
-				.draw(Colors::LightBrownAlt);
+				.draw(Util::Palette::LightBrownAlt);
 	}
 
 	void MessageBox::m_drawSeparatorAndText(double buttonsTopY) const
@@ -92,7 +92,7 @@ namespace UFOCat::GUI
 			4
 		};
 
-		ColorF brown2 = Colors::Brown;
+		ColorF brown2 = Util::Palette::Brown;
 		brown2.a = 0.6;
 		line.draw(brown2);
 
@@ -102,7 +102,7 @@ namespace UFOCat::GUI
 			m_fontSize,
 			m_region.center().x,
 			m_region.topY() + (line.topCenter().y - m_region.topY()) / 2,
-			Colors::Brown
+			Util::Palette::Brown
 		);
 	}
 

@@ -1,6 +1,6 @@
 ﻿# pragma once
 
-namespace UFOCat::Colors
+namespace UFOCat::Util::Palette
 {
 	const ColorF Brown{ 0.4, 0.3, 0.2 };
 

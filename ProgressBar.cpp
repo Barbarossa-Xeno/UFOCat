@@ -34,7 +34,7 @@ namespace UFOCat::GUI
 		RoundRect bar = m_region.rounded(0.75 * m_roundness);
 
 		// バーの枠
-		bar.drawFrame(2, Palette::Dimgray);
+		bar.drawFrame(2, s3d::Palette::Dimgray);
 
 		// バーが 100% (t = 1.0) の長さの状態
 		const RoundRect full = bar.stretched(-2);

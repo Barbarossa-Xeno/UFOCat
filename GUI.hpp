@@ -1,6 +1,6 @@
 ﻿# pragma once
 # include "FontFamily.hpp"
-# include "Colors.hpp"
+# include "Palette.hpp"
 
 namespace UFOCat::GUI
 {
