@@ -4,18 +4,9 @@ namespace UFOCat
 {
 	namespace Core
 	{
-		const std::array<Score::GeneralScoreData::TitleData, 5> Score::GeneralScoreData::Titles =
-		{ {
-			{ U"新米", U"しんまい", 0.25 },
-			{ U"逸材", U"いつざい", 0.5 },
-			{ U"手練", U"てだれ", 0.75 },
-			{ U"究極", U"きゅうきょく", 0.9 },
-			{ U"神秘", U"しんぴ", 1.0 }
-		} };
+		Score::Generic::ByLevel::ByLevel() = default;
 
-		Score::GeneralScoreData::ScoreData::ScoreData() = default;
-
-		Score::GeneralScoreData::ScoreData::ScoreData(size_t level, bool isCaught, bool isCorrect, double response, size_t consecutiveCorrect)
+		Score::Generic::ByLevel::ByLevel(size_t level, bool isCaught, bool isCorrect, double response, size_t consecutiveCorrect)
 			: level{ level }
 			, isCaught{ isCaught }
 			, isCorrect{ isCorrect }
@@ -23,7 +14,7 @@ namespace UFOCat
 			, consecutiveCorrect{ consecutiveCorrect }
 		{}
 
-		size_t Score::GeneralScoreData::ScoreData::calculateTotal()
+		size_t Score::Generic::ByLevel::calculateTotal()
 		{
 			total = static_cast<size_t>
 				(
@@ -43,17 +34,17 @@ namespace UFOCat
 			return total;
 		}
 
-		size_t Score::GeneralScoreData::ScoreData::GetMaxTheoretical(size_t levelCount)
+		size_t Score::Generic::ByLevel::GetMaxTheoretical(size_t levelCount)
 		{
 			// static フィールドのため初回呼び出し時にしか計算されない
-			static size_t sum = Array<ScoreData>{ levelCount }
-				.each_index([](size_t i, ScoreData& score)
+			static size_t sum = Array<ByLevel>{ levelCount }
+				.each_index([](size_t i, ByLevel& score)
 					{
 						// 反応時間は 0.1s ということで、バカ早くしておく
 						// これのせいで理論値が高くなりすぎる場合は調整する
-						score = ScoreData{ i + 1, true, true, 0.1, i };
+						score = ByLevel{ i + 1, true, true, 0.1, i };
 					})
-					.map([](ScoreData score)
+					.map([](ByLevel score)
 						{
 							return score.calculateTotal();
 						})
@@ -62,23 +53,22 @@ namespace UFOCat
 			return sum;
 		}
 
-		void Score::GeneralScoreData::ScoreData::SetLevelCount(size_t count)
+		void Score::Generic::ByLevel::SetLevelCount(size_t count)
 		{
 			GetMaxTheoretical(count);
 		}
 
-		size_t UFOCat::Core::Score::GeneralScoreData::calculateTotal()
+		size_t UFOCat::Core::Score::Generic::calculateTotal()
 		{
 			// 一度すべてのスコアで総合得点を反映させる
-			scoreDataList.each([](ScoreData& data) { data.calculateTotal(); });
+			scores.each([](ByLevel& data) { data.calculateTotal(); });
 
 			// それらを合計する
-			total =  (scoreDataList >> [](const ScoreData& data) { return data.total; }).sum();
+			total =  (scores >> [](const ByLevel& data) { return data.total; }).sum();
 
 			return total;
 		}
 	}
-	
 
 	void UFOCat::BrightenCursor()
 	{

@@ -186,9 +186,6 @@
     <ClCompile Include="MessageBox.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ScoreData.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="App\icon.ico">
@@ -1182,9 +1179,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Palette.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ScoreData.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -124,7 +124,6 @@
     </ClCompile>
     <ClCompile Include="CatObject.cpp" />
     <ClCompile Include="Common.cpp" />
-    <ClCompile Include="ScoreData.cpp" />
     <ClCompile Include="StopWatch.cpp" />
     <ClCompile Include="Dialog.cpp" />
     <ClCompile Include="Level.cpp" />
@@ -454,7 +453,6 @@
     <ClInclude Include="CatData.hpp" />
     <ClInclude Include="CatObject.hpp" />
     <ClInclude Include="Common.hpp" />
-    <ClInclude Include="ScoreData.hpp" />
     <ClInclude Include="Stopwatch.hpp" />
     <ClInclude Include="Level.hpp" />
     <ClInclude Include="LevelData.hpp" />

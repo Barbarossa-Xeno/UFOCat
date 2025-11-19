@@ -14,10 +14,10 @@ namespace UFOCat
 			getData().backgrounds = LoadBackgrounds();
 
 			// 最大レベル数の情報をスコアデータに共通のものとして設定しておく
-			Score::GeneralScoreData::ScoreData::SetLevelCount(getData().levels.size());
+			Score::Generic::ByLevel::SetLevelCount(getData().levels.size());
 
 			// スコアデータはレベル数に合わせて確保してから、1プレイ分として追加しておく
-			getData().scores << Score::GeneralScoreData{ Array<Score::GeneralScoreData::ScoreData>{ getData().levels.size() }, Score::GeneralScoreData::TitleData{} };	
+			getData().scores << Score::Generic{ Array<Score::Generic::ByLevel>{ getData().levels.size() }, Score::Generic::Title{} };	
 		}
 		// それ以降でタイトルに戻ってきた場合
 		else

@@ -7,8 +7,17 @@ using namespace UFOCat::Core;
 
 namespace UFOCat
 {
+	/// @brief インデックスを保存する変数のための無効値 @n
+	/// このゲームで登場するUFO猫の種類は最大で 44 種類であり、
+	/// テクスチャを読み込む際も、レベルデータを読み込む際も、その数字を超えることはない @n
+	/// そのため、この名前空間内では特別に無効値として扱う
+	/// @note Optional でもよかったけど、いちいち value() ってするのが面倒だったけん
+	constexpr size_t InvalidIndex = 44;
+
 	namespace Core
 	{
+		using ::UFOCat::InvalidIndex; // これで Core 内で未修飾 InvalidIndex が使える
+
 		enum class State
 		{
 			/// @brief タイトル画面
@@ -25,10 +34,10 @@ namespace UFOCat
 		{
 			/// @brief 1ゲームをプレイしたとき全体のスコアのデータ
 			/// @note これが総合スコアとして残る
-			struct GeneralScoreData
+			struct Generic
 			{
 				/// @brief スコアから決められる「称号」のデータ
-				struct TitleData
+				struct Title
 				{
 					/// @brief 称号名（漢字）
 					String kanjiName;
@@ -41,7 +50,7 @@ namespace UFOCat
 				};
 
 				/// @brief レベルごとに集計するスコアのデータ
-				struct ScoreData
+				struct ByLevel
 				{
 					/// @brief プレイしたレベル (1 ~ )
 					size_t level = InvalidIndex;
@@ -61,7 +70,7 @@ namespace UFOCat
 					/// @brief 総合得点
 					size_t total = 0;
 
-					ScoreData();
+					ByLevel();
 
 					/// @brief コンストラクタ
 					/// @param level レベル (1 ~ )
@@ -69,7 +78,7 @@ namespace UFOCat
 					/// @param isCorrect 正解したか
 					/// @param response 捕まえるのにかかった時間 [s]
 					/// @param consecutiveCorrect ここまでの連続正解数
-					ScoreData(size_t level, bool isCaught, bool isCorrect, double response, size_t consecutiveCorrect);
+					ByLevel(size_t level, bool isCaught, bool isCorrect, double response, size_t consecutiveCorrect);
 
 					/// @brief このレベルでの総合得点を計算する
 					/// @return このレベルでの総合得点
@@ -92,22 +101,33 @@ namespace UFOCat
 
 				/// @brief 各レベルのスコアデータ
 				/// @remarks 途中でレベルをクリアできなかった場合は、そのレベル以降のデータは存在しない
-				Array<ScoreData> scoreDataList;
+				Array<ByLevel> scores;
 
 				/// @brief 称号データ
-				TitleData titleData;
+				Title title;
 
 				size_t total = 0;
 
 				/// @brief この1ゲーム全体での総合得点（複数レベルの総合得点の合計）を計算する
 				/// @return この1ゲームでの総合得点
 				size_t calculateTotal();
-
-				/// @brief 称号の定義リスト
-				const static std::array<TitleData, 5> Titles;
 			};
+
+			/// @brief 称号の定義リスト @n
+			/// スコアの閾値が小さい順に並んでいるので、総合得点と比較していく際には
+			/// どんどんインデックスの値を増やして走査していけばいい
+			const static std::array<Generic::Title, 5> Titles =
+			{ {
+				{ U"新米", U"しんまい", 0.25 },
+				{ U"逸材", U"いつざい", 0.5 },
+				{ U"手練", U"てだれ", 0.75 },
+				{ U"究極", U"きゅうきょく", 0.9 },
+				{ U"神秘", U"しんぴ", 1.0 }
+			} };
 		}
 
+		/// @brief ゲーム全体で共有するデータ
+		// TODO: 直近のスコアデータを残そうと思えば、二次元Arrayのフィールドを追加してもよい
 		struct GameData
 		{
 			/// @brief 使用する全てのUFO猫のデータ
@@ -120,7 +140,7 @@ namespace UFOCat
 			Array<std::unique_ptr<CatObject>> spawns;
 
 			/// @brief アプリを起動してから終えるまで集計するスコアのリスト
-			Array<Score::GeneralScoreData> scores;
+			Array<Score::Generic> scores;
 
 			/// @brief 使用する全ての背景画像のテクスチャ
 			Array<Texture> backgrounds;
@@ -135,15 +155,6 @@ namespace UFOCat
 			Timer timer;
 		};
 	}
-	/// @brief インデックスを保存する変数のための無効値 @n
-	/// このゲームで登場するUFO猫の種類は最大で 44 種類であり、
-	/// テクスチャを読み込む際も、レベルデータを読み込む際も、その数字を超えることはない @n
-	/// そのため、この名前空間内では特別に無効値として扱う
-	/// @note Optional でもよかったけど、いちいち value() ってするのが面倒だったけん
-	constexpr size_t InvalidIndex = 44;
-
-	
-	// TODO: 直近のスコアデータを残そうと思えば、二次元Arrayのフィールドを追加してもよい
 
 	/// @brief マウスカーソルの周囲を明るくする（画面幅 or 高さの大きいほうの 2% 分の半径）
 	void BrightenCursor();
