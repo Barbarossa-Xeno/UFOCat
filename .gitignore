@@ -2,8 +2,8 @@
 
 App/*
 !App/texture
-!App/level_data.json
-!App/cat_data.json
+!App/*.json
+App/launcher_info.json
 
 !App/Resource.aps
 !App/Resource.rc
