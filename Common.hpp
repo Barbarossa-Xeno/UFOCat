@@ -21,89 +21,92 @@ namespace UFOCat
 			Result
 		};
 
-		/// @brief 1ゲームをプレイしたとき全体のスコアのデータ
-		/// @note これが総合スコアとして残る
-		struct Score
+		namespace Score
 		{
-			/// @brief スコアから決められる「称号」のデータ
-			struct ScoreTitleData
+			/// @brief 1ゲームをプレイしたとき全体のスコアのデータ
+			/// @note これが総合スコアとして残る
+			struct GeneralScoreData
 			{
-				/// @brief 称号名（漢字）
-				String kanjiName;
+				/// @brief スコアから決められる「称号」のデータ
+				struct TitleData
+				{
+					/// @brief 称号名（漢字）
+					String kanjiName;
 
-				/// @brief 称号名のフリガナ（ルビ）
-				String ruby;
+					/// @brief 称号名のフリガナ（ルビ）
+					String ruby;
 
-				/// @brief 称号間の閾値
-				double threshold = 0.0;
-			};
+					/// @brief 称号間の閾値
+					double threshold = 0.0;
+				};
 
-			/// @brief レベルごとに集計するスコアのデータ
-			struct ScoreData
-			{
-				/// @brief プレイしたレベル (1 ~ )
-				size_t level = InvalidIndex;
+				/// @brief レベルごとに集計するスコアのデータ
+				struct ScoreData
+				{
+					/// @brief プレイしたレベル (1 ~ )
+					size_t level = InvalidIndex;
 
-				/// @brief 猫を捕まえたか
-				bool isCaught = false;
+					/// @brief 猫を捕まえたか
+					bool isCaught = false;
 
-				/// @brief 捕まえた猫が正解だったか
-				bool isCorrect = false;
+					/// @brief 捕まえた猫が正解だったか
+					bool isCorrect = false;
 
-				/// @brief ターゲットが出現してから捕まえるまでかかった時間 [s]
-				double response = 0.0;
+					/// @brief ターゲットが出現してから捕まえるまでかかった時間 [s]
+					double response = 0.0;
 
-				/// @brief 連続正解数
-				size_t consecutiveCorrect = 0;
+					/// @brief 連続正解数
+					size_t consecutiveCorrect = 0;
 
-				/// @brief 総合得点
+					/// @brief 総合得点
+					size_t total = 0;
+
+					ScoreData();
+
+					/// @brief コンストラクタ
+					/// @param level レベル (1 ~ )
+					/// @param isCaught 何かしら捕まえたか
+					/// @param isCorrect 正解したか
+					/// @param response 捕まえるのにかかった時間 [s]
+					/// @param consecutiveCorrect ここまでの連続正解数
+					ScoreData(size_t level, bool isCaught, bool isCorrect, double response, size_t consecutiveCorrect);
+
+					/// @brief このレベルでの総合得点を計算する
+					/// @return このレベルでの総合得点
+					size_t calculateTotal();
+
+					/// @brief このゲームでの理論上の最大スコアを返す
+					/// @remarks アプリが起動している間、変更されないレベル数をもとに計算されるので、引数を省略可能とする @n
+					/// この計算は、レベルデータがアプリが最初に起動したときにのみ読み込まれる保証を利用している
+					/// @param levelCount レベル数 省略された場合はアプリ起動時に設定されたレベル数が使われる
+					/// @return 理論値
+					static size_t GetMaxTheoretical(size_t levelCount = 0);
+
+					/// @brief この1ゲームで行われる最大レベル数を決める @n
+					/// 単純に level_data.json で定義されたレベルの数と同じだが、
+					/// レベルの数をもとに最大スコアの理論値が決まるため、ここで保持しておき、
+					/// アプリが起動している間、変更を許さない
+					/// @param count レベル数
+					static void SetLevelCount(size_t count);
+				};
+
+				/// @brief 各レベルのスコアデータ
+				/// @remarks 途中でレベルをクリアできなかった場合は、そのレベル以降のデータは存在しない
+				Array<ScoreData> scoreDataList;
+
+				/// @brief 称号データ
+				TitleData titleData;
+
 				size_t total = 0;
 
-				ScoreData();
-
-				/// @brief コンストラクタ
-				/// @param level レベル (1 ~ )
-				/// @param isCaught 何かしら捕まえたか
-				/// @param isCorrect 正解したか
-				/// @param response 捕まえるのにかかった時間 [s]
-				/// @param consecutiveCorrect ここまでの連続正解数
-				ScoreData(size_t level, bool isCaught, bool isCorrect, double response, size_t consecutiveCorrect);
-
-				/// @brief このレベルでの総合得点を計算する
-				/// @return このレベルでの総合得点
+				/// @brief この1ゲーム全体での総合得点（複数レベルの総合得点の合計）を計算する
+				/// @return この1ゲームでの総合得点
 				size_t calculateTotal();
 
-				/// @brief このゲームでの理論上の最大スコアを返す
-				/// @remarks アプリが起動している間、変更されないレベル数をもとに計算されるので、引数を省略可能とする @n
-				/// この計算は、レベルデータがアプリが最初に起動したときにのみ読み込まれる保証を利用している
-				/// @param levelCount レベル数 省略された場合はアプリ起動時に設定されたレベル数が使われる
-				/// @return 理論値
-				static size_t GetMaxTheoretical(size_t levelCount = 0);
-
-				/// @brief この1ゲームで行われる最大レベル数を決める @n
-				/// 単純に level_data.json で定義されたレベルの数と同じだが、
-				/// レベルの数をもとに最大スコアの理論値が決まるため、ここで保持しておき、
-				/// アプリが起動している間、変更を許さない
-				/// @param count レベル数
-				static void SetLevelCount(size_t count);
+				/// @brief 称号の定義リスト
+				const static std::array<TitleData, 5> Titles;
 			};
-
-			/// @brief 各レベルのスコアデータ
-			/// @remarks 途中でレベルをクリアできなかった場合は、そのレベル以降のデータは存在しない
-			Array<ScoreData> scoreDataList;
-
-			/// @brief 称号データ
-			ScoreTitleData titleData;
-
-			size_t total = 0;
-
-			/// @brief この1ゲーム全体での総合得点（複数レベルの総合得点の合計）を計算する
-			/// @return この1ゲームでの総合得点
-			size_t calculateTotal();
-
-			/// @brief 称号の定義リスト
-			const static std::array<ScoreTitleData, 5> Titles;
-		};
+		}
 
 		struct GameData
 		{
@@ -117,7 +120,7 @@ namespace UFOCat
 			Array<std::unique_ptr<CatObject>> spawns;
 
 			/// @brief アプリを起動してから終えるまで集計するスコアのリスト
-			Array<Score> scores;
+			Array<Score::GeneralScoreData> scores;
 
 			/// @brief 使用する全ての背景画像のテクスチャ
 			Array<Texture> backgrounds;

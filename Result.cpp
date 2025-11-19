@@ -3,12 +3,12 @@
 namespace UFOCat
 {
 
-	Score::ScoreData &Result::m_currentScoreData() const
+	Score::GeneralScoreData::ScoreData &Result::m_currentScoreData() const
 	{
 		return getData().scores.back().scoreDataList[getData().levelIndex];
 	}
 
-	Array<Score::ScoreData> &Result::m_currentScoreDatas() const
+	Array<Score::GeneralScoreData::ScoreData> &Result::m_currentScoreDatas() const
 	{
 		return getData().scores.back().scoreDataList;
 	}
@@ -20,18 +20,18 @@ namespace UFOCat
 		const uint32 total = getData().scores.back().calculateTotal();
 
 		// 閾値の割合がデカいほうから順に走査
-		for (size_t i = Score::Titles.size(); --i > 0;)
+		for (size_t i = Score::GeneralScoreData::Titles.size(); --i > 0;)
 		{
 			// 閾値よりも総合得点が大きければ、その称号を与える
-			if (total >= Score::Titles[i].threshold * Score::ScoreData::GetMaxTheoretical())
+			if (total >= Score::GeneralScoreData::Titles[i].threshold * Score::GeneralScoreData::ScoreData::GetMaxTheoretical())
 			{
-				getData().scores.back().titleData = Score::Titles[i];
+				getData().scores.back().titleData = Score::GeneralScoreData::Titles[i];
 				break;
 			}
 			// 最後まで当てはまらなかったら、もう、一番下の称号を与える
 			else if (i == 0)
 			{
-				getData().scores.back().titleData = Score::Titles[0];
+				getData().scores.back().titleData = Score::GeneralScoreData::Titles[0];
 			}
 		}
 	}
@@ -68,19 +68,19 @@ namespace UFOCat
 						m_countUpAcceleration += m_countUpAcceleration * Scene::DeltaTime();
 
 						// 閾値の割合がデカいほうから順に走査
-						for (auto itr = Score::Titles.begin(); itr != Score::Titles.end(); ++itr)
+						for (auto itr = Score::GeneralScoreData::Titles.begin(); itr != Score::GeneralScoreData::Titles.end(); ++itr)
 						{
 							// 現在のスコアのカウントが、比較対象の称号の閾値以下
 							// （カウント / 理論値 が 1.0 以下になる状況）のとき、
 							// ゲージを加算する
-							if (double realThreshold = itr->threshold * Score::ScoreData::GetMaxTheoretical();
+							if (double realThreshold = itr->threshold * Score::GeneralScoreData::ScoreData::GetMaxTheoretical();
 								m_ScoreCount <= realThreshold)
 							{
 								// パラメータ
 								double t = 0.0;
 
 								// 一番下の称号の場合、そのまま進捗を設定
-								if (itr == Score::Titles.begin())
+								if (itr == Score::GeneralScoreData::Titles.begin())
 								{
 									t = static_cast<double>(m_ScoreCount) / realThreshold;
 								}
@@ -88,7 +88,7 @@ namespace UFOCat
 								else
 								{
 									// 一個下の閾値をフィードバック
-									const double prev = std::prev(itr)->threshold * Score::ScoreData::GetMaxTheoretical();
+									const double prev = std::prev(itr)->threshold * Score::GeneralScoreData::ScoreData::GetMaxTheoretical();
 									const double num = static_cast<double>(m_ScoreCount) - prev;
 									const double den = realThreshold - prev;
 									t = num / den;
@@ -183,7 +183,7 @@ namespace UFOCat
 			// 点数表示
 			FontAsset(Util::FontFamily::KoharuiroSunray)(U"{}"_fmt(m_ScoreCount)).draw(120, Arg::bottomCenter = Scene::Center());
 
-			const RectF& maxRegion = FontAsset(Util::FontFamily::KoharuiroSunray)(U"{}"_fmt(Score::ScoreData::GetMaxTheoretical())).region(120, Arg::bottomCenter = Scene::Center());
+			const RectF& maxRegion = FontAsset(Util::FontFamily::KoharuiroSunray)(U"{}"_fmt(Score::GeneralScoreData::ScoreData::GetMaxTheoretical())).region(120, Arg::bottomCenter = Scene::Center());
 
 			// 回転座標系
 			{

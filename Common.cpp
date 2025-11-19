@@ -4,7 +4,7 @@ namespace UFOCat
 {
 	namespace Core
 	{
-		const std::array<Score::ScoreTitleData, 5> Score::Titles =
+		const std::array<Score::GeneralScoreData::TitleData, 5> Score::GeneralScoreData::Titles =
 		{ {
 			{ U"新米", U"しんまい", 0.25 },
 			{ U"逸材", U"いつざい", 0.5 },
@@ -13,9 +13,9 @@ namespace UFOCat
 			{ U"神秘", U"しんぴ", 1.0 }
 		} };
 
-		Score::ScoreData::ScoreData() = default;
+		Score::GeneralScoreData::ScoreData::ScoreData() = default;
 
-		Score::ScoreData::ScoreData(size_t level, bool isCaught, bool isCorrect, double response, size_t consecutiveCorrect)
+		Score::GeneralScoreData::ScoreData::ScoreData(size_t level, bool isCaught, bool isCorrect, double response, size_t consecutiveCorrect)
 			: level{ level }
 			, isCaught{ isCaught }
 			, isCorrect{ isCorrect }
@@ -23,7 +23,7 @@ namespace UFOCat
 			, consecutiveCorrect{ consecutiveCorrect }
 		{}
 
-		size_t Score::ScoreData::calculateTotal()
+		size_t Score::GeneralScoreData::ScoreData::calculateTotal()
 		{
 			total = static_cast<size_t>
 				(
@@ -43,7 +43,7 @@ namespace UFOCat
 			return total;
 		}
 
-		size_t Score::ScoreData::GetMaxTheoretical(size_t levelCount)
+		size_t Score::GeneralScoreData::ScoreData::GetMaxTheoretical(size_t levelCount)
 		{
 			// static フィールドのため初回呼び出し時にしか計算されない
 			static size_t sum = Array<ScoreData>{ levelCount }
@@ -62,12 +62,12 @@ namespace UFOCat
 			return sum;
 		}
 
-		void Score::ScoreData::SetLevelCount(size_t count)
+		void Score::GeneralScoreData::ScoreData::SetLevelCount(size_t count)
 		{
 			GetMaxTheoretical(count);
 		}
 
-		size_t UFOCat::Core::Score::calculateTotal()
+		size_t UFOCat::Core::Score::GeneralScoreData::calculateTotal()
 		{
 			// 一度すべてのスコアで総合得点を反映させる
 			scoreDataList.each([](ScoreData& data) { data.calculateTotal(); });
