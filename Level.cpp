@@ -7,7 +7,7 @@ namespace UFOCat
 		return getData().levels[getData().levelIndex];
 	}
 
-	Array<ScoreData> &Level::m_currentScoreDatas() const
+	Array<Score::ScoreData> &Level::m_currentScoreDatas() const
 	{
 		return getData().scores.back().scoreDataList;
 	}
@@ -339,7 +339,7 @@ namespace UFOCat
 						m_currentScoreDatas()[getData().levelIndex] = m_score;
 
 						// 次のレベル初期化へ
-						changeScene(UFOCat::State::Wanted);
+						changeScene(Core::State::Wanted);
 					}
 
 					// タイトルへ戻るボタン
@@ -363,7 +363,7 @@ namespace UFOCat
 							m_currentScoreDatas()[getData().levelIndex] = m_score;
 
 							// 結果シーンへ
-							changeScene(UFOCat::State::Result, 1s);
+							changeScene(Core::State::Result, 1s);
 						}
 					}
 
@@ -374,7 +374,7 @@ namespace UFOCat
 						m_currentScoreDatas()[getData().levelIndex] = m_score;
 
 						// 結果シーンへ
-						changeScene(UFOCat::State::Result, 1s);
+						changeScene(Core::State::Result, 1s);
 					}
 
 					m_gui.dialog.isPressedCancel();
@@ -393,18 +393,18 @@ namespace UFOCat
 			if (KeyS.pressed())
 			{
 				m_currentLevel().isCleared = true;
-				m_currentScoreDatas()[getData().levelIndex] = ScoreData{ getData().levelIndex + 1, true, true, 0.3, getData().levelIndex };
+				m_currentScoreDatas()[getData().levelIndex] = Score::ScoreData{ getData().levelIndex + 1, true, true, 0.3, getData().levelIndex };
 			
 				getData().timer.reset();
 
 				if (getData().levelIndex + 1 >= getData().levels.size())
 				{
 					// レベルがもう存在しない場合は、結果シーンへ
-					changeScene(UFOCat::State::Result);
+					changeScene(Core::State::Result);
 				}
 				else
 				{
-					changeScene(UFOCat::State::Wanted);
+					changeScene(Core::State::Wanted);
 				}
 			}
 
@@ -413,9 +413,9 @@ namespace UFOCat
 			{
 				// 全てのレベルをクリアしたことにして結果シーンへ
 				// 一気に移るので、クリアフラグを上げる必要もない
-				m_currentScoreDatas().each_index([this](size_t i, ScoreData& score) { score = ScoreData{ i + 1, true, true, 0.5, i }; });
+				m_currentScoreDatas().each_index([this](size_t i, Score::ScoreData &score) { score = Score::ScoreData{ i + 1, true, true, 0.5, i }; });
 				getData().timer.reset();
-				changeScene(UFOCat::State::Result);
+				changeScene(Core::State::Result);
 			}
 
 			// Ctrl + Shift + Q でタイマー一時停止/再開

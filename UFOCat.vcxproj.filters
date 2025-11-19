@@ -1114,8 +1114,10 @@
     <Font Include="App\example\font\RocknRoll\RocknRollOne-Regular.ttf">
       <Filter>Resource Files\example\font\RocknRoll</Filter>
     </Font>
-    <Font Include="App\font\YuseiMagic-Regular.ttf" />
     <Font Include="App\font\GN-Koharuiro_Sunray.ttf">
+      <Filter>Resource Files</Filter>
+    </Font>
+    <Font Include="App\font\YuseiMagic-Regular.ttf">
       <Filter>Resource Files</Filter>
     </Font>
   </ItemGroup>
