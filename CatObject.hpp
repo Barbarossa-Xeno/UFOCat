@@ -6,7 +6,8 @@
 /// @brief インゲームを動作させるためのコア機能群
 namespace UFOCat::Core
 {
-	/// @brief オブジェクトとしてのUFO猫のクラス
+	/// @brief オブジェクトとしてのUFO猫のクラス @n
+	/// ムーブ代入不可能
 	class CatObject
 	{
 		/* -- クラスなど -- */

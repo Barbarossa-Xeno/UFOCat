@@ -37,11 +37,61 @@ namespace UFOCat
 			m_gui.logo = Texture{ U"texture/logo.png", TextureDesc::Mipped };
 		}
 
+		// # タイトル画面に現れる猫を決める
+		{
+			// スポーンリスト初期化
+			getData().spawns.release();
+
+			// 使うアクションを抽選して入れるための配列
+			Array<Core::LevelData::ActionData> demoActions;
+
+			// 読み込んだUFO猫のデータからアクションデータだけぬきとって１個ずつ代入
+			getData().levels.each([&demoActions](const LevelData& level)
+			{
+					level.actionDataList.each([&](const auto& action)
+					{
+						demoActions << action;
+					});
+			});
+
+			// スポーンさせる数を決める
+			size_t count = Random(3, 5);
+
+			// 全部入れたのをシャッフルしてから、スポーン数だけにする
+			demoActions.shuffle().resize(count);
+
+			// UFO猫のデータからランダムにスポーン数だけチョイスし、
+			getData().spawns = std::move(getData().cats.choice(count)
+														// クローンして unique_ptr にする
+													   .map([](const CatObject &cat)
+													   {
+													       return std::make_unique<CatObject>(cat.clone());
+													   })
+														// 作ったポインタのリストに対して
+														// （このリストと `demoActions` の長さはどちらも `count` なので）
+														// インデックスを参照しながらアクションをセット
+													   .each_index([&demoActions](size_t i, const auto &ptr)
+													   {
+													       ptr->setAction(demoActions[i]).setRandomVelocity(Random(1, 5));
+													   }));
+			// CatObject が自前でコピーコンストラクタを定義している都合上
+			// ムーブ代入も禁止なので（そもそも const メンバーを決め打ちにしている以上ムーブが難しい）
+			// 新しい unique_ptr<CatObject> の ** リストをムーブして ** 代入する
+		}
+
 		m_background = getData().backgrounds.choice();
 	}
 
 	void Title::update()
 	{
+		// # 猫 更新処理
+		{
+			for (const auto &spawn : getData().spawns)
+			{
+				spawn->act();
+			}
+		}
+
 		// # GUI 更新処理
 		{
 			if (m_gui.toLevel.isPressed() and (not m_gui.howToPlay.isOpen()))
@@ -51,8 +101,6 @@ namespace UFOCat
 
 			if (m_gui.howToPlayButton.isPressed())
 			{
-				// TODO: なぜ初めにダイアログを表示すると中心基準にならないのか調べる
-				// というか、Debug では初回に表示すらされない場合がある
 				m_gui.howToPlay.set(16, m_howToPlayText, { 700, 550 }).open();
 			}
 
@@ -67,8 +115,18 @@ namespace UFOCat
 		// 背景描画（4:3 固定）
 		m_background.fitted(Scene::Size()).draw();
 
-		// GUI 要素描画
+		// ロゴ描画
 		m_gui.logo.resized(Scene::Width() * 0.6).draw(Arg::topCenter = Vec2{ Scene::Center().x, 50 });
+
+		// 猫描画
+		{
+			for (const auto &spawn : getData().spawns)
+			{
+				spawn->draw();
+			}
+		}
+		
+		// GUI 要素描画
 		m_gui.toLevel.draw();
 		m_gui.howToPlayButton.draw();
 		m_gui.howToPlay.draw();
