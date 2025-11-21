@@ -195,7 +195,7 @@ namespace UFOCat::GUI
 		/// @brief OK ボタン
 		Button m_okButton;
 
-		/// @brief グウィンドウの大きさ
+		/// @brief ウィンドウの大きさ
 		SizeF m_windowSize;
 
 		/// @brief 開いているか
@@ -271,5 +271,32 @@ namespace UFOCat::GUI
 	};
 
 	// TODO: 後で作る！！これでダイアログとかもスクロールできるようにする
-	class Scrollable;
+	class Scrollable
+	{
+		RectF m_region;
+
+		RectF m_inner;
+
+		RectF m_bar;
+
+		bool m_isHoverBar = false;
+
+		bool m_scroll(double dy);
+
+		bool m_moveBar(double dy);
+
+		bool m_scrolledByWheel();
+
+		bool m_scrolledByBar();
+
+	public:
+
+		Scrollable() = default;
+
+		Scrollable(const Vec2 &position, const SizeF &viewportSize);
+
+		void update();
+
+		void draw() const;
+	};
 }

@@ -401,6 +401,8 @@ namespace UFOCat::Core
 		/// @return 自分自身の参照
 		CatObject &drawHitArea();
 
+		// TODO: UFOの光にブルームをつけてみたい
+
 		/// @brief オブジェクトが現在画面上に見えているかどうかを取得する
 		/// @return 見えているなら `true`
 		/// @return めちゃくちゃ正確とは限らない、あくまで内部で設定されている外見状態に基づく

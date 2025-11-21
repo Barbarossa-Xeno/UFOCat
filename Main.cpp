@@ -31,13 +31,17 @@ void Main()
 	app.add<Result>(State::Result);
 
 	app.init(State::Title, 1s);
+
+	GUI::Scrollable s{ Vec2{ 10, 10 }, SizeF{ 200, 200 } };
 	
 	while (System::Update())
 	{
-		if (not app.update())
+		/*if (not app.update())
 		{
 			break;
-		}
+		}*/
+		s.update();
+		s.draw();
 	}
 }
 

@@ -107,8 +107,6 @@ namespace UFOCat
 
 			m_gui.howToPlay.isPressedOK();
 		}
-
-		// TODO: タイトル画面でも猫がふわふわしてるといいよね
 	}
 
 	void Title::draw() const
