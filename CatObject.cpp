@@ -180,30 +180,31 @@ namespace UFOCat::Core
 				bool isReached = false;
 
 				// 初めに出現した画面端の位置によって条件を変える
+				// 領域外位置は影のスケールを考慮する
 				switch (m_edgeDirection)
 				{
 				case ScreenEdgeDirection::Top:
 				{
 					// 上から始まったら左上が画面外に出るまで
-					isReached = y > Scene::Height();
+					isReached = y > (Scene::Height() + (m_ClientSize * Math::AbsDiff(1.0, m_shadowScale)).y);
 				}
 				break;
 				case ScreenEdgeDirection::Right:
 				{
 					// 右から始まったら右上が画面外に出るまで
-					isReached = x + m_ClientSize.x < 0;
+					isReached = x + (m_ClientSize * m_shadowScale).x < 0;
 				}
 				break;
 				case ScreenEdgeDirection::Bottom:
 				{
 					// 下から始まったら左下が画面外に出るまで
-					isReached = y + m_ClientSize.y < 0;
+					isReached = y + (m_ClientSize * m_shadowScale).y < 0;
 				}
 				break;
 				case ScreenEdgeDirection::Left:
 				{
 					// 左から始まったら左上が画面外に出るまで
-					isReached = x > Scene::Width();
+					isReached = x > Scene::Width() + (m_ClientSize * Math::AbsDiff(1.0, m_shadowScale)).x;
 				}
 				break;
 				}
@@ -393,18 +394,19 @@ namespace UFOCat::Core
 					// どの端の部分が選択されたかによって
 					switch (m_edgeDirection)
 					{
+						// 領域外の位置はシャドウの大きさも考慮する
 						// 上：y だけ領域外
 						case ScreenEdgeDirection::Top:
 						{
 							x = Random(0, getMaxDisplayedArea().w);
-							y = -m_ClientSize.y;
+							y = -(m_ClientSize * m_shadowScale).y;
 						}
 						break;
 
 						// 右：x だけ領域外
 						case ScreenEdgeDirection::Right:
 						{
-							x = Scene::Width();
+							x = Scene::Width() + (m_ClientSize * Math::AbsDiff(1.0, m_shadowScale)).x;
 							y = Random(0, getMaxDisplayedArea().h);
 						}
 						break;
@@ -413,14 +415,14 @@ namespace UFOCat::Core
 						case ScreenEdgeDirection::Bottom:
 						{
 							x = Random(0, getMaxDisplayedArea().w);
-							y = Scene::Height();
+							y = Scene::Height() + (m_ClientSize * Math::AbsDiff(1.0, m_shadowScale)).y;
 						}
 						break;
 
 						// 左：x だけ領域外
 						case ScreenEdgeDirection::Left:
 						{
-							x = -m_ClientSize.x;
+							x = -(m_ClientSize * m_shadowScale).x;
 							y = Random(0, getMaxDisplayedArea().h);
 						}
 						break;
@@ -575,6 +577,41 @@ namespace UFOCat::Core
 
 		// 描画範囲をクリップ -> スケール変更 -> 任意位置にアルファ値を乗算して描画
 		m_Texture(m_ClipArea).scaled(m_Scale).draw(position, ColorF{ 1.0, m_textureAlpha });
+		return *this;
+	}
+
+	CatObject &CatObject::drawShadow(ColorF color, Vec2 position, double scale)
+	{
+		// 参考
+		// https://siv3d.github.io/ja-jp/tutorial3/render-texture/?h=%E5%BD%B1#5210-%E4%BB%BB%E6%84%8F%E5%BD%A2%E7%8A%B6%E3%81%AE%E3%82%B7%E3%83%A3%E3%83%89%E3%82%A6
+		
+		// 影の形状を描く
+		{
+			// レンダーターゲットを白色透明で初期化
+			const ScopedRenderTarget2D target{ m_renderTextures.ShadowTexture.clear(ColorF{ 1.0, 0.0 }) };
+
+			// RGB 値は無視して、描画された最大のアルファ値を保持するブレンドステートを適用することで
+			// 透明部分以外を取る
+			const ScopedRenderStates2D blend{ BlendState::MaxAlpha };
+
+			// 影を任意方向に落とすため、描画位置をずらす
+			const Transformer2D transform{ Mat3x2::Translate(position.x, position.y) };
+
+			// 描画範囲をクリップ -> 実テクスチャよりも大きいスケールで現在の透明度を反映して描画
+			const double rescale = m_Scale * scale;
+			const auto &region = m_Texture(m_ClipArea).scaled(rescale);
+			region.draw(this->position - region.size * Math::AbsDiff(m_Scale, rescale), ColorF{ 1.0, m_textureAlpha });
+		}
+
+		// ShadowTexture をダウンサンプリング + ガウスぼかし
+		{
+			Shader::Downsample(m_renderTextures.ShadowTexture, m_renderTextures.blur4);
+			Shader::GaussianBlur(m_renderTextures.blur4, m_renderTextures.internal4, m_renderTextures.blur4);
+		}
+
+		// ぼかした影を描く
+		m_renderTextures.blur4.resized(Scene::Size()).draw(color);
+
 		return *this;
 	}
 

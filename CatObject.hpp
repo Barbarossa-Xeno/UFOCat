@@ -85,14 +85,6 @@ namespace UFOCat::Core
 		};
 
 	private:
-
-		/// @brief 使用テクスチャ
-		const Texture m_Texture;
-
-		/// @brief スクリーンでの表示サイズ
-		/// @note あくまでオブジェクトを湧かすときのサイズであって、それ以外の特別な用途では任意の倍率に拡大縮小してよい
-		const SizeF m_ClientSize;
-
 		/// @brief 当たり判定の領域
 		/// @note これもあくまで `m_ClientSize` を基準にしたときの当たり判定領域であって、表示スケールが変わった場合はこれも調整する必要がある
 		Ellipse m_hitArea;
@@ -142,6 +134,17 @@ namespace UFOCat::Core
 		/// bound, cross, appear, appearFromEdge のいずれかを行うように設定されている
 		LevelData::ActionData m_actionData;
 
+		/// @brief `drawShadow()` を実行した際、オブジェクト背面に落とす影のスケール
+		/// @note 画面外の座標を調整するのにつかう
+		double m_shadowScale = 1.05;
+
+		/// @brief 使用テクスチャ
+		const Texture m_Texture;
+
+		/// @brief スクリーンでの表示サイズ
+		/// @note あくまでオブジェクトを湧かすときのサイズであって、それ以外の特別な用途では任意の倍率に拡大縮小してよい
+		const SizeF m_ClientSize;
+
 		/// @brief テクスチャのアルファ値
 		double m_textureAlpha = 1;
 
@@ -158,6 +161,19 @@ namespace UFOCat::Core
 		/// @brief 当たり判定の大きさの倍率
 		/// @note 1 でテクスチャと同じ大きさの楕円になる
 		constexpr static double m_HitAreaScale = 0.8;
+
+		/// @brief ドロップシャドウなどにつかうレンダーテクスチャ
+		const struct
+		{
+			// シーン全体を白色で透明なレンダーテクスチャで覆う
+			const RenderTexture ShadowTexture{ Scene::Size(), ColorF{ 1.0, 0.0 } };
+
+			// 1 / 4 にダウンサンプリングする、ブラー用のレンダーテクスチャ
+			const RenderTexture blur4{ ShadowTexture.size() / 4 };
+
+			// ブラー用の中間テクスチャ
+			const RenderTexture internal4{ ShadowTexture.size() / 4 };
+		} m_renderTextures;
 
 		/* -- ゲッター -- */
 
@@ -374,6 +390,10 @@ namespace UFOCat::Core
 		/// @brief オブジェクトを描画する
 		/// @return 自分自身の参照
 		CatObject &draw();
+
+		/// @brief 影を描画する
+		/// @return 自分自身の参照
+		CatObject& drawShadow(ColorF color = ColorF{ 0.0, 0.5 }, Vec2 position = Vec2::Zero(), double scale = 1.05);
 
 		/// @brief 当たり判定領域を描画する（デバッグ用）
 		/// @return 自分自身の参照

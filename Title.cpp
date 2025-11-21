@@ -79,7 +79,10 @@ namespace UFOCat
 			// 新しい unique_ptr<CatObject> の ** リストをムーブして ** 代入する
 		}
 
+		// 背景を決める
 		m_background = getData().backgrounds.choice();
+
+		
 	}
 
 	void Title::update()
@@ -122,7 +125,7 @@ namespace UFOCat
 		{
 			for (const auto &spawn : getData().spawns)
 			{
-				spawn->draw();
+				spawn->drawShadow().draw();
 			}
 		}
 		
