@@ -557,9 +557,49 @@ namespace UFOCat
 		throw Error(U"`level_data.json is invalid format.`");
 	}
 
-	Array<Texture> UFOCat::LoadBackgrounds()
+	Array<Util::BackgroundData> UFOCat::LoadBackgrounds()
 	{
-		return FileSystem::DirectoryContents(U"texture/background").map([](const String& path) { return Texture{ path }; });
+		// 背景画像をイメージとして読み込む
+		auto &&bgs = FileSystem::DirectoryContents(U"texture/background").map([](const String &path) { return Image{ path }; });
+
+		// 各背景画像のピクセルの色の平均値
+		auto &&means = bgs.map([](const Image &bg)
+		{			
+			// 全てのピクセルの色をリストで返す
+			// というわけで、この map の戻り値は 各画像のピクセル配列の配列 = 二次元配列 になる
+			return bg.asArray();
+		})
+		.map([](const Array<Color> &pixels)
+		{
+			// 次はそれぞれのイメージのピクセルの平均をとる
+
+			// 各チャンネルの和を入れる
+			uint32 sumR = 0;
+			uint32 sumG = 0;
+			uint32 sumB = 0;
+
+			for (auto &&pixel : pixels) {
+				sumR += pixel.r;
+				sumG += pixel.g;
+				sumB += pixel.b;
+			}
+
+			// ピクセル数で割って平均化
+			const auto &[aveR, aveG, aveB] = Vec3{ sumR, sumG, sumB } / pixels.size();
+
+			// もとの色は Color なので 和を平均化すると 0 ~ 255 の値にになっているはず
+			// それをさらに 255 で割って 0 ~ 1 に正規化
+			return ColorF{ aveR / 255, aveG / 255, aveB / 255 };
+		});
+
+		// イメージと色のリスト2つに対して並列にループ
+		return Range(0, bgs.size() - 1).map([&](size_t i)
+		{
+			// 平均色をモノクロ -> 色反転 したらだいたい反対の色になって見やすくなる
+			const ColorF inversed{ 1.0 - means[i].grayscale() };
+
+			return Util::BackgroundData{ Texture{ bgs[i] }, inversed };
+		});
 	}
 }
 

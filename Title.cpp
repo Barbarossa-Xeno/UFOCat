@@ -79,10 +79,8 @@ namespace UFOCat
 			// 新しい unique_ptr<CatObject> の ** リストをムーブして ** 代入する
 		}
 
-		// 背景を決める
-		m_background = getData().backgrounds.choice();
-
-		
+		// 背景を決める		
+		m_bg = getData().backgrounds.choice();
 	}
 
 	void Title::update()
@@ -116,7 +114,7 @@ namespace UFOCat
 	void Title::draw() const
 	{
 		// 背景描画（4:3 固定）
-		m_background.fitted(Scene::Size()).draw();
+		m_bg.texture.fitted(Scene::Size()).draw();
 
 		// ロゴ描画
 		m_gui.logo.resized(Scene::Width() * 0.6).draw(Arg::topCenter = Vec2{ Scene::Center().x, 50 });
@@ -125,10 +123,10 @@ namespace UFOCat
 		{
 			for (const auto &spawn : getData().spawns)
 			{
-				spawn->drawShadow().draw();
+				spawn->drawShadow(m_bg.shadowColor).draw();
 			}
 		}
-		
+
 		// GUI 要素描画
 		m_gui.toLevel.draw();
 		m_gui.howToPlayButton.draw();

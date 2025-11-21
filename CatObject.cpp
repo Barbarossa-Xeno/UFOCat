@@ -582,9 +582,8 @@ namespace UFOCat::Core
 
 	CatObject &CatObject::drawShadow(ColorF color, Vec2 position, double scale)
 	{
-		// 参考
-		// https://siv3d.github.io/ja-jp/tutorial3/render-texture/?h=%E5%BD%B1#5210-%E4%BB%BB%E6%84%8F%E5%BD%A2%E7%8A%B6%E3%81%AE%E3%82%B7%E3%83%A3%E3%83%89%E3%82%A6
-		
+		m_shadowScale = scale;
+
 		// 影の形状を描く
 		{
 			// レンダーターゲットを白色透明で初期化

@@ -23,8 +23,8 @@ namespace UFOCat
 		}
 		m_gui;
 
-		/// @brief 背景画像
-		Texture m_background;
+		/// @brief 背景データ
+		Util::BackgroundData m_bg;
 
 		/// @brief 「あそび方」に表示するテキスト
 		const String m_howToPlayText =

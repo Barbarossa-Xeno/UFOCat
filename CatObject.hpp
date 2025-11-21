@@ -134,9 +134,11 @@ namespace UFOCat::Core
 		/// bound, cross, appear, appearFromEdge のいずれかを行うように設定されている
 		LevelData::ActionData m_actionData;
 
-		/// @brief `drawShadow()` を実行した際、オブジェクト背面に落とす影のスケール
+		/// @brief `drawShadow()` を実行した際、オブジェクト背面に落とす影のスケール @n
+		/// `drawShadow()` で引数の変更に応じて更新され続ける
 		/// @note 画面外の座標を調整するのにつかう
-		double m_shadowScale = 1.05;
+		/// https://siv3d.github.io/ja-jp/tutorial3/render-texture/?h=%E5%BD%B1#5210-%E4%BB%BB%E6%84%8F%E5%BD%A2%E7%8A%B6%E3%81%AE%E3%82%B7%E3%83%A3%E3%83%89%E3%82%A6
+		double m_shadowScale = 1.0;
 
 		/// @brief 使用テクスチャ
 		const Texture m_Texture;

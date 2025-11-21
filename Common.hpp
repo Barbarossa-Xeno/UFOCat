@@ -14,6 +14,16 @@ namespace UFOCat
 	/// @note Optional でもよかったけど、いちいち value() ってするのが面倒だったけん
 	constexpr size_t InvalidIndex = 44;
 
+	namespace Util
+	{
+		struct BackgroundData
+		{
+			Texture texture;
+
+			ColorF shadowColor;
+		};
+	}
+
 	namespace Core
 	{
 		using ::UFOCat::InvalidIndex; // これで Core 内で未修飾 InvalidIndex が使える
@@ -142,8 +152,8 @@ namespace UFOCat
 			/// @brief アプリを起動してから終えるまで集計するスコアのリスト
 			Array<Score::Generic> scores;
 
-			/// @brief 使用する全ての背景画像のテクスチャ
-			Array<Texture> backgrounds;
+			/// @brief 使用する全ての背景画像のテクスチャとその上から猫を描画するときに使う影の色の組み合わせを記録するリスト
+			Array<Util::BackgroundData> backgrounds;
 
 			/// @brief 現在のターゲットのインデックスを格納する変数
 			size_t targetIndex = InvalidIndex;
@@ -174,9 +184,9 @@ namespace UFOCat
 	/// @return 全てのフェーズのリスト
 	Array<LevelData> LoadLevelData();
 
-	/// @brief 使用する背景画像を読み込んでそれら全てのテクスチャを作成する
-	/// @return 全ての背景画像のテクスチャリスト
-	Array<Texture> LoadBackgrounds();
+	/// @brief 使用する背景画像を読み込んでそれら全てのテクスチャと影の色のペアを作成する
+	/// @return 全ての背景画像のテクスチャと使用する影の色のペアのリスト
+	Array<Util::BackgroundData> LoadBackgrounds();
 
 	using App = SceneManager<State, GameData>;
 }

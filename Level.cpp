@@ -47,7 +47,7 @@ namespace UFOCat
 		// テクスチャ取得
 		{
 			m_gui.timer = Texture{ U"texture/timer.png", TextureDesc::Mipped };
-			m_background = getData().backgrounds.choice();
+			m_bg = getData().backgrounds.choice();
 		}
 
 		// 前回レベルでスポーンした猫を吹っ飛ばし、unique_ptr も解放する
@@ -436,7 +436,7 @@ namespace UFOCat
 
 	void Level::draw() const
 	{
-		m_background.fitted(Scene::Size()).draw();
+		m_bg.texture.fitted(Scene::Size()).draw();
 
 		// # 共通処理（背面）
 		{
@@ -448,7 +448,7 @@ namespace UFOCat
 					continue;
 				}
 
-				cat->draw();
+				cat->drawShadow(m_bg.shadowColor).draw();
 			}
 		}
 

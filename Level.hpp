@@ -68,7 +68,8 @@ namespace UFOCat
 			Texture timer;
 		} m_gui;
 
-		Texture m_background;
+		/// @brief 背景データ
+		Util::BackgroundData m_bg;
 
 		/* -- ゲッター / セッター -- */
 
