@@ -273,21 +273,61 @@ namespace UFOCat::GUI
 	// TODO: 後で作る！！これでダイアログとかもスクロールできるようにする
 	class Scrollable
 	{
+		/// @brief スクロール可能なコンポーネント
+		struct ScrollableComponent
+		{
+			/// @brief 描画領域
+			RectF region;
+
+			/// @brief スクロール範囲の Y 座標の最小値
+			double minY;
+
+			/// @brief スクロール範囲の X 座標の最大値
+			double maxY;
+
+			ScrollableComponent() = default;
+
+			/// @brief コンストラクタ
+			/// @param region 描画領域
+			/// @param minY スクロール最小値
+			/// @param maxY スクロール最大値
+			ScrollableComponent(const RectF& region, double minY, double maxY);
+
+			/// @brief スクロール範囲を取得する
+			/// @return 最大値 - 最小値
+			double getRange() const;
+		};
+
+
 		RectF m_region;
 
-		RectF m_inner;
+		/// @brief ビューポートの中の要素
+		ScrollableComponent m_inner;
 
-		RectF m_bar;
+		/// @brief スクロールバー
+		ScrollableComponent m_bar;
 
+		/// @brief 現在のスクロール割合 (0.0 ~ 1.0)
+		double m_progress = 0.0;
+
+		/// @brief スクロールバーがホバーされているか
+		/// @note バーの色を変えるときに使う
 		bool m_isHoverBar = false;
 
-		bool m_scroll(double dy);
+		bool m_shouldScroll = true;
 
-		bool m_moveBar(double dy);
+		constexpr static SizeF m_BarSize{ 5, 30 };
 
-		bool m_scrolledByWheel();
+		/// @brief スクロール可能要素を動かす
+		/// @param target スクロールさせる要素
+		/// @param dy Y 方向の移動量
+		/// @return 自分自身の参照
+		Scrollable& m_scroll(ScrollableComponent &target, double dy);
 
-		bool m_scrolledByBar();
+		/// @brief 直接操作しないスクロール要素を現在のスクロール進捗に同期させる
+		/// @param target スクロールを合わせたい要素
+		/// @return 自分自身の参照
+		Scrollable &m_scrollSync(ScrollableComponent &target);
 
 	public:
 

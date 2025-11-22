@@ -32,7 +32,7 @@ void Main()
 
 	app.init(State::Title, 1s);
 
-	GUI::Scrollable s{ Vec2{ 10, 10 }, SizeF{ 200, 200 } };
+	GUI::Scrollable s{ Vec2{ 10, 10 }, SizeF{ 500, 400 } };
 	
 	while (System::Update())
 	{

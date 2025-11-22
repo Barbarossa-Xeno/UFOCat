@@ -2,78 +2,93 @@
 
 namespace UFOCat::GUI
 {
-	Scrollable::Scrollable(const Vec2 &position, const SizeF &viewportSize)
-		: m_region{ position, viewportSize }
-		// 一旦仮の領域で y 座標だけはみ出るパターンを試す
-		, m_inner{ Vec2::Zero(), SizeF{ m_region.size.x, 600 } }
-		, m_bar{ Arg::topRight(viewportSize.x - viewportSize.x * 0.025, viewportSize.x * 0.025), SizeF{ viewportSize.x * 0.025, 30 } }
+	Scrollable::ScrollableComponent::ScrollableComponent(const RectF& region, double minY, double maxY)
+		: region{ region }
+		, minY{ minY }
+		, maxY{ maxY }
 	{}
 
-	bool Scrollable::m_scroll(double dy)
+	double Scrollable::ScrollableComponent::getRange() const
 	{
-		const double next = m_inner.y + dy;
-
-		const double min = -Math::AbsDiff(m_inner.size.y, m_region.size.y);
-
-		const double max = 0.0;
-
-		m_inner.y = Clamp(next, min, max);
-
-		return InRange(next, min, max);
+		return maxY - minY;
 	}
 
-	bool Scrollable::m_moveBar(double dy)
+	Scrollable::Scrollable(const Vec2 &position, const SizeF &viewportSize)
+		: m_region{ position, viewportSize }
+		// 一旦仮の領域 あとでちゃんと既成のRectを代入させるようにする
+		, m_inner
+		{
+			{ Vec2::Zero(), SizeF{ m_region.size.x, 600 } },
+			-AbsDiff(m_region.size.y, 600.0),
+			0.0
+		}
+		, m_bar
+		{
+			{ Arg::topRight(viewportSize.x - m_BarSize.x, m_BarSize.x), m_BarSize },
+			m_BarSize.x,
+			m_region.h - m_BarSize.y - m_BarSize.x
+		}
+		, m_shouldScroll{ m_inner.region.h > m_region.h }
+	{}
+
+	Scrollable &Scrollable::m_scroll(ScrollableComponent &target, double dy)
 	{
-		Vec2 test = m_bar.pos.movedBy(0, dy);
+		// 次の座標を計算
+		const double next = target.region.y + dy;
 
-		if (not (m_bar.w <= test.y))
-		{
-			m_bar.setPos(m_bar.x, m_bar.w);
+		// 次の座標が最小値と最大値の間に収まるようにする
+		target.region.y = Clamp(next, target.minY, target.maxY);
 
-			return false;
-		}
-		else if (not (test.y <= (m_region.h - m_bar.h - m_bar.w)))
-		{
-			m_bar.setPos(m_bar.x, m_region.h - m_bar.h - m_bar.w);
+		// 現在のターゲットを基準にしたスクロール進捗を計算
+		m_progress = Clamp(Abs(target.region.y) / target.getRange(), 0.0, 1.0);
 
-			return false;
-		}
-		else
-		{
-			m_bar.moveBy(0, dy);
-
-			return true;
-		}
+		return *this;
 	}
 
-	// 
-	bool Scrollable::m_scrolledByWheel()
+	Scrollable &Scrollable::m_scrollSync(ScrollableComponent &target)
 	{
-		if (m_region.mouseOver())
-		{
+		// ターゲット要素のスクロール方向を求める
+		// 下に動かすことで、要素的には上に移動する場合は、スクロール範を絶対値としたときの
+		// 最小値が最大値よりも大きくなるはずなので、それで判定
+		double direction = Abs(target.minY) > Abs(target.maxY) ? -1 : 1;
 
-			if (-Math::AbsDiff(m_inner.size.y, m_region.size.y) <= m_inner.pos.y and m_inner.pos.y <= 0)
-			{
-				// スクロールスピードに比例して
-				return m_scroll(Mouse::Wheel() * -30);
-			}
-		}
-	}
+		// スクロール進捗をターゲットの位置に合わせる
+		target.region.y = Clamp(direction * m_progress * target.getRange(), target.minY, target.maxY);
 
-	bool Scrollable::m_scrolledByBar()
-	{
-		m_isHoverBar = m_bar.movedBy(m_bar.w, 0).stretched(m_bar.w, m_bar.pos.y).mouseOver();
-
-		if (m_isHoverBar and MouseL.pressed())
-		{
-			return m_moveBar(Cursor::DeltaF().y);
-		}
+		return *this;
 	}
 
 	void Scrollable::update()
 	{
-		m_scrolledByWheel();
-		m_scrolledByBar();
+		if (not m_shouldScroll)
+		{
+			// スクロールの必要がないなら何もしない
+			return;
+		}
+
+		// 中身にマウスカーソルがあるとき
+		if (m_region.mouseOver())
+		{
+			// マウスホイールの回転に合わせてスクロール
+			m_scroll(m_inner, Mouse::Wheel() * -30).m_scrollSync(m_bar);
+		}
+
+		// スクロールバーの当たり判定を広げておく
+		m_isHoverBar = m_bar.region.stretched(4 * m_bar.region.w, m_bar.region.h)
+								   .movedBy(2 * m_bar.region.w, m_bar.region.h / 4)
+								   .mouseOver();
+
+		// スクロールバー付近にマウスがあれば
+		if (m_isHoverBar)
+		{
+			Cursor::RequestStyle(CursorStyle::Hand);
+
+			if (MouseL.pressed())
+			{
+				// 左クリックをホールドしながら上下させるとスクロールする
+				m_scroll(m_bar, Cursor::DeltaF().y).m_scrollSync(m_inner);
+			}
+		}
 	}
 
 	void Scrollable::draw() const
@@ -84,13 +99,16 @@ namespace UFOCat::GUI
 		{
 			const ScopedViewport2D viewport{ m_region.asRect() };
 
-			m_inner.draw(Palette::Lightseagreen);
+			m_inner.region.draw(Palette::Lightseagreen);
 
-			FontAsset(Util::FontFamily::YuseiMagic)(U"てすとてすとてすとてすとてすとてすと").draw(m_inner);
+			FontAsset(Util::FontFamily::YuseiMagic)(U"てすとてすとてすとてすとてすとてすと").draw(m_inner.region);
 
-			m_bar.rounded(2)
-				 .drawShadow(Vec2::Zero(), 2, 1, Palette::Gray)
-				 .draw(m_isHoverBar ? Palette::Lightgray : Palette::White);
+			if (m_shouldScroll)
+			{
+				m_bar.region.rounded(2)
+							.drawShadow(Vec2::Zero(), 2, 1, Palette::Gray)
+							.draw(m_isHoverBar ? Palette::Lightgray : Palette::White);
+			}
 		}
 
 		
