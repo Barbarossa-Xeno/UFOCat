@@ -11,26 +11,15 @@ namespace UFOCat::GUI
 
 	bool Scrollable::m_scroll(double dy)
 	{
-		Vec2 test = m_inner.pos.movedBy(0, dy);
+		const double next = m_inner.y + dy;
 
-		if (not (-Math::AbsDiff(m_inner.size.y, m_region.size.y) <= test.y))
-		{
-			m_inner.setPos(m_inner.x, -Math::AbsDiff(m_inner.size.y, m_region.size.y));
+		const double min = -Math::AbsDiff(m_inner.size.y, m_region.size.y);
 
-			return false;
-		}
-		else if (not (test.y <= 0))
-		{
-			m_inner.setPos(m_inner.x, 0);
+		const double max = 0.0;
 
-			return false;
-		}
-		else
-		{
-			m_inner.moveBy(0, dy);
+		m_inner.y = Clamp(next, min, max);
 
-			return true;
-		}
+		return InRange(next, min, max);
 	}
 
 	bool Scrollable::m_moveBar(double dy)
@@ -77,9 +66,7 @@ namespace UFOCat::GUI
 
 		if (m_isHoverBar and MouseL.pressed())
 		{
-			bool res = m_moveBar(Cursor::DeltaF().y );
-
-			return res;
+			return m_moveBar(Cursor::DeltaF().y);
 		}
 	}
 
