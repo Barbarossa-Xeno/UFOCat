@@ -4,11 +4,22 @@
 
 namespace UFOCat::GUI
 {
+
+	class IDrawable
+	{
+	protected:
+		/// @brief この GUI コンポーネントの画面上の領域
+		RectF m_region;
+
+	public:
+		/// @brief 描画する
+		virtual void draw() const = 0;
+	};
+
 	/// @brief ボタンコンポーネント @n
 	/// デフォルトのフォントは 油性マジック を使用する
-	class Button
+	class Button : public IDrawable
 	{
-
 		Font m_font = FontAsset(Util::FontFamily::YuseiMagic);
 
 		double m_fontSize;
@@ -18,9 +29,6 @@ namespace UFOCat::GUI
 		bool m_isEnabled = true;
 
 		Vec2 m_padding = { 30.0, 10.0 };
-
-		/// @brief ボタンの描画領域
-		RectF m_region;
 
 	public:
 
@@ -99,15 +107,12 @@ namespace UFOCat::GUI
 		/// @return 押されたら `true`
 		bool isPressed() const;
 
-		// TODO: 色の指定もほしいかも
-		void draw() const;
+		void draw() const override;
 	};
 
 	/// @brief プログレスバーを描画するコンポーネント
-	class ProgressBar
+	class ProgressBar : public IDrawable
 	{
-		RectF m_region;
-
 		/// @brief 進捗状況 (0 ~ 1)
 		double m_progress = 0.0;
 
@@ -175,17 +180,15 @@ namespace UFOCat::GUI
 		ProgressBar &setPositionAt(const Vec2 &position);
 
 		/// @brief 描画する
-		void draw() const;
+		void draw() const override;
 	};
 
 	/// @brief 簡単なテキストをウィンドウとして 画面中央に表示し、1ボタンで閉じるコンポーネント
 	/// デフォルトのフォントは 油性マジック を使用する
 	/// 現時点ではボタンのフォントを変更することはできない（しないと思う）し、ボタンのフォントサイズはウィンドウ幅によって決まります
-	class MessageBox
+	class MessageBox : public IDrawable
 	{
 	protected:
-		RectF m_region;
-
 		Font m_font = FontAsset(Util::FontFamily::YuseiMagic);
 
 		double m_fontSize;
@@ -270,8 +273,26 @@ namespace UFOCat::GUI
 		void draw() const override;
 	};
 
-	// TODO: 後で作る！！これでダイアログとかもスクロールできるようにする
-	class Scrollable
+	class TextBox : public IDrawable
+	{
+		DrawableText m_text;
+
+		double m_fontSize;
+
+		TextBox() = default;
+
+		TextBox(const DrawableText& text, double fontSize, const Vec2& position);
+
+	public:
+		TextBox& set(const DrawableText &text, double fontSize, const Vec2 &position);
+
+		void draw() const override;
+
+		void draw(const SizeF &size) const;
+	};
+
+	// TODO: 将来的にはクラステンプレートを入れれるようにして、色んなクラス（ある1つのクラスを継承しているのが前提）をスクロールできるようにできたらいい
+	class Scrollable : IDrawable
 	{
 		/// @brief スクロール可能なコンポーネント
 		struct ScrollableComponent
@@ -298,14 +319,13 @@ namespace UFOCat::GUI
 			double getRange() const;
 		};
 
-
-		RectF m_region;
-
 		/// @brief ビューポートの中の要素
 		ScrollableComponent m_inner;
 
 		/// @brief スクロールバー
 		ScrollableComponent m_bar;
+
+		Array<std::unique_ptr<IDrawable>> m_components;
 
 		/// @brief 現在のスクロール割合 (0.0 ~ 1.0)
 		double m_progress = 0.0;
@@ -316,7 +336,7 @@ namespace UFOCat::GUI
 
 		bool m_shouldScroll = true;
 
-		constexpr static SizeF m_BarSize{ 5, 30 };
+		constexpr static SizeF m_BarSize{ 5, 60 };
 
 		/// @brief スクロール可能要素を動かす
 		/// @param target スクロールさせる要素

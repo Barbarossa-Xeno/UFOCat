@@ -8,9 +8,10 @@ namespace UFOCat::GUI
 		, m_text(text)
 		, m_isEnabled(isEnabled)
 		, m_padding(padding)
+	{
 		// フォントの描画領域 (左上(0, 0)の位置) を特定して、パディング分を足したサイズで Rect を作成
-		, m_region{ m_font(m_text).region(fontSize).size + m_padding }
-	{}
+		m_region = RectF{ m_font(m_text).region(fontSize).size + m_padding };
+	}
 
 	RectF Button::getRegion() const
 	{
@@ -43,6 +44,12 @@ namespace UFOCat::GUI
 
 		// テキストを変えたら描画領域も更新する
 		m_region = RectF{ m_font(m_text).region(m_fontSize).size + m_padding };
+		return *this;
+	}
+
+	Button& Button::setPosition(const Vec2 &position)
+	{
+		m_region.setPos(position);
 		return *this;
 	}
 

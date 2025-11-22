@@ -3,11 +3,12 @@
 namespace UFOCat::GUI
 {
 	ProgressBar::ProgressBar(const SizeF &size, ColorF color, double roundness, double progress)
-		: m_region{ size }
-		, m_color{ color }
+		: m_color{ color }
 		, m_roundness{ roundness }
 		, m_progress{ progress }
-	{}
+	{
+		m_region = RectF{ size };
+	}
 
 	RectF ProgressBar::getRegion() const
 	{

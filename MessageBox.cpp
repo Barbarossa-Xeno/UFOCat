@@ -9,12 +9,13 @@ namespace UFOCat::GUI
 	}
 
 	MessageBox::MessageBox(const Font &font, double fontSize, const String &text, const SizeF &windowSize)
-		: m_region{ Arg::center = Scene::Center(), windowSize }
-		, m_font{ font }
+		: m_font{ font }
 		, m_fontSize{ fontSize }
 		, m_text{ text }
 		, m_okButton{ font, Ceil(m_getButtonTextSize()), U"OK" }
 	{
+		m_region = RectF{ Arg::center = Scene::Center(), windowSize };
+
 		// ボタンは下部中央
 		m_okButton.setPosition(Arg::bottomCenter = Vec2{ m_region.centerX(), m_region.bottomCenter().y - 20 });
 	}
