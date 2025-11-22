@@ -33,6 +33,8 @@ void Main()
 	app.init(State::Title, 1s);
 
 	GUI::Scrollable s{ Vec2{ 10, 10 }, SizeF{ 500, 400 } };
+	GUI::TextBox t{ FontAsset(Util::FontFamily::YuseiMagic)(U"てすともじれつ"), 12, { 0, 20 } };
+	s.addContents(t);
 	
 	while (System::Update())
 	{

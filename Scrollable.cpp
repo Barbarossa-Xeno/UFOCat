@@ -14,22 +14,23 @@ namespace UFOCat::GUI
 	}
 
 	Scrollable::Scrollable(const Vec2 &position, const SizeF &viewportSize)
-		: m_region{ position, viewportSize }
 		// 一旦仮の領域 あとでちゃんと既成のRectを代入させるようにする
-		, m_inner
+		: m_inner
 		{
-			{ Vec2::Zero(), SizeF{ m_region.size.x, 600 } },
-			-AbsDiff(m_region.size.y, 600.0),
+			{ Vec2::Zero(), SizeF{ viewportSize.x, 600 } },
+			-AbsDiff(viewportSize.y, 600.0),
 			0.0
 		}
 		, m_bar
 		{
 			{ Arg::topRight(viewportSize.x - m_BarSize.x, m_BarSize.x), m_BarSize },
 			m_BarSize.x,
-			m_region.h - m_BarSize.y - m_BarSize.x
+			viewportSize.y - m_BarSize.y - m_BarSize.x
 		}
-		, m_shouldScroll{ m_inner.region.h > m_region.h }
-	{}
+		, m_shouldScroll{ m_inner.region.h > viewportSize.y }
+	{
+		m_region = RectF{ position, viewportSize };
+	}
 
 	Scrollable &Scrollable::m_scroll(ScrollableComponent &target, double dy)
 	{
@@ -89,6 +90,11 @@ namespace UFOCat::GUI
 				m_scroll(m_bar, Cursor::DeltaF().y).m_scrollSync(m_inner);
 			}
 		}
+
+		/*for (const auto& content : m_contents)
+		{
+			content->
+		}*/
 	}
 
 	void Scrollable::draw() const
@@ -99,9 +105,15 @@ namespace UFOCat::GUI
 		{
 			const ScopedViewport2D viewport{ m_region.asRect() };
 
-			m_inner.region.draw(Palette::Lightseagreen);
+			// FontAsset(Util::FontFamily::YuseiMagic)(U"てすとてすとてすとてすとてすとてすと").draw(m_inner.region);
 
-			FontAsset(Util::FontFamily::YuseiMagic)(U"てすとてすとてすとてすとてすとてすと").draw(m_inner.region);
+			if (not m_contents.empty())
+			{
+				for (const auto& content : m_contents)
+				{
+					content->draw();
+				}
+			}
 
 			if (m_shouldScroll)
 			{

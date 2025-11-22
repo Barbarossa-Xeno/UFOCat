@@ -47,60 +47,6 @@ namespace UFOCat::GUI
 		return *this;
 	}
 
-	Button& Button::setPosition(const Vec2 &position)
-	{
-		m_region.setPos(position);
-		return *this;
-	}
-
-	Button& Button::setPosition(const Arg::topCenter_<Vec2>& position)
-	{
-		m_region.setPos(position);
-		return *this;
-	}
-
-	Button& Button::setPosition(const Arg::topRight_<Vec2>& position)
-	{
-		m_region.setPos(position);
-		return *this;
-	}
-
-	Button& Button::setPosition(const Arg::leftCenter_<Vec2>& position)
-	{
-		m_region.setPos(position);
-		return *this;
-	}
-
-	Button& Button::setPosition(const Arg::rightCenter_<Vec2>& position)
-	{
-		m_region.setPos(position);
-		return *this;
-	}
-
-	Button& Button::setPosition(const Arg::bottomLeft_<Vec2>& position)
-	{
-		m_region.setPos(position);
-		return *this;
-	}
-
-	Button& Button::setPosition(const Arg::bottomCenter_<Vec2>& position)
-	{
-		m_region.setPos(position);
-		return *this;
-	}
-
-	Button& Button::setPosition(const Arg::bottomRight_<Vec2>& position)
-	{
-		m_region.setPos(position);
-		return *this;
-	}
-
-	Button& Button::setPositionAt(const Vec2& position)
-	{
-		m_region.setPos(Arg::center = position);
-		return *this;
-	}
-
 	bool Button::isPressed() const
 	{	
 		// マウスカーソルがボタンの上にある場合

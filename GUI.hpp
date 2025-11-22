@@ -12,13 +12,100 @@ namespace UFOCat::GUI
 		RectF m_region;
 
 	public:
+		virtual ~IDrawable() = default;
+
+		const RectF& getRegion() const
+		{
+			return m_region;
+		}
+
 		/// @brief 描画する
 		virtual void draw() const = 0;
 	};
 
+	template <class T>
+	class Placeable : public IDrawable
+	{
+	public:
+		/// @brief 描画位置に左上位置を指定する
+		/// @param position 左上位置
+		inline T &setPosition(const Vec2 &position)
+		{
+			m_region.setPos(position);
+
+			// ダウンキャスト
+			// T はこのクラスを継承してつくられた派生であるのが前提のため、このキャストは成功する
+			return static_cast<T&>(*this);
+		}
+
+		/// @brief 描画位置に中央上位置を指定する
+		/// @param position 中央上位置
+		inline T &setPosition(const Arg::topCenter_<Vec2> &position)
+		{
+			m_region.setPos(position);
+			return static_cast<T&>(*this);
+		}
+
+		/// @brief 描画位置に右上位置を指定する
+		/// @param position 右上位置
+		inline T &setPosition(const Arg::topRight_<Vec2> &position)
+		{
+			m_region.setPos(position);
+			return static_cast<T&>(*this);
+		}
+
+		/// @brief 描画位置に中央左位置を指定する
+		/// @param position 中央左上位置
+		inline T &setPosition(const Arg::leftCenter_<Vec2>& position)
+		{
+			m_region.setPos(position);
+			return static_cast<T&>(*this);
+		}
+
+		/// @brief 描画位置に中央右位置を指定する
+		/// @param position 中央右位置
+		inline T &setPosition(const Arg::rightCenter_<Vec2> &position)
+		{
+			m_region.setPos(position);
+			return static_cast<T&>(*this);
+		}
+
+		/// @brief 描画位置に左下位置を指定する
+		/// @param position 左下位置
+		inline T &setPosition(const Arg::bottomLeft_<Vec2> &position)
+		{
+			m_region.setPos(position);
+			return static_cast<T&>(*this);
+		}
+
+		/// @brief 描画位置に中央下位置を指定する
+		/// @param position 中央下位置
+		inline T &setPosition(const Arg::bottomCenter_<Vec2> &position)
+		{
+			m_region.setPos(position);
+			return static_cast<T&>(*this);
+		}
+
+		/// @brief 描画位置に右下位置を指定しボタンを描画する
+		/// @param position 右下位置
+		inline T &setPosition(const Arg::bottomRight_<Vec2> &position)
+		{
+			m_region.setPos(position);
+			return static_cast<T&>(*this);
+		}
+
+		/// @brief 描画位置に中央位置を指定する
+		/// @param position 中央位置
+		inline T &setPositionAt(const Vec2 &position)
+		{
+			m_region.setPos(Arg::center = position);
+			return static_cast<T&>(*this);
+		}
+	};
+
 	/// @brief ボタンコンポーネント @n
 	/// デフォルトのフォントは 油性マジック を使用する
-	class Button : public IDrawable
+	class Button : public Placeable<Button>
 	{
 		Font m_font = FontAsset(Util::FontFamily::YuseiMagic);
 
@@ -67,42 +154,6 @@ namespace UFOCat::GUI
 		/// @return 
 		Button &setText(const String &text);
 
-		/// @brief 描画位置に左上位置を指定する
-		/// @param position 左上位置
-		Button &setPosition(const Vec2& position);
-
-		/// @brief 描画位置に中央上位置を指定する
-		/// @param position 中央上位置
-		Button &setPosition(const Arg::topCenter_<Vec2>& position);
-
-		/// @brief 描画位置に右上位置を指定する
-		/// @param position 右上位置
-		Button &setPosition(const Arg::topRight_<Vec2>& position);
-
-		/// @brief 描画位置に中央左位置を指定する
-		/// @param position 中央左上位置
-		Button &setPosition(const Arg::leftCenter_<Vec2>& position);
-
-		/// @brief 描画位置に中央右位置を指定する
-		/// @param position 中央右位置
-		Button &setPosition(const Arg::rightCenter_<Vec2>& position);
-
-		/// @brief 描画位置に左下位置を指定する
-		/// @param position 左下位置
-		Button &setPosition(const Arg::bottomLeft_<Vec2>& position);
-
-		/// @brief 描画位置に中央下位置を指定する
-		/// @param position 中央下位置
-		Button &setPosition(const Arg::bottomCenter_<Vec2>& position);
-
-		/// @brief 描画位置に右下位置を指定しボタンを描画する
-		/// @param position 右下位置
-		Button &setPosition(const Arg::bottomRight_<Vec2>& position);
-
-		/// @brief 描画位置に中央位置を指定する
-		/// @param position 中央位置
-		Button &setPositionAt(const Vec2& position);
-
 		/// @brief ボタンが押されたかを返す
 		/// @return 押されたら `true`
 		bool isPressed() const;
@@ -111,7 +162,7 @@ namespace UFOCat::GUI
 	};
 
 	/// @brief プログレスバーを描画するコンポーネント
-	class ProgressBar : public IDrawable
+	class ProgressBar : public Placeable<ProgressBar>
 	{
 		/// @brief 進捗状況 (0 ~ 1)
 		double m_progress = 0.0;
@@ -142,42 +193,6 @@ namespace UFOCat::GUI
 		/// @brief プログレスバーの値を設定する
 		/// @param progress パラメータ (0.0 〜 1.0)
 		ProgressBar &setProgress(double progress);
-
-		/// @brief 左上位置を指定する
-		/// @param position 左上位置
-		ProgressBar &setPosition(const Vec2& position);
-
-		/// @brief 中央上位置を指定する
-		/// @param position 中央上位置
-		ProgressBar &setPosition(const Arg::topCenter_<Vec2>& position);
-
-		/// @brief 右上位置を指定する
-		/// @param position 右上位置
-		ProgressBar &setPosition(const Arg::topRight_<Vec2>& position);
-
-		/// @brief 中央左位置を指定する
-		/// @param position 中央左上位置
-		ProgressBar &setPosition(const Arg::leftCenter_<Vec2>& position);
-
-		/// @brief 中央右位置を指定する
-		/// @param position 中央右位置
-		ProgressBar &setPosition(const Arg::rightCenter_<Vec2>& position);
-
-		/// @brief 左下位置を指定する
-		/// @param position 左下位置
-		ProgressBar &setPosition(const Arg::bottomLeft_<Vec2>& position);
-
-		/// @brief 中央下位置を指定する
-		/// @param position 中央下位置
-		ProgressBar &setPosition(const Arg::bottomCenter_<Vec2>& position);
-
-		/// @brief 右下位置を指定する
-		/// @param position 右下位置
-		ProgressBar &setPosition(const Arg::bottomRight_<Vec2>& position);
-
-		/// @brief 中央位置を指定する
-		/// @param position 中央位置
-		ProgressBar &setPositionAt(const Vec2 &position);
 
 		/// @brief 描画する
 		void draw() const override;
@@ -232,7 +247,7 @@ namespace UFOCat::GUI
 		virtual bool isPressedOK();
 
 		/// @brief 描画する
-		virtual void draw() const;
+		virtual void draw() const override;
 
 	protected:
 
@@ -273,18 +288,18 @@ namespace UFOCat::GUI
 		void draw() const override;
 	};
 
-	class TextBox : public IDrawable
+	class TextBox : public Placeable<TextBox>
 	{
 		DrawableText m_text;
 
 		double m_fontSize;
 
+	public:
 		TextBox() = default;
 
 		TextBox(const DrawableText& text, double fontSize, const Vec2& position);
 
-	public:
-		TextBox& set(const DrawableText &text, double fontSize, const Vec2 &position);
+		TextBox &set(const DrawableText &text, double fontSize, const Vec2 &position);
 
 		void draw() const override;
 
@@ -325,7 +340,7 @@ namespace UFOCat::GUI
 		/// @brief スクロールバー
 		ScrollableComponent m_bar;
 
-		Array<std::unique_ptr<IDrawable>> m_components;
+		Array<std::unique_ptr<IDrawable>> m_contents;
 
 		/// @brief 現在のスクロール割合 (0.0 ~ 1.0)
 		double m_progress = 0.0;
@@ -355,8 +370,17 @@ namespace UFOCat::GUI
 
 		Scrollable(const Vec2 &position, const SizeF &viewportSize);
 
+		template <std::derived_from<IDrawable> ...Drawables>
+		inline void addContents(const Drawables &...contents)
+		{
+			((m_contents << std::make_unique<Drawables>(contents)), ...);
+
+			// 要素全ての高さは一番最後の要素の左上位置とそれ自体の高さで計算できるものとする
+			m_inner.region.setSize(m_region.size.x, m_contents.back()->getRegion().y + m_contents.back()->getRegion().h);
+		}
+
 		void update();
 
-		void draw() const;
+		void draw() const override;
 	};
 }
