@@ -33,9 +33,12 @@ void Main()
 	app.init(State::Title, 1s);
 
 	GUI::Scrollable s{ Vec2{ 10, 10 }, SizeF{ 500, 400 } };
-	GUI::TextBox t{ FontAsset(Util::FontFamily::YuseiMagic)(U"てすともじれつ"), 12, { 0, 20 } };
-
-	s.addContents(t);
+	GUI::TextBox t{ }, t2{ }, t3{ };
+	t.set(FontAsset(Util::FontFamily::YuseiMagic)(U"てすともじれつ"), 12).setPosition({ 0, 20 });
+	t2.set(FontAsset(Util::FontFamily::KoharuiroSunray)(U"てすともじれつ"), 60).setPosition({ 0, 30 });
+	t3.set(FontAsset(Util::FontFamily::YuseiMagic)(U"てすともじれつてすともじれつてすともじれつ"), 40).setPosition({ 0, 700 });
+	
+	s.addContents(t, t2, t3);
 	
 	while (System::Update())
 	{
@@ -45,6 +48,7 @@ void Main()
 		}*/
 		s.update();
 		s.draw();
+		Line{ 0, 339.166, 500, 339 }.draw(2);
 	}
 }
 

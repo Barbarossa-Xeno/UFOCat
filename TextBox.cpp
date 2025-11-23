@@ -2,16 +2,16 @@
 
 namespace UFOCat::GUI
 {
-	TextBox::TextBox(const DrawableText &text, double fontSize, const Vec2 &position)
+	TextBox::TextBox(const DrawableText &text, double fontSize)
 		: m_text{ text }
 		, m_fontSize{ fontSize }
 	{
-		m_region = RectF{ text.region(fontSize).setPos(position) };
+		m_region = text.region(fontSize);
 	}
 
-	TextBox &TextBox::set(const DrawableText &text, double fontSize, const Vec2 &position)
+	TextBox &TextBox::set(const DrawableText &text, double fontSize)
 	{
-		m_region = text.region(fontSize).setPos(position);
+		m_region = text.region(fontSize);
 		m_text = text;
 		m_fontSize = fontSize;
 

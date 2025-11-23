@@ -30,18 +30,28 @@ namespace UFOCat::GUI
 	class Relocatable : public IDrawable
 	{
 	protected:
+		/// @brief 座標設定の初期値
+		/// @note インスタンス化以降 `setPosition()` を初めて呼び出すと初期化され、それ以降変更されない
 		Optional<Vec2> m_initialPosition = none;
+		// 今は初期値を固定することで後述の Scrollable を実現させているけど
+		// この設計方法で対応できないことがあれば、この初期値を変えられるセッターの導入など、また検討
 
 	public:
-		inline Vec2 getInitialPosition() noexcept
+		/// @brief 座標設定の初期値を取得する
+		/// @return 座標の初期値 まだ設定がない場合は必ず (0, 0) を返す
+		inline const Vec2 &getInitialPosition() noexcept
 		{
-			
+			return m_initialPosition ? *m_initialPosition : Vec2::Zero();
 		}
 
 		/// @brief 描画位置に左上位置を指定する
 		/// @param position 左上位置
 		inline virtual Relocatable &setPosition(const Vec2 &position) noexcept
 		{
+			if (not m_initialPosition)
+			{
+				m_initialPosition = position;
+			}
 			m_region.setPos(position);
 			return *this;
 		}
@@ -51,6 +61,12 @@ namespace UFOCat::GUI
 		inline virtual Relocatable &setPosition(const Arg::topCenter_<Vec2> &position) noexcept
 		{
 			m_region.setPos(position);
+
+			// 左上以外は、一旦 RectF の指定をさせたあとにそこから取得してくる
+			if (not m_initialPosition)
+			{
+				m_initialPosition = m_region.pos;
+			}
 			return *this;
 		}
 
@@ -59,6 +75,10 @@ namespace UFOCat::GUI
 		inline virtual Relocatable &setPosition(const Arg::topRight_<Vec2> &position) noexcept
 		{
 			m_region.setPos(position);
+			if (not m_initialPosition)
+			{
+				m_initialPosition = m_region.pos;
+			}
 			return *this;
 		}
 
@@ -67,6 +87,10 @@ namespace UFOCat::GUI
 		inline virtual Relocatable &setPosition(const Arg::leftCenter_<Vec2>& position) noexcept
 		{
 			m_region.setPos(position);
+			if (not m_initialPosition)
+			{
+				m_initialPosition = m_region.pos;
+			}
 			return *this;
 		}
 
@@ -75,6 +99,10 @@ namespace UFOCat::GUI
 		inline virtual Relocatable &setPosition(const Arg::rightCenter_<Vec2> &position) noexcept
 		{
 			m_region.setPos(position);
+			if (not m_initialPosition)
+			{
+				m_initialPosition = m_region.pos;
+			}
 			return *this;
 		}
 
@@ -83,6 +111,10 @@ namespace UFOCat::GUI
 		inline virtual Relocatable &setPosition(const Arg::bottomLeft_<Vec2> &position) noexcept
 		{
 			m_region.setPos(position);
+			if (not m_initialPosition)
+			{
+				m_initialPosition = m_region.pos;
+			}
 			return *this;
 		}
 
@@ -91,6 +123,10 @@ namespace UFOCat::GUI
 		inline virtual Relocatable &setPosition(const Arg::bottomCenter_<Vec2> &position) noexcept
 		{
 			m_region.setPos(position);
+			if (not m_initialPosition)
+			{
+				m_initialPosition = m_region.pos;
+			}
 			return *this;
 		}
 
@@ -99,6 +135,10 @@ namespace UFOCat::GUI
 		inline virtual Relocatable &setPosition(const Arg::bottomRight_<Vec2> &position) noexcept
 		{
 			m_region.setPos(position);
+			if (not m_initialPosition)
+			{
+				m_initialPosition = m_region.pos;
+			}
 			return *this;
 		}
 
@@ -107,6 +147,10 @@ namespace UFOCat::GUI
 		inline virtual Relocatable &setPositionAt(const Vec2 &position) noexcept
 		{
 			m_region.setPos(Arg::center = position);
+			if (not m_initialPosition)
+			{
+				m_initialPosition = m_region.pos;
+			}
 			return *this;
 		}
 	};
@@ -413,9 +457,9 @@ namespace UFOCat::GUI
 	public:
 		TextBox() = default;
 
-		TextBox(const DrawableText& text, double fontSize, const Vec2& position);
+		TextBox(const DrawableText& text, double fontSize);
 
-		TextBox &set(const DrawableText &text, double fontSize, const Vec2 &position);
+		TextBox &set(const DrawableText &text, double fontSize);
 
 		inline TextBox &setPosition(const Vec2 &position) noexcept override
 		{
@@ -520,12 +564,12 @@ namespace UFOCat::GUI
 		/// @note バーの色を変えるときに使う
 		bool m_isHoverBar = false;
 
-		/// @brief クロールする必要があるかどうか
-		/// インナー要素の長さを判定して決められる
-		bool m_shouldScroll = true;
-
 		/// @brief スクロールバーのサイズ
 		constexpr static SizeF m_BarSize{ 5, 60 };
+
+		/// @brief クロールする必要があるかどうか
+		/// インナー要素の長さを判定して決められる
+		bool m_shouldScroll() const;
 
 		/// @brief スクロール可能要素を動かす
 		/// @param target スクロールさせる要素
@@ -537,6 +581,12 @@ namespace UFOCat::GUI
 		/// @param target スクロールを合わせたい要素
 		/// @return 自分自身の参照
 		Scrollable &m_scrollSync(ScrollableComponent &target);
+
+		/// @brief 現在のインナー要素の高さにおいて、Y 座標をスクロールするときの最小値（上方向の最大値 =< 0）を返す
+		/// @param viewportHeight ビューポートの高さ
+		/// @param innerHeight インナー要素の高さ
+		/// @return スクロール座標の最小値
+		static double m_CurrentMinimumScroll(double viewportHeight, double innerHeight);
 
 	public:
 
@@ -556,8 +606,11 @@ namespace UFOCat::GUI
 			// ちゃっぴー参照
 			((m_contents << std::make_unique<TContents>(contents)), ...);
 
-			// 要素全ての高さは一番最後の要素の左上位置とそれ自体の高さで計算できるものとする
-			m_inner.region.setSize(m_region.size.x, m_contents.back()->getRegion().y + m_contents.back()->getRegion().h);
+			// 要素全ての高さは一番最後の要素の左上位置とそれ自体の高さに、ビューポート自体の Y 座標を足して計算できるものとする
+			m_inner.region.h = m_contents.back()->getRegion().y + m_contents.back()->getRegion().h + m_region.y;
+
+			// スクロールの最小値を更新する
+			m_inner.minY = m_CurrentMinimumScroll(m_region.h, m_inner.region.h);
 
 			return *this;
 		}

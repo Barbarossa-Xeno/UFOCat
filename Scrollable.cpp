@@ -17,19 +17,29 @@ namespace UFOCat::GUI
 		// 一旦仮の領域 あとでちゃんと既成のRectを代入させるようにする
 		: m_inner
 		{
-			{ Vec2::Zero(), SizeF{ viewportSize.x, 600 } },
-			-AbsDiff(viewportSize.y, 600.0),
-			0.0
+			// 一旦インナーはビューポートと同じ大きさにする
+			{ Vec2::Zero(), viewportSize },
+
+			// 初めはインナー要素が空なのでスクロールしない
+			0.0, 0.0
 		}
 		, m_bar
 		{
+			// 右端のほうにつくる
 			{ Arg::topRight(viewportSize.x - m_BarSize.x, m_BarSize.x), m_BarSize },
 			m_BarSize.x,
 			viewportSize.y - m_BarSize.y - m_BarSize.x
 		}
-		, m_shouldScroll{ m_inner.region.h > viewportSize.y }
 	{
+		// このクラスで m_region は描画範囲というより
+		// ビューポートサイズとして参照することのほうが多いことに注意
 		m_region = RectF{ position, viewportSize };
+	}
+
+	bool Scrollable::m_shouldScroll() const
+	{
+		// ビューポートよりインナーのほうがでかければスクロールの必要あり
+		return m_inner.region.h > m_region.y;
 	}
 
 	Scrollable &Scrollable::m_scroll(ScrollableComponent &target, double dy)
@@ -56,17 +66,24 @@ namespace UFOCat::GUI
 		// スクロール進捗をターゲットの位置に合わせる
 		target.region.y = Clamp(direction * m_progress * target.getRange(), target.minY, target.maxY);
 
-		for (const auto& content : m_contents)
+		for (const auto &content : m_contents)
 		{
-			content->setPosition(Vec2{ content->getRegion().x, m_region.y + content->getRegion().y });
+			// インナー要素すべてをデフォルト位置からインナー（下地）の移動分だけずらす
+			content->setPosition(Vec2{ content->getInitialPosition().x, m_inner.region.y + content->getInitialPosition().y });
 		}
 
 		return *this;
 	}
 
+	double Scrollable::m_CurrentMinimumScroll(double viewportHeight, double innerHeight)
+	{
+		// インナー要素 (m_innerなど) は上方向 = -Y 方向に移動するので、差の絶対値の負をとってやる
+		return -AbsDiff(viewportHeight, innerHeight);
+	}
+
 	void Scrollable::update()
 	{
-		if (not m_shouldScroll)
+		if (not m_shouldScroll())
 		{
 			// スクロールの必要がないなら何もしない
 			return;
@@ -105,8 +122,6 @@ namespace UFOCat::GUI
 		{
 			const ScopedViewport2D viewport{ m_region.asRect() };
 
-			// FontAsset(Util::FontFamily::YuseiMagic)(U"てすとてすとてすとてすとてすとてすと").draw(m_inner.region);
-
 			if (not m_contents.empty())
 			{
 				for (const auto& content : m_contents)
@@ -115,7 +130,7 @@ namespace UFOCat::GUI
 				}
 			}
 
-			if (m_shouldScroll)
+			if (m_shouldScroll())
 			{
 				m_bar.region.rounded(2)
 							.drawShadow(Vec2::Zero(), 2, 1, Palette::Gray)
@@ -123,8 +138,6 @@ namespace UFOCat::GUI
 			}
 		}
 
-		
-
-		m_region.drawFrame(1, Palette::Seagreen);
+		// TODO: m_region を drawFrame するかは検討
 	}
 }
