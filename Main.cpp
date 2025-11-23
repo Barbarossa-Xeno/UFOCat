@@ -42,13 +42,12 @@ void Main()
 	
 	while (System::Update())
 	{
-		/*if (not app.update())
+		if (not app.update())
 		{
 			break;
-		}*/
-		s.update();
-		s.draw();
-		Line{ 0, 339.166, 500, 339 }.draw(2);
+		}
+		/*s.update();
+		s.draw();*/
 	}
 }
 

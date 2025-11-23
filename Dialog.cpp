@@ -9,9 +9,9 @@ namespace UFOCat::GUI
 
 		// ボタンは位置が変わったりテキストが変わったりするので個別に再セット
 		// ウィンドウ下のほうに均等に配置する
-		m_okButton.set(Ceil(m_getButtonTextSize()), U"Yes")
+		m_okButton.set(Ceil(m_buttonSize()), U"Yes")
 				  .setPosition(Arg::bottomCenter = Vec2{ m_region.centerX() - m_region.w / 4.0, m_region.bottomCenter().y - 20 });
-		m_cancelButton.set(Ceil(m_getButtonTextSize()), U"No")
+		m_cancelButton.set(Ceil(m_buttonSize()), U"No")
 					  .setPosition(Arg::bottomCenter = Vec2{m_region.centerX() + m_region.w / 4.0, m_region.bottomCenter().y - 20});
 
 		return *this;
@@ -19,10 +19,10 @@ namespace UFOCat::GUI
 
 	Dialog::Dialog(const Font &font, double fontSize, const String &text, const SizeF &windowSize)
 		: MessageBox{ font, fontSize, text, windowSize }
-		, m_cancelButton{ font, Ceil(m_getButtonTextSize()), U"No" }
+		, m_cancelButton{ font, Ceil(m_buttonSize()), U"No" }
 	{
 		// 上書き
-		m_okButton.set(Ceil(m_getButtonTextSize()), U"Yes")
+		m_okButton.set(Ceil(m_buttonSize()), U"Yes")
 				  .setPosition(Arg::bottomCenter = Vec2{ m_region.centerX() - m_region.w / 4.0, m_region.bottomCenter().y - 20 });
 	}
 

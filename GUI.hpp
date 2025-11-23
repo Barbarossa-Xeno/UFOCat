@@ -376,9 +376,11 @@ namespace UFOCat::GUI
 		/// @brief 開いているか
 		bool m_isOpen = false;
 
-		/// @brief ボタンのテキスト（フォント）サイズを返す
+		/// @brief ボタンのサイズを返す
+		/// 基本 ウィンドウ幅の 5% で、それよりも 24.0 のほうが小さい値であればそれを返す
+		/// @note 正確にはボタンに表示するテキストのサイズを決める -> テキストサイズによりボタンサイズが決まる
 		/// @return サイズ
-		double m_getButtonTextSize() const;
+		double m_buttonSize() const;
 
 	public:
 		MessageBox() = default;

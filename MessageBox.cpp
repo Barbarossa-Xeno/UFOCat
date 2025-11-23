@@ -2,17 +2,17 @@
 
 namespace UFOCat::GUI
 {
-	double MessageBox::m_getButtonTextSize() const
+	double MessageBox::m_buttonSize() const
 	{
-		// ウィンドウ幅の 5%
-		return 0.05 * m_region.size.x;
+		// ウィンドウ幅の 5% ただし、それより 24 のほうが小さければ 24 を返す 
+		return Min(0.05 * m_region.size.x, 24.0);
 	}
 
 	MessageBox::MessageBox(const Font &font, double fontSize, const String &text, const SizeF &windowSize)
 		: m_font{ font }
 		, m_fontSize{ fontSize }
 		, m_text{ text }
-		, m_okButton{ font, Ceil(m_getButtonTextSize()), U"OK" }
+		, m_okButton{ font, Ceil(m_buttonSize()), U"OK" }
 	{
 		m_region = RectF{ Arg::center = Scene::Center(), windowSize };
 
@@ -28,7 +28,7 @@ namespace UFOCat::GUI
 		m_region = RectF{ Arg::center = Scene::Center(), windowSize };
 
 		// ボタンは再確保せず中身を更新
-		m_okButton.set(Ceil(m_getButtonTextSize()), U"OK")
+		m_okButton.set(Ceil(m_buttonSize()), U"OK")
 				  .setPosition(Arg::bottomCenter = Vec2{ m_region.centerX(), m_region.bottomCenter().y - 20 });
 
 		return *this;
