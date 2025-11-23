@@ -56,6 +56,11 @@ namespace UFOCat::GUI
 		// スクロール進捗をターゲットの位置に合わせる
 		target.region.y = Clamp(direction * m_progress * target.getRange(), target.minY, target.maxY);
 
+		for (const auto& content : m_contents)
+		{
+			content->setPosition(Vec2{ content->getRegion().x, m_region.y + content->getRegion().y });
+		}
+
 		return *this;
 	}
 
@@ -90,11 +95,6 @@ namespace UFOCat::GUI
 				m_scroll(m_bar, Cursor::DeltaF().y).m_scrollSync(m_inner);
 			}
 		}
-
-		/*for (const auto& content : m_contents)
-		{
-			content->
-		}*/
 	}
 
 	void Scrollable::draw() const

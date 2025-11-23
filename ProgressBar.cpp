@@ -10,11 +10,6 @@ namespace UFOCat::GUI
 		m_region = RectF{ size };
 	}
 
-	RectF ProgressBar::getRegion() const
-	{
-		return m_region;
-	}
-
 	ProgressBar &ProgressBar::set(const SizeF &size, ColorF color, double roundness)
 	{
 		m_region = RectF{ size };

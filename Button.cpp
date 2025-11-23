@@ -13,11 +13,6 @@ namespace UFOCat::GUI
 		m_region = RectF{ m_font(m_text).region(fontSize).size + m_padding };
 	}
 
-	RectF Button::getRegion() const
-	{
-		return m_region;
-	}
-
 	Button &Button::set(double fontSize, const String& text, bool isEnabled, const Vec2& padding)
 	{
 		m_fontSize = fontSize;

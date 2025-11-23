@@ -4,7 +4,7 @@
 
 namespace UFOCat::GUI
 {
-
+	/// @brief 描画可能コンポーネントのインターフェース
 	class IDrawable
 	{
 	protected:
@@ -14,7 +14,9 @@ namespace UFOCat::GUI
 	public:
 		virtual ~IDrawable() = default;
 
-		const RectF& getRegion() const
+		/// @brief この GUI コンポーネントの画面上の領域を取得する
+		/// @return 領域 (RectF)
+		const RectF& getRegion() const noexcept
 		{
 			return m_region;
 		}
@@ -23,89 +25,100 @@ namespace UFOCat::GUI
 		virtual void draw() const = 0;
 	};
 
-	template <class T>
-	class Placeable : public IDrawable
+	/// @brief 再配置可能コンポーネント
+	/// 継承先でそのクラス専用のメソッドチェーンを利用する場合、共変オーバーライドする
+	class Relocatable : public IDrawable
 	{
+	protected:
+		Optional<Vec2> m_initialPosition = none;
+
 	public:
+		inline Vec2 getInitialPosition() noexcept
+		{
+			
+		}
+
 		/// @brief 描画位置に左上位置を指定する
 		/// @param position 左上位置
-		inline T &setPosition(const Vec2 &position)
+		inline virtual Relocatable &setPosition(const Vec2 &position) noexcept
 		{
 			m_region.setPos(position);
-
-			// ダウンキャスト
-			// T はこのクラスを継承してつくられた派生であるのが前提のため、このキャストは成功する
-			return static_cast<T&>(*this);
+			return *this;
 		}
 
 		/// @brief 描画位置に中央上位置を指定する
 		/// @param position 中央上位置
-		inline T &setPosition(const Arg::topCenter_<Vec2> &position)
+		inline virtual Relocatable &setPosition(const Arg::topCenter_<Vec2> &position) noexcept
 		{
 			m_region.setPos(position);
-			return static_cast<T&>(*this);
+			return *this;
 		}
 
 		/// @brief 描画位置に右上位置を指定する
 		/// @param position 右上位置
-		inline T &setPosition(const Arg::topRight_<Vec2> &position)
+		inline virtual Relocatable &setPosition(const Arg::topRight_<Vec2> &position) noexcept
 		{
 			m_region.setPos(position);
-			return static_cast<T&>(*this);
+			return *this;
 		}
 
 		/// @brief 描画位置に中央左位置を指定する
 		/// @param position 中央左上位置
-		inline T &setPosition(const Arg::leftCenter_<Vec2>& position)
+		inline virtual Relocatable &setPosition(const Arg::leftCenter_<Vec2>& position) noexcept
 		{
 			m_region.setPos(position);
-			return static_cast<T&>(*this);
+			return *this;
 		}
 
 		/// @brief 描画位置に中央右位置を指定する
 		/// @param position 中央右位置
-		inline T &setPosition(const Arg::rightCenter_<Vec2> &position)
+		inline virtual Relocatable &setPosition(const Arg::rightCenter_<Vec2> &position) noexcept
 		{
 			m_region.setPos(position);
-			return static_cast<T&>(*this);
+			return *this;
 		}
 
 		/// @brief 描画位置に左下位置を指定する
 		/// @param position 左下位置
-		inline T &setPosition(const Arg::bottomLeft_<Vec2> &position)
+		inline virtual Relocatable &setPosition(const Arg::bottomLeft_<Vec2> &position) noexcept
 		{
 			m_region.setPos(position);
-			return static_cast<T&>(*this);
+			return *this;
 		}
 
 		/// @brief 描画位置に中央下位置を指定する
 		/// @param position 中央下位置
-		inline T &setPosition(const Arg::bottomCenter_<Vec2> &position)
+		inline virtual Relocatable &setPosition(const Arg::bottomCenter_<Vec2> &position) noexcept
 		{
 			m_region.setPos(position);
-			return static_cast<T&>(*this);
+			return *this;
 		}
 
 		/// @brief 描画位置に右下位置を指定しボタンを描画する
 		/// @param position 右下位置
-		inline T &setPosition(const Arg::bottomRight_<Vec2> &position)
+		inline virtual Relocatable &setPosition(const Arg::bottomRight_<Vec2> &position) noexcept
 		{
 			m_region.setPos(position);
-			return static_cast<T&>(*this);
+			return *this;
 		}
 
 		/// @brief 描画位置に中央位置を指定する
 		/// @param position 中央位置
-		inline T &setPositionAt(const Vec2 &position)
+		inline virtual Relocatable &setPositionAt(const Vec2 &position) noexcept
 		{
 			m_region.setPos(Arg::center = position);
-			return static_cast<T&>(*this);
+			return *this;
 		}
 	};
+	// ほんとは CRTP（奇妙に再帰したテンプレートパターン）を使ってオーバーライドを避けたかったけど
+	// それをやめるとコンパイル時点で継承元があいまいになって
+	// CRTP 先のクラスを 基底に入れられない問題が起きてしまった
+	// しかし CRTP 先のクラスはテンプレート引数が必要なのでそれなしで実体化不可能
+	// 詰んだので共変オーバーライドをいちいちする方式にした
 
 	/// @brief ボタンコンポーネント @n
 	/// デフォルトのフォントは 油性マジック を使用する
-	class Button : public Placeable<Button>
+	class Button : public Relocatable
 	{
 		Font m_font = FontAsset(Util::FontFamily::YuseiMagic);
 
@@ -132,10 +145,6 @@ namespace UFOCat::GUI
 		/// @note https://siv3d.github.io/ja-jp/tutorial2/button/ を参考に改変
 		Button(const Font &font, double fontSize, const String &text, bool isEnabled = true, const Vec2 &padding = { 30.0, 10.0 });
 
-		/// @brief ボタンの描画範囲を取得する
-		/// @return 描画範囲
-		RectF getRegion() const;
-
 		/// @brief ボタンの各種パラメータを一括で設定する
 		/// @param fontSize 
 		/// @param text テキスト
@@ -154,6 +163,60 @@ namespace UFOCat::GUI
 		/// @return 
 		Button &setText(const String &text);
 
+		inline Button &setPosition(const Vec2 &position) noexcept override
+		{
+			Relocatable::setPosition(position);
+			return *this;
+		}
+
+		inline Button &setPosition(const Arg::topCenter_<Vec2> &position) noexcept override
+		{
+			Relocatable::setPosition(position);
+			return *this;
+		}
+
+		inline Button &setPosition(const Arg::topRight_<Vec2> &position) noexcept override
+		{
+			Relocatable::setPosition(position);
+			return *this;
+		}
+
+		inline Button &setPosition(const Arg::leftCenter_<Vec2>& position) noexcept override
+		{
+			Relocatable::setPosition(position);
+			return *this;
+		}
+
+		inline Button &setPosition(const Arg::rightCenter_<Vec2> &position) noexcept override
+		{
+			Relocatable::setPosition(position);
+			return *this;
+		}
+
+		inline Button &setPosition(const Arg::bottomLeft_<Vec2> &position) noexcept override
+		{
+			Relocatable::setPosition(position);
+			return *this;
+		}
+
+		inline Button &setPosition(const Arg::bottomCenter_<Vec2> &position) noexcept override
+		{
+			Relocatable::setPosition(position);
+			return *this;
+		}
+
+		inline Button &setPosition(const Arg::bottomRight_<Vec2> &position) noexcept override
+		{
+			Relocatable::setPosition(position);
+			return *this;
+		}
+
+		inline Button &setPositionAt(const Vec2 &position) noexcept override
+		{
+			Relocatable::setPositionAt(position);
+			return *this;
+		}
+
 		/// @brief ボタンが押されたかを返す
 		/// @return 押されたら `true`
 		bool isPressed() const;
@@ -162,7 +225,7 @@ namespace UFOCat::GUI
 	};
 
 	/// @brief プログレスバーを描画するコンポーネント
-	class ProgressBar : public Placeable<ProgressBar>
+	class ProgressBar : public Relocatable
 	{
 		/// @brief 進捗状況 (0 ~ 1)
 		double m_progress = 0.0;
@@ -179,10 +242,6 @@ namespace UFOCat::GUI
 
 		ProgressBar(const SizeF& size, ColorF color, double roundness = 9.0, double progress = 0.0);
 
-		/// @brief プログレスバーの領域を取得する
-		/// @return 
-		RectF getRegion() const;
-
 		/// @brief 各パラメータを設定する
 		/// @param size プログレスバーの背景領域の大きさ
 		/// @param color
@@ -193,6 +252,60 @@ namespace UFOCat::GUI
 		/// @brief プログレスバーの値を設定する
 		/// @param progress パラメータ (0.0 〜 1.0)
 		ProgressBar &setProgress(double progress);
+
+		inline ProgressBar &setPosition(const Vec2 &position) noexcept override
+		{
+			Relocatable::setPosition(position);
+			return *this;
+		}
+
+		inline ProgressBar &setPosition(const Arg::topCenter_<Vec2> &position) noexcept override
+		{
+			Relocatable::setPosition(position);
+			return *this;
+		}
+
+		inline ProgressBar &setPosition(const Arg::topRight_<Vec2> &position) noexcept override
+		{
+			Relocatable::setPosition(position);
+			return *this;
+		}
+
+		inline ProgressBar &setPosition(const Arg::leftCenter_<Vec2>& position) noexcept override
+		{
+			Relocatable::setPosition(position);
+			return *this;
+		}
+
+		inline ProgressBar &setPosition(const Arg::rightCenter_<Vec2> &position) noexcept override
+		{
+			Relocatable::setPosition(position);
+			return *this;
+		}
+
+		inline ProgressBar &setPosition(const Arg::bottomLeft_<Vec2> &position) noexcept override
+		{
+			Relocatable::setPosition(position);
+			return *this;
+		}
+
+		inline ProgressBar &setPosition(const Arg::bottomCenter_<Vec2> &position) noexcept override
+		{
+			Relocatable::setPosition(position);
+			return *this;
+		}
+
+		inline ProgressBar &setPosition(const Arg::bottomRight_<Vec2> &position) noexcept override
+		{
+			Relocatable::setPosition(position);
+			return *this;
+		}
+
+		inline ProgressBar &setPositionAt(const Vec2 &position) noexcept override
+		{
+			Relocatable::setPositionAt(position);
+			return *this;
+		}
 
 		/// @brief 描画する
 		void draw() const override;
@@ -288,10 +401,13 @@ namespace UFOCat::GUI
 		void draw() const override;
 	};
 
-	class TextBox : public Placeable<TextBox>
+	/// @brief シンプルなテキストボックスの機能を提供するコンポーネント
+	class TextBox : public Relocatable
 	{
+		/// @brief Font()(U"") の形で描画可能にしたテキストデータ
 		DrawableText m_text;
 
+		/// @brief フォントサイズ
 		double m_fontSize;
 
 	public:
@@ -301,12 +417,66 @@ namespace UFOCat::GUI
 
 		TextBox &set(const DrawableText &text, double fontSize, const Vec2 &position);
 
+		inline TextBox &setPosition(const Vec2 &position) noexcept override
+		{
+			Relocatable::setPosition(position);
+			return *this;
+		}
+
+		inline TextBox &setPosition(const Arg::topCenter_<Vec2> &position) noexcept override
+		{
+			Relocatable::setPosition(position);
+			return *this;
+		}
+
+		inline TextBox &setPosition(const Arg::topRight_<Vec2> &position) noexcept override
+		{
+			Relocatable::setPosition(position);
+			return *this;
+		}
+
+		inline TextBox &setPosition(const Arg::leftCenter_<Vec2>& position) noexcept override
+		{
+			Relocatable::setPosition(position);
+			return *this;
+		}
+
+		inline TextBox &setPosition(const Arg::rightCenter_<Vec2> &position) noexcept override
+		{
+			Relocatable::setPosition(position);
+			return *this;
+		}
+
+		inline TextBox &setPosition(const Arg::bottomLeft_<Vec2> &position) noexcept override
+		{
+			Relocatable::setPosition(position);
+			return *this;
+		}
+
+		inline TextBox &setPosition(const Arg::bottomCenter_<Vec2> &position) noexcept override
+		{
+			Relocatable::setPosition(position);
+			return *this;
+		}
+
+		inline TextBox &setPosition(const Arg::bottomRight_<Vec2> &position) noexcept override
+		{
+			Relocatable::setPosition(position);
+			return *this;
+		}
+
+		inline TextBox &setPositionAt(const Vec2 &position) noexcept override
+		{
+			Relocatable::setPositionAt(position);
+			return *this;
+		}
+
 		void draw() const override;
 
 		void draw(const SizeF &size) const;
 	};
 
-	// TODO: 将来的にはクラステンプレートを入れれるようにして、色んなクラス（ある1つのクラスを継承しているのが前提）をスクロールできるようにできたらいい
+	/// @brief `Relocatable` な GUI コンポーネントを複数入れてビューポートでスクロール可能にするコンポーネント
 	class Scrollable : IDrawable
 	{
 		/// @brief スクロール可能なコンポーネント
@@ -340,7 +510,8 @@ namespace UFOCat::GUI
 		/// @brief スクロールバー
 		ScrollableComponent m_bar;
 
-		Array<std::unique_ptr<IDrawable>> m_contents;
+		/// @brief 中に入れておくコンポーネント
+		Array<std::unique_ptr<Relocatable>> m_contents{};
 
 		/// @brief 現在のスクロール割合 (0.0 ~ 1.0)
 		double m_progress = 0.0;
@@ -349,8 +520,11 @@ namespace UFOCat::GUI
 		/// @note バーの色を変えるときに使う
 		bool m_isHoverBar = false;
 
+		/// @brief クロールする必要があるかどうか
+		/// インナー要素の長さを判定して決められる
 		bool m_shouldScroll = true;
 
+		/// @brief スクロールバーのサイズ
 		constexpr static SizeF m_BarSize{ 5, 60 };
 
 		/// @brief スクロール可能要素を動かす
@@ -359,7 +533,7 @@ namespace UFOCat::GUI
 		/// @return 自分自身の参照
 		Scrollable& m_scroll(ScrollableComponent &target, double dy);
 
-		/// @brief 直接操作しないスクロール要素を現在のスクロール進捗に同期させる
+		/// @brief 直接操作しないスクロール要素とインナー要素を現在のスクロール進捗に同期させる
 		/// @param target スクロールを合わせたい要素
 		/// @return 自分自身の参照
 		Scrollable &m_scrollSync(ScrollableComponent &target);
@@ -370,13 +544,22 @@ namespace UFOCat::GUI
 
 		Scrollable(const Vec2 &position, const SizeF &viewportSize);
 
-		template <std::derived_from<IDrawable> ...Drawables>
-		inline void addContents(const Drawables &...contents)
+		/// @brief インナー要素内に配置するコンテンツを追加する
+		/// @tparam ...TContents `Relocatable` なコンポーネント（パラメータパック）
+		/// @param ...contents `Relocatable` なコンポーネントを複数指定
+		/// @return 自分自身の参照
+		template <std::derived_from<Relocatable> ...TContents>
+		inline Scrollable &addContents(const TContents &...contents)
 		{
-			((m_contents << std::make_unique<Drawables>(contents)), ...);
+			// Fold 式
+			// 左辺（リストへの代入部分）をパラメータパックの長さ分くりかえす命令になる
+			// ちゃっぴー参照
+			((m_contents << std::make_unique<TContents>(contents)), ...);
 
 			// 要素全ての高さは一番最後の要素の左上位置とそれ自体の高さで計算できるものとする
 			m_inner.region.setSize(m_region.size.x, m_contents.back()->getRegion().y + m_contents.back()->getRegion().h);
+
+			return *this;
 		}
 
 		void update();
