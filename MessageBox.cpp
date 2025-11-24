@@ -4,8 +4,18 @@ namespace UFOCat::GUI
 {
 	double MessageBox::m_buttonSize() const
 	{
-		// ウィンドウ幅の 5% ただし、それより 24 のほうが小さければ 24 を返す 
+		// 変にデカくならないようにするために設定
 		return Min(0.05 * m_region.size.x, 24.0);
+	}
+
+	Arg::bottomCenter_<Vec2> MessageBox::m_okButtonPosition() const
+	{
+		return Arg::bottomCenter(Vec2{ m_region.centerX(), m_region.bottomCenter().y - 20 });
+	}
+
+	Arg::center_<Vec2> MessageBox::m_separatorPosition() const
+	{
+		return Arg::center(Scene::CenterF().x, m_okButton.getRegion().topY() - 20);
 	}
 
 	MessageBox::MessageBox(const Font &font, double fontSize, const String &text, const SizeF &windowSize)
@@ -17,7 +27,19 @@ namespace UFOCat::GUI
 		m_region = RectF{ Arg::center = Scene::Center(), windowSize };
 
 		// ボタンは下部中央
-		m_okButton.setPosition(Arg::bottomCenter = Vec2{ m_region.centerX(), m_region.bottomCenter().y - 20 });
+		m_okButton.setPosition(m_okButtonPosition());
+	}
+
+	MessageBox::MessageBox(const SizeF& windowSize, Optional<Button> buttonStyle)
+		// ボタンのスタイル指定がなければデフォルト設定で通す
+		: m_okButton{ buttonStyle ? *buttonStyle : Button{ FontAsset(Util::FontFamily::YuseiMagic), Ceil(m_buttonSize()), U"OK" } }
+	{
+		m_region = RectF{ Arg::center = Scene::Center(), windowSize };
+		
+		// ボタンは下部中央
+		m_okButton.setPosition(m_okButtonPosition());
+
+		m_content = Scrollable{ m_region.tl() + Point{ 20, 20 }, SizeF{ m_region.w - 40, m_separatorPosition()->y - 40 } }
 	}
 
 	MessageBox &MessageBox::set(double fontSize, const String &text, const SizeF &windowSize)
@@ -28,8 +50,7 @@ namespace UFOCat::GUI
 		m_region = RectF{ Arg::center = Scene::Center(), windowSize };
 
 		// ボタンは再確保せず中身を更新
-		m_okButton.set(Ceil(m_buttonSize()), U"OK")
-				  .setPosition(Arg::bottomCenter = Vec2{ m_region.centerX(), m_region.bottomCenter().y - 20 });
+		m_okButton.set(Ceil(m_buttonSize()), U"OK").setPosition(m_okButtonPosition());
 
 		return *this;
 	}
@@ -80,22 +101,24 @@ namespace UFOCat::GUI
 				.draw(Util::Palette::LightBrownAlt);
 	}
 
-	void MessageBox::m_drawSeparatorAndText(double buttonsTopY) const
+	void MessageBox::m_drawSeparator() const
 	{
 		// 区切り線
-		RoundRect line
+		// OK ボタンより 20 px 上の位置に、
+		// ウィンドウ幅の 90 % の長さ、
+		// ウィンドウ高さの 1% or 4px のうち小さいほうの高さで描画される
+		const RoundRect &line = RoundRect
 		{
 			RectF
 			{
-				Arg::center(Scene::CenterF().x, buttonsTopY - 20),
-				SizeF(0.9, 0.01) * m_region.size
+				m_separatorPosition(),
+				SizeF{ 0.9 * m_region.w, Min(0.01 * m_region.h, 4.0) }
 			},
+			// 丸みは 4px
 			4
-		};
-
-		ColorF brown2 = Util::Palette::Brown;
-		brown2.a = 0.6;
-		line.draw(brown2);
+		}
+		// 透明度少し下げて描画
+		.draw(Util::Palette::Brown.withA(0.6));;
 
 		// テキストは区切り線と背景上との中央に描画
 		m_font(m_text).drawAt
@@ -107,6 +130,11 @@ namespace UFOCat::GUI
 		);
 	}
 
+	void MessageBox::m_drawContent() const
+	{
+
+	}
+
 	void MessageBox::draw() const
 	{
 		// フラグが立ってるときのみ描画
@@ -116,7 +144,7 @@ namespace UFOCat::GUI
 			m_drawBackground();
 
 			// 区切り線とテキスト
-			m_drawSeparatorAndText(m_okButton.getRegion().topY());
+			m_drawSeparator();
 
 			// OKボタン
 			m_okButton.draw();

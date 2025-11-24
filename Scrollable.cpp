@@ -18,6 +18,7 @@ namespace UFOCat::GUI
 		: m_inner
 		{
 			// 一旦インナーはビューポートと同じ大きさにする
+			// 座標はビューポート基準になるのに注意
 			{ Vec2::Zero(), viewportSize },
 
 			// 初めはインナー要素が空なのでスクロールしない

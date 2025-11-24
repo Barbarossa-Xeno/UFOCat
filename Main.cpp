@@ -38,7 +38,7 @@ void Main()
 	t2.set(FontAsset(Util::FontFamily::KoharuiroSunray)(U"てすともじれつ"), 60).setPosition({ 0, 30 });
 	t3.set(FontAsset(Util::FontFamily::YuseiMagic)(U"てすともじれつてすともじれつてすともじれつ"), 40).setPosition({ 0, 700 });
 	
-	s.addContents(t, t2, t3);
+	s.setContents(t, t2, t3);
 	
 	while (System::Update())
 	{

@@ -2,19 +2,14 @@
 
 namespace UFOCat::GUI
 {
-	Dialog &Dialog::set(double fontSize, const String &text, const SizeF &windowSize)
+	Arg::bottomCenter_<Vec2> Dialog::m_okButtonPosition() const
 	{
-		// 基底クラス呼び出し
-		MessageBox::set(fontSize, text, windowSize);
+		return Arg::bottomCenter(Vec2{ m_region.centerX() - m_region.w / 4.0, m_region.bottomCenter().y - 20 });
+	}
 
-		// ボタンは位置が変わったりテキストが変わったりするので個別に再セット
-		// ウィンドウ下のほうに均等に配置する
-		m_okButton.set(Ceil(m_buttonSize()), U"Yes")
-				  .setPosition(Arg::bottomCenter = Vec2{ m_region.centerX() - m_region.w / 4.0, m_region.bottomCenter().y - 20 });
-		m_cancelButton.set(Ceil(m_buttonSize()), U"No")
-					  .setPosition(Arg::bottomCenter = Vec2{m_region.centerX() + m_region.w / 4.0, m_region.bottomCenter().y - 20});
-
-		return *this;
+	Arg::bottomCenter_<Vec2> Dialog::m_cancelButtonPosition() const
+	{
+		return Arg::bottomCenter(Vec2{ m_region.centerX() + m_region.w / 4.0, m_region.bottomCenter().y - 20 });
 	}
 
 	Dialog::Dialog(const Font &font, double fontSize, const String &text, const SizeF &windowSize)
@@ -22,8 +17,20 @@ namespace UFOCat::GUI
 		, m_cancelButton{ font, Ceil(m_buttonSize()), U"No" }
 	{
 		// 上書き
-		m_okButton.set(Ceil(m_buttonSize()), U"Yes")
-				  .setPosition(Arg::bottomCenter = Vec2{ m_region.centerX() - m_region.w / 4.0, m_region.bottomCenter().y - 20 });
+		m_okButton.set(Ceil(m_buttonSize()), U"Yes").setPosition(m_okButtonPosition());
+	}
+
+	Dialog &Dialog::set(double fontSize, const String &text, const SizeF &windowSize)
+	{
+		// 基底クラス呼び出し
+		MessageBox::set(fontSize, text, windowSize);
+
+		// ボタンは位置が変わったりテキストが変わったりするので個別に再セット
+		// ウィンドウ下のほうに均等に配置する
+		m_okButton.set(Ceil(m_buttonSize()), U"Yes").setPosition(m_okButtonPosition());
+		m_cancelButton.set(Ceil(m_buttonSize()), U"No").setPosition(m_cancelButtonPosition());
+
+		return *this;
 	}
 
 	bool Dialog::isPressedOK()

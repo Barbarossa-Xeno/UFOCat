@@ -355,98 +355,6 @@ namespace UFOCat::GUI
 		void draw() const override;
 	};
 
-	/// @brief 簡単なテキストをウィンドウとして 画面中央に表示し、1ボタンで閉じるコンポーネント
-	/// デフォルトのフォントは 油性マジック を使用する
-	/// 現時点ではボタンのフォントを変更することはできない（しないと思う）し、ボタンのフォントサイズはウィンドウ幅によって決まります
-	class MessageBox : public IDrawable
-	{
-	protected:
-		Font m_font = FontAsset(Util::FontFamily::YuseiMagic);
-
-		double m_fontSize;
-
-		String m_text;
-
-		/// @brief OK ボタン
-		Button m_okButton;
-
-		/// @brief ウィンドウの大きさ
-		SizeF m_windowSize;
-
-		/// @brief 開いているか
-		bool m_isOpen = false;
-
-		/// @brief ボタンのサイズを返す
-		/// 基本 ウィンドウ幅の 5% で、それよりも 24.0 のほうが小さい値であればそれを返す
-		/// @note 正確にはボタンに表示するテキストのサイズを決める -> テキストサイズによりボタンサイズが決まる
-		/// @return サイズ
-		double m_buttonSize() const;
-
-	public:
-		MessageBox() = default;
-
-		MessageBox(const Font &font, double fontSize, const String &text, const SizeF &windowSize = { 350, 300 });
-
-		virtual MessageBox &set(double fontSize, const String &text, const SizeF &windowSize = { 350, 300 });
-
-		MessageBox &setFont(const Font &font);
-
-		/// @brief 開いているか
-		/// @return 
-		bool isOpen() const;
-
-		/// @brief ダイアログを開く
-		void open();
-
-		/// @brief ダイアログを閉じる
-		void close();
-
-		/// @brief ボタンが押されたか（押されたら閉じる）
-		/// @return 押されたら `true`
-		virtual bool isPressedOK();
-
-		/// @brief 描画する
-		virtual void draw() const override;
-
-	protected:
-
-		/// @brief 背景を描画する
-		void m_drawBackground() const;
-
-		/// @brief 区切り線とテキストを描画する @n
-		/// 区切り線はボタン上端部の Y 座標を基準に配置、テキストはそれと背景の上端部との中央に配置される
-		/// @param buttonsTopY ボタン上端部の Y 座標
-		void m_drawSeparatorAndText(double buttonsTopY) const;
-	};
-
-	/// @brief 2ボタン（Yes / No）でプレイヤーの意思を確認するためのダイアログを表示するコンポーネント
-	class Dialog : public MessageBox
-	{
-	protected:
-
-		/// @brief キャンセルボタン
-		Button m_cancelButton;
-
-	public:
-
-		Dialog() = default;
-
-		Dialog(const Font &font, double fontSize, const String &text, const SizeF &windowSize = { 350, 300 });
-
-		Dialog &set(double fontSize, const String &text, const SizeF &windowSize = { 350, 300 }) override;
-
-		/// @brief OKボタンが押されたか
-		/// @return 押されたら `true`
-		bool isPressedOK() override;
-
-		/// @brief キャンセルボタンが押された
-		/// @return 押されたら `true`
-		bool isPressedCancel();
-
-		/// @brief 描画する
-		void draw() const override;
-	};
-
 	/// @brief シンプルなテキストボックスの機能を提供するコンポーネント
 	class TextBox : public Relocatable
 	{
@@ -461,57 +369,57 @@ namespace UFOCat::GUI
 
 		TextBox(const DrawableText& text, double fontSize);
 
-		TextBox &set(const DrawableText &text, double fontSize);
+		TextBox& set(const DrawableText& text, double fontSize);
 
-		inline TextBox &setPosition(const Vec2 &position) noexcept override
+		inline TextBox& setPosition(const Vec2& position) noexcept override
 		{
 			Relocatable::setPosition(position);
 			return *this;
 		}
 
-		inline TextBox &setPosition(const Arg::topCenter_<Vec2> &position) noexcept override
+		inline TextBox& setPosition(const Arg::topCenter_<Vec2>& position) noexcept override
 		{
 			Relocatable::setPosition(position);
 			return *this;
 		}
 
-		inline TextBox &setPosition(const Arg::topRight_<Vec2> &position) noexcept override
+		inline TextBox& setPosition(const Arg::topRight_<Vec2>& position) noexcept override
 		{
 			Relocatable::setPosition(position);
 			return *this;
 		}
 
-		inline TextBox &setPosition(const Arg::leftCenter_<Vec2>& position) noexcept override
+		inline TextBox& setPosition(const Arg::leftCenter_<Vec2>& position) noexcept override
 		{
 			Relocatable::setPosition(position);
 			return *this;
 		}
 
-		inline TextBox &setPosition(const Arg::rightCenter_<Vec2> &position) noexcept override
+		inline TextBox& setPosition(const Arg::rightCenter_<Vec2>& position) noexcept override
 		{
 			Relocatable::setPosition(position);
 			return *this;
 		}
 
-		inline TextBox &setPosition(const Arg::bottomLeft_<Vec2> &position) noexcept override
+		inline TextBox& setPosition(const Arg::bottomLeft_<Vec2>& position) noexcept override
 		{
 			Relocatable::setPosition(position);
 			return *this;
 		}
 
-		inline TextBox &setPosition(const Arg::bottomCenter_<Vec2> &position) noexcept override
+		inline TextBox& setPosition(const Arg::bottomCenter_<Vec2>& position) noexcept override
 		{
 			Relocatable::setPosition(position);
 			return *this;
 		}
 
-		inline TextBox &setPosition(const Arg::bottomRight_<Vec2> &position) noexcept override
+		inline TextBox& setPosition(const Arg::bottomRight_<Vec2>& position) noexcept override
 		{
 			Relocatable::setPosition(position);
 			return *this;
 		}
 
-		inline TextBox &setPositionAt(const Vec2 &position) noexcept override
+		inline TextBox& setPositionAt(const Vec2& position) noexcept override
 		{
 			Relocatable::setPositionAt(position);
 			return *this;
@@ -519,7 +427,7 @@ namespace UFOCat::GUI
 
 		void draw() const override;
 
-		void draw(const SizeF &size) const;
+		void draw(const SizeF& size) const;
 	};
 
 	/// @brief `Relocatable` な GUI コンポーネントを複数入れてビューポートでスクロール可能にするコンポーネント
@@ -577,12 +485,12 @@ namespace UFOCat::GUI
 		/// @param target スクロールさせる要素
 		/// @param dy Y 方向の移動量
 		/// @return 自分自身の参照
-		Scrollable& m_scroll(ScrollableComponent &target, double dy);
+		Scrollable& m_scroll(ScrollableComponent& target, double dy);
 
 		/// @brief 直接操作しないスクロール要素とインナー要素を現在のスクロール進捗に同期させる
 		/// @param target スクロールを合わせたい要素
 		/// @return 自分自身の参照
-		Scrollable &m_scrollSync(ScrollableComponent &target);
+		Scrollable& m_scrollSync(ScrollableComponent& target);
 
 		/// @brief 現在のインナー要素の高さにおいて、Y 座標をスクロールするときの最小値（上方向の最大値 =< 0）を返す
 		/// @param viewportHeight ビューポートの高さ
@@ -594,14 +502,14 @@ namespace UFOCat::GUI
 
 		Scrollable() = default;
 
-		Scrollable(const Vec2 &position, const SizeF &viewportSize);
+		Scrollable(const Vec2& position, const SizeF& viewportSize);
 
 		/// @brief インナー要素内に配置するコンテンツを追加する
 		/// @tparam ...TContents `Relocatable` なコンポーネント（パラメータパック）
 		/// @param ...contents `Relocatable` なコンポーネントを複数指定
 		/// @return 自分自身の参照
 		template <std::derived_from<Relocatable> ...TContents>
-		inline Scrollable &addContents(const TContents &...contents)
+		inline Scrollable& setContents(const TContents &...contents)
 		{
 			// Fold 式
 			// 左辺（リストへの代入部分）をパラメータパックの長さ分くりかえす命令になる
@@ -619,6 +527,123 @@ namespace UFOCat::GUI
 
 		void update();
 
+		void draw() const override;
+	};
+
+	/// @brief 簡単なテキストをウィンドウとして 画面中央に表示し、1ボタンで閉じるコンポーネント
+	/// デフォルトのフォントは 油性マジック を使用する
+	/// 現時点ではボタンのフォントを変更することはできない（しないと思う）し、ボタンのフォントサイズはウィンドウ幅によって決まります
+	class MessageBox : public IDrawable
+	{
+	protected:
+		Font m_font = FontAsset(Util::FontFamily::YuseiMagic);
+
+		double m_fontSize;
+
+		String m_text;
+
+		Scrollable m_content;
+
+		/// @brief OK ボタン
+		Button m_okButton;
+
+		/// @brief ウィンドウの大きさ
+		SizeF m_windowSize;
+
+		/// @brief 開いているか
+		bool m_isOpen = false;
+
+		/// @brief ボタンのサイズを返す
+		/// 基本 ウィンドウ幅の 5% で、それよりも 24.0 のほうが小さい値であればそれを返す
+		/// @note 正確にはボタンに表示するテキストのサイズを決める -> テキストサイズによりボタンサイズが決まる
+		/// @return サイズ
+		double m_buttonSize() const;
+
+		/// @brief OK ボタンの下中央基準の位置を返す @n
+		/// 横方向はウィンドウ中央、縦方向はボタン下がウィンドウ下部から 20px 上になる位置
+		/// @return 下中央基準の座標データ 実際の基準値が入っているわけではないので注意が必要
+		virtual Arg::bottomCenter_<Vec2> m_okButtonPosition() const;
+
+		virtual Arg::center_<Vec2> m_separatorPosition() const;
+
+		/// @brief 背景を描画する
+		void m_drawBackground() const;
+
+		/// @brief 区切り線とテキストを描画する @n
+		/// 区切り線はボタン上端部の Y 座標を基準に配置、テキストはそれと背景の上端部との中央に配置される
+		/// @param buttonsTopY ボタン上端部の Y 座標
+		void m_drawSeparator() const;
+
+		void m_drawContent() const;
+
+	public:
+		MessageBox() = default;
+
+		MessageBox(const Font &font, double fontSize, const String &text, const SizeF &windowSize = { 350, 300 });
+
+		MessageBox(const SizeF& windowSize = { 350, 300 }, Optional<Button> buttonStyle = none);
+
+		virtual MessageBox &set(double fontSize, const String &text, const SizeF &windowSize = { 350, 300 });
+
+		virtual MessageBox &setSize(const SizeF &windowSize = { 350, 300 });
+
+		//virtual MessageBox &setContents
+
+		MessageBox &setFont(const Font &font);
+
+		/// @brief 開いているか
+		/// @return 
+		bool isOpen() const;
+
+		/// @brief ダイアログを開く
+		void open();
+
+		/// @brief ダイアログを閉じる
+		void close();
+
+		/// @brief ボタンが押されたか（押されたら閉じる）
+		/// @return 押されたら `true`
+		virtual bool isPressedOK();
+
+		/// @brief 描画する
+		virtual void draw() const override;
+	};
+
+	/// @brief 2ボタン（Yes / No）でプレイヤーの意思を確認するためのダイアログを表示するコンポーネント
+	class Dialog final : public MessageBox
+	{
+	protected:
+
+		/// @brief キャンセルボタン
+		Button m_cancelButton;
+
+		/// @brief OK ボタンの下中央基準の位置を返す @n
+		/// 横方向はウィンドウの 25% の位置、縦方向はボタン下がウィンドウ下部から 20px 上になる位置
+		/// @return 下中央基準の座標データ 実際の基準値が入っているわけではないので注意が必要
+		Arg::bottomCenter_<Vec2> m_okButtonPosition() const override;
+
+		/// @brief キャンセルボタンの下中央基準の位置を返す @n
+		/// 横方向はウィンドウの 75% の位置、縦方向はボタン下がウィンドウ下部から 20px 上になる位置
+		/// @return 下中央基準の座標データ 実際の基準値が入っているわけではないので注意が必要
+		Arg::bottomCenter_<Vec2> m_cancelButtonPosition() const;
+
+	public:
+
+		Dialog() = default;
+
+		Dialog(const Font &font, double fontSize, const String &text, const SizeF &windowSize = { 350, 300 });
+
+		Dialog &set(double fontSize, const String &text, const SizeF &windowSize = { 350, 300 }) override;
+
+		/// @brief OKボタンが押されたか
+		/// @return 押されたら `true`
+		bool isPressedOK() override;
+
+		/// @brief キャンセルボタンが押された
+		/// @return 押されたら `true`
+		bool isPressedCancel();
+
+		/// @brief 描画する
 		void draw() const override;
 	};
 }
