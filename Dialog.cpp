@@ -33,6 +33,18 @@ namespace UFOCat::GUI
 		return *this;
 	}
 
+	Dialog &Dialog::setSize(const SizeF &windowSize)
+	{
+		// 基底クラス呼び出し
+		MessageBox::setSize(windowSize);
+
+		// ボタンは位置更新しなおす
+		m_okButton.set(Ceil(m_buttonSize()), U"Yes").setPosition(m_okButtonPosition());
+		m_cancelButton.set(Ceil(m_buttonSize()), U"No").setPosition(m_cancelButtonPosition());
+
+		return *this;
+	}
+
 	bool Dialog::isPressedOK()
 	{
 		return m_isOpen and m_okButton.isPressed();

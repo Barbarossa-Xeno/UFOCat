@@ -587,9 +587,15 @@ namespace UFOCat::GUI
 
 		virtual MessageBox &setSize(const SizeF &windowSize = { 350, 300 });
 
-		//virtual MessageBox &setContents
-
-		MessageBox &setFont(const Font &font);
+		/// @brief 配置するコンテンツを追加する
+		/// @tparam ...TContents `Relocatable` なコンポーネント（パラメータパック）
+		/// @param ...contents `Relocatable` なコンポーネントを複数指定
+		/// @return 自分自身の参照
+		template <std::derived_from<Relocatable> ...TContents>
+		inline MessageBox& setContents(const TContents &...contents)
+		{
+			m_content.setContents(contents...);
+		}
 
 		/// @brief 開いているか
 		/// @return 
@@ -634,6 +640,18 @@ namespace UFOCat::GUI
 		Dialog(const Font &font, double fontSize, const String &text, const SizeF &windowSize = { 350, 300 });
 
 		Dialog &set(double fontSize, const String &text, const SizeF &windowSize = { 350, 300 }) override;
+
+		virtual Dialog& setSize(const SizeF &windowSize) override;
+
+		/// @brief 配置するコンテンツを追加する
+		/// @tparam ...TContents `Relocatable` なコンポーネント（パラメータパック）
+		/// @param ...contents `Relocatable` なコンポーネントを複数指定
+		/// @return 自分自身の参照
+		template <std::derived_from<Relocatable> ...TContents>
+		inline Dialog& setContents(const TContents &...contents)
+		{
+			m_content.setContents(contents...);
+		}
 
 		/// @brief OKボタンが押されたか
 		/// @return 押されたら `true`

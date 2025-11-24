@@ -39,7 +39,7 @@ namespace UFOCat::GUI
 		// ボタンは下部中央
 		m_okButton.setPosition(m_okButtonPosition());
 
-		m_content = Scrollable{ m_region.tl() + Point{ 20, 20 }, SizeF{ m_region.w - 40, m_separatorPosition()->y - 40 } }
+		m_content = Scrollable{ m_region.tl() + Point{ 20, 20 }, SizeF{ m_region.w - 40, m_separatorPosition()->y - 40 } };
 	}
 
 	MessageBox &MessageBox::set(double fontSize, const String &text, const SizeF &windowSize)
@@ -55,10 +55,14 @@ namespace UFOCat::GUI
 		return *this;
 	}
 
-	MessageBox &MessageBox::setFont(const Font &font)
+	MessageBox &MessageBox::setSize(const SizeF &windowSize)
 	{
-		m_font = font;
-		// ボタンのフォントは変更しない
+		// setPos(Arg::center = ...) を使うとなぜか値がバグるので、直接 RectF を再確保
+		m_region = RectF{ Arg::center = Scene::Center(), windowSize };
+
+		// ボタンサイズもウィンドウサイズを参照するので再設定
+		m_okButton.set(Ceil(m_buttonSize()), U"OK").setPosition(m_okButtonPosition());
+
 		return *this;
 	}
 
