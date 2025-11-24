@@ -536,13 +536,8 @@ namespace UFOCat::GUI
 	class MessageBox : public IDrawable
 	{
 	protected:
-		Font m_font = FontAsset(Util::FontFamily::YuseiMagic);
 
-		double m_fontSize;
-
-		String m_text;
-
-		Scrollable m_content;
+		Scrollable m_contents;
 
 		/// @brief OK ボタン
 		Button m_okButton;
@@ -566,24 +561,10 @@ namespace UFOCat::GUI
 
 		virtual Arg::center_<Vec2> m_separatorPosition() const;
 
-		/// @brief 背景を描画する
-		void m_drawBackground() const;
-
-		/// @brief 区切り線とテキストを描画する @n
-		/// 区切り線はボタン上端部の Y 座標を基準に配置、テキストはそれと背景の上端部との中央に配置される
-		/// @param buttonsTopY ボタン上端部の Y 座標
-		void m_drawSeparator() const;
-
-		void m_drawContent() const;
-
 	public:
 		MessageBox() = default;
 
-		MessageBox(const Font &font, double fontSize, const String &text, const SizeF &windowSize = { 350, 300 });
-
 		MessageBox(const SizeF& windowSize = { 350, 300 }, Optional<Button> buttonStyle = none);
-
-		virtual MessageBox &set(double fontSize, const String &text, const SizeF &windowSize = { 350, 300 });
 
 		virtual MessageBox &setSize(const SizeF &windowSize = { 350, 300 });
 
@@ -594,7 +575,7 @@ namespace UFOCat::GUI
 		template <std::derived_from<Relocatable> ...TContents>
 		inline MessageBox& setContents(const TContents &...contents)
 		{
-			m_content.setContents(contents...);
+			m_contents.setContents(contents...);
 		}
 
 		/// @brief 開いているか
@@ -637,9 +618,7 @@ namespace UFOCat::GUI
 
 		Dialog() = default;
 
-		Dialog(const Font &font, double fontSize, const String &text, const SizeF &windowSize = { 350, 300 });
-
-		Dialog &set(double fontSize, const String &text, const SizeF &windowSize = { 350, 300 }) override;
+		Dialog(const SizeF& windowSize = { 350, 300 }, Optional<Button> okButtonStyle = none, Optional<Button> cancelButtonStyle = none);
 
 		virtual Dialog& setSize(const SizeF &windowSize) override;
 
@@ -650,7 +629,7 @@ namespace UFOCat::GUI
 		template <std::derived_from<Relocatable> ...TContents>
 		inline Dialog& setContents(const TContents &...contents)
 		{
-			m_content.setContents(contents...);
+			m_contents.setContents(contents...);
 		}
 
 		/// @brief OKボタンが押されたか
