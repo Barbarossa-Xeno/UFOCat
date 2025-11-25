@@ -381,9 +381,6 @@ namespace UFOCat::Core
 		/// @return 自分自身の参照
 		CatObject &appearFromEdge(Duration period, Duration inAndOut, const std::array<double, 4> &overflow);
 
-		// TODO: チャッピーとQiitaを参考に overflow~ を可変長引数で省略可能にもできるような宣言と定義をする！ -> 参考にしてもパラメータパックの意味がわからんくて無理
- 		// 本当は Arg::top_, Arg::right_, Arg::bottom_, Arg::left_ を使いたかった
-
 		/// @brief 登録されたアクションを実行する
 		/// @details `m_actionData` に登録されたアクションを実行する
 		/// @return 自分自身の参照
