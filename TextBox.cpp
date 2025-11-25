@@ -18,13 +18,21 @@ namespace UFOCat::GUI
 		return *this;
 	}
 
+	TextBox &TextBox::adjustWidth(double width)
+	{
+		double i = 0;
+		while (not m_text.fits(m_fontSize, RectF{ m_region.pos, width - m_region.pos.x, m_region.h + i }))
+		{
+			++i;
+		}
+
+		m_region = RectF{ m_region.pos, width, m_region.h + i };
+
+		return *this;
+	}
+
 	void TextBox::draw() const
 	{
 		m_text.draw(m_fontSize, m_region);
-	}
-
-	void TextBox::draw(const SizeF &size) const
-	{
-		m_text.draw(m_fontSize, RectF{ m_region.pos, size });
 	}
 }

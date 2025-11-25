@@ -4,12 +4,12 @@ namespace UFOCat::GUI
 {
 	Arg::bottomCenter_<Vec2> Dialog::m_okButtonPosition() const
 	{
-		return Arg::bottomCenter(Vec2{ m_region.centerX() - m_region.w / 4.0, m_region.bottomCenter().y - 20 });
+		return Arg::bottomCenter(Vec2{ m_region.centerX() - m_region.w / 4.0, m_region.bottomCenter().y - m_Margin });
 	}
 
 	Arg::bottomCenter_<Vec2> Dialog::m_cancelButtonPosition() const
 	{
-		return Arg::bottomCenter(Vec2{ m_region.centerX() + m_region.w / 4.0, m_region.bottomCenter().y - 20 });
+		return Arg::bottomCenter(Vec2{ m_region.centerX() + m_region.w / 4.0, m_region.bottomCenter().y - m_Margin });
 	}
 
 	Dialog::Dialog(const SizeF &windowSize, Optional<Button> okButtonStyle, Optional<Button> cancelButtonStyle)

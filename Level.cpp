@@ -44,9 +44,10 @@ namespace UFOCat
 	Level::Level(const InitData& init)
 		: IScene{ init }
 	{
-		// テクスチャ取得
+		// GUI初期化 と テクスチャ取得
 		{
 			m_gui.timer = Texture{ U"texture/timer.png", TextureDesc::Mipped };
+			m_gui.dialog.setContents(GUI::TextBox{ FontAsset(Util::FontFamily::YuseiMagic)(U"本当に戻りますか？\nここまでのデータは失われます"), 22 }.setPositionAt(m_gui.dialog.getRegion().center()));
 			m_bg = getData().backgrounds.choice();
 		}
 
@@ -350,7 +351,7 @@ namespace UFOCat
 						if (canContinue)
 						{
 							// 次へ行けるのにやめようとしてる人には、ダイアログを出す
-							m_gui.dialog.set(22, U"本当に戻りますか？\nここまでのデータは失われます").open();
+							m_gui.dialog.open();
 						}
 						else
 						{

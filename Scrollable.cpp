@@ -2,19 +2,13 @@
 
 namespace UFOCat::GUI
 {
-	Scrollable::ScrollableComponent::ScrollableComponent(const RectF& region, double minY, double maxY)
+	Scrollable::ScrollData::ScrollData(const RectF& region, double minY, double maxY)
 		: region{ region }
 		, minY{ minY }
 		, maxY{ maxY }
 	{}
 
-	double Scrollable::ScrollableComponent::getRange() const
-	{
-		return maxY - minY;
-	}
-
 	Scrollable::Scrollable(const Vec2 &position, const SizeF &viewportSize)
-		// 一旦仮の領域 あとでちゃんと既成のRectを代入させるようにする
 		: m_inner
 		{
 			// 一旦インナーはビューポートと同じ大きさにする
@@ -27,9 +21,9 @@ namespace UFOCat::GUI
 		, m_bar
 		{
 			// 右端のほうにつくる
-			{ Arg::topRight(viewportSize.x - m_BarSize.x, m_BarSize.x), m_BarSize },
-			m_BarSize.x,
-			viewportSize.y - m_BarSize.y - m_BarSize.x
+			{ Arg::topRight(viewportSize.x - BarSize.x, BarSize.x), BarSize },
+			BarSize.x,
+			viewportSize.y - BarSize.y - BarSize.x
 		}
 	{
 		// このクラスで m_region は描画範囲というより
@@ -40,10 +34,10 @@ namespace UFOCat::GUI
 	bool Scrollable::m_shouldScroll() const
 	{
 		// ビューポートよりインナーのほうがでかければスクロールの必要あり
-		return m_inner.region.h > m_region.y;
+		return m_inner.region.h > m_region.h;
 	}
 
-	Scrollable &Scrollable::m_scroll(ScrollableComponent &target, double dy)
+	Scrollable &Scrollable::m_scroll(ScrollData &target, double dy)
 	{
 		// 次の座標を計算
 		const double next = target.region.y + dy;
@@ -57,7 +51,7 @@ namespace UFOCat::GUI
 		return *this;
 	}
 
-	Scrollable &Scrollable::m_scrollSync(ScrollableComponent &target)
+	Scrollable &Scrollable::m_scrollSync(ScrollData &target)
 	{
 		// ターゲット要素のスクロール方向を求める
 		// 下に動かすことで、要素的には上に移動する場合は、スクロール範を絶対値としたときの
@@ -76,10 +70,32 @@ namespace UFOCat::GUI
 		return *this;
 	}
 
-	double Scrollable::m_CurrentMinimumScroll(double viewportHeight, double innerHeight)
+	double Scrollable::m_currentMinimumScroll()
 	{
 		// インナー要素 (m_innerなど) は上方向 = -Y 方向に移動するので、差の絶対値の負をとってやる
-		return -AbsDiff(viewportHeight, innerHeight);
+		// インナー要素はあくまでもビューポート基準でリージョン自体の y 座標は 0 なので、切片として足す必要がない
+		return -AbsDiff(m_region.h + m_region.y, m_inner.region.h);
+	}
+
+	Scrollable &Scrollable::setRegion(const RectF &viewport)
+	{
+		m_region = viewport;
+
+		// コンストラクタと同じ式を使ってスクロールバーの位置を調整
+		m_bar.region.setPos({ Arg::topRight(Vec2{ viewport.size.x - BarSize.x, BarSize.x }) });
+		// 最大値だけ変更する（下に移動させる長さが変わりうるので）
+		m_bar.maxY = viewport.size.y - BarSize.y - BarSize.x;
+
+		if (m_contents.size() > 0)
+		{
+			// 要素全ての高さは一番最後の要素の左上位置とそれ自体の高さに、ビューポート自体の Y 座標を足して計算できるものとする
+			m_inner.region.h = m_contents.back()->getInitialPosition().y + m_contents.back()->getRegion().h + m_region.y;
+		}
+		
+		// インナーのスクロール最小値を更新する（上に移動させる長さが変わりうるので）
+		m_inner.minY = m_currentMinimumScroll();
+
+		return *this;
 	}
 
 	void Scrollable::update()
@@ -130,7 +146,7 @@ namespace UFOCat::GUI
 					content->draw();
 				}
 			}
-
+			
 			if (m_shouldScroll())
 			{
 				m_bar.region.rounded(2)
@@ -139,6 +155,6 @@ namespace UFOCat::GUI
 			}
 		}
 
-		// TODO: m_region を drawFrame するかは検討
+		// TODO: m_region を おしゃれな感じで drawFrame したくはある
 	}
 }

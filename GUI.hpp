@@ -425,16 +425,19 @@ namespace UFOCat::GUI
 			return *this;
 		}
 
-		void draw() const override;
+		/// @brief 指定した横幅に合わせてテキストボックスの折り返しと高さ変更をする
+		/// @param width 合わせる横幅
+		/// @return 自分自身の参照
+		TextBox& adjustWidth(double width);
 
-		void draw(const SizeF& size) const;
+		void draw() const override;
 	};
 
 	/// @brief `Relocatable` な GUI コンポーネントを複数入れてビューポートでスクロール可能にするコンポーネント
-	class Scrollable : IDrawable
+	class Scrollable : public IDrawable
 	{
-		/// @brief スクロール可能なコンポーネント
-		struct ScrollableComponent
+		/// @brief スクロール可能なコンポーネントの情報
+		struct ScrollData
 		{
 			/// @brief 描画領域
 			RectF region;
@@ -445,24 +448,27 @@ namespace UFOCat::GUI
 			/// @brief スクロール範囲の X 座標の最大値
 			double maxY;
 
-			ScrollableComponent() = default;
+			ScrollData() = default;
 
 			/// @brief コンストラクタ
 			/// @param region 描画領域
 			/// @param minY スクロール最小値
 			/// @param maxY スクロール最大値
-			ScrollableComponent(const RectF& region, double minY, double maxY);
+			ScrollData(const RectF& region, double minY, double maxY);
 
 			/// @brief スクロール範囲を取得する
 			/// @return 最大値 - 最小値
-			double getRange() const;
+			inline double getRange() const
+			{
+				return maxY - minY;
+			}
 		};
 
 		/// @brief ビューポートの中の要素
-		ScrollableComponent m_inner;
+		ScrollData m_inner;
 
 		/// @brief スクロールバー
-		ScrollableComponent m_bar;
+		ScrollData m_bar;
 
 		/// @brief 中に入れておくコンポーネント
 		Array<std::unique_ptr<Relocatable>> m_contents{};
@@ -474,9 +480,11 @@ namespace UFOCat::GUI
 		/// @note バーの色を変えるときに使う
 		bool m_isHoverBar = false;
 
+	public:
 		/// @brief スクロールバーのサイズ
-		constexpr static SizeF m_BarSize{ 5, 60 };
+		constexpr static SizeF BarSize{ 5, 60 };
 
+	private:
 		/// @brief クロールする必要があるかどうか
 		/// インナー要素の長さを判定して決められる
 		bool m_shouldScroll() const;
@@ -485,24 +493,24 @@ namespace UFOCat::GUI
 		/// @param target スクロールさせる要素
 		/// @param dy Y 方向の移動量
 		/// @return 自分自身の参照
-		Scrollable& m_scroll(ScrollableComponent& target, double dy);
+		Scrollable& m_scroll(ScrollData& target, double dy);
 
 		/// @brief 直接操作しないスクロール要素とインナー要素を現在のスクロール進捗に同期させる
 		/// @param target スクロールを合わせたい要素
 		/// @return 自分自身の参照
-		Scrollable& m_scrollSync(ScrollableComponent& target);
+		Scrollable& m_scrollSync(ScrollData& target);
 
 		/// @brief 現在のインナー要素の高さにおいて、Y 座標をスクロールするときの最小値（上方向の最大値 =< 0）を返す
-		/// @param viewportHeight ビューポートの高さ
-		/// @param innerHeight インナー要素の高さ
 		/// @return スクロール座標の最小値
-		static double m_CurrentMinimumScroll(double viewportHeight, double innerHeight);
+		double m_currentMinimumScroll();
 
 	public:
 
 		Scrollable() = default;
 
 		Scrollable(const Vec2& position, const SizeF& viewportSize);
+
+		Scrollable &setRegion(const RectF &viewport);
 
 		/// @brief インナー要素内に配置するコンテンツを追加する
 		/// @tparam ...TContents `Relocatable` なコンポーネント（パラメータパック）
@@ -520,7 +528,7 @@ namespace UFOCat::GUI
 			m_inner.region.h = m_contents.back()->getRegion().y + m_contents.back()->getRegion().h + m_region.y;
 
 			// スクロールの最小値を更新する
-			m_inner.minY = m_CurrentMinimumScroll(m_region.h, m_inner.region.h);
+			m_inner.minY = m_currentMinimumScroll();
 
 			return *this;
 		}
@@ -548,6 +556,9 @@ namespace UFOCat::GUI
 		/// @brief 開いているか
 		bool m_isOpen = false;
 
+		/// @brief 区切り線やボタンやウィンドウ端との間の間隔に使う値
+		constexpr static double m_Margin = 20.0;
+
 		/// @brief ボタンのサイズを返す
 		/// 基本 ウィンドウ幅の 5% で、それよりも 24.0 のほうが小さい値であればそれを返す
 		/// @note 正確にはボタンに表示するテキストのサイズを決める -> テキストサイズによりボタンサイズが決まる
@@ -555,16 +566,23 @@ namespace UFOCat::GUI
 		double m_buttonSize() const;
 
 		/// @brief OK ボタンの下中央基準の位置を返す @n
-		/// 横方向はウィンドウ中央、縦方向はボタン下がウィンドウ下部から 20px 上になる位置
-		/// @return 下中央基準の座標データ 実際の基準値が入っているわけではないので注意が必要
+		/// x 方向はウィンドウ中央、y 方向はボタン下がウィンドウ下部から 20px 上になる位置
+		/// @return 下中央基準の座標データ 実際の基準値が入っているわけではないので注意
 		virtual Arg::bottomCenter_<Vec2> m_okButtonPosition() const;
 
+		/// @brief 区切り線の位置を返す
+		/// x 方向はウィンドウ中央、y 方向はOK ボタンの 上部から 20px 上の位置
+		/// @return 中央基準の座標データ 実際の基準値が入っているわけではないので注意
 		virtual Arg::center_<Vec2> m_separatorPosition() const;
 
-	public:
-		MessageBox() = default;
+		/// @brief コンテンツの表示領域を返す
+		/// 区切り線とウィンドウ上部との間らへんを上手いこと指定した範囲
+		/// @return 範囲データ
+		RectF m_contentsRegion() const;
 
-		MessageBox(const SizeF& windowSize = { 350, 300 }, Optional<Button> buttonStyle = none);
+	public:
+
+		explicit MessageBox(const SizeF& windowSize = { 350, 300 }, Optional<Button> buttonStyle = none);
 
 		virtual MessageBox &setSize(const SizeF &windowSize = { 350, 300 });
 
@@ -576,6 +594,7 @@ namespace UFOCat::GUI
 		inline MessageBox& setContents(const TContents &...contents)
 		{
 			m_contents.setContents(contents...);
+			return *this;
 		}
 
 		/// @brief 開いているか
@@ -616,9 +635,7 @@ namespace UFOCat::GUI
 
 	public:
 
-		Dialog() = default;
-
-		Dialog(const SizeF& windowSize = { 350, 300 }, Optional<Button> okButtonStyle = none, Optional<Button> cancelButtonStyle = none);
+		explicit Dialog(const SizeF& windowSize = { 350, 300 }, Optional<Button> okButtonStyle = none, Optional<Button> cancelButtonStyle = none);
 
 		virtual Dialog& setSize(const SizeF &windowSize) override;
 
@@ -630,6 +647,7 @@ namespace UFOCat::GUI
 		inline Dialog& setContents(const TContents &...contents)
 		{
 			m_contents.setContents(contents...);
+			return *this;
 		}
 
 		/// @brief OKボタンが押されたか

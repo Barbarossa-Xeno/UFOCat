@@ -32,7 +32,54 @@ namespace UFOCat
 						 .setPositionAt(Scene::Center() + Vec2{ 0, 60 });
 
 			m_gui.howToPlayButton.set(36, U"あそび方", true, { 60, 10 })
-						   .setPositionAt(Scene::Center() + Vec2{ 0, 160 });
+								 .setPositionAt(Scene::Center() + Vec2{ 0, 160 });
+
+			m_gui.howToPlay.setContents
+			(
+				GUI::TextBox
+				{
+					FontAsset(Util::FontFamily::YuseiMagic)
+						(U"「UFO猫」をつかまえるゲームです！"),
+					18
+				}.setPosition({ 0, 5 }),
+				GUI::TextBox
+				{
+					FontAsset(Util::FontFamily::KoharuiroSunray)
+						(U" ● あそび方"),
+					32
+				}.setPosition({ 0, 30 }),
+				GUI::TextBox
+				{
+					FontAsset(Util::FontFamily::YuseiMagic)
+						(U"レベル ごとにきめられたUFO猫を、間違えないようにつかまえましょう。ターゲット は レベル のはじめにお知らせします。"),
+					18
+				}.setPosition({ 40, 60 }).adjustWidth(500),
+				GUI::TextBox
+				{
+					FontAsset(Util::FontFamily::KoharuiroSunray)
+						(U" ● レベル / ★ について"),
+					32
+				}.setPosition({ 0, 120 }),
+				GUI::TextBox
+				{
+					FontAsset(Util::FontFamily::YuseiMagic)
+						(U"レベル が上がるとUFO猫がすばしっこくなったり、ほかのUFO猫がたくさんあらわれたりして、だんだんむずかしくなります。"),
+					18
+				}.setPosition({ 40, 150 }).adjustWidth(500),
+				GUI::TextBox
+				{
+					FontAsset(Util::FontFamily::KoharuiroSunray)
+						(U" ● スコアについて"),
+					32
+				}.setPosition({ 0, 210 }),
+				GUI::TextBox
+				{
+					FontAsset(Util::FontFamily::YuseiMagic)
+						(U"ターゲットをつかまえれたり、つかまえるのが速かったりしたら、スコア が上がります。"
+						 U"レベルが進んで スコア がたまると、すごい しょうごう がもらえます。高みをめざそう！"),
+					18
+				}.setPosition({ 40, 240 }).adjustWidth(500)
+			).setSize({ 600, 300 });
 
 			m_gui.logo = Texture{ U"texture/logo.png", TextureDesc::Mipped };
 		}
@@ -102,7 +149,7 @@ namespace UFOCat
 
 			if (m_gui.howToPlayButton.isPressed())
 			{
-				m_gui.howToPlay.set(16, m_howToPlayText, { 700, 550 }).open();
+				m_gui.howToPlay.open();
 			}
 
 			m_gui.howToPlay.isPressedOK();

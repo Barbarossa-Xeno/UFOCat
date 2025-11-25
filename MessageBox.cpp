@@ -10,12 +10,25 @@ namespace UFOCat::GUI
 
 	Arg::bottomCenter_<Vec2> MessageBox::m_okButtonPosition() const
 	{
-		return Arg::bottomCenter(Vec2{ m_region.centerX(), m_region.bottomCenter().y - 20 });
+		return Arg::bottomCenter(Vec2{ m_region.centerX(), m_region.bottomCenter().y - m_Margin });
 	}
 
 	Arg::center_<Vec2> MessageBox::m_separatorPosition() const
 	{
-		return Arg::center(Scene::CenterF().x, m_okButton.getRegion().topY() - 20);
+		return Arg::center(Scene::CenterF().x, m_okButton.getRegion().topY() - m_Margin);
+	}
+
+	RectF MessageBox::m_contentsRegion() const
+	{
+		Vec2 &&position{ m_region.tl().x + m_Margin, m_region.tl().y + m_Margin };
+
+		// ウィンドウ幅は、スクロールバーサイズも考慮
+		double &&width = m_region.w - m_Margin * 2;
+
+		// ウィンドウ高さから 区切り線までの高さになる
+		double &&height = m_region.h - (m_region.bottomY() - m_separatorPosition()->y) - m_Margin * 2;
+
+		return RectF{ position, SizeF{ width, height } };
 	}
 
 	MessageBox::MessageBox(const SizeF& windowSize, Optional<Button> buttonStyle)
@@ -28,7 +41,7 @@ namespace UFOCat::GUI
 		m_okButton.setPosition(m_okButtonPosition());
 
 		// ウィンドウから (20, 20) 離れた位置に、右と下方向も同じだけ間隔を開けたスクロールをつくる
-		m_contents = Scrollable{ m_region.tl() + Point{ 20, 20 }, SizeF{ m_region.w - 40, m_separatorPosition()->y - 40 } };
+		m_contents = Scrollable{ m_contentsRegion().pos, m_contentsRegion().size };
 	}
 
 	MessageBox &MessageBox::setSize(const SizeF &windowSize)
@@ -38,6 +51,8 @@ namespace UFOCat::GUI
 
 		// ボタンサイズもウィンドウサイズを参照するので再設定
 		m_okButton.set(Ceil(m_buttonSize()), U"OK").setPosition(m_okButtonPosition());
+		
+		m_contents.setRegion(m_contentsRegion());
 
 		return *this;
 	}
@@ -67,6 +82,8 @@ namespace UFOCat::GUI
 			// 押されたということで true を返す
 			return true;
 		}
+
+		m_contents.update();
 
 		// それ以外 false
 		return false;
@@ -102,15 +119,6 @@ namespace UFOCat::GUI
 				}
 				// 透明度少し下げて描画
 				.draw(Util::Palette::Brown.withA(0.6));;
-
-				// テキストは区切り線と背景上との中央に描画
-				/*m_font(m_text).drawAt
-				(
-					m_fontSize,
-					m_region.center().x,
-					m_region.topY() + (line.topCenter().y - m_region.topY()) / 2,
-					Util::Palette::Brown
-				);*/
 			}
 
 			// Scrollable
