@@ -98,7 +98,8 @@ namespace UFOCat::GUI
 			{
 				// ウィンドウ範囲を角丸にして背景
 				m_region.rounded(12)
-					.drawShadow(Vec2{ 4, 4 }, 16, 0)
+					.drawShadow(Vec2{ 0, 0 }, 16, 8)
+					.drawFrame(5.0, HSV{ Util::Palette::Brown }.withV(0.7))
 					.draw(Util::Palette::LightBrownAlt);
 			}
 

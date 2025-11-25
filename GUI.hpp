@@ -5,6 +5,7 @@
 namespace UFOCat::GUI
 {
 	/// @brief 描画可能コンポーネントのインターフェース
+	/// @note 正確にはメンバーを持つのでインターフェースではないけど
 	class IDrawable
 	{
 	protected:
@@ -25,6 +26,14 @@ namespace UFOCat::GUI
 		virtual void draw() const = 0;
 	};
 
+	/// @brief `Relocatable` の派生クラスに割り振るID @n
+	/// 型判定を効率的に行う目的
+	/// @note 当初 dynamic_cast でやっていたが、実行速度が気になるためこの手法に切り替え（ちゃっぴー参照）
+	enum class RelocatableTypeID
+	{
+		Button, ProgressBar, TextBox
+	};
+
 	/// @brief 再配置可能コンポーネント
 	/// 継承先でそのクラス専用のメソッドチェーンを利用する場合、共変オーバーライドする
 	class Relocatable : public IDrawable
@@ -37,6 +46,10 @@ namespace UFOCat::GUI
 		// この設計方法で対応できないことがあれば、この初期値を変えられるセッターの導入など、また検討
 
 	public:
+		/// @brief 型ID
+		/// @return 型ID (`RelocatableTypeID`)
+		virtual RelocatableTypeID typeID() const = 0;
+
 		/// @brief 座標設定の初期値を取得する
 		/// @return 座標の初期値 まだ設定がない場合は必ず (0, 0) を返す
 		inline const Vec2 &getInitialPosition() noexcept
@@ -207,6 +220,8 @@ namespace UFOCat::GUI
 		/// @return 
 		Button &setText(const String &text);
 
+		inline RelocatableTypeID typeID() const override { return RelocatableTypeID::Button; }
+
 		inline Button &setPosition(const Vec2 &position) noexcept override
 		{
 			Relocatable::setPosition(position);
@@ -297,6 +312,8 @@ namespace UFOCat::GUI
 		/// @param progress パラメータ (0.0 〜 1.0)
 		ProgressBar &setProgress(double progress);
 
+		inline RelocatableTypeID typeID() const override { return RelocatableTypeID::ProgressBar; }
+
 		inline ProgressBar &setPosition(const Vec2 &position) noexcept override
 		{
 			Relocatable::setPosition(position);
@@ -364,12 +381,26 @@ namespace UFOCat::GUI
 		/// @brief フォントサイズ
 		double m_fontSize;
 
+		/// @brief テキストの色
+		Color m_color;
+
 	public:
 		TextBox() = default;
 
-		TextBox(const DrawableText& text, double fontSize);
+		/// @brief コンストラクタ
+		/// @param text Font()(U"") の形で描画可能にしたテキストデータ
+		/// @param fontSize フォントサイズ
+		/// @param color テキストの色
+		TextBox(const DrawableText& text, double fontSize, const Color &color);
 
-		TextBox& set(const DrawableText& text, double fontSize);
+		/// @brief 各種パラメータを一括で設定する
+		/// @param text Font()(U"") の形で描画可能にしたテキストデータ
+		/// @param fontSize フォントサイズ
+		/// @param color テキストの色
+		/// @return 自分自身の参照
+		TextBox& set(const DrawableText& text, double fontSize, const Color &color);
+
+		inline RelocatableTypeID typeID() const override { return RelocatableTypeID::TextBox; }
 
 		inline TextBox& setPosition(const Vec2& position) noexcept override
 		{
@@ -427,8 +458,8 @@ namespace UFOCat::GUI
 
 		/// @brief 指定した横幅に合わせてテキストボックスの折り返しと高さ変更をする
 		/// @param width 合わせる横幅
-		/// @return 自分自身の参照
-		TextBox& adjustWidth(double width);
+		/// @return テキストボックスの範囲が変化すれば true
+		bool adjustWidth(double width);
 
 		void draw() const override;
 	};
@@ -504,6 +535,9 @@ namespace UFOCat::GUI
 		/// @return スクロール座標の最小値
 		double m_currentMinimumScroll();
 
+		/// @brief インナーの高さとスクロール最小値を更新する
+		void m_updateInner();
+
 	public:
 
 		Scrollable() = default;
@@ -524,11 +558,13 @@ namespace UFOCat::GUI
 			// ちゃっぴー参照
 			((m_contents << std::make_unique<TContents>(contents)), ...);
 
-			// 要素全ての高さは一番最後の要素の左上位置とそれ自体の高さに、ビューポート自体の Y 座標を足して計算できるものとする
-			m_inner.region.h = m_contents.back()->getRegion().y + m_contents.back()->getRegion().h + m_region.y;
+			//// 要素全ての高さは一番最後の要素の左上位置とそれ自体の高さに、ビューポート自体の Y 座標を足して計算できるものとする
+			//m_inner.region.h = m_contents.back()->getRegion().y + m_contents.back()->getRegion().h + m_region.y;
 
-			// スクロールの最小値を更新する
-			m_inner.minY = m_currentMinimumScroll();
+			//// スクロールの最小値を更新する
+			//m_inner.minY = m_currentMinimumScroll();
+
+			m_updateInner();
 
 			return *this;
 		}

@@ -72,9 +72,19 @@ namespace UFOCat::GUI
 
 	double Scrollable::m_currentMinimumScroll()
 	{
-		// インナー要素 (m_innerなど) は上方向 = -Y 方向に移動するので、差の絶対値の負をとってやる
-		// インナー要素はあくまでもビューポート基準でリージョン自体の y 座標は 0 なので、切片として足す必要がない
-		return -AbsDiff(m_region.h + m_region.y, m_inner.region.h);
+		// インナー要素 (m_innerなど) は上方向 = -Y 方向に移動するので、高さどうしの差の絶対値の負をとってやる
+		return -AbsDiff(m_region.h, m_inner.region.h);
+	}
+
+	void Scrollable::m_updateInner()
+	{
+		if (m_contents.size() > 0)
+		{
+			// 要素全ての高さは一番最後の要素の左上位置とそれ自体の高さに、ビューポート自体の Y 座標を足して計算できるものとする
+			m_inner.region.h = m_contents.back()->getInitialPosition().y + m_contents.back()->getRegion().h;
+		}
+		// インナーのスクロール最小値を更新する（上に移動させる長さが変わりうるので）
+		m_inner.minY = m_currentMinimumScroll();
 	}
 
 	Scrollable &Scrollable::setRegion(const RectF &viewport)
@@ -86,23 +96,37 @@ namespace UFOCat::GUI
 		// 最大値だけ変更する（下に移動させる長さが変わりうるので）
 		m_bar.maxY = viewport.size.y - BarSize.y - BarSize.x;
 
-		if (m_contents.size() > 0)
-		{
-			// 要素全ての高さは一番最後の要素の左上位置とそれ自体の高さに、ビューポート自体の Y 座標を足して計算できるものとする
-			m_inner.region.h = m_contents.back()->getInitialPosition().y + m_contents.back()->getRegion().h + m_region.y;
-		}
-		
-		// インナーのスクロール最小値を更新する（上に移動させる長さが変わりうるので）
-		m_inner.minY = m_currentMinimumScroll();
+		m_updateInner();
 
 		return *this;
 	}
 
 	void Scrollable::update()
 	{
+		// # 各タイプ固有処理
+		if (not m_contents.empty())
+		{
+			for (const auto& content : m_contents)
+			{
+				// 外部からの指定が億劫だったのでこのクラス内で勝手に
+				// ビューポート幅を参照して大きさ調整することにした
+				switch (content->typeID())
+				{
+					case RelocatableTypeID::TextBox:
+					{
+						if (static_cast<TextBox*>(content.get())->adjustWidth(m_region.w - BarSize.x * 2))
+						{
+							m_updateInner();
+						}
+					}
+				}
+			}
+		}
+
+		// 以降の処理はスクロールの必要がないなら何もしない
 		if (not m_shouldScroll())
 		{
-			// スクロールの必要がないなら何もしない
+			
 			return;
 		}
 
@@ -114,7 +138,8 @@ namespace UFOCat::GUI
 		}
 
 		// スクロールバーの当たり判定を広げておく
-		m_isHoverBar = m_bar.region.stretched(4 * m_bar.region.w, m_bar.region.h)
+		// TODO: なぜかスクロールバーが移動後に変なところに行く、意味が分からない、スクロールバーで動かせないじゃん
+		m_isHoverBar = m_bar.region.stretched(5 * m_bar.region.w, m_bar.region.h)
 								   .movedBy(2 * m_bar.region.w, m_bar.region.h / 4)
 								   .mouseOver();
 

@@ -47,7 +47,10 @@ namespace UFOCat
 		// GUI初期化 と テクスチャ取得
 		{
 			m_gui.timer = Texture{ U"texture/timer.png", TextureDesc::Mipped };
-			m_gui.dialog.setContents(GUI::TextBox{ FontAsset(Util::FontFamily::YuseiMagic)(U"本当に戻りますか？\nここまでのデータは失われます"), 22 }.setPositionAt(m_gui.dialog.getRegion().center()));
+			m_gui.dialog.setContents
+			(
+				GUI::TextBox{ FontAsset(Util::FontFamily::YuseiMagic)(U"本当に戻りますか？\nここまでのデータは失われます"), 20, Util::Palette::Brown }.setPositionAt({ 135, 40 })
+			).setSize({ 350, 200 });
 			m_bg = getData().backgrounds.choice();
 		}
 

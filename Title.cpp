@@ -33,53 +33,61 @@ namespace UFOCat
 
 			m_gui.howToPlayButton.set(36, U"あそび方", true, { 60, 10 })
 								 .setPositionAt(Scene::Center() + Vec2{ 0, 160 });
-
+			
 			m_gui.howToPlay.setContents
 			(
 				GUI::TextBox
 				{
 					FontAsset(Util::FontFamily::YuseiMagic)
-						(U"「UFO猫」をつかまえるゲームです！"),
-					18
+						(U"ときは21XX年、猫がUFOを乗りこなす時代。"
+						 U"UFOに乗った猫、「UFO猫」は飼い主の家から脱走するのが、おおきな社会問題になっていた…。\n"
+						 U"というのはおいといて……、"),
+					16, Util::Palette::Brown
 				}.setPosition({ 0, 5 }),
 				GUI::TextBox
 				{
+					FontAsset(Util::FontFamily::YuseiMagic)
+						(U"にている中からただしい「UFO猫」を捕まえるゲームです！"),
+					22, Util::Palette::Brown
+				}.setPosition({ 0, 120 }),
+				GUI::TextBox
+				{
 					FontAsset(Util::FontFamily::KoharuiroSunray)
-						(U" ● あそび方"),
-					32
-				}.setPosition({ 0, 30 }),
+						(U"■ あそび方"),
+					44, Util::Palette::Brown
+				}.setPosition({ 0, 200 }),
 				GUI::TextBox
 				{
 					FontAsset(Util::FontFamily::YuseiMagic)
 						(U"レベル ごとにきめられたUFO猫を、間違えないようにつかまえましょう。ターゲット は レベル のはじめにお知らせします。"),
-					18
-				}.setPosition({ 40, 60 }).adjustWidth(500),
+					18, Util::Palette::Brown
+				}.setPosition({ 40, 240 }),
 				GUI::TextBox
 				{
 					FontAsset(Util::FontFamily::KoharuiroSunray)
-						(U" ● レベル / ★ について"),
-					32
-				}.setPosition({ 0, 120 }),
+						(U"■ レベル (★) について"),
+					44, Util::Palette::Brown
+				}.setPosition({ 0, 340 }),
 				GUI::TextBox
 				{
 					FontAsset(Util::FontFamily::YuseiMagic)
 						(U"レベル が上がるとUFO猫がすばしっこくなったり、ほかのUFO猫がたくさんあらわれたりして、だんだんむずかしくなります。"),
-					18
-				}.setPosition({ 40, 150 }).adjustWidth(500),
+					18, Util::Palette::Brown
+				}.setPosition({ 40, 380 }),
 				GUI::TextBox
 				{
 					FontAsset(Util::FontFamily::KoharuiroSunray)
-						(U" ● スコアについて"),
-					32
-				}.setPosition({ 0, 210 }),
+						(U"■ スコアについて"),
+					44, Util::Palette::Brown
+				}.setPosition({ 0, 480 }),
 				GUI::TextBox
 				{
 					FontAsset(Util::FontFamily::YuseiMagic)
 						(U"ターゲットをつかまえれたり、つかまえるのが速かったりしたら、スコア が上がります。"
 						 U"レベルが進んで スコア がたまると、すごい しょうごう がもらえます。高みをめざそう！"),
-					18
-				}.setPosition({ 40, 240 }).adjustWidth(500)
-			).setSize({ 600, 300 });
+					18, Util::Palette::Brown
+				}.setPosition({ 40, 520 })
+			).setSize({ 500, 500 });
 
 			m_gui.logo = Texture{ U"texture/logo.png", TextureDesc::Mipped };
 		}
