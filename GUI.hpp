@@ -34,21 +34,47 @@ namespace UFOCat::GUI
 		Button, ProgressBar, TextBox
 	};
 
+	enum class PositionType
+	{
+		Absolute, Relative
+	};
+
 	/// @brief 再配置可能コンポーネント
 	/// 継承先でそのクラス専用のメソッドチェーンを利用する場合、共変オーバーライドする
 	class Relocatable : public IDrawable
 	{
+	public:
+		struct Margin
+		{
+			double top = 0;
+			double bottom = 0;
+		};
+
 	protected:
+		Margin m_margin;
+
 		/// @brief 座標設定の初期値
 		/// @note インスタンス化以降 `setPosition()` を初めて呼び出すと初期化され、それ以降変更されない
 		Optional<Vec2> m_initialPosition = none;
 		// 今は初期値を固定することで後述の Scrollable を実現させているけど
 		// この設計方法で対応できないことがあれば、この初期値を変えられるセッターの導入など、また検討
 
+		PositionType m_positionType = PositionType::Absolute;
+
 	public:
 		/// @brief 型ID
 		/// @return 型ID (`RelocatableTypeID`)
 		virtual RelocatableTypeID typeID() const = 0;
+
+		inline PositionType positionType() const
+		{
+			return m_positionType;
+		}
+
+		inline const Margin &getMargin() const
+		{
+			return m_margin;
+		}
 
 		/// @brief 座標設定の初期値を取得する
 		/// @return 座標の初期値 まだ設定がない場合は必ず (0, 0) を返す
@@ -166,6 +192,12 @@ namespace UFOCat::GUI
 			}
 			return *this;
 		}
+
+		inline virtual Relocatable &setMargin(const Margin &margin) noexcept
+		{
+			m_margin = margin;
+			return *this;
+		}
 	};
 	// ほんとは CRTP（奇妙に再帰したテンプレートパターン）を使ってオーバーライドを避けたかったけど
 	// それをやめるとコンパイル時点で継承元があいまいになって
@@ -197,17 +229,19 @@ namespace UFOCat::GUI
 		/// @param font テキストに使うフォント
 		/// @param fontSize
 		/// @param text テキスト
+		/// @param positionType 座標指定方法
 		/// @param isEnabled 有効かどうか
 		/// @param padding ボタンの内側余白 (デフォルトは (30, 10))
 		/// @note https://siv3d.github.io/ja-jp/tutorial2/button/ を参考に改変
-		Button(const Font &font, double fontSize, const String &text, bool isEnabled = true, const Vec2 &padding = { 30.0, 10.0 });
+		Button(const Font &font, double fontSize, const String &text, PositionType positionType = PositionType::Absolute, bool isEnabled = true, const Vec2 &padding = { 30.0, 10.0 });
 
 		/// @brief ボタンの各種パラメータを一括で設定する
 		/// @param fontSize 
 		/// @param text テキスト
+		/// @param positionType 座標指定方法
 		/// @param isEnabled 有効かどうか
 		/// @param padding ボタンの内側余白 (デフォルトは (30, 10))
-		Button &set(double fontSize, const String& text, bool isEnabled = true, const Vec2& padding = { 30.0, 10.0 });
+		Button &set(double fontSize, const String& text, PositionType positionType = PositionType::Absolute, bool isEnabled = true, const Vec2& padding = { 30.0, 10.0 });
 
 		/// @brief ボタンに表示するフォントを設定する
 		/// デフォルトの表示フォントを変えたいときはこのメソッドから明示的に行うこと
@@ -276,6 +310,12 @@ namespace UFOCat::GUI
 			return *this;
 		}
 
+		inline Button &setMargin(const Margin &margin) noexcept override
+		{
+			Relocatable::setMargin(margin);
+			return *this;
+		}
+
 		/// @brief ボタンが押されたかを返す
 		/// @return 押されたら `true`
 		bool isPressed() const;
@@ -299,14 +339,15 @@ namespace UFOCat::GUI
 
 		ProgressBar() = default;
 
-		ProgressBar(const SizeF& size, ColorF color, double roundness = 9.0, double progress = 0.0);
+		ProgressBar(const SizeF& size, ColorF color, PositionType positionType = PositionType::Absolute, double roundness = 9.0, double progress = 0.0);
 
 		/// @brief 各パラメータを設定する
 		/// @param size プログレスバーの背景領域の大きさ
-		/// @param color
+		/// @param color バーの色
+		/// @param positionType 座標指定方法
 		/// @param roundness 角丸の丸み (デフォルトは 9.0)
 		/// @return 
-		ProgressBar &set(const SizeF &size, ColorF color, double roundness = 9.0);
+		ProgressBar &set(const SizeF &size, ColorF color, PositionType positionType = PositionType::Absolute, double roundness = 9.0);
 
 		/// @brief プログレスバーの値を設定する
 		/// @param progress パラメータ (0.0 〜 1.0)
@@ -368,6 +409,12 @@ namespace UFOCat::GUI
 			return *this;
 		}
 
+		inline ProgressBar &setMargin(const Margin &margin) noexcept override
+		{
+			Relocatable::setMargin(margin);
+			return *this;
+		}
+
 		/// @brief 描画する
 		void draw() const override;
 	};
@@ -391,14 +438,16 @@ namespace UFOCat::GUI
 		/// @param text Font()(U"") の形で描画可能にしたテキストデータ
 		/// @param fontSize フォントサイズ
 		/// @param color テキストの色
-		TextBox(const DrawableText& text, double fontSize, const Color &color);
+		/// @param positionType 座標指定方法
+		TextBox(const DrawableText& text, double fontSize, const Color &color, PositionType positionType = PositionType::Absolute);
 
 		/// @brief 各種パラメータを一括で設定する
 		/// @param text Font()(U"") の形で描画可能にしたテキストデータ
 		/// @param fontSize フォントサイズ
 		/// @param color テキストの色
+		/// @param positionType 座標指定方法
 		/// @return 自分自身の参照
-		TextBox& set(const DrawableText& text, double fontSize, const Color &color);
+		TextBox& set(const DrawableText& text, double fontSize, const Color &color, PositionType positionType = PositionType::Absolute);
 
 		inline RelocatableTypeID typeID() const override { return RelocatableTypeID::TextBox; }
 
@@ -455,6 +504,17 @@ namespace UFOCat::GUI
 			Relocatable::setPositionAt(position);
 			return *this;
 		}
+
+		inline TextBox &setMargin(const Margin &margin) noexcept override
+		{
+			Relocatable::setMargin(margin);
+			return *this;
+		}
+
+		/// @brief 
+		/// @param px 
+		/// @return 
+		TextBox &setIndent(double px);
 
 		/// @brief 指定した横幅に合わせてテキストボックスの折り返しと高さ変更をする
 		/// @param width 合わせる横幅
@@ -538,6 +598,9 @@ namespace UFOCat::GUI
 		/// @brief インナーの高さとスクロール最小値を更新する
 		void m_updateInner();
 
+		/// @brief コンテンツの高さや位置を更新する
+		void m_updateContents();
+
 	public:
 
 		Scrollable() = default;
@@ -557,12 +620,6 @@ namespace UFOCat::GUI
 			// 左辺（リストへの代入部分）をパラメータパックの長さ分くりかえす命令になる
 			// ちゃっぴー参照
 			((m_contents << std::make_unique<TContents>(contents)), ...);
-
-			//// 要素全ての高さは一番最後の要素の左上位置とそれ自体の高さに、ビューポート自体の Y 座標を足して計算できるものとする
-			//m_inner.region.h = m_contents.back()->getRegion().y + m_contents.back()->getRegion().h + m_region.y;
-
-			//// スクロールの最小値を更新する
-			//m_inner.minY = m_currentMinimumScroll();
 
 			m_updateInner();
 

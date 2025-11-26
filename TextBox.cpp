@@ -3,21 +3,29 @@
 namespace UFOCat::GUI
 {
 	// TODO: 今は場所指定を直接行っているが、上下マージンのデータによって行えるようにしてもいいかもしれん
-	TextBox::TextBox(const DrawableText &text, double fontSize, const Color &color)
+	TextBox::TextBox(const DrawableText &text, double fontSize, const Color &color, PositionType positionType)
 		: m_text{ text }
 		, m_fontSize{ fontSize }
 		, m_color{ color }
 	{
 		m_region = text.region(fontSize);
+		m_positionType = positionType;
 	}
 
-	TextBox &TextBox::set(const DrawableText &text, double fontSize, const Color &color)
+	TextBox &TextBox::set(const DrawableText &text, double fontSize, const Color &color, PositionType positionType)
 	{
 		m_region = text.region(fontSize);
 		m_text = text;
 		m_fontSize = fontSize;
 		m_color = color;
+		m_positionType = positionType;
 
+		return *this;
+	}
+
+	TextBox &TextBox::setIndent(double px)
+	{
+		m_region.setPos(px, m_region.y);
 		return *this;
 	}
 

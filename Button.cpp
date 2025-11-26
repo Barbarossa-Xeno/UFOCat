@@ -2,21 +2,24 @@
 
 namespace UFOCat::GUI
 {
-	Button::Button(const Font& font, double fontSize, const String& text, bool isEnabled, const Vec2& padding)
+	Button::Button(const Font& font, double fontSize, const String& text, PositionType positionType, bool isEnabled, const Vec2& padding)
 		: m_font(font)
 		, m_fontSize(fontSize)
 		, m_text(text)
 		, m_isEnabled(isEnabled)
 		, m_padding(padding)
 	{
+		m_positionType = positionType;
+
 		// フォントの描画領域 (左上(0, 0)の位置) を特定して、パディング分を足したサイズで Rect を作成
 		m_region = RectF{ m_font(m_text).region(fontSize).size + m_padding };
 	}
 
-	Button &Button::set(double fontSize, const String& text, bool isEnabled, const Vec2& padding)
+	Button &Button::set(double fontSize, const String& text, PositionType positionType, bool isEnabled, const Vec2& padding)
 	{
 		m_fontSize = fontSize;
 		m_text = text;
+		m_positionType = positionType;
 		m_isEnabled = isEnabled;
 		m_padding = padding;
 		m_region = RectF{ m_font(m_text).region(fontSize).size + m_padding };

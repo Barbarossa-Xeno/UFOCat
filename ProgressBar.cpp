@@ -2,18 +2,20 @@
 
 namespace UFOCat::GUI
 {
-	ProgressBar::ProgressBar(const SizeF &size, ColorF color, double roundness, double progress)
+	ProgressBar::ProgressBar(const SizeF &size, ColorF color, PositionType positionType, double roundness, double progress)
 		: m_color{ color }
 		, m_roundness{ roundness }
 		, m_progress{ progress }
 	{
 		m_region = RectF{ size };
+		m_positionType = positionType;
 	}
 
-	ProgressBar &ProgressBar::set(const SizeF &size, ColorF color, double roundness)
+	ProgressBar &ProgressBar::set(const SizeF &size, ColorF color, PositionType positionType, double roundness)
 	{
 		m_region = RectF{ size };
 		m_color = color;
+		m_positionType = positionType;
 		m_roundness = roundness;
 		return *this;
 	}

@@ -28,10 +28,10 @@ namespace UFOCat
 
 		// # GUI 要素設定
 		{
-			m_gui.toLevel.set(36, U"あそぶ", true, { 96, 10 })
+			m_gui.toLevel.set(36, U"あそぶ", GUI::PositionType::Absolute, true, { 96, 10 })
 						 .setPositionAt(Scene::Center() + Vec2{ 0, 60 });
 
-			m_gui.howToPlayButton.set(36, U"あそび方", true, { 60, 10 })
+			m_gui.howToPlayButton.set(36, U"あそび方", GUI::PositionType::Absolute, true, { 60, 10 })
 								 .setPositionAt(Scene::Center() + Vec2{ 0, 160 });
 			
 			m_gui.howToPlay.setContents
@@ -42,52 +42,73 @@ namespace UFOCat
 						(U"ときは21XX年、猫がUFOを乗りこなす時代。"
 						 U"UFOに乗った猫、「UFO猫」は飼い主の家から脱走するのが、おおきな社会問題になっていた…。\n"
 						 U"というのはおいといて……、"),
-					16, Util::Palette::Brown
-				}.setPosition({ 0, 5 }),
+					16, Util::Palette::Brown, GUI::PositionType::Relative
+				}.setMargin({ 0, 10 }),
 				GUI::TextBox
 				{
 					FontAsset(Util::FontFamily::YuseiMagic)
 						(U"にている中からただしい「UFO猫」を捕まえるゲームです！"),
-					22, Util::Palette::Brown
-				}.setPosition({ 0, 120 }),
+					22, Util::Palette::Brown, GUI::PositionType::Relative
+				}.setMargin({ 5, 15 }),
 				GUI::TextBox
 				{
 					FontAsset(Util::FontFamily::KoharuiroSunray)
 						(U"■ あそび方"),
-					44, Util::Palette::Brown
-				}.setPosition({ 0, 200 }),
+					44, Util::Palette::Brown, GUI::PositionType::Relative
+				}.setMargin({ 10, 10 }),
 				GUI::TextBox
 				{
 					FontAsset(Util::FontFamily::YuseiMagic)
 						(U"レベル ごとにきめられたUFO猫を、間違えないようにつかまえましょう。ターゲット は レベル のはじめにお知らせします。"),
-					18, Util::Palette::Brown
-				}.setPosition({ 40, 240 }),
+					18, Util::Palette::Brown, GUI::PositionType::Relative
+				}.setMargin({ 0, 0 }),
 				GUI::TextBox
 				{
 					FontAsset(Util::FontFamily::KoharuiroSunray)
 						(U"■ レベル (★) について"),
-					44, Util::Palette::Brown
-				}.setPosition({ 0, 340 }),
+					44, Util::Palette::Brown, GUI::PositionType::Relative
+				}.setMargin({ 10, 10 }),
 				GUI::TextBox
 				{
 					FontAsset(Util::FontFamily::YuseiMagic)
 						(U"レベル が上がるとUFO猫がすばしっこくなったり、ほかのUFO猫がたくさんあらわれたりして、だんだんむずかしくなります。"),
-					18, Util::Palette::Brown
-				}.setPosition({ 40, 380 }),
+					18, Util::Palette::Brown, GUI::PositionType::Relative
+				}.setMargin({ 0, 0 }),
 				GUI::TextBox
 				{
 					FontAsset(Util::FontFamily::KoharuiroSunray)
 						(U"■ スコアについて"),
-					44, Util::Palette::Brown
-				}.setPosition({ 0, 480 }),
+					44, Util::Palette::Brown, GUI::PositionType::Relative
+				}.setMargin({ 10, 10 }),
 				GUI::TextBox
 				{
 					FontAsset(Util::FontFamily::YuseiMagic)
-						(U"ターゲットをつかまえれたり、つかまえるのが速かったりしたら、スコア が上がります。"
+						(U"ターゲットをつかまえたり、つかまえるのが速かったりしたら、スコア が上がります。"
 						 U"レベルが進んで スコア がたまると、すごい しょうごう がもらえます。高みをめざそう！"),
-					18, Util::Palette::Brown
-				}.setPosition({ 40, 520 })
+					18, Util::Palette::Brown, GUI::PositionType::Relative
+				}.setMargin({ 0, 0 })
 			).setSize({ 500, 500 });
+
+			m_gui.lisence.setContents(
+				GUI::TextBox
+				{
+					FontAsset(Util::FontFamily::KoharuiroSunray)
+						(U"ライセンス"),
+					44, Util::Palette::Brown
+				}.setPosition({ 0, 0 }),
+				GUI::TextBox
+				{
+					FontAsset(Util::FontFamily::YuseiMagic)
+						(U"・猫のイラスト"),
+					22, Util::Palette::Brown
+				}.setPosition({ 0, 100 }),
+				GUI::TextBox
+				{
+					FontAsset(Util::FontFamily::YuseiMagic)
+						(U"・猫のイラスト"),
+					18, Util::Palette::Brown
+				}.setPosition({ 18, 200 })
+			).setSize({ 600, 500 });
 
 			m_gui.logo = Texture{ U"texture/logo.png", TextureDesc::Mipped };
 		}

@@ -332,7 +332,7 @@ namespace UFOCat
 					bool canContinue = (m_score.isCorrect and m_isAvailableNextLevel());
 
 					// 次のレベルへ進むボタン
-					if (m_gui.toNextLevel.set(32, U"次のレベルへ", canContinue)
+					if (m_gui.toNextLevel.set(32, U"次のレベルへ", GUI::PositionType::Absolute, canContinue)
 										  .setPosition(Arg::bottomRight = (Scene::Size() - Vec2{ 10.0, 10.0 })).isPressed())
 					{
 						// 次に進む場合は、レベルデータにもクリア情報を反映

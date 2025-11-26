@@ -78,13 +78,49 @@ namespace UFOCat::GUI
 
 	void Scrollable::m_updateInner()
 	{
-		if (m_contents.size() > 0)
+		if (not m_contents.empty())
 		{
 			// 要素全ての高さは一番最後の要素の左上位置とそれ自体の高さに、ビューポート自体の Y 座標を足して計算できるものとする
-			m_inner.region.h = m_contents.back()->getInitialPosition().y + m_contents.back()->getRegion().h;
+			m_inner.region.h = m_contents.back()->getInitialPosition().y + m_contents.back()->getRegion().h
+								+ (m_contents.back()->positionType() == PositionType::Relative ? m_contents.back()->getMargin().bottom : 0);
 		}
 		// インナーのスクロール最小値を更新する（上に移動させる長さが変わりうるので）
 		m_inner.minY = m_currentMinimumScroll();
+	}
+
+	void Scrollable::m_updateContents()
+	{
+		if (not m_contents.empty())
+		{
+			for (auto itr = m_contents.begin(); itr != m_contents.end(); ++itr)
+			{
+				if (const auto &current = *itr;
+					current->positionType() == PositionType::Relative)
+				{
+					if (itr == (m_contents.end() - 1))
+					{
+						const auto& prev = *std::prev(itr);
+						Print << current->getInitialPosition().y;
+						Print << Vec2{ current->getRegion().x, prev->getRegion().bottomY() + prev->getMargin().bottom + current->getMargin().top }.y;
+					}
+					if (itr == m_contents.begin())
+					{
+						current->setPosition({ current->getRegion().x, current->getMargin().top });
+					}
+					else
+					{
+						const auto &prev = *std::prev(itr);
+						current->setPosition({ current->getRegion().x, prev->getRegion().bottomY() + prev->getMargin().bottom + current->getMargin().top });
+
+						if (itr == (m_contents.end() - 1))
+						{
+							Print << current->getInitialPosition().y;
+							Print << Vec2{ current->getRegion().x, prev->getRegion().bottomY() + prev->getMargin().bottom + current->getMargin().top }.y;
+						}
+					}
+				}
+			}
+		}
 	}
 
 	Scrollable &Scrollable::setRegion(const RectF &viewport)
@@ -95,6 +131,8 @@ namespace UFOCat::GUI
 		m_bar.region.setPos({ Arg::topRight(Vec2{ viewport.size.x - BarSize.x, BarSize.x }) });
 		// 最大値だけ変更する（下に移動させる長さが変わりうるので）
 		m_bar.maxY = viewport.size.y - BarSize.y - BarSize.x;
+
+		m_updateContents();
 
 		m_updateInner();
 
@@ -114,6 +152,7 @@ namespace UFOCat::GUI
 				{
 					case RelocatableTypeID::TextBox:
 					{
+						//
 						if (static_cast<TextBox*>(content.get())->adjustWidth(m_region.w - BarSize.x * 2))
 						{
 							m_updateInner();
@@ -169,6 +208,7 @@ namespace UFOCat::GUI
 				for (const auto& content : m_contents)
 				{
 					content->draw();
+					content->getRegion().drawFrame(2, Palette::Black);
 				}
 			}
 			
