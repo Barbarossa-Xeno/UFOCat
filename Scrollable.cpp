@@ -98,6 +98,7 @@ namespace UFOCat::GUI
 				// # 各クラス固有処理
 				// テキストについては、外部からの指定が億劫だったのでこのクラス内で勝手に
 				// ビューポート幅を参照して大きさ調整することにした
+				// ボックスの変更が必要なときのみ更新される
 				if (static_cast<TextBox*>((*itr).get())->adjustWidth(m_region.w - BarSize.x * 2))
 				{
 					m_updateInner();
@@ -147,7 +148,6 @@ namespace UFOCat::GUI
 		// 以降の処理はスクロールの必要がないなら何もしない
 		if (not m_shouldScroll())
 		{
-			
 			return;
 		}
 
@@ -190,7 +190,6 @@ namespace UFOCat::GUI
 				for (const auto& content : m_contents)
 				{
 					content->draw();
-					content->getRegion().drawFrame(2, Palette::Black);
 				}
 			}
 			
@@ -201,7 +200,7 @@ namespace UFOCat::GUI
 							.draw(m_isHoverBar ? Palette::Lightgray : Palette::White);
 			}
 		}
-		Line{ 0, m_contents[0]->getRegion().bottomY(), 500, m_contents[0]->getRegion().bottomY() }.draw(2);
+
 		// TODO: m_region を おしゃれな感じで drawFrame したくはある
 	}
 }

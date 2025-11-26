@@ -43,13 +43,13 @@ namespace UFOCat
 						 U"UFOに乗った猫、「UFO猫」は飼い主の家から脱走するのが、おおきな社会問題になっていた…。\n"
 						 U"というのはおいといて……、"),
 					16, Util::Palette::Brown, GUI::PositionType::Relative
-				}.setMargin({ 0, 10 }),
+				}.setMargin({ 0, 5 }),
 				GUI::TextBox
 				{
 					FontAsset(Util::FontFamily::YuseiMagic)
 						(U"にている中からただしい「UFO猫」を捕まえるゲームです！"),
 					22, Util::Palette::Brown, GUI::PositionType::Relative
-				}.setMargin({ 5, 15 }),
+				}.setMargin({ 5, 10 }),
 				GUI::TextBox
 				{
 					FontAsset(Util::FontFamily::KoharuiroSunray)
