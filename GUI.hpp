@@ -34,9 +34,14 @@ namespace UFOCat::GUI
 		Button, ProgressBar, TextBox
 	};
 
+	/// @brief 配置タイプ
 	enum class PositionType
 	{
-		Absolute, Relative
+		/// @brief 絶対座標による直接指定
+		Absolute,
+
+		/// @brief マージンによる間接指定
+		Relative
 	};
 
 	/// @brief 再配置可能コンポーネント
@@ -44,6 +49,7 @@ namespace UFOCat::GUI
 	class Relocatable : public IDrawable
 	{
 	public:
+		/// @brief マージン（Y 方向）
 		struct Margin
 		{
 			double top = 0;
@@ -51,14 +57,15 @@ namespace UFOCat::GUI
 		};
 
 	protected:
+		/// @brief コンポーネントを自動整列するときに参照するマージンの値
 		Margin m_margin;
 
 		/// @brief 座標設定の初期値
 		/// @note インスタンス化以降 `setPosition()` を初めて呼び出すと初期化され、それ以降変更されない
+		/// `setPosition()` のオプション引数で、強制書き換え可能
 		Optional<Vec2> m_initialPosition = none;
-		// 今は初期値を固定することで後述の Scrollable を実現させているけど
-		// この設計方法で対応できないことがあれば、この初期値を変えられるセッターの導入など、また検討
 
+		/// @brief このコンポーネントの配置タイプ
 		PositionType m_positionType = PositionType::Absolute;
 
 	public:
@@ -66,11 +73,15 @@ namespace UFOCat::GUI
 		/// @return 型ID (`RelocatableTypeID`)
 		virtual RelocatableTypeID typeID() const = 0;
 
+		/// @brief このコンポーネントの配置タイプ
+		/// @return 配置タイプ (`PositionType`)
 		inline PositionType positionType() const
 		{
 			return m_positionType;
 		}
 
+		/// @brief 設定したマージンを取得する
+		/// @return マージン
 		inline const Margin &getMargin() const
 		{
 			return m_margin;
@@ -85,9 +96,10 @@ namespace UFOCat::GUI
 
 		/// @brief 描画位置に左上位置を指定する
 		/// @param position 左上位置
-		inline virtual Relocatable &setPosition(const Vec2 &position) noexcept
+		/// @param isOverwriteDefault 強制的に初期位置を上書きするなら true (デフォルト: false)
+		inline virtual Relocatable &setPosition(const Vec2 &position, bool isOverwriteDefault = false) noexcept
 		{
-			if (not m_initialPosition)
+			if (not m_initialPosition or isOverwriteDefault)
 			{
 				m_initialPosition = position;
 			}
@@ -97,12 +109,13 @@ namespace UFOCat::GUI
 
 		/// @brief 描画位置に中央上位置を指定する
 		/// @param position 中央上位置
-		inline virtual Relocatable &setPosition(const Arg::topCenter_<Vec2> &position) noexcept
+		/// @param isOverwriteDefault 強制的に初期位置を上書きするなら true (デフォルト: false)
+		inline virtual Relocatable &setPosition(const Arg::topCenter_<Vec2> &position, bool isOverwriteDefault = false) noexcept
 		{
 			m_region.setPos(position);
 
 			// 左上以外は、一旦 RectF の指定をさせたあとにそこから取得してくる
-			if (not m_initialPosition)
+			if (not m_initialPosition or isOverwriteDefault)
 			{
 				m_initialPosition = m_region.pos;
 			}
@@ -111,10 +124,11 @@ namespace UFOCat::GUI
 
 		/// @brief 描画位置に右上位置を指定する
 		/// @param position 右上位置
-		inline virtual Relocatable &setPosition(const Arg::topRight_<Vec2> &position) noexcept
+		/// @param isOverwriteDefault 強制的に初期位置を上書きするなら true (デフォルト: false)
+		inline virtual Relocatable &setPosition(const Arg::topRight_<Vec2> &position, bool isOverwriteDefault = false) noexcept
 		{
 			m_region.setPos(position);
-			if (not m_initialPosition)
+			if (not m_initialPosition or isOverwriteDefault)
 			{
 				m_initialPosition = m_region.pos;
 			}
@@ -123,10 +137,11 @@ namespace UFOCat::GUI
 
 		/// @brief 描画位置に中央左位置を指定する
 		/// @param position 中央左上位置
-		inline virtual Relocatable &setPosition(const Arg::leftCenter_<Vec2>& position) noexcept
+		/// @param isOverwriteDefault 強制的に初期位置を上書きするなら true (デフォルト: false)
+		inline virtual Relocatable &setPosition(const Arg::leftCenter_<Vec2>& position, bool isOverwriteDefault = false) noexcept
 		{
 			m_region.setPos(position);
-			if (not m_initialPosition)
+			if (not m_initialPosition or isOverwriteDefault)
 			{
 				m_initialPosition = m_region.pos;
 			}
@@ -135,10 +150,10 @@ namespace UFOCat::GUI
 
 		/// @brief 描画位置に中央右位置を指定する
 		/// @param position 中央右位置
-		inline virtual Relocatable &setPosition(const Arg::rightCenter_<Vec2> &position) noexcept
+		inline virtual Relocatable &setPosition(const Arg::rightCenter_<Vec2> &position, bool isOverwriteDefault = false) noexcept
 		{
 			m_region.setPos(position);
-			if (not m_initialPosition)
+			if (not m_initialPosition or isOverwriteDefault)
 			{
 				m_initialPosition = m_region.pos;
 			}
@@ -147,10 +162,11 @@ namespace UFOCat::GUI
 
 		/// @brief 描画位置に左下位置を指定する
 		/// @param position 左下位置
-		inline virtual Relocatable &setPosition(const Arg::bottomLeft_<Vec2> &position) noexcept
+		/// @param isOverwriteDefault 強制的に初期位置を上書きするなら true (デフォルト: false)
+		inline virtual Relocatable &setPosition(const Arg::bottomLeft_<Vec2> &position, bool isOverwriteDefault = false) noexcept
 		{
 			m_region.setPos(position);
-			if (not m_initialPosition)
+			if (not m_initialPosition or isOverwriteDefault)
 			{
 				m_initialPosition = m_region.pos;
 			}
@@ -159,10 +175,11 @@ namespace UFOCat::GUI
 
 		/// @brief 描画位置に中央下位置を指定する
 		/// @param position 中央下位置
-		inline virtual Relocatable &setPosition(const Arg::bottomCenter_<Vec2> &position) noexcept
+		/// @param isOverwriteDefault 強制的に初期位置を上書きするなら true (デフォルト: false)
+		inline virtual Relocatable &setPosition(const Arg::bottomCenter_<Vec2> &position, bool isOverwriteDefault = false) noexcept
 		{
 			m_region.setPos(position);
-			if (not m_initialPosition)
+			if (not m_initialPosition or isOverwriteDefault)
 			{
 				m_initialPosition = m_region.pos;
 			}
@@ -171,10 +188,11 @@ namespace UFOCat::GUI
 
 		/// @brief 描画位置に右下位置を指定しボタンを描画する
 		/// @param position 右下位置
-		inline virtual Relocatable &setPosition(const Arg::bottomRight_<Vec2> &position) noexcept
+		///		@param isOverwriteDefault 強制的に初期位置を上書きするなら true (デフォルト: false)
+		inline virtual Relocatable &setPosition(const Arg::bottomRight_<Vec2> &position, bool isOverwriteDefault = false) noexcept
 		{
 			m_region.setPos(position);
-			if (not m_initialPosition)
+			if (not m_initialPosition or isOverwriteDefault)
 			{
 				m_initialPosition = m_region.pos;
 			}
@@ -183,17 +201,18 @@ namespace UFOCat::GUI
 
 		/// @brief 描画位置に中央位置を指定する
 		/// @param position 中央位置
-		inline virtual Relocatable &setPositionAt(const Vec2 &position) noexcept
+		///	@param isOverwriteDefault 強制的に初期位置を上書きするなら true (デフォルト: false)
+		inline virtual Relocatable &setPositionAt(const Vec2 &position, bool isOverwriteDefault = false) noexcept
 		{
 			m_region.setPos(Arg::center = position);
-			if (not m_initialPosition)
+			if (not m_initialPosition or isOverwriteDefault)
 			{
 				m_initialPosition = m_region.pos;
 			}
 			return *this;
 		}
 
-		inline virtual Relocatable &setMargin(const Margin &margin) noexcept
+		inline virtual Relocatable& setMargin(const Margin& margin) noexcept
 		{
 			m_margin = margin;
 			return *this;
@@ -233,7 +252,7 @@ namespace UFOCat::GUI
 		/// @param isEnabled 有効かどうか
 		/// @param padding ボタンの内側余白 (デフォルトは (30, 10))
 		/// @note https://siv3d.github.io/ja-jp/tutorial2/button/ を参考に改変
-		Button(const Font &font, double fontSize, const String &text, PositionType positionType = PositionType::Absolute, bool isEnabled = true, const Vec2 &padding = { 30.0, 10.0 });
+		Button(const Font& font, double fontSize, const String& text, PositionType positionType = PositionType::Absolute, bool isEnabled = true, const Vec2& padding = { 30.0, 10.0 });
 
 		/// @brief ボタンの各種パラメータを一括で設定する
 		/// @param fontSize 
@@ -241,76 +260,76 @@ namespace UFOCat::GUI
 		/// @param positionType 座標指定方法
 		/// @param isEnabled 有効かどうか
 		/// @param padding ボタンの内側余白 (デフォルトは (30, 10))
-		Button &set(double fontSize, const String& text, PositionType positionType = PositionType::Absolute, bool isEnabled = true, const Vec2& padding = { 30.0, 10.0 });
+		Button& set(double fontSize, const String& text, PositionType positionType = PositionType::Absolute, bool isEnabled = true, const Vec2& padding = { 30.0, 10.0 });
 
 		/// @brief ボタンに表示するフォントを設定する
 		/// デフォルトの表示フォントを変えたいときはこのメソッドから明示的に行うこと
 		/// @param font フォント
 		/// @return 
-		Button &setFont(const Font &font);
+		Button& setFont(const Font& font);
 
 		/// @brief ボタンに表示するテキストを設定する
 		/// @param text テキスト
 		/// @return 
-		Button &setText(const String &text);
+		Button& setText(const String& text);
 
 		inline RelocatableTypeID typeID() const override { return RelocatableTypeID::Button; }
 
-		inline Button &setPosition(const Vec2 &position) noexcept override
+		inline Button& setPosition(const Vec2& position, bool isOverwriteDefault = false) noexcept override
 		{
-			Relocatable::setPosition(position);
+			Relocatable::setPosition(position, isOverwriteDefault);
 			return *this;
 		}
 
-		inline Button &setPosition(const Arg::topCenter_<Vec2> &position) noexcept override
+		inline Button& setPosition(const Arg::topCenter_<Vec2>& position, bool isOverwriteDefault = false) noexcept override
 		{
-			Relocatable::setPosition(position);
+			Relocatable::setPosition(position, isOverwriteDefault);
 			return *this;
 		}
 
-		inline Button &setPosition(const Arg::topRight_<Vec2> &position) noexcept override
+		inline Button& setPosition(const Arg::topRight_<Vec2>& position, bool isOverwriteDefault = false) noexcept override
 		{
-			Relocatable::setPosition(position);
+			Relocatable::setPosition(position, isOverwriteDefault);
 			return *this;
 		}
 
-		inline Button &setPosition(const Arg::leftCenter_<Vec2>& position) noexcept override
+		inline Button& setPosition(const Arg::leftCenter_<Vec2>& position, bool isOverwriteDefault = false) noexcept override
 		{
-			Relocatable::setPosition(position);
+			Relocatable::setPosition(position, isOverwriteDefault);
 			return *this;
 		}
 
-		inline Button &setPosition(const Arg::rightCenter_<Vec2> &position) noexcept override
+		inline Button& setPosition(const Arg::rightCenter_<Vec2>& position, bool isOverwriteDefault = false) noexcept override
 		{
-			Relocatable::setPosition(position);
+			Relocatable::setPosition(position, isOverwriteDefault);
 			return *this;
 		}
 
-		inline Button &setPosition(const Arg::bottomLeft_<Vec2> &position) noexcept override
+		inline Button& setPosition(const Arg::bottomLeft_<Vec2>& position, bool isOverwriteDefault = false) noexcept override
 		{
-			Relocatable::setPosition(position);
+			Relocatable::setPosition(position, isOverwriteDefault);
 			return *this;
 		}
 
-		inline Button &setPosition(const Arg::bottomCenter_<Vec2> &position) noexcept override
+		inline Button& setPosition(const Arg::bottomCenter_<Vec2>& position, bool isOverwriteDefault = false) noexcept override
 		{
-			Relocatable::setPosition(position);
+			Relocatable::setPosition(position, isOverwriteDefault);
 			return *this;
 		}
 
-		inline Button &setPosition(const Arg::bottomRight_<Vec2> &position) noexcept override
+		inline Button& setPosition(const Arg::bottomRight_<Vec2>& position, bool isOverwriteDefault = false) noexcept override
 		{
-			Relocatable::setPosition(position);
+			Relocatable::setPosition(position, isOverwriteDefault);
 			return *this;
 		}
 
-		inline Button &setPositionAt(const Vec2 &position) noexcept override
+		inline Button& setPositionAt(const Vec2& position, bool isOverwriteDefault = false) noexcept override
 		{
 			Relocatable::setPositionAt(position);
 			return *this;
 		}
 
-		inline Button &setMargin(const Margin &margin) noexcept override
+		inline Button& setMargin(const Margin& margin) noexcept override
 		{
 			Relocatable::setMargin(margin);
 			return *this;
@@ -347,69 +366,69 @@ namespace UFOCat::GUI
 		/// @param positionType 座標指定方法
 		/// @param roundness 角丸の丸み (デフォルトは 9.0)
 		/// @return 
-		ProgressBar &set(const SizeF &size, ColorF color, PositionType positionType = PositionType::Absolute, double roundness = 9.0);
+		ProgressBar& set(const SizeF& size, ColorF color, PositionType positionType = PositionType::Absolute, double roundness = 9.0);
 
 		/// @brief プログレスバーの値を設定する
 		/// @param progress パラメータ (0.0 〜 1.0)
-		ProgressBar &setProgress(double progress);
+		ProgressBar& setProgress(double progress);
 
 		inline RelocatableTypeID typeID() const override { return RelocatableTypeID::ProgressBar; }
 
-		inline ProgressBar &setPosition(const Vec2 &position) noexcept override
+		inline ProgressBar& setPosition(const Vec2& position, bool isOverwriteDefault = false) noexcept override
 		{
-			Relocatable::setPosition(position);
+			Relocatable::setPosition(position, isOverwriteDefault);
 			return *this;
 		}
 
-		inline ProgressBar &setPosition(const Arg::topCenter_<Vec2> &position) noexcept override
+		inline ProgressBar& setPosition(const Arg::topCenter_<Vec2>& position, bool isOverwriteDefault = false) noexcept override
 		{
-			Relocatable::setPosition(position);
+			Relocatable::setPosition(position, isOverwriteDefault);
 			return *this;
 		}
 
-		inline ProgressBar &setPosition(const Arg::topRight_<Vec2> &position) noexcept override
+		inline ProgressBar& setPosition(const Arg::topRight_<Vec2>& position, bool isOverwriteDefault = false) noexcept override
 		{
-			Relocatable::setPosition(position);
+			Relocatable::setPosition(position, isOverwriteDefault);
 			return *this;
 		}
 
-		inline ProgressBar &setPosition(const Arg::leftCenter_<Vec2>& position) noexcept override
+		inline ProgressBar& setPosition(const Arg::leftCenter_<Vec2>& position, bool isOverwriteDefault = false) noexcept override
 		{
-			Relocatable::setPosition(position);
+			Relocatable::setPosition(position, isOverwriteDefault);
 			return *this;
 		}
 
-		inline ProgressBar &setPosition(const Arg::rightCenter_<Vec2> &position) noexcept override
+		inline ProgressBar& setPosition(const Arg::rightCenter_<Vec2>& position, bool isOverwriteDefault = false) noexcept override
 		{
-			Relocatable::setPosition(position);
+			Relocatable::setPosition(position, isOverwriteDefault);
 			return *this;
 		}
 
-		inline ProgressBar &setPosition(const Arg::bottomLeft_<Vec2> &position) noexcept override
+		inline ProgressBar& setPosition(const Arg::bottomLeft_<Vec2>& position, bool isOverwriteDefault = false) noexcept override
 		{
-			Relocatable::setPosition(position);
+			Relocatable::setPosition(position, isOverwriteDefault);
 			return *this;
 		}
 
-		inline ProgressBar &setPosition(const Arg::bottomCenter_<Vec2> &position) noexcept override
+		inline ProgressBar& setPosition(const Arg::bottomCenter_<Vec2>& position, bool isOverwriteDefault = false) noexcept override
 		{
-			Relocatable::setPosition(position);
+			Relocatable::setPosition(position, isOverwriteDefault);
 			return *this;
 		}
 
-		inline ProgressBar &setPosition(const Arg::bottomRight_<Vec2> &position) noexcept override
+		inline ProgressBar& setPosition(const Arg::bottomRight_<Vec2>& position, bool isOverwriteDefault = false) noexcept override
 		{
-			Relocatable::setPosition(position);
+			Relocatable::setPosition(position, isOverwriteDefault);
 			return *this;
 		}
 
-		inline ProgressBar &setPositionAt(const Vec2 &position) noexcept override
+		inline ProgressBar& setPositionAt(const Vec2& position, bool isOverwriteDefault = false) noexcept override
 		{
 			Relocatable::setPositionAt(position);
 			return *this;
 		}
 
-		inline ProgressBar &setMargin(const Margin &margin) noexcept override
+		inline ProgressBar& setMargin(const Margin& margin) noexcept override
 		{
 			Relocatable::setMargin(margin);
 			return *this;
@@ -439,7 +458,7 @@ namespace UFOCat::GUI
 		/// @param fontSize フォントサイズ
 		/// @param color テキストの色
 		/// @param positionType 座標指定方法
-		TextBox(const DrawableText& text, double fontSize, const Color &color, PositionType positionType = PositionType::Absolute);
+		TextBox(const DrawableText& text, double fontSize, const Color& color, PositionType positionType = PositionType::Absolute);
 
 		/// @brief 各種パラメータを一括で設定する
 		/// @param text Font()(U"") の形で描画可能にしたテキストデータ
@@ -447,59 +466,59 @@ namespace UFOCat::GUI
 		/// @param color テキストの色
 		/// @param positionType 座標指定方法
 		/// @return 自分自身の参照
-		TextBox& set(const DrawableText& text, double fontSize, const Color &color, PositionType positionType = PositionType::Absolute);
+		TextBox& set(const DrawableText& text, double fontSize, const Color& color, PositionType positionType = PositionType::Absolute);
 
 		inline RelocatableTypeID typeID() const override { return RelocatableTypeID::TextBox; }
 
-		inline TextBox& setPosition(const Vec2& position) noexcept override
+		inline TextBox& setPosition(const Vec2& position, bool isOverwriteDefault) noexcept override
 		{
-			Relocatable::setPosition(position);
+			Relocatable::setPosition(position, isOverwriteDefault);
 			return *this;
 		}
 
-		inline TextBox& setPosition(const Arg::topCenter_<Vec2>& position) noexcept override
+		inline TextBox& setPosition(const Arg::topCenter_<Vec2>& position, bool isOverwriteDefault = false) noexcept override
 		{
-			Relocatable::setPosition(position);
+			Relocatable::setPosition(position, isOverwriteDefault);
 			return *this;
 		}
 
-		inline TextBox& setPosition(const Arg::topRight_<Vec2>& position) noexcept override
+		inline TextBox& setPosition(const Arg::topRight_<Vec2>& position, bool isOverwriteDefault = false) noexcept override
 		{
-			Relocatable::setPosition(position);
+			Relocatable::setPosition(position, isOverwriteDefault);
 			return *this;
 		}
 
-		inline TextBox& setPosition(const Arg::leftCenter_<Vec2>& position) noexcept override
+		inline TextBox& setPosition(const Arg::leftCenter_<Vec2>& position, bool isOverwriteDefault = false) noexcept override
 		{
-			Relocatable::setPosition(position);
+			Relocatable::setPosition(position, isOverwriteDefault);
 			return *this;
 		}
 
-		inline TextBox& setPosition(const Arg::rightCenter_<Vec2>& position) noexcept override
+		inline TextBox& setPosition(const Arg::rightCenter_<Vec2>& position, bool isOverwriteDefault = false) noexcept override
 		{
-			Relocatable::setPosition(position);
+			Relocatable::setPosition(position, isOverwriteDefault);
 			return *this;
 		}
 
-		inline TextBox& setPosition(const Arg::bottomLeft_<Vec2>& position) noexcept override
+		inline TextBox& setPosition(const Arg::bottomLeft_<Vec2>& position, bool isOverwriteDefault = false) noexcept override
 		{
-			Relocatable::setPosition(position);
+			Relocatable::setPosition(position, isOverwriteDefault);
 			return *this;
 		}
 
-		inline TextBox& setPosition(const Arg::bottomCenter_<Vec2>& position) noexcept override
+		inline TextBox& setPosition(const Arg::bottomCenter_<Vec2>& position, bool isOverwriteDefault = false) noexcept override
 		{
-			Relocatable::setPosition(position);
+			Relocatable::setPosition(position, isOverwriteDefault);
 			return *this;
 		}
 
-		inline TextBox& setPosition(const Arg::bottomRight_<Vec2>& position) noexcept override
+		inline TextBox& setPosition(const Arg::bottomRight_<Vec2>& position, bool isOverwriteDefault = false) noexcept override
 		{
-			Relocatable::setPosition(position);
+			Relocatable::setPosition(position, isOverwriteDefault);
 			return *this;
 		}
 
-		inline TextBox& setPositionAt(const Vec2& position) noexcept override
+		inline TextBox& setPositionAt(const Vec2& position, bool isOverwriteDefault = false) noexcept override
 		{
 			Relocatable::setPositionAt(position);
 			return *this;
@@ -595,7 +614,7 @@ namespace UFOCat::GUI
 		/// @return スクロール座標の最小値
 		double m_currentMinimumScroll();
 
-		/// @brief インナーの高さとスクロール最小値を更新する
+		/// @brief インナーの高さやスクロール最小値を更新する
 		void m_updateInner();
 
 		/// @brief コンテンツの高さや位置を更新する
@@ -620,6 +639,8 @@ namespace UFOCat::GUI
 			// 左辺（リストへの代入部分）をパラメータパックの長さ分くりかえす命令になる
 			// ちゃっぴー参照
 			((m_contents << std::make_unique<TContents>(contents)), ...);
+
+			m_updateContents();
 
 			m_updateInner();
 

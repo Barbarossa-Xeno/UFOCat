@@ -95,19 +95,19 @@ namespace UFOCat
 					FontAsset(Util::FontFamily::KoharuiroSunray)
 						(U"ライセンス"),
 					44, Util::Palette::Brown
-				}.setPosition({ 0, 0 }),
+				}.setPosition({ 0, 0 }, false),
 				GUI::TextBox
 				{
 					FontAsset(Util::FontFamily::YuseiMagic)
 						(U"・猫のイラスト"),
 					22, Util::Palette::Brown
-				}.setPosition({ 0, 100 }),
+				}.setPosition({ 0, 100 }, false),
 				GUI::TextBox
 				{
 					FontAsset(Util::FontFamily::YuseiMagic)
 						(U"・猫のイラスト"),
 					18, Util::Palette::Brown
-				}.setPosition({ 18, 200 })
+				}.setPosition({ 18, 200 }, false)
 			).setSize({ 600, 500 });
 
 			m_gui.logo = Texture{ U"texture/logo.png", TextureDesc::Mipped };

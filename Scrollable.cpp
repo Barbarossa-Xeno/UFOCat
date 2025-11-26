@@ -64,6 +64,7 @@ namespace UFOCat::GUI
 		for (const auto &content : m_contents)
 		{
 			// インナー要素すべてをデフォルト位置からインナー（下地）の移動分だけずらす
+			// デフォルト位置：スクロールが0の状態での座標として移動の基準になる
 			content->setPosition(Vec2{ content->getInitialPosition().x, m_inner.region.y + content->getInitialPosition().y });
 		}
 
@@ -94,29 +95,31 @@ namespace UFOCat::GUI
 		{
 			for (auto itr = m_contents.begin(); itr != m_contents.end(); ++itr)
 			{
+				// # 各クラス固有処理
+				// テキストについては、外部からの指定が億劫だったのでこのクラス内で勝手に
+				// ビューポート幅を参照して大きさ調整することにした
+				if (static_cast<TextBox*>((*itr).get())->adjustWidth(m_region.w - BarSize.x * 2))
+				{
+					m_updateInner();
+				}
+
+				// # マージン使用時の位置調整
 				if (const auto &current = *itr;
 					current->positionType() == PositionType::Relative)
 				{
-					if (itr == (m_contents.end() - 1))
-					{
-						const auto& prev = *std::prev(itr);
-						Print << current->getInitialPosition().y;
-						Print << Vec2{ current->getRegion().x, prev->getRegion().bottomY() + prev->getMargin().bottom + current->getMargin().top }.y;
-					}
+					// このメソッドと使用する場面として、ビューポートサイズの変更後や、各要素の変更後であることが予想されるため
+					// 初期位置は強制リセットする
+					
+					// 一番上の要素は、何にも影響されずに自身の上マージンだけを反映する
 					if (itr == m_contents.begin())
 					{
-						current->setPosition({ current->getRegion().x, current->getMargin().top });
+						current->setPosition({ current->getRegion().x, current->getMargin().top }, true);
 					}
+					// それ以降の要素は、一個前の要素の下マージン（と、一個前の要素の下部 y 座標）を参照して配置しなおす
 					else
 					{
 						const auto &prev = *std::prev(itr);
-						current->setPosition({ current->getRegion().x, prev->getRegion().bottomY() + prev->getMargin().bottom + current->getMargin().top });
-
-						if (itr == (m_contents.end() - 1))
-						{
-							Print << current->getInitialPosition().y;
-							Print << Vec2{ current->getRegion().x, prev->getRegion().bottomY() + prev->getMargin().bottom + current->getMargin().top }.y;
-						}
+						current->setPosition({ current->getRegion().x, prev->getRegion().bottomY() + prev->getMargin().bottom + current->getMargin().top }, true);
 					}
 				}
 			}
@@ -141,27 +144,6 @@ namespace UFOCat::GUI
 
 	void Scrollable::update()
 	{
-		// # 各タイプ固有処理
-		if (not m_contents.empty())
-		{
-			for (const auto& content : m_contents)
-			{
-				// 外部からの指定が億劫だったのでこのクラス内で勝手に
-				// ビューポート幅を参照して大きさ調整することにした
-				switch (content->typeID())
-				{
-					case RelocatableTypeID::TextBox:
-					{
-						//
-						if (static_cast<TextBox*>(content.get())->adjustWidth(m_region.w - BarSize.x * 2))
-						{
-							m_updateInner();
-						}
-					}
-				}
-			}
-		}
-
 		// 以降の処理はスクロールの必要がないなら何もしない
 		if (not m_shouldScroll())
 		{
@@ -219,7 +201,7 @@ namespace UFOCat::GUI
 							.draw(m_isHoverBar ? Palette::Lightgray : Palette::White);
 			}
 		}
-
+		Line{ 0, m_contents[0]->getRegion().bottomY(), 500, m_contents[0]->getRegion().bottomY() }.draw(2);
 		// TODO: m_region を おしゃれな感じで drawFrame したくはある
 	}
 }
