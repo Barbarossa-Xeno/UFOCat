@@ -123,9 +123,9 @@ namespace UFOCat
 				GUI::TextBox
 				{
 					FontAsset(Util::FontFamily::YuseiMagic)
-						(U"使用にあたり 画像アセット (2) と併用させていただいております。"),
+						(U"『肉球足跡』- https://nekoillust.com/category/other/%e8%82%89%e7%90%83%e8%b6%b3%e8%b7%a1/"),
 					18, Util::Palette::Brown, GUI::PositionType::Relative
-				}.setMargin({ 2, 0 }).setIndent(40),
+				}.setMargin({ 0, 0 }).setIndent(40),
 				GUI::TextBox
 				{
 					FontAsset(Util::FontFamily::YuseiMagic)
@@ -142,7 +142,7 @@ namespace UFOCat
 				GUI::TextBox
 				{
 					FontAsset(Util::FontFamily::YuseiMagic)
-						(U"使用にあたり 画像アセット (1) と併用および画像データの加工をさせていただいております。"),
+						(U"使用にあたり画像データの加工をさせていただいております。"),
 					18, Util::Palette::Brown, GUI::PositionType::Relative
 				}.setMargin({ 2, 0 }).setIndent(40),
 				GUI::TextBox
