@@ -16,10 +16,13 @@ namespace UFOCat
 
 	namespace Util
 	{
+		/// @brief 背景画像のデータ
 		struct BackgroundData
 		{
+			/// @brief テクスチャデータ
 			Texture texture;
 
+			/// @brief この背景の上に描画するものに対して使用するとちょうどよくなる影の色
 			ColorF shadowColor;
 		};
 	}

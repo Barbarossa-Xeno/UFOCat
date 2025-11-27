@@ -500,16 +500,23 @@ namespace UFOCat
 					// 中心 (60, 60) としてストップウォッチのテクスチャを最大 60px で描画
 					RectF swRegion = m_gui.timer.resized(60).drawAt(Point{ 60, 60 });
 
-					// 針の角度
+					// 針の角度を計算する（時間進捗の割合 -> ラジアン）
 					double angle = 2 * Math::Pi * getData().timer.sF() / m_currentLevel().timeLimit.count();
 
-					// 針を描画 ストップウォッチの中心からちょっとずらした位置
+					// ### 針を描画
+					// ストップウォッチの中心からちょっとずらした位置
 					// 角度は反時計回りだったので、更に反転させておいた
-					Line{ Vec2{ swRegion.centerX(), swRegion.centerY() + 4.0 }, Arg::angle = -angle, 16.0 }.draw(LineStyle::RoundCap, 4.0, Palette::Salmon);
+					Line{ Vec2{ swRegion.centerX(), swRegion.centerY() + 4.0 }, Arg::angle = -angle, 16.0 }
+						.draw(LineStyle::RoundCap, 4.0, Palette::Salmon);
 
-					FontAsset(Util::FontFamily::YuseiMagic)(U"のこり").draw(20, swRegion.tr().x + 10, swRegion.tr().y - 10);
-					RectF tRegion = FontAsset(Util::FontFamily::YuseiMagic)(U"{}"_fmt(getData().timer.s())).drawBase(36, Vec2{ swRegion.br().x + 10, swRegion.br().y - 5 });
-					FontAsset(Util::FontFamily::YuseiMagic)(U"秒").drawBase(24, Vec2{ tRegion.br().x + 10, swRegion.br().y - 5 });
+					// ### 残り時間の描画
+					FontAsset(Util::FontFamily::YuseiMagic)(U"のこり")
+						.draw(20, swRegion.tr().x + 10, swRegion.tr().y - 10, ColorF{ 1.0, Periodic::Square0_1(1s) });
+
+					// 実際の残り時間の描画領域を取っておいて、その右にちっちゃく「秒」を描く
+					RectF tRegion = FontAsset(Util::FontFamily::YuseiMagic)(U"{}"_fmt(getData().timer.s()))
+										.drawBase(TextStyle::OutlineShadow(0.3, Util::Palette::Brown, Vec2{ 1.2, 1.2 }, ColorF{ 0.2 }), 36, Vec2{swRegion.br().x + 10, swRegion.br().y - 5});
+					FontAsset(Util::FontFamily::YuseiMagic)(U"秒").drawBase(TextStyle::Shadow(Vec2{ 1.2, 1.2 }, ColorF{ 0.2 }), 24, Vec2{tRegion.br().x + 10, swRegion.br().y - 5});
 				}
 			}
 			break;

@@ -325,7 +325,7 @@ namespace UFOCat::GUI
 
 		inline Button& setPositionAt(const Vec2& position, bool isOverwriteDefault = false) noexcept override
 		{
-			Relocatable::setPositionAt(position);
+			Relocatable::setPositionAt(position, isOverwriteDefault);
 			return *this;
 		}
 
@@ -424,7 +424,7 @@ namespace UFOCat::GUI
 
 		inline ProgressBar& setPositionAt(const Vec2& position, bool isOverwriteDefault = false) noexcept override
 		{
-			Relocatable::setPositionAt(position);
+			Relocatable::setPositionAt(position, isOverwriteDefault);
 			return *this;
 		}
 
@@ -520,7 +520,7 @@ namespace UFOCat::GUI
 
 		inline TextBox& setPositionAt(const Vec2& position, bool isOverwriteDefault = false) noexcept override
 		{
-			Relocatable::setPositionAt(position);
+			Relocatable::setPositionAt(position, isOverwriteDefault);
 			return *this;
 		}
 
