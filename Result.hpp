@@ -18,6 +18,8 @@ namespace UFOCat
 		/// @brief カウントアップするためのストップウォッチ
 		Util::Stopwatch m_scoreCountUpWatch;
 
+		bool m_isFinishedCountUp = false;
+
 		struct
 		{
 			/// @brief タイトルに行くボタン

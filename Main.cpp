@@ -21,7 +21,7 @@ void Main()
 
 	// オーディオアセットの登録
 	// TODO: 音量設定をつくるのもあり
-	AudioAsset::Register(Util::AudioList::BGM::Title, U"audio/recorderwofukuneko.mp3");
+	AudioAsset::Register(Util::AudioList::BGM::Title, U"audio/recorderwofukuneko.mp3", Loop::Yes);
 	AudioAsset::Register(Util::AudioList::BGM::Level01, U"audio/魔王魂 ループ  サイバー29.mp3");
 	AudioAsset::Register(Util::AudioList::BGM::Level02, U"audio/魔王魂 ループ  サイバー41.mp3");
 	AudioAsset::Register(Util::AudioList::SE::Open, U"audio/パッ.mp3");
@@ -33,7 +33,8 @@ void Main()
 	AudioAsset::Register(Util::AudioList::SE::TimeUp, U"audio/警官のホイッスル2.mp3");
 	AudioAsset::Register(Util::AudioList::SE::Correct, U"audio/クイズ正解1.mp3");
 	AudioAsset::Register(Util::AudioList::SE::Incorrect, U"audio/クイズ不正解2.mp3");
-	AudioAsset::Register(Util::AudioList::SE::CountUpScore, U"audio/ドラムロール.mp3");
+	// ループのタイミング指定はサンプリング周波数を掛けて実際のサンプル数にしないといけないらしい by Google 検索の AI
+	AudioAsset::Register(Util::AudioList::SE::CountUpScore, U"audio/ドラムロール.mp3", Arg::loopBegin = static_cast<uint64>(0.683 * 44100), Arg::loopEnd = static_cast<uint64>(4.272 * 44100));
 	AudioAsset::Register(Util::AudioList::SE::FinishScore, U"audio/ロールの閉め.mp3");
 	AudioAsset::Register(Util::AudioList::SE::Cat01, U"audio/猫の鳴き声1.mp3");
 	AudioAsset::Register(Util::AudioList::SE::Cat02, U"audio/猫の鳴き声2.mp3");

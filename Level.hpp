@@ -45,6 +45,11 @@ namespace UFOCat
 		/// @brief スポーン間隔の計測やシーン内ステートの遷移などに使う内部ストップウォッチ
 		Util::Stopwatch m_watch;
 
+		/// @brief カウントダウンの時に使う、1フレーム前の timer.s() を保存しておく変数
+		/// はじめのカウントダウン時間の設定にも使う
+		/// @note timer.s() は常に整数秒を返すため、その数が切り替わった瞬間をとることで、1 秒ごとの時間経過を明確に取得できる
+		int32 m_prevTimerRemaining = 4;
+
 		/// @brief このレベルでのスコア
 		Score::Generic::ByLevel m_score;
 
@@ -53,7 +58,7 @@ namespace UFOCat
 		const std::unique_ptr<CatObject> *m_caught = nullptr;
 
 		/// @brief レベル終わりに自分の捕まえた猫やターゲットを表示する際の倍率
-		constexpr static double m_CatImageScale = 0.4;
+		constexpr static double m_CatTextureScale = 0.4;
 
 		/// @brief GUI要素
 		struct

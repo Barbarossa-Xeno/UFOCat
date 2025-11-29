@@ -40,6 +40,8 @@ namespace UFOCat
 
 			m_gui.flyer = Texture{ U"texture/flyer.png", TextureDesc::Mipped };
 		}
+
+		AudioAsset(getData().bgmName).stop();
 	}
 
 	void Wanted::update()
@@ -47,6 +49,7 @@ namespace UFOCat
 		if (not getData().timer.isStarted())
 		{
 			getData().timer.start();
+			AudioAsset(Util::AudioList::SE::Announce).playOneShot();
 		}
 		else if (getData().timer.reachedZero())
 		{

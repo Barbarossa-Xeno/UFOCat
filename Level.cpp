@@ -159,10 +159,15 @@ namespace UFOCat
 		// 現在のレベルに合わせてターゲットの出現時刻を設定
 		m_setTargetSpawnTime(getData().levelIndex + 1);
 
+		AudioAsset(getData().bgmName).stop();
+
+		// BGM 抽選
+		getData().bgmName = Array{ Util::AudioList::BGM::Level01, Util::AudioList::BGM::Level02 }.choice();
+
 		// 3、2、1、GO! のカウントダウンを入れるための待機時間をセット
-		// シーンのフェードインアウト時間を考慮して少し長めに取る
+		// シーンのフェードインアウト時間を考慮して少し長め = 4s に取る
 		getData().timer.pause();
-		getData().timer.set(4s);
+		getData().timer.set(Duration{ m_prevTimerRemaining });
 	}
 
 	void Level::update()
@@ -187,12 +192,32 @@ namespace UFOCat
 						// ステートをプレイ中に変更する
 						m_state = Level::State::Playing;
 
+						AudioAsset(getData().bgmName).play();
+
 						// 制限時間を決めて、タイマー開始
 						// 0.5s 猶予を持たせて、気持ち長めにすることで間に入る処理の影響を減らす
 						getData().timer.restart(m_currentLevel().timeLimit + 0.5s);
 					}
-					
 				}
+				else
+				{
+					if (m_prevTimerRemaining > getData().timer.s())
+					{
+						if (getData().timer.s() > 0)
+						{
+							// カウントダウンの音
+							// ここでは 3 回なる
+							AudioAsset(Util::AudioList::SE::CountDown).playOneShot();
+						}
+						else
+						{
+							// スタートの音（ぴーっ）
+							AudioAsset(Util::AudioList::SE::Start).playOneShot();
+						}
+					}
+					m_prevTimerRemaining = getData().timer.s();
+				}
+				//  カウントダウンの音は致し方なく draw() で鳴らしている、実装力不足
 			}
 			break;
 
@@ -281,7 +306,13 @@ namespace UFOCat
 
 							// プレイ終了へ
 							m_state = Level::State::Finish;
+
+							// 明示的にストップウォッチリセット（でないと積算時間が持ち越される）
 							m_watch.reset();
+
+							AudioAsset(Util::AudioList::SE::TimeUp).playOneShot();
+							AudioAsset(getData().bgmName).fadeVolume(0.0, 0.7s);
+
 							break;
 						}
 					}
@@ -307,6 +338,12 @@ namespace UFOCat
 					{
 						// 制限時間が終わったら、終了表示を出しに行く
 						m_state = Level::State::Finish;
+
+						// 明示的にストップウォッチリセット（でないと積算時間が持ち越される）
+						m_watch.reset();
+
+						AudioAsset(Util::AudioList::SE::TimeUp).playOneShot();
+						AudioAsset(getData().bgmName).fadeVolume(0.0, 0.7s);
 					}
 				}
 
@@ -320,12 +357,22 @@ namespace UFOCat
 				m_watch.setTimeout([this]()
 					{
 						m_state = Level::State::After;
+
+						// 明示的にストップウォッチリセット（でないと積算時間が持ち越される）
+						m_watch.reset();
+
+						AudioAsset(getData().bgmName).stop();
 					}, 3s);
 			}
 			break;
 
 			case Level::State::After:
 			{
+				m_watch.setTimeout([this]()
+				{
+					AudioAsset(m_score.isCorrect ? Util::AudioList::SE::Correct : Util::AudioList::SE::Incorrect).playOneShot();
+				}, 0.2s);
+
 				// # GUI 処理
 				{
 					// 次のレベルへ進めるかは、今回が合っていて かつ 次のレベルが存在する必要がある
@@ -472,15 +519,10 @@ namespace UFOCat
 				// 秒数表示
 				String text = U"";
 
-				// 線形補完のパラメータの最大値
-				// timer.sF() に 1 フレームくらいのラグがあることを見越して設定している
-				// この値を使い、タイマーの整数時間が変わったときにのみ音を鳴らすようにする
-				const double maxT = 1.0 - Scene::DeltaTime();
-
 				// 線形補間のパラメータ
 				// sF() は小数点以下も含めた秒数、s() は切り捨ての整数秒数であることを利用して
 				// 1.0 -> 0.0 に向かう値を得る
-				double t = Clamp(getData().timer.sF() - getData().timer.s(), 0.0, maxT);
+				double t = Clamp(getData().timer.sF() - getData().timer.s(), 0.0, 1.0);
 
 				double textSize = 200.0;
 
@@ -488,8 +530,6 @@ namespace UFOCat
 				if (getData().timer.s() == 0)
 				{
 					text = U"GO!";
-
-					AudioAsset(Util::AudioList::SE::Start).play();
 				}
 				// 3、2、1 のほう
 				else
@@ -498,14 +538,6 @@ namespace UFOCat
 
 					// テキストサイズをイージングで小さいほうに変化させる
 					textSize = std::lerp(40.0, 210.0, EaseOutQuart(t));
-
-					if (t >= maxT)
-					{
-						// 最初だけ音を鳴らす
-						AudioAsset(Util::AudioList::SE::CountDown).play();
-					}
-					
-
 				}
 
 				FontAsset(Util::FontFamily::KoharuiroSunray)(text)
@@ -581,7 +613,7 @@ namespace UFOCat
 				{
 					if (m_score.isCaught)
 					{
-						auto &&image = m_caught->get()->getTexture().scaled(m_CatImageScale);
+						auto &&image = m_caught->get()->getTexture().scaled(m_CatTextureScale);
 
 						image.drawAt(Scene::CenterF() - SizeF(image.size.x, 0));
 
@@ -590,7 +622,7 @@ namespace UFOCat
 				}
 				// 画面右側 ターゲットを表示
 				{
-					auto &&image = m_target->getTexture().scaled(m_CatImageScale);
+					auto &&image = m_target->getTexture().scaled(m_CatTextureScale);
 					image.drawAt(Scene::CenterF() + SizeF(image.size.x, 0));
 					FontAsset(Util::FontFamily::YuseiMagic)(U"ターゲット").drawAt(Scene::CenterF() + SizeF(image.size.x, -150));
 				}

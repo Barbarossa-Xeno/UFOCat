@@ -34,6 +34,8 @@ namespace UFOCat
 				getData().scores.back().title = Score::Titles[0];
 			}
 		}
+
+		AudioAsset(getData().bgmName).stop();
 	}
 
 
@@ -45,6 +47,8 @@ namespace UFOCat
 			if (const size_t total = getData().scores.back().total;
 				m_ScoreCount < total)
 			{
+				AudioAsset(Util::AudioList::SE::CountUpScore).play();
+
 				// インターバルは 2.0s を目指すが、引き算の結果がデルタタイムより小さくなった場合は、デルタタイムを使用する
 				double interval = Max(2.0 / total - Scene::DeltaTime(), Scene::DeltaTime());
 
@@ -106,7 +110,16 @@ namespace UFOCat
 						}
 					}, Duration(interval));
 			}
+			else
+			{
+				if (not m_isFinishedCountUp)
+				{
+					AudioAsset(Util::AudioList::SE::CountUpScore).stop();
+					AudioAsset(Util::AudioList::SE::FinishScore).play();
 
+					m_isFinishedCountUp = true;
+				}
+			}
 			
 		}
 

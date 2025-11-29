@@ -159,6 +159,9 @@ namespace UFOCat
 			/// @brief 使用する全ての背景画像のテクスチャとその上から猫を描画するときに使う影の色の組み合わせを記録するリスト
 			Array<Util::BackgroundData> backgrounds;
 
+			/// @brief 現在BGMとして再生しているオーディオの名前（1 つのみ）
+			String bgmName;
+
 			/// @brief 現在のターゲットのインデックスを格納する変数
 			size_t targetIndex = InvalidIndex;
 

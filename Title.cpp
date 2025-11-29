@@ -230,6 +230,13 @@ namespace UFOCat
 
 		// 背景を決める		
 		m_bg = getData().backgrounds.choice();
+
+		// もし他のBGMが流れていた場合も考えて、一度ストップ
+		AudioAsset(getData().bgmName).stop();
+
+		getData().bgmName = Util::AudioList::BGM::Title;
+
+		AudioAsset(getData().bgmName).play();
 	}
 
 	void Title::update()
@@ -248,6 +255,7 @@ namespace UFOCat
 			{
 				if (m_gui.toLevel.isPressed())
 				{
+					AudioAsset(Util::AudioList::BGM::Title).fadeVolume(0.0, 0.7s);
 					changeScene(State::Wanted, 0.7s);
 				}
 
