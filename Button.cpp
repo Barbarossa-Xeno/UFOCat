@@ -2,10 +2,11 @@
 
 namespace UFOCat::GUI
 {
-	Button::Button(const Font& font, double fontSize, const String& text, PositionType positionType, bool isEnabled, const Vec2& padding)
+	Button::Button(const Font &font, double fontSize, const String &text, const Audio &se, PositionType positionType, bool isEnabled, const Vec2 &padding)
 		: m_font(font)
 		, m_fontSize(fontSize)
 		, m_text(text)
+		, m_se(se)
 		, m_isEnabled(isEnabled)
 		, m_padding(padding)
 	{
@@ -15,16 +16,43 @@ namespace UFOCat::GUI
 		m_region = RectF{ m_font(m_text).region(fontSize).size + m_padding };
 	}
 
-	Button &Button::set(double fontSize, const String& text, PositionType positionType, bool isEnabled, const Vec2& padding)
+	Button::Button(double fontSize, const String &text, const Audio &se, PositionType positionType, bool isEnabled, const Vec2 &padding)
+		// ここでフォントを決め打ちにする
+		: Button(FontAsset(Util::FontFamily::YuseiMagic), fontSize, text, se, positionType, isEnabled, padding)
+	{}
+
+	Button::Button(const Font &font, double fontSize, const String &text, PositionType positionType, bool isEnabled, const Vec2 &padding)
+		// ここで SE を決め打ちにする
+		: Button(font, fontSize, text, AudioAsset(Util::AudioList::SE::Open), positionType, isEnabled, padding)
+	{}
+
+	Button& Button::set(const Font &font, double fontSize, const String &text, const Audio &se, PositionType positionType, bool isEnabled, const Vec2 &padding)
 	{
+		m_font = font;
 		m_fontSize = fontSize;
 		m_text = text;
+		m_se = se;
 		m_positionType = positionType;
 		m_isEnabled = isEnabled;
 		m_padding = padding;
 		m_region = RectF{ m_font(m_text).region(fontSize).size + m_padding };
 
 		return *this;
+	}
+
+	Button &Button::set(double fontSize, const String &text, const Audio &se, PositionType positionType, bool isEnabled, const Vec2 &padding)
+	{
+		return set(m_font, fontSize, text, se, positionType, isEnabled, padding);
+	}
+
+	Button &Button::set(const Font &font, double fontSize, const String &text, PositionType positionType, bool isEnabled, const Vec2 &padding)
+	{
+		return set(font, fontSize, text, m_se, positionType, isEnabled, padding);
+	}
+
+	Button &Button::set(double fontSize, const String &text, PositionType positionType, bool isEnabled, const Vec2 &padding)
+	{
+		return set(m_font, fontSize, text, m_se, positionType, isEnabled, padding);
 	}
 
 	Button &Button::setFont(const Font &font)
@@ -54,8 +82,16 @@ namespace UFOCat::GUI
 			Cursor::RequestStyle(CursorStyle::Hand);
 		}
 
-		// ボタンが押されたら true を返す
-		return (m_isEnabled and m_region.leftClicked());
+		// ボタンが押されたらSEを鳴らして true を返す
+		if (m_isEnabled and m_region.leftClicked())
+		{
+			m_se.playOneShot();
+			return true;
+		}
+		else
+		{
+			return false;
+		}
 	}
 
 	void Button::draw() const

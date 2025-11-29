@@ -2,6 +2,7 @@
 # include "GUI.hpp"
 # include "CatObject.hpp"
 # include "LevelData.hpp"
+# include "AudioList.hpp"
 
 using namespace UFOCat::Core;
 
@@ -179,6 +180,8 @@ namespace UFOCat
 	/// @note https://siv3d.github.io/ja-jp/reference/game_tips/
 	void DrawPolkaDotBackground(int32 cellSize, double circleScale, const ColorF& color);
 
+	// TODO: このメソッドでいっきにテクスチャまで読み込んでしまうので、無駄にメモリを確保してしまう
+	// 端から全てのテクスチャを読む必要はないので、あとで必要なときに初めてテクスチャを確保するように処理を変える
 	/// @brief UFO猫のデータをJSONから読み込んでそれら全てのインスタンスを作成する
 	/// @return 全てのUFO猫のインスタンスリスト
 	Array<CatObject> LoadCatData();

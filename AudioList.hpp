@@ -15,12 +15,15 @@ namespace UFOCat::Util::AudioList
 	{
 		const String Open = U"Open";
 
-		const String Close = U"Close";
+		const String OK = U"OK";
+
+		const String Cancel = U"Cancel";
 
 		const String Announce = U"Annonnce";
 
-		// TODO: 音源取り忘れ中
 		const String CountDown = U"CountDown";
+
+		const String Start = U"Start";
 
 		const String TimeUp = U"TimeUp";
 

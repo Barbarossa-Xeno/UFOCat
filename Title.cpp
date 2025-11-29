@@ -28,7 +28,7 @@ namespace UFOCat
 
 		// # GUI 要素設定
 		{
-			m_gui.toLevel.set(36, U"あそぶ", GUI::PositionType::Absolute, true, { 96, 10 })
+			m_gui.toLevel.set(36, U"あそぶ", AudioAsset(Util::AudioList::SE::OK), GUI::PositionType::Absolute, true, { 96, 10 })
 						 .setPositionAt(Scene::Center() + Vec2{ 0, 60 });
 
 			m_gui.howToPlayButton.set(36, U"あそび方", GUI::PositionType::Absolute, true, { 60, 10 })

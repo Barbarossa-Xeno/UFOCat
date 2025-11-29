@@ -9,6 +9,8 @@ using namespace UFOCat;
 
 void Main()
 {
+	// TODO: 非同期ロードを実装してローディング画面を作ったほうがいい
+
 	// フォントアセットの登録
 	FontAsset::Register(Util::FontFamily::YuseiMagic, FontMethod::SDF, 48, U"font/YuseiMagic-Regular.ttf");
 	FontAsset::Register(Util::FontFamily::KoharuiroSunray, FontMethod::SDF, 48, U"font/GN-Koharuiro_Sunray.ttf");
@@ -16,6 +18,26 @@ void Main()
 	// バッファサイズの設定
 	FontAsset(Util::FontFamily::YuseiMagic).setBufferThickness(4);
 	FontAsset(Util::FontFamily::KoharuiroSunray).setBufferThickness(4);
+
+	// オーディオアセットの登録
+	// TODO: 音量設定をつくるのもあり
+	AudioAsset::Register(Util::AudioList::BGM::Title, U"audio/recorderwofukuneko.mp3");
+	AudioAsset::Register(Util::AudioList::BGM::Level01, U"audio/魔王魂 ループ  サイバー29.mp3");
+	AudioAsset::Register(Util::AudioList::BGM::Level02, U"audio/魔王魂 ループ  サイバー41.mp3");
+	AudioAsset::Register(Util::AudioList::SE::Open, U"audio/パッ.mp3");
+	AudioAsset::Register(Util::AudioList::SE::OK, U"audio/決定ボタンを押す39.mp3");
+	AudioAsset::Register(Util::AudioList::SE::Cancel, U"audio/キャンセル4.mp3");
+	AudioAsset::Register(Util::AudioList::SE::Announce, U"audio/放送開始チャイム.mp3");
+	AudioAsset::Register(Util::AudioList::SE::CountDown, U"audio/パパッ.mp3");
+	AudioAsset::Register(Util::AudioList::SE::Start, U"audio/警官のホイッスル1.mp3");
+	AudioAsset::Register(Util::AudioList::SE::TimeUp, U"audio/警官のホイッスル2.mp3");
+	AudioAsset::Register(Util::AudioList::SE::Correct, U"audio/クイズ正解1.mp3");
+	AudioAsset::Register(Util::AudioList::SE::Incorrect, U"audio/クイズ不正解2.mp3");
+	AudioAsset::Register(Util::AudioList::SE::CountUpScore, U"audio/ドラムロール.mp3");
+	AudioAsset::Register(Util::AudioList::SE::FinishScore, U"audio/ロールの閉め.mp3");
+	AudioAsset::Register(Util::AudioList::SE::Cat01, U"audio/猫の鳴き声1.mp3");
+	AudioAsset::Register(Util::AudioList::SE::Cat02, U"audio/猫の鳴き声2.mp3");
+	AudioAsset::Register(Util::AudioList::SE::CatAngry, U"audio/猫の威嚇.mp3");
 
 	// ウィンドウの設定
 	Window::SetTitle(U"UFO猫をつかまえろ!!");

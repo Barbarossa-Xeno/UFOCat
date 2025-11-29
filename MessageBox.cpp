@@ -32,13 +32,13 @@ namespace UFOCat::GUI
 	}
 
 	MessageBox::MessageBox(const SizeF& windowSize, Optional<Button> buttonStyle)
-		// ボタンのスタイル指定がなければデフォルト設定で通す
-		: m_okButton{ buttonStyle ? *buttonStyle : Button{ FontAsset(Util::FontFamily::YuseiMagic), Ceil(m_buttonSize()), U"OK" } }
 	{
 		m_region = RectF{ Arg::center = Scene::Center(), windowSize };
-		
-		// ボタンは下部中央
-		m_okButton.setPosition(m_okButtonPosition());
+
+		// m_region を設定しないと、m_buttonSize() が正しく動かないため、初期化フィールドを使わずここで代入する
+		// ボタンのスタイル指定がなければデフォルト設定で通す
+		// そして下部中央
+		m_okButton = Button{ buttonStyle ? *buttonStyle : Button{ Ceil(m_buttonSize()), U"OK", AudioAsset(Util::AudioList::SE::OK) } }.setPosition(m_okButtonPosition());
 
 		// ウィンドウから (20, 20) 離れた位置に、右と下方向も同じだけ間隔を開けたスクロールをつくる
 		m_contents = Scrollable{ m_contentsRegion().pos, m_contentsRegion().size };
@@ -50,8 +50,8 @@ namespace UFOCat::GUI
 		m_region = RectF{ Arg::center = Scene::Center(), windowSize };
 
 		// ボタンサイズもウィンドウサイズを参照するので再設定
-		m_okButton.set(Ceil(m_buttonSize()), U"OK").setPosition(m_okButtonPosition());
-		
+		m_okButton.set(Ceil(m_buttonSize()), U"OK", AudioAsset(Util::AudioList::SE::OK)).setPosition(m_okButtonPosition());
+
 		m_contents.setRegion(m_contentsRegion());
 
 		return *this;
@@ -98,9 +98,9 @@ namespace UFOCat::GUI
 			{
 				// ウィンドウ範囲を角丸にして背景
 				m_region.rounded(12)
-					.drawShadow(Vec2{ 0, 0 }, 16, 8)
-					.drawFrame(5.0, HSV{ Util::Palette::Brown }.withV(0.7))
-					.draw(Util::Palette::LightBrownAlt);
+						.drawShadow(Vec2{ 0, 0 }, 16, 8)
+						.drawFrame(5.0, HSV{ Util::Palette::Brown }.withV(0.7))
+						.draw(Util::Palette::LightBrownAlt);
 			}
 
 			// # 区切り線
@@ -108,7 +108,7 @@ namespace UFOCat::GUI
 				// OK ボタンより 20 px 上の位置に、
 				// ウィンドウ幅の 90 % の長さ、
 				// ウィンドウ高さの 1% or 4px のうち小さいほうの高さで描画される
-				const RoundRect &line = RoundRect
+				RoundRect
 				{
 					RectF
 					{

@@ -1,6 +1,7 @@
 ﻿# pragma once
 # include "FontFamily.hpp"
 # include "Palette.hpp"
+# include "AudioList.hpp"
 
 namespace UFOCat::GUI
 {
@@ -234,6 +235,8 @@ namespace UFOCat::GUI
 
 		String m_text;
 
+		Audio m_se = AudioAsset(Util::AudioList::SE::Open);
+
 		bool m_isEnabled = true;
 
 		Vec2 m_padding = { 30.0, 10.0 };
@@ -244,23 +247,70 @@ namespace UFOCat::GUI
 		Button() = default;
 
 		// TODO: アイコンを引数にとれるようにしたい
-		/// @brief ボタンを初期化する
+		/// @brief コンストラクタ
 		/// @param font テキストに使うフォント
-		/// @param fontSize
+		/// @param fontSize フォントサイズ
 		/// @param text テキスト
+		/// @param se ボタンを押したときに鳴らす効果音
 		/// @param positionType 座標指定方法
 		/// @param isEnabled 有効かどうか
 		/// @param padding ボタンの内側余白 (デフォルトは (30, 10))
 		/// @note https://siv3d.github.io/ja-jp/tutorial2/button/ を参考に改変
+		Button(const Font &font, double fontSize, const String &text, const Audio &se, PositionType positionType = PositionType::Absolute, bool isEnabled = true, const Vec2 &padding = { 30.0, 10.0 });
+
+		/// @brief コンストラクタ（フォントはデフォルト）
+		/// @param fontSize フォントサイズ
+		/// @param text テキスト
+		/// @param se ボタンを押したときに鳴らす効果音
+		/// @param positionType 座標指定方法
+		/// @param isEnabled 有効かどうか
+		/// @param padding ボタンの内側余白 (デフォルトは (30, 10))
+		Button(double fontSize, const String& text, const Audio& se, PositionType positionType = PositionType::Absolute, bool isEnabled = true, const Vec2& padding = { 30.0, 10.0 });
+
+		/// @brief コンストラクタ（SE はデフォルト）
+		/// @param font テキストに使うフォント
+		/// @param fontSize フォントサイズ
+		/// @param text テキスト
+		/// @param positionType 座標指定方法
+		/// @param isEnabled 有効かどうか
+		/// @param padding ボタンの内側余白 (デフォルトは (30, 10))
 		Button(const Font& font, double fontSize, const String& text, PositionType positionType = PositionType::Absolute, bool isEnabled = true, const Vec2& padding = { 30.0, 10.0 });
 
 		/// @brief ボタンの各種パラメータを一括で設定する
+		/// @param font テキストに使うフォント
+		/// @param fontSize フォントサイズ
+		/// @param text テキスト
+		/// @param se ボタンを押したときに鳴らす効果音
+		/// @param positionType 座標指定方法
+		/// @param isEnabled 有効かどうか
+		/// @param padding ボタンの内側余白 (デフォルトは (30, 10))
+		Button &set(const Font &font, double fontSize, const String &text, const Audio &se, PositionType positionType = PositionType::Absolute, bool isEnabled = true, const Vec2 &padding = { 30.0, 10.0 });
+
+		/// @brief ボタンの各種パラメータを一括で設定する（フォントはデフォルト）
+		/// @param fontSize フォントサイズ
+		/// @param text テキスト
+		/// @param se ボタンを押したときに鳴らす効果音
+		/// @param positionType 座標指定方法
+		/// @param isEnabled 有効かどうか
+		/// @param padding ボタンの内側余白 (デフォルトは (30, 10))
+		Button &set(double fontSize, const String& text, const Audio& se, PositionType positionType = PositionType::Absolute, bool isEnabled = true, const Vec2& padding = { 30.0, 10.0 });
+
+		/// @brief ボタンの各種パラメータを一括で設定する（SE はデフォルト）
+		/// @param font テキストに使うフォント
+		/// @param fontSize フォントサイズ
+		/// @param text テキスト
+		/// @param positionType 座標指定方法
+		/// @param isEnabled 有効かどうか
+		/// @param padding ボタンの内側余白 (デフォルトは (30, 10))
+		Button &set(const Font& font, double fontSize, const String& text, PositionType positionType = PositionType::Absolute, bool isEnabled = true, const Vec2& padding = { 30.0, 10.0 });
+
+		/// @brief ボタンの各種パラメータを一括で設定する（フォントと SE はデフォルト）
 		/// @param fontSize 
 		/// @param text テキスト
 		/// @param positionType 座標指定方法
 		/// @param isEnabled 有効かどうか
 		/// @param padding ボタンの内側余白 (デフォルトは (30, 10))
-		Button& set(double fontSize, const String& text, PositionType positionType = PositionType::Absolute, bool isEnabled = true, const Vec2& padding = { 30.0, 10.0 });
+		Button& set(double fontSize, const String &text, PositionType positionType = PositionType::Absolute, bool isEnabled = true, const Vec2 &padding = { 30.0, 10.0 });
 
 		/// @brief ボタンに表示するフォントを設定する
 		/// デフォルトの表示フォントを変えたいときはこのメソッドから明示的に行うこと
