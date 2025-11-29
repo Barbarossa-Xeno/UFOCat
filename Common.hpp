@@ -145,7 +145,7 @@ namespace UFOCat
 		struct GameData
 		{
 			/// @brief 使用する全てのUFO猫のデータ
-			Array<CatObject> cats;
+			Array<CatData> cats;
 
 			/// @brief 使用する全てのレベルデータ
 			Array<LevelData> levels;
@@ -162,8 +162,8 @@ namespace UFOCat
 			/// @brief 現在BGMとして再生しているオーディオの名前（1 つのみ）
 			String bgmName;
 
-			/// @brief 現在のターゲットのインデックスを格納する変数
-			size_t targetIndex = InvalidIndex;
+			/// @brief 現在のターゲットの ID（= インデックスと同義）を格納する変数
+			size_t targetId = InvalidIndex;
 
 			/// @brief 現在のレベルのインデックスを格納する変数
 			size_t levelIndex = InvalidIndex;
@@ -183,11 +183,14 @@ namespace UFOCat
 	/// @note https://siv3d.github.io/ja-jp/reference/game_tips/
 	void DrawPolkaDotBackground(int32 cellSize, double circleScale, const ColorF& color);
 
+
+	const String &Cat(uint32 id);
+
 	// TODO: このメソッドでいっきにテクスチャまで読み込んでしまうので、無駄にメモリを確保してしまう
 	// 端から全てのテクスチャを読む必要はないので、あとで必要なときに初めてテクスチャを確保するように処理を変える
 	/// @brief UFO猫のデータをJSONから読み込んでそれら全てのインスタンスを作成する
 	/// @return 全てのUFO猫のインスタンスリスト
-	Array<CatObject> LoadCatData();
+	Array<CatData> LoadCatData();
 
 	/// @brief 各フェーズのデータをJSONから読み込んでそれらすべてのインスタンスを作成する
 	/// @return 全てのフェーズのリスト

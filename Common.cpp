@@ -92,7 +92,13 @@ namespace UFOCat
 		}
 	}
 
-	Array<UFOCat::Core::CatObject> UFOCat::LoadCatData()
+	const String &Cat(uint32 id)
+	{
+		// 1 桁の数字の時、0 埋め
+		return U"Cat{}"_fmt(id);
+	}
+
+	Array<UFOCat::Core::CatData> UFOCat::LoadCatData()
 	{
 		// JSON ファイルからデータを読み込む
 		const JSON json = JSON::Load(U"cat_data.json");
@@ -107,10 +113,7 @@ namespace UFOCat
 		const auto&& data = json[U"data"];
 
 		// 結果格納用
-		Array<CatObject> results;
-
-		// テクスチャフォルダから初めに全ての猫の画像を読み込んでおく
-		const auto&& textures = FileSystem::DirectoryContents(U"texture/cat").map([](const String& path) { return Texture{ path }; });
+		Array<CatData> results;
 
 		if (data.getType() == JSONValueType::Array)
 		{
@@ -118,7 +121,7 @@ namespace UFOCat
 			{
 				if (d.value.getType() == JSONValueType::Object)
 				{
-					int32 id = d.value[U"id"].get<int32>();
+					size_t id = d.value[U"id"].get<size_t>();
 					String breed = d.value[U"breed"].get<String>();
 
 					// 以後、仮の文字列格納用変数は data_ で始める
@@ -205,7 +208,7 @@ namespace UFOCat
 					bool isLongHair = d.value[U"isLongHair"].get<bool>();
 
 					// 作成したインスタンスを格納
-					results << CatObject{ textures[id] }.setCatData(CatData{ id, breed, colors, pattern, isLongHair });
+					results << CatData{ id, breed, colors, pattern, isLongHair };
 				}
 			}
 

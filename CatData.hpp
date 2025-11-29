@@ -6,7 +6,7 @@ namespace UFOCat::Core
 	struct CatData
 	{
 		// ID（使わんかも）
-		int32 id;
+		size_t id;
 
 		// 品種
 		String breed;
@@ -30,7 +30,7 @@ namespace UFOCat::Core
 		/// @param colors すべての毛色と名前の組み合わせ
 		/// @param pattern 模様
 		/// @param isLongHair 長毛か
-		CatData(int32 id, String breed, HashTable<String, Color> colors, String pattern, bool isLongHair)
+		CatData(size_t id, String breed, HashTable<String, Color> colors, String pattern, bool isLongHair)
 			: id{ id }
 			, breed{ breed }
 			, colors{ colors }
