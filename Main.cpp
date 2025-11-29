@@ -32,7 +32,7 @@ void Main()
 	AudioAsset::Register(Util::AudioList::SE::Start, U"audio/警官のホイッスル1.mp3");
 	AudioAsset::Register(Util::AudioList::SE::TimeUp, U"audio/警官のホイッスル2.mp3");
 	AudioAsset::Register(Util::AudioList::SE::Correct, U"audio/クイズ正解1.mp3");
-	AudioAsset::Register(Util::AudioList::SE::Incorrect, U"audio/クイズ不正解2.mp3");
+	AudioAsset::Register(Util::AudioList::SE::Incorrect, U"audio/クイズ不正解1.mp3");
 	// ループのタイミング指定はサンプリング周波数を掛けて実際のサンプル数にしないといけないらしい by Google 検索の AI
 	AudioAsset::Register(Util::AudioList::SE::CountUpScore, U"audio/ドラムロール.mp3", Arg::loopBegin = static_cast<uint64>(0.683 * 44100), Arg::loopEnd = static_cast<uint64>(4.272 * 44100));
 	AudioAsset::Register(Util::AudioList::SE::FinishScore, U"audio/ロールの閉め.mp3");
