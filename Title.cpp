@@ -28,7 +28,7 @@ namespace UFOCat
 
 		// # GUI 要素設定
 		{
-			m_gui.toLevel.set(36, U"あそぶ", AudioAsset(Util::AudioList::SE::OK), GUI::PositionType::Absolute, true, { 96, 10 })
+			m_gui.toLevel.set(36, U"あそぶ", AudioAsset(Util::AudioSource::SE::OK), GUI::PositionType::Absolute, true, { 96, 10 })
 						 .setPositionAt(Scene::Center() + Vec2{ 0, 60 });
 
 			m_gui.howToPlayButton.set(36, U"あそび方", GUI::PositionType::Absolute, true, { 60, 10 })
@@ -234,7 +234,7 @@ namespace UFOCat
 		// もし他のBGMが流れていた場合も考えて、一度ストップ
 		AudioAsset(getData().bgmName).stop();
 
-		getData().bgmName = Util::AudioList::BGM::Title;
+		getData().bgmName = Util::AudioSource::BGM::Title;
 
 		AudioAsset(getData().bgmName).play();
 	}
@@ -255,7 +255,7 @@ namespace UFOCat
 			{
 				if (m_gui.toLevel.isPressed())
 				{
-					AudioAsset(Util::AudioList::BGM::Title).fadeVolume(0.0, 0.2s);
+					AudioAsset(Util::AudioSource::BGM::Title).fadeVolume(0.0, 0.2s);
 					changeScene(State::Wanted, 1.2s);
 				}
 

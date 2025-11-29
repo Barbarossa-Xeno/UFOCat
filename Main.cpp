@@ -21,24 +21,25 @@ void Main()
 
 	// オーディオアセットの登録
 	// TODO: 音量設定をつくるのもあり
-	AudioAsset::Register(Util::AudioList::BGM::Title, Audio::Stream, U"audio/recorderwofukuneko.mp3", Loop::Yes);
-	AudioAsset::Register(Util::AudioList::BGM::Level01, Audio::Stream, U"audio/魔王魂 ループ  サイバー29.mp3");
-	AudioAsset::Register(Util::AudioList::BGM::Level02, Audio::Stream, U"audio/魔王魂 ループ  サイバー41.mp3");
-	AudioAsset::Register(Util::AudioList::SE::Open, U"audio/パッ.mp3");
-	AudioAsset::Register(Util::AudioList::SE::OK, U"audio/決定ボタンを押す39.mp3");
-	AudioAsset::Register(Util::AudioList::SE::Cancel, U"audio/キャンセル4.mp3");
-	AudioAsset::Register(Util::AudioList::SE::Announce, U"audio/放送開始チャイム.mp3");
-	AudioAsset::Register(Util::AudioList::SE::CountDown, U"audio/パパッ.mp3");
-	AudioAsset::Register(Util::AudioList::SE::Start, U"audio/警官のホイッスル1.mp3");
-	AudioAsset::Register(Util::AudioList::SE::TimeUp, U"audio/警官のホイッスル2.mp3");
-	AudioAsset::Register(Util::AudioList::SE::Correct, U"audio/クイズ正解1.mp3");
-	AudioAsset::Register(Util::AudioList::SE::Incorrect, U"audio/クイズ不正解1.mp3");
+	AudioAsset::Register(Util::AudioSource::BGM::Title, Audio::Stream, U"audio/recorderwofukuneko.mp3", Loop::Yes);
+	AudioAsset::Register(Util::AudioSource::BGM::Level01, Audio::Stream, U"audio/魔王魂 ループ  サイバー29.mp3");
+	AudioAsset::Register(Util::AudioSource::BGM::Level02, Audio::Stream, U"audio/魔王魂 ループ  サイバー41.mp3");
+	AudioAsset::Register(Util::AudioSource::SE::Open, U"audio/パッ.mp3");
+	AudioAsset::Register(Util::AudioSource::SE::OK, U"audio/決定ボタンを押す39.mp3");
+	AudioAsset::Register(Util::AudioSource::SE::Cancel, U"audio/キャンセル4.mp3");
+	AudioAsset::Register(Util::AudioSource::SE::Announce, U"audio/放送開始チャイム.mp3");
+	AudioAsset::Register(Util::AudioSource::SE::CountDown, U"audio/パパッ.mp3");
+	AudioAsset::Register(Util::AudioSource::SE::StartLevel, U"audio/警官のホイッスル1.mp3");
+	AudioAsset::Register(Util::AudioSource::SE::FinishLevel, U"audio/警官のホイッスル2.mp3");
+	AudioAsset::Register(Util::AudioSource::SE::Correct, U"audio/クイズ正解1.mp3");
+	AudioAsset::Register(Util::AudioSource::SE::Incorrect, U"audio/クイズ不正解1.mp3");
+	AudioAsset::Register(Util::AudioSource::SE::TimeUp, U"audio/試合終了のゴング.mp3");
 	// ループのタイミング指定はサンプリング周波数を掛けて実際のサンプル数にしないといけないらしい by Google 検索の AI
-	AudioAsset::Register(Util::AudioList::SE::CountUpScore, U"audio/ドラムロール.mp3", Arg::loopBegin = static_cast<uint64>(0.683 * 44100), Arg::loopEnd = static_cast<uint64>(4.272 * 44100));
-	AudioAsset::Register(Util::AudioList::SE::FinishScore, U"audio/ロールの閉め.mp3");
-	AudioAsset::Register(Util::AudioList::SE::Cat01, U"audio/猫の鳴き声1.mp3");
-	AudioAsset::Register(Util::AudioList::SE::Cat02, U"audio/猫の鳴き声2.mp3");
-	AudioAsset::Register(Util::AudioList::SE::CatAngry, U"audio/猫の威嚇.mp3");
+	AudioAsset::Register(Util::AudioSource::SE::CountUpScore, U"audio/ドラムロール.mp3", Arg::loopBegin = static_cast<uint64>(0.683 * 44100), Arg::loopEnd = static_cast<uint64>(4.272 * 44100));
+	AudioAsset::Register(Util::AudioSource::SE::FinishScore, U"audio/ロールの閉め.mp3");
+	AudioAsset::Register(Util::AudioSource::SE::Cat01, U"audio/猫の鳴き声1.mp3");
+	AudioAsset::Register(Util::AudioSource::SE::Cat02, U"audio/猫の鳴き声2.mp3");
+	AudioAsset::Register(Util::AudioSource::SE::CatAngry, U"audio/猫の威嚇.mp3");
 
 	// ウィンドウの設定
 	Window::SetTitle(U"UFO猫をつかまえろ!!");

@@ -1,7 +1,7 @@
 ﻿# pragma once
 # include "FontFamily.hpp"
 # include "Palette.hpp"
-# include "AudioList.hpp"
+# include "AudioSource.hpp"
 
 namespace UFOCat::GUI
 {
@@ -235,7 +235,7 @@ namespace UFOCat::GUI
 
 		String m_text;
 
-		Audio m_se = AudioAsset(Util::AudioList::SE::Open);
+		Audio m_se = AudioAsset(Util::AudioSource::SE::Open);
 
 		bool m_isEnabled = true;
 

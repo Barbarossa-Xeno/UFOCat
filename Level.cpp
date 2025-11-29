@@ -162,7 +162,7 @@ namespace UFOCat
 		AudioAsset(getData().bgmName).stop();
 
 		// BGM 抽選
-		getData().bgmName = Array{ Util::AudioList::BGM::Level01, Util::AudioList::BGM::Level02 }.choice();
+		getData().bgmName = Array{ Util::AudioSource::BGM::Level01, Util::AudioSource::BGM::Level02 }.choice();
 
 		// 3、2、1、GO! のカウントダウンを入れるための待機時間をセット
 		// シーンのフェードインアウト時間を考慮して少し長め = 4s に取る
@@ -205,12 +205,12 @@ namespace UFOCat
 						{
 							// カウントダウンの音
 							// ここでは 3 回なる
-							AudioAsset(Util::AudioList::SE::CountDown).playOneShot();
+							AudioAsset(Util::AudioSource::SE::CountDown).playOneShot();
 						}
 						else
 						{
 							// スタートの音（ぴーっ）
-							AudioAsset(Util::AudioList::SE::Start).playOneShot();
+							AudioAsset(Util::AudioSource::SE::StartLevel).playOneShot();
 						}
 					}
 					m_prevTimerRemaining = getData().timer.s();
@@ -315,7 +315,7 @@ namespace UFOCat
 							// 明示的にストップウォッチリセット（でないと積算時間が持ち越される）
 							m_watch.reset();
 
-							AudioAsset(Util::AudioList::SE::TimeUp).playOneShot();
+							AudioAsset(Util::AudioSource::SE::FinishLevel).playOneShot();
 							AudioAsset(getData().bgmName).fadeVolume(0.0, 1s);
 
 							break;
@@ -347,7 +347,7 @@ namespace UFOCat
 						// 明示的にストップウォッチリセット（でないと積算時間が持ち越される）
 						m_watch.reset();
 
-						AudioAsset(Util::AudioList::SE::TimeUp).playOneShot();
+						AudioAsset(Util::AudioSource::SE::FinishLevel).playOneShot();
 						AudioAsset(getData().bgmName).fadeVolume(0.0, 1s);
 					}
 				}
@@ -375,7 +375,7 @@ namespace UFOCat
 			{
 				m_watch.setTimeout([this]()
 				{
-					AudioAsset(m_score.isCaught ? (m_score.isCorrect ? Util::AudioList::SE::Correct : Util::AudioList::SE::Incorrect) : Util::AudioList::SE::TimeUp).playOneShot();
+					AudioAsset(m_score.isCaught ? (m_score.isCorrect ? Util::AudioSource::SE::Correct : Util::AudioSource::SE::Incorrect) : Util::AudioSource::SE::TimeUp).playOneShot();
 				}, 0.2s);
 
 				// # GUI 処理
@@ -576,12 +576,12 @@ namespace UFOCat
 
 					// ### 残り時間の描画
 					FontAsset(Util::FontFamily::YuseiMagic)(U"のこり")
-						.draw(20, swRegion.tr().x + 10, swRegion.tr().y - 10, ColorF{ 1.0, Periodic::Square0_1(1s) });
+						.draw(TextStyle::Shadow(Vec2{ 1.2, 1.2 }, ColorF{ 0.2 }), 20, swRegion.tr().x + 10, swRegion.tr().y - 10, ColorF{ 1.0, Periodic::Square0_1(1s) });
 
 					// 実際の残り時間の描画領域を取っておいて、その右にちっちゃく「秒」を描く
 					RectF tRegion = FontAsset(Util::FontFamily::YuseiMagic)(U"{}"_fmt(getData().timer.s()))
-										.drawBase(TextStyle::OutlineShadow(0.3, Util::Palette::Brown, Vec2{ 1.2, 1.2 }, ColorF{ 0.2 }), 36, Vec2{swRegion.br().x + 10, swRegion.br().y - 5});
-					FontAsset(Util::FontFamily::YuseiMagic)(U"秒").drawBase(TextStyle::Shadow(Vec2{ 1.2, 1.2 }, ColorF{ 0.2 }), 24, Vec2{tRegion.br().x + 10, swRegion.br().y - 5});
+										.drawBase(TextStyle::OutlineShadow(0.3, Util::Palette::Brown, Vec2{ 1.2, 1.2 }, ColorF{ 0.2 }), 36, Vec2{ swRegion.br().x + 10, swRegion.br().y - 5 });
+					FontAsset(Util::FontFamily::YuseiMagic)(U"秒").drawBase(TextStyle::Shadow(Vec2{ 1.2, 1.2 }, ColorF{ 0.2 }), 24, Vec2{ tRegion.br().x + 10, swRegion.br().y - 5 });
 				}
 			}
 			break;

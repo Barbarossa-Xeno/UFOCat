@@ -1,6 +1,6 @@
 ﻿# pragma once
 
-namespace UFOCat::Util::AudioList
+namespace UFOCat::Util::AudioSource
 {
 	namespace BGM
 	{
@@ -23,13 +23,15 @@ namespace UFOCat::Util::AudioList
 
 		const String CountDown = U"CountDown";
 
-		const String Start = U"Start";
+		const String StartLevel = U"StartLevel";
 
-		const String TimeUp = U"TimeUp";
+		const String FinishLevel = U"FinishLevel";
 
 		const String Correct = U"Correct";
 
 		const String Incorrect = U"Incorrect";
+
+		const String TimeUp = U"TimeUp";
 
 		const String CountUpScore = U"CountUpScore";
 

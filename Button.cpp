@@ -23,7 +23,7 @@ namespace UFOCat::GUI
 
 	Button::Button(const Font &font, double fontSize, const String &text, PositionType positionType, bool isEnabled, const Vec2 &padding)
 		// ここで SE を決め打ちにする
-		: Button(font, fontSize, text, AudioAsset(Util::AudioList::SE::Open), positionType, isEnabled, padding)
+		: Button(font, fontSize, text, AudioAsset(Util::AudioSource::SE::Open), positionType, isEnabled, padding)
 	{}
 
 	Button& Button::set(const Font &font, double fontSize, const String &text, const Audio &se, PositionType positionType, bool isEnabled, const Vec2 &padding)

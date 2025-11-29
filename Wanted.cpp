@@ -56,7 +56,7 @@ namespace UFOCat
 		}
 		else if (2 < getData().timer.sF() and getData().timer.sF() < 4.75)
 		{
-			AudioAsset(Util::AudioList::SE::Announce).play();
+			AudioAsset(Util::AudioSource::SE::Announce).play();
 		}
 		
 # if _DEBUG

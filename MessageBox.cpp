@@ -38,7 +38,7 @@ namespace UFOCat::GUI
 		// m_region を設定しないと、m_buttonSize() が正しく動かないため、初期化フィールドを使わずここで代入する
 		// ボタンのスタイル指定がなければデフォルト設定で通す
 		// そして下部中央
-		m_okButton = Button{ buttonStyle ? *buttonStyle : Button{ Ceil(m_buttonSize()), U"OK", AudioAsset(Util::AudioList::SE::OK) } }.setPosition(m_okButtonPosition());
+		m_okButton = Button{ buttonStyle ? *buttonStyle : Button{ Ceil(m_buttonSize()), U"OK", AudioAsset(Util::AudioSource::SE::OK) } }.setPosition(m_okButtonPosition());
 
 		// ウィンドウから (20, 20) 離れた位置に、右と下方向も同じだけ間隔を開けたスクロールをつくる
 		m_contents = Scrollable{ m_contentsRegion().pos, m_contentsRegion().size };
@@ -50,7 +50,7 @@ namespace UFOCat::GUI
 		m_region = RectF{ Arg::center = Scene::Center(), windowSize };
 
 		// ボタンサイズもウィンドウサイズを参照するので再設定
-		m_okButton.set(Ceil(m_buttonSize()), U"OK", AudioAsset(Util::AudioList::SE::OK)).setPosition(m_okButtonPosition());
+		m_okButton.set(Ceil(m_buttonSize()), U"OK", AudioAsset(Util::AudioSource::SE::OK)).setPosition(m_okButtonPosition());
 
 		m_contents.setRegion(m_contentsRegion());
 

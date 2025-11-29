@@ -47,7 +47,7 @@ namespace UFOCat
 			if (const size_t total = getData().scores.back().total;
 				m_ScoreCount < total)
 			{
-				AudioAsset(Util::AudioList::SE::CountUpScore).play();
+				AudioAsset(Util::AudioSource::SE::CountUpScore).play();
 
 				// インターバルは 2.0s を目指すが、引き算の結果がデルタタイムより小さくなった場合は、デルタタイムを使用する
 				double interval = Max(2.0 / total - Scene::DeltaTime(), Scene::DeltaTime());
@@ -114,8 +114,8 @@ namespace UFOCat
 			{
 				if (not m_isFinishedCountUp)
 				{
-					AudioAsset(Util::AudioList::SE::CountUpScore).stop();
-					AudioAsset(Util::AudioList::SE::FinishScore).play();
+					AudioAsset(Util::AudioSource::SE::CountUpScore).stop();
+					AudioAsset(Util::AudioSource::SE::FinishScore).play();
 
 					m_isFinishedCountUp = true;
 				}
@@ -134,8 +134,8 @@ namespace UFOCat
 				// まだスコアのカウントアップが途中だったら、シンバルは鳴らしておく
 				if (not m_isFinishedCountUp)
 				{
-					AudioAsset(Util::AudioList::SE::CountUpScore).stop();
-					AudioAsset(Util::AudioList::SE::FinishScore).play();
+					AudioAsset(Util::AudioSource::SE::CountUpScore).stop();
+					AudioAsset(Util::AudioSource::SE::FinishScore).play();
 				}
 
 				// リセット処理は、タイトル側で行う

@@ -1226,7 +1226,7 @@
     <ClInclude Include="Palette.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="AudioList.hpp">
+    <ClInclude Include="AudioSource.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

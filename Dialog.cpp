@@ -14,7 +14,7 @@ namespace UFOCat::GUI
 
 	Dialog::Dialog(const SizeF &windowSize, Optional<Button> okButtonStyle, Optional<Button> cancelButtonStyle)
 		: MessageBox{ windowSize, okButtonStyle }
-		, m_cancelButton{ cancelButtonStyle ? *cancelButtonStyle : Button{ Ceil(m_buttonSize()), U"NO", AudioAsset(Util::AudioList::SE::Cancel) }}
+		, m_cancelButton{ cancelButtonStyle ? *cancelButtonStyle : Button{ Ceil(m_buttonSize()), U"NO", AudioAsset(Util::AudioSource::SE::Cancel) }}
 	{
 		// 上書き
 		m_okButton.setPosition(m_okButtonPosition());
@@ -27,8 +27,8 @@ namespace UFOCat::GUI
 		MessageBox::setSize(windowSize);
 
 		// ボタンは位置更新しなおす
-		m_okButton.set(Ceil(m_buttonSize()), U"Yes", AudioAsset(Util::AudioList::SE::OK)).setPosition(m_okButtonPosition());
-		m_cancelButton.set(Ceil(m_buttonSize()), U"No", AudioAsset(Util::AudioList::SE::Cancel)).setPosition(m_cancelButtonPosition());
+		m_okButton.set(Ceil(m_buttonSize()), U"Yes", AudioAsset(Util::AudioSource::SE::OK)).setPosition(m_okButtonPosition());
+		m_cancelButton.set(Ceil(m_buttonSize()), U"No", AudioAsset(Util::AudioSource::SE::Cancel)).setPosition(m_cancelButtonPosition());
 
 		return *this;
 	}
