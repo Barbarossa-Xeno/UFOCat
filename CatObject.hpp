@@ -214,7 +214,7 @@ namespace UFOCat::Core
 		/// @brief UFO猫のデータを登録する
 		/// @param data データ
 		/// @return （変更を反映した）自分自身の参照
-		CatObject &setCatData(CatData &&data);
+		CatObject &setCatData(const CatData &data);
 
 		/// @brief UFO猫が行う動作（このクラスに定義された行動系メソッドのいずれかとそのオプション）を登録する
 		/// @param actionData アクションデータ

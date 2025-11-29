@@ -73,7 +73,7 @@ namespace UFOCat::Core
 		return *this;
 	}
 
-	CatObject &CatObject::setCatData(CatData &&data)
+	CatObject &CatObject::setCatData(const CatData &data)
 	{
 		m_catData = data;
 		return *this;
