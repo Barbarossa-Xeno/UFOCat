@@ -21,9 +21,9 @@ void Main()
 
 	// オーディオアセットの登録
 	// TODO: 音量設定をつくるのもあり
-	AudioAsset::Register(Util::AudioList::BGM::Title, U"audio/recorderwofukuneko.mp3", Loop::Yes);
-	AudioAsset::Register(Util::AudioList::BGM::Level01, U"audio/魔王魂 ループ  サイバー29.mp3");
-	AudioAsset::Register(Util::AudioList::BGM::Level02, U"audio/魔王魂 ループ  サイバー41.mp3");
+	AudioAsset::Register(Util::AudioList::BGM::Title, Audio::Stream, U"audio/recorderwofukuneko.mp3", Loop::Yes);
+	AudioAsset::Register(Util::AudioList::BGM::Level01, Audio::Stream, U"audio/魔王魂 ループ  サイバー29.mp3");
+	AudioAsset::Register(Util::AudioList::BGM::Level02, Audio::Stream, U"audio/魔王魂 ループ  サイバー41.mp3");
 	AudioAsset::Register(Util::AudioList::SE::Open, U"audio/パッ.mp3");
 	AudioAsset::Register(Util::AudioList::SE::OK, U"audio/決定ボタンを押す39.mp3");
 	AudioAsset::Register(Util::AudioList::SE::Cancel, U"audio/キャンセル4.mp3");
