@@ -131,6 +131,13 @@ namespace UFOCat
 							  .setPosition(Arg::bottomLeft = Vec2{ 10.0, Scene::Height() - 10.0 })
 							  .isPressed())
 			{
+				// まだスコアのカウントアップが途中だったら、シンバルは鳴らしておく
+				if (not m_isFinishedCountUp)
+				{
+					AudioAsset(Util::AudioList::SE::CountUpScore).stop();
+					AudioAsset(Util::AudioList::SE::FinishScore).play();
+				}
+
 				// リセット処理は、タイトル側で行う
 				changeScene(State::Title, 1.5s);
 			}

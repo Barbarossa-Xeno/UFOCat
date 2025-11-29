@@ -30,7 +30,7 @@ namespace UFOCat
 
 		// TODO: レベルが進むごとにちょっと時間を短くしたら面白いかも
 		// ターゲット情報の表示時間
-		getData().timer.set(3s);
+		getData().timer.set(5s);
 
 		// # GUI 初期化
 		{
@@ -49,11 +49,14 @@ namespace UFOCat
 		if (not getData().timer.isStarted())
 		{
 			getData().timer.start();
-			AudioAsset(Util::AudioList::SE::Announce).playOneShot();
 		}
 		else if (getData().timer.reachedZero())
 		{
-			changeScene(State::Level, 0.7s);
+			changeScene(State::Level, 2s);
+		}
+		else if (2 < getData().timer.sF() and getData().timer.sF() < 4.75)
+		{
+			AudioAsset(Util::AudioList::SE::Announce).play();
 		}
 		
 # if _DEBUG

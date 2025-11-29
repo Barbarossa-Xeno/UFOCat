@@ -192,11 +192,9 @@ namespace UFOCat
 						// ステートをプレイ中に変更する
 						m_state = Level::State::Playing;
 
-						AudioAsset(getData().bgmName).play();
-
 						// 制限時間を決めて、タイマー開始
-						// 0.5s 猶予を持たせて、気持ち長めにすることで間に入る処理の影響を減らす
-						getData().timer.restart(m_currentLevel().timeLimit + 0.5s);
+						// 1.75s 猶予を持たせて、BGM再生までの癪に使う
+						getData().timer.restart(m_currentLevel().timeLimit + 1.75s);
 					}
 				}
 				else
@@ -254,9 +252,16 @@ namespace UFOCat
 				// ## 制限時間内と時間超過後での処理
 				
 				// ### 制限時間内
-
 				if (getData().timer.isRunning())
 				{
+					if (getData().timer.s() > m_currentLevel().timeLimit.count())
+					{
+						return;
+					}
+					// これ以下はタイマー残り時間が 30s 以下であることを保証する
+
+					AudioAsset(getData().bgmName).play();
+
 					// ターゲットから順に捜査する
 					for (const auto& cat : getData().spawns)
 					{
@@ -311,7 +316,7 @@ namespace UFOCat
 							m_watch.reset();
 
 							AudioAsset(Util::AudioList::SE::TimeUp).playOneShot();
-							AudioAsset(getData().bgmName).fadeVolume(0.0, 0.7s);
+							AudioAsset(getData().bgmName).fadeVolume(0.0, 1s);
 
 							break;
 						}
@@ -326,7 +331,7 @@ namespace UFOCat
 						m_targetAppearTime = getData().timer.remaining();
 					}
 				}
-				// 時間外
+				// ### 時間外
 				else
 				{
 					// タイマーがセットだけされている状態 -> 前のステートからの遷移直後
@@ -343,7 +348,7 @@ namespace UFOCat
 						m_watch.reset();
 
 						AudioAsset(Util::AudioList::SE::TimeUp).playOneShot();
-						AudioAsset(getData().bgmName).fadeVolume(0.0, 0.7s);
+						AudioAsset(getData().bgmName).fadeVolume(0.0, 1s);
 					}
 				}
 
@@ -370,7 +375,7 @@ namespace UFOCat
 			{
 				m_watch.setTimeout([this]()
 				{
-					AudioAsset(m_score.isCorrect ? Util::AudioList::SE::Correct : Util::AudioList::SE::Incorrect).playOneShot();
+					AudioAsset(m_score.isCaught ? (m_score.isCorrect ? Util::AudioList::SE::Correct : Util::AudioList::SE::Incorrect) : Util::AudioList::SE::TimeUp).playOneShot();
 				}, 0.2s);
 
 				// # GUI 処理
@@ -551,6 +556,12 @@ namespace UFOCat
 			case UFOCat::Level::State::Playing:
 			{
 				{
+					if (getData().timer.s() > m_currentLevel().timeLimit.count())
+					{
+						return;
+					}
+					// これ以下はタイマー残り時間が 30s 以下であることを保証する
+
 					// 中心 (60, 60) としてストップウォッチのテクスチャを最大 60px で描画
 					RectF swRegion = m_gui.timer.resized(60).drawAt(Point{ 60, 60 });
 

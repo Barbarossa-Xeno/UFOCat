@@ -255,8 +255,8 @@ namespace UFOCat
 			{
 				if (m_gui.toLevel.isPressed())
 				{
-					AudioAsset(Util::AudioList::BGM::Title).fadeVolume(0.0, 0.7s);
-					changeScene(State::Wanted, 0.7s);
+					AudioAsset(Util::AudioList::BGM::Title).fadeVolume(0.0, 0.2s);
+					changeScene(State::Wanted, 1.2s);
 				}
 
 				if (m_gui.howToPlayButton.isPressed())
