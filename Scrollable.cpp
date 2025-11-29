@@ -99,9 +99,14 @@ namespace UFOCat::GUI
 				// テキストについては、外部からの指定が億劫だったのでこのクラス内で勝手に
 				// ビューポート幅を参照して大きさ調整することにした
 				// ボックスの変更が必要なときのみ更新される
-				if (static_cast<TextBox*>((*itr).get())->adjustWidth(m_region.w - BarSize.x * 2))
+				
+				// TextBox の場合のみ adjustWidth を呼び出す
+				if ((*itr)->typeID() == RelocatableTypeID::TextBox)
 				{
-					m_updateInner();
+					if (static_cast<TextBox*>((*itr).get())->adjustWidth(m_region.w - BarSize.x * 2))
+					{
+						m_updateInner();
+					}
 				}
 
 				// # マージン使用時の位置調整

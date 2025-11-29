@@ -283,7 +283,7 @@ namespace UFOCat::GUI
 		/// @param se ボタンを押したときに鳴らす効果音
 		/// @param positionType 座標指定方法
 		/// @param isEnabled 有効かどうか
-		/// @param padding ボタンの内側余白 (デフォルトは (30, 10))
+		/// @param padding ボタンの内側余白 (デフォルトは (30.0, 10.0))
 		Button &set(const Font &font, double fontSize, const String &text, const Audio &se, PositionType positionType = PositionType::Absolute, bool isEnabled = true, const Vec2 &padding = { 30.0, 10.0 });
 
 		/// @brief ボタンの各種パラメータを一括で設定する（フォントはデフォルト）
@@ -292,7 +292,7 @@ namespace UFOCat::GUI
 		/// @param se ボタンを押したときに鳴らす効果音
 		/// @param positionType 座標指定方法
 		/// @param isEnabled 有効かどうか
-		/// @param padding ボタンの内側余白 (デフォルトは (30, 10))
+		/// @param padding ボタンの内側余白 (デフォルトは (30.0, 10.0))
 		Button &set(double fontSize, const String& text, const Audio& se, PositionType positionType = PositionType::Absolute, bool isEnabled = true, const Vec2& padding = { 30.0, 10.0 });
 
 		/// @brief ボタンの各種パラメータを一括で設定する（SE はデフォルト）
@@ -301,7 +301,7 @@ namespace UFOCat::GUI
 		/// @param text テキスト
 		/// @param positionType 座標指定方法
 		/// @param isEnabled 有効かどうか
-		/// @param padding ボタンの内側余白 (デフォルトは (30, 10))
+		/// @param padding ボタンの内側余白 (デフォルトは (30.0, 10.0))
 		Button &set(const Font& font, double fontSize, const String& text, PositionType positionType = PositionType::Absolute, bool isEnabled = true, const Vec2& padding = { 30.0, 10.0 });
 
 		/// @brief ボタンの各種パラメータを一括で設定する（フォントと SE はデフォルト）
@@ -309,7 +309,7 @@ namespace UFOCat::GUI
 		/// @param text テキスト
 		/// @param positionType 座標指定方法
 		/// @param isEnabled 有効かどうか
-		/// @param padding ボタンの内側余白 (デフォルトは (30, 10))
+		/// @param padding ボタンの内側余白 (デフォルトは (30.0, 10.0))
 		Button& set(double fontSize, const String &text, PositionType positionType = PositionType::Absolute, bool isEnabled = true, const Vec2 &padding = { 30.0, 10.0 });
 
 		/// @brief ボタンに表示するフォントを設定する
@@ -685,15 +685,20 @@ namespace UFOCat::GUI
 		template <std::derived_from<Relocatable> ...TContents>
 		inline Scrollable& setContents(const TContents &...contents)
 		{
+			// 既存のコンテンツをクリア
+			m_contents.release();
+			
 			// Fold 式
-			// 左辺（リストへの代入部分）をパラメータパックの長さ分くりかえす命令になる
-			// ちゃっぴー参照
 			((m_contents << std::make_unique<TContents>(contents)), ...);
-
+			
+			// スクロール位置をリセット
+			m_progress = 0.0;
+			m_inner.region.y = 0.0;
+			m_bar.region.y = m_bar.minY;
+	
 			m_updateContents();
-
 			m_updateInner();
-
+	
 			return *this;
 		}
 

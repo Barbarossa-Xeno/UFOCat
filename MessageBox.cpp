@@ -74,16 +74,19 @@ namespace UFOCat::GUI
 
 	bool MessageBox::isPressedOK()
 	{
-		// 押されたとき、ダイアログが消える
-		if (m_isOpen and m_okButton.isPressed())
+		// 開いているときのみ更新処理を行う
+		if (m_isOpen)
 		{
-			close();
-
-			// 押されたということで true を返す
-			return true;
+			m_contents.update();
+			
+			// 押されたとき、ダイアログが消える
+			if (m_okButton.isPressed())
+			{
+				close();
+				// 押されたということで true を返す
+				return true;
+			}
 		}
-
-		m_contents.update();
 
 		// それ以外 false
 		return false;
