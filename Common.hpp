@@ -183,8 +183,10 @@ namespace UFOCat
 	/// @note https://siv3d.github.io/ja-jp/reference/game_tips/
 	void DrawPolkaDotBackground(int32 cellSize, double circleScale, const ColorF& color);
 
-
-	const String &Cat(uint32 id);
+	/// @brief アセット登録された猫の名前を ID から取得する
+	/// @param id UFO猫の ID
+	/// @return 名前 TextureAsset で使える
+	String Cat(size_t id);
 
 	// TODO: このメソッドでいっきにテクスチャまで読み込んでしまうので、無駄にメモリを確保してしまう
 	// 端から全てのテクスチャを読む必要はないので、あとで必要なときに初めてテクスチャを確保するように処理を変える

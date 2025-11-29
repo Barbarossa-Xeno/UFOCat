@@ -23,10 +23,13 @@ namespace UFOCat
 		/* -- フィールド -- */
 
 		/// @brief ターゲット
-		std::shared_ptr<CatObject> m_target = nullptr;
+		std::shared_ptr<CatData> m_target = nullptr;
 
-		/// @brief このレベルで出現させる猫を絞り込んだリスト @n
-		Array<std::shared_ptr<CatObject>> m_selections;
+		/// @brief このレベルで出現させる猫を絞り込んだリスト
+		Array<std::shared_ptr<CatData>> m_selections;
+
+		/// @brief このレベルで出現させる猫のIDを重複を無視して絞り込んだリスト
+		HashSet<size_t> m_selectionsId;
 
 		/// @brief フェーズ中にターゲットが出現する時刻 @n
 		/// 途中、初めてターゲットが視認できるようになったことを確認できた時点で、数値を入れ替える！！ @n

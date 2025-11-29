@@ -9,7 +9,11 @@ using namespace UFOCat;
 
 void Main()
 {
-	// TODO: 非同期ロードを実装してローディング画面を作ったほうがいい
+	// テクスチャフォルダから初めに全ての猫の画像を登録
+	for (auto &&[i, path] : Indexed(FileSystem::DirectoryContents(U"texture/cat")))
+	{
+		TextureAsset::Register(Cat(i), path);
+	}
 
 	// フォントアセットの登録
 	FontAsset::Register(Util::FontFamily::YuseiMagic, FontMethod::SDF, 48, U"font/YuseiMagic-Regular.ttf");

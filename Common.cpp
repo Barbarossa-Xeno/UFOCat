@@ -92,9 +92,8 @@ namespace UFOCat
 		}
 	}
 
-	const String &Cat(uint32 id)
+	String UFOCat::Cat(size_t id)
 	{
-		// 1 桁の数字の時、0 埋め
 		return U"Cat{}"_fmt(id);
 	}
 

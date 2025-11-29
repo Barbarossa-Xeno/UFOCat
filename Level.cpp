@@ -71,30 +71,30 @@ namespace UFOCat
 		// 先にスコアのレベル情報を設定
 		m_score.level = getData().levelIndex + 1;
 
-		// 前回シーンで決めたターゲットを取得（注：コピーで取得すること！）
-		m_target = std::make_shared<CatObject>(getData().cats[getData().targetIndex].clone());
+		// 前回シーンで決めたターゲットを取得
+		m_target = getData().cats[getData().targetId];
 
 		// レベルデータのうち、登場する猫の数に関するデータを取得する
 		const auto& similarCount = m_currentLevel().breedData.similar;
 		const auto& otherCount = m_currentLevel().breedData.other;
 
 		// それぞれ、似ている猫とそうじゃない猫を絞り込む用の配列を用意する
-		Array<std::shared_ptr<CatObject>> similars;
-		Array<std::shared_ptr<CatObject>> others;
+		Array<const CatData*> similars;
+		Array<const CatData*> others;
 
 		// 全種類の猫の中から、ターゲットと似ている猫とそうでない猫を振り分ける
 		for (const auto& cat : getData().cats)
 		{
 			// それと、ターゲットと同じのを参照しないように保障する
-			if (m_currentLevel().similarity == cat.getCatData().getSameDataCount(m_target->getCatData())
-				and m_target->getCatData() != cat.getCatData())
+			if (m_currentLevel().similarity == cat->getSameDataCount(*m_target)
+				and *cat != *m_target)
 			{
-				similars << std::make_shared<CatObject>(cat);
+				similars << cat.get();
 			}
 			// 類似条件を下回るのを「その他」としてカウント
-			else if (m_currentLevel().similarity > cat.getCatData().getSameDataCount(m_target->getCatData()))
+			else if (m_currentLevel().similarity > cat->getSameDataCount(*m_target))
 			{
-				others << std::make_shared<CatObject>(cat);
+				others << cat.get();
 			}
 		}
 
@@ -111,13 +111,13 @@ namespace UFOCat
 		else if (comp < 0)
 		{
 			// 条件を緩和して絞り込んだ猫を入れる配列
-			Array<std::shared_ptr<CatObject>> looses;
+			Array<const CatData*> looses;
 
 			// 類似度を1つ下げて絞り込んだものを looses に入れる
 			for (const auto& cat : others)
 			{
-				if ((m_currentLevel().similarity - 1) == cat->getCatData().getSameDataCount(m_target->getCatData())
-					and m_target->getCatData() != cat->getCatData())
+				if ((m_currentLevel().similarity - 1) == cat->getSameDataCount(*m_target)
+					and *cat != *m_target)
 				{
 					looses << cat;
 				}
@@ -150,11 +150,25 @@ namespace UFOCat
 		// 既定の数に達しない場合は、それでもよしとする
 		// 無理にほかの種類も含めようとすると、難易度が上がりすぎる可能性がある？
 
+		// 結局、似てるのと他のでどの猫を使うのかまとめておく
+		Array<size_t> ids = similars.map([](const auto &s) { return s->id; }).append(others.map([](const auto &o) { return o->id; } ));
+
+		// 重複無しがいいので set を利用
+		m_selectionsId = HashSet<size_t>{ ids.begin(), ids.end() };
+
+		
+		for (auto &&id : m_selectionsId)
+		{
+			// 必要なテクスチャアセットの非同期ロードを始める
+			TextureAsset::LoadAsync(Cat(id));
+
+			// 猫データも共有しておく
+			m_selections << getData().cats[id];
+		}
+		// ロードの間も以下を続行
+
 		// レベル中に行うアクションリストの中から、それぞれの発生確率だけを抜き取ったリストで確率分布をつくる
 		m_actionProbabilities = DiscreteDistribution{ m_currentLevel().actionDataList.map([](const LevelData::ActionData& data) { return data.probability; }) };
-
-		// 最終的に catsInPhase にまとめて
-		m_selections.append(similars).append(others);
 
 		// 現在のレベルに合わせてターゲットの出現時刻を設定
 		m_setTargetSpawnTime(getData().levelIndex + 1);
@@ -184,7 +198,16 @@ namespace UFOCat
 					// 初期化時にタイマーをセットしていたということなので
 					if (not getData().timer.reachedZero())
 					{
-						getData().timer.start();
+						// 使用する猫のアセットが全てロードされていれば
+						if (std::all_of(m_selectionsId.begin(), m_selectionsId.end(), [](const size_t id)
+							{
+								return TextureAsset::IsReady(Cat(id));
+							})
+							and TextureAsset::IsReady(Cat(m_target->id)))
+						{
+							// カウントダウンはじめ
+							getData().timer.start();
+						}
 					}
 					// 次にもう一回 0 になったら
 					else
@@ -197,6 +220,7 @@ namespace UFOCat
 						getData().timer.restart(m_currentLevel().timeLimit + 1.75s);
 					}
 				}
+				// タイマー稼働してる = 開始前のカウントダウン中
 				else
 				{
 					if (m_prevTimerRemaining > getData().timer.s())
@@ -227,8 +251,9 @@ namespace UFOCat
 						// ターゲットの出現時刻を超えていて、ターゲットがまだ出現していなかったら
 						if (getData().timer.remaining() <= m_targetAppearTime and (not m_hasAppearedTarget()))
 						{
-							// ターゲットを（コピーして）湧かせる
-							getData().spawns[0] = std::make_unique<CatObject>(m_target->clone());
+							// ターゲットを湧かせる
+							getData().spawns[0] = std::make_unique<CatObject>(CatObject{ TextureAsset(Cat(m_target->id)) }.setCatData(*m_target));
+
 							// ターゲットにも同様にアクションと速度の設定を行う
 							getData().spawns[0]->setAction(DiscreteSample(m_currentLevel().actionDataList, m_actionProbabilities)).setRandomVelocity(getData().levelIndex + 1);
 						}
@@ -237,14 +262,17 @@ namespace UFOCat
 							// ターゲット以外の猫をランダムに指定個選んで（コピーして）追加
 							for (uint32 i = 0; i < m_currentLevel().intervalData.count; i++)
 							{
-								// アクションを抽選してセットし、現在のレベルに合わせて速度もランダムに決める
-								// "EXCEPTION ACCESS VIOLATION" を防ぐために、いったんオブジェクトのコピーを明示的に変数にいれる
-								CatObject obj = m_selections.choice()->clone();
-								obj.setAction(DiscreteSample(m_currentLevel().actionDataList, m_actionProbabilities))
-								   .setRandomVelocity(getData().levelIndex + 1);
+								// 1個適当に選ぶ
+								const auto &selection = m_selections.choice();
 
-								// スポーンリストに追加
-								getData().spawns << std::make_unique<CatObject>(obj);
+								// アクションを抽選してセットし、現在のレベルに合わせて速度もランダムに決める
+								// そしてスポーンリストに追加
+								getData().spawns << std::make_unique<CatObject>
+													(
+														CatObject{ TextureAsset(Cat(selection->id)) }
+															.setAction(DiscreteSample(m_currentLevel().actionDataList, m_actionProbabilities))
+															.setRandomVelocity(getData().levelIndex + 1)
+													);
 							}
 						}
 					}, m_currentLevel().intervalData.period);
@@ -271,7 +299,7 @@ namespace UFOCat
 						}
 
 						// 猫をタッチしたら、その正誤を代入
-						if (cat->act().checkCatchable(m_target->getCatData(), &m_score.isCorrect))
+						if (cat->act().checkCatchable(*m_target, &m_score.isCorrect))
 						{
 							// 捕まえた猫を記録
 							m_caught = &cat;
@@ -633,7 +661,7 @@ namespace UFOCat
 				}
 				// 画面右側 ターゲットを表示
 				{
-					auto &&image = m_target->getTexture().scaled(m_CatTextureScale);
+					auto &&image = TextureAsset(Cat(m_target->id)).scaled(m_CatTextureScale);
 					image.drawAt(Scene::CenterF() + SizeF(image.size.x, 0));
 					FontAsset(Util::FontFamily::YuseiMagic)(U"ターゲット").drawAt(Scene::CenterF() + SizeF(image.size.x, -150));
 				}

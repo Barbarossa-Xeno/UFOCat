@@ -223,9 +223,7 @@ namespace UFOCat
 													   {
 													       ptr->setAction(demoActions[i]).setRandomVelocity(Random(1, 5));
 													   }));
-			// CatObject が自前でコピーコンストラクタを定義している都合上
-			// ムーブ代入も禁止なので（そもそも const メンバーを決め打ちにしている以上ムーブが難しい）
-			// 新しい unique_ptr<CatObject> の ** リストをムーブして ** 代入する
+			// 最後に move で unique_ptr の権利を移譲する
 		}
 
 		// 背景を決める		
