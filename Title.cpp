@@ -9,7 +9,7 @@ namespace UFOCat
 		if (getData().cats.isEmpty() or getData().levels.isEmpty() or getData().backgrounds.isEmpty())
 		{
 			// データがまだ読み込まれていなければ読み込む
-			getData().cats = LoadCatData();
+			getData().cats = LoadCatData().map([](const auto &data) { return std::make_shared<CatData>(data); });
 			getData().levels = LoadLevelData();
 			getData().backgrounds = LoadBackgrounds();
 
@@ -211,10 +211,10 @@ namespace UFOCat
 
 			// UFO猫のデータからランダムにスポーン数だけチョイスし、
 			getData().spawns = std::move(getData().cats.choice(count)
-														// クローンして unique_ptr にする
-													   .map([](const CatObject &cat)
+														// 生成して unique_ptr にする
+													   .map([](const auto &cat)
 													   {
-													       return std::make_unique<CatObject>(cat.clone());
+													       return std::make_unique<CatObject>(CatObject{ TextureAsset(Cat(cat->id)) });
 													   })
 														// 作ったポインタのリストに対して
 														// （このリストと `demoActions` の長さはどちらも `count` なので）

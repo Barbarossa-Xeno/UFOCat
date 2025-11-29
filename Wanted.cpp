@@ -21,8 +21,8 @@ namespace UFOCat
 		: IScene{ init }
 	{
 		// ターゲットを選ぶ
-		getData().targetIndex = Random(getData().cats.size() - 1);
-		m_target = std::make_shared<CatObject>(getData().cats[getData().targetIndex]);
+		getData().targetId = getData().cats.choice()->id;
+		m_target = std::make_shared<CatObject>(CatObject{ TextureAsset(Cat(getData().targetId)) });
 
 		// 現在行っているレベルのインデックスは、クリアしているレベルの数と同じなのを利用する
 		// （そのレベルが終わり次第、isCleared のフラグを上げるため）

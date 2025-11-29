@@ -145,7 +145,7 @@ namespace UFOCat
 		struct GameData
 		{
 			/// @brief 使用する全てのUFO猫のデータ
-			Array<CatData> cats;
+			Array<std::shared_ptr<CatData>> cats;
 
 			/// @brief 使用する全てのレベルデータ
 			Array<LevelData> levels;
