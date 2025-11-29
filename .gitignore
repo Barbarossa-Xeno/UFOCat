@@ -2,6 +2,8 @@
 
 App/*
 !App/texture
+!App/font
+!App/audio
 !App/*.json
 App/launcher_info.json
 

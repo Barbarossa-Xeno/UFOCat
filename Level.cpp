@@ -333,7 +333,7 @@ namespace UFOCat
 
 					// 次のレベルへ進むボタン
 					if (m_gui.toNextLevel.set(32, U"次のレベルへ", GUI::PositionType::Absolute, canContinue)
-										  .setPosition(Arg::bottomRight = (Scene::Size() - Vec2{ 10.0, 10.0 })).isPressed())
+										 .setPosition(Arg::bottomRight = (Scene::Size() - Vec2{ 10.0, 10.0 })).isPressed())
 					{
 						// 次に進む場合は、レベルデータにもクリア情報を反映
 						// これにより、Wanted シーンの初期化で自動的に次のレベルへ進む
@@ -462,13 +462,25 @@ namespace UFOCat
 			// ## 開始前（カウントダウン処理など）
 			case UFOCat::Level::State::Before:	
 			{
+				// 3s 以下からカウントし始めたいので、残り時間がそれ以上あるときは処理しない
+				if (getData().timer.s() > 3.0)
+				{
+					return;
+				}
+				// 以下、タイマーが 3s 以下であることが保証される
+
 				// 秒数表示
 				String text = U"";
+
+				// 線形補完のパラメータの最大値
+				// timer.sF() に 1 フレームくらいのラグがあることを見越して設定している
+				// この値を使い、タイマーの整数時間が変わったときにのみ音を鳴らすようにする
+				const double maxT = 1.0 - Scene::DeltaTime();
 
 				// 線形補間のパラメータ
 				// sF() は小数点以下も含めた秒数、s() は切り捨ての整数秒数であることを利用して
 				// 1.0 -> 0.0 に向かう値を得る
-				double t = Clamp(getData().timer.sF() - getData().timer.s(), 0.0, 1.0);
+				double t = Clamp(getData().timer.sF() - getData().timer.s(), 0.0, maxT);
 
 				double textSize = 200.0;
 
@@ -476,6 +488,8 @@ namespace UFOCat
 				if (getData().timer.s() == 0)
 				{
 					text = U"GO!";
+
+					AudioAsset(Util::AudioList::SE::Start).play();
 				}
 				// 3、2、1 のほう
 				else
@@ -483,7 +497,15 @@ namespace UFOCat
 					text = U"{}"_fmt(getData().timer.s());
 
 					// テキストサイズをイージングで小さいほうに変化させる
-					textSize = std::lerp(40.0, 200.0, EaseOutQuart(t));
+					textSize = std::lerp(40.0, 210.0, EaseOutQuart(t));
+
+					if (t >= maxT)
+					{
+						// 最初だけ音を鳴らす
+						AudioAsset(Util::AudioList::SE::CountDown).play();
+					}
+					
+
 				}
 
 				FontAsset(Util::FontFamily::KoharuiroSunray)(text)

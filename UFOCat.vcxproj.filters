@@ -1106,6 +1106,48 @@
     <Media Include="App\example\shot.mp3">
       <Filter>Resource Files\example</Filter>
     </Media>
+    <Media Include="App\audio\recorderwofukuneko.mp3">
+      <Filter>Resource Files</Filter>
+    </Media>
+    <Media Include="App\audio\キャンセル4.mp3">
+      <Filter>Resource Files</Filter>
+    </Media>
+    <Media Include="App\audio\クイズ正解1.mp3">
+      <Filter>Resource Files</Filter>
+    </Media>
+    <Media Include="App\audio\クイズ不正解2.mp3">
+      <Filter>Resource Files</Filter>
+    </Media>
+    <Media Include="App\audio\ドラムロール.mp3">
+      <Filter>Resource Files</Filter>
+    </Media>
+    <Media Include="App\audio\ロールの閉め.mp3">
+      <Filter>Resource Files</Filter>
+    </Media>
+    <Media Include="App\audio\警官のホイッスル2.mp3">
+      <Filter>Resource Files</Filter>
+    </Media>
+    <Media Include="App\audio\決定ボタンを押す39.mp3">
+      <Filter>Resource Files</Filter>
+    </Media>
+    <Media Include="App\audio\猫の威嚇.mp3">
+      <Filter>Resource Files</Filter>
+    </Media>
+    <Media Include="App\audio\猫の鳴き声1.mp3">
+      <Filter>Resource Files</Filter>
+    </Media>
+    <Media Include="App\audio\猫の鳴き声2.mp3">
+      <Filter>Resource Files</Filter>
+    </Media>
+    <Media Include="App\audio\放送開始チャイム.mp3">
+      <Filter>Resource Files</Filter>
+    </Media>
+    <Media Include="App\audio\魔王魂 ループ  サイバー29.mp3">
+      <Filter>Resource Files</Filter>
+    </Media>
+    <Media Include="App\audio\魔王魂 ループ  サイバー41.mp3">
+      <Filter>Resource Files</Filter>
+    </Media>
   </ItemGroup>
   <ItemGroup>
     <Font Include="App\example\font\DotGothic16\DotGothic16-Regular.ttf">
@@ -1182,6 +1224,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Palette.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AudioList.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
