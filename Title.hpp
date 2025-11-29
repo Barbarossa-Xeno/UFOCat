@@ -33,6 +33,8 @@ namespace UFOCat
 	public:
 		Title(const InitData &init);
 
+		~Title();
+
 		void update() override;
 
 		void draw() const override;

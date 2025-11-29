@@ -700,4 +700,10 @@ namespace UFOCat
 
 		BrightenCursor();
 	}
+
+	Level::~Level()
+	{
+		AudioAsset(getData().bgmName).stop();
+		TextureAsset::ReleaseAll();
+	}
 }

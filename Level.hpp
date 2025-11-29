@@ -106,6 +106,8 @@ namespace UFOCat
 	public:
 		Level(const InitData &init);
 
+		~Level();
+
 		void update() override;
 
 		void draw() const override;

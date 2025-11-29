@@ -22,7 +22,7 @@ namespace UFOCat
 	{
 		// ターゲットを選ぶ
 		getData().targetId = getData().cats.choice()->id;
-		m_target = std::make_shared<CatObject>(CatObject{ TextureAsset(Cat(getData().targetId)) });
+		m_target = getData().cats[getData().targetId];
 
 		// 現在行っているレベルのインデックスは、クリアしているレベルの数と同じなのを利用する
 		// （そのレベルが終わり次第、isCleared のフラグを上げるため）
@@ -109,10 +109,10 @@ namespace UFOCat
 			// ターゲット猫の表示
 			{
 				// シャドウ
-				m_target->getTexture().scaled(0.45).drawAt(targetOrigin + Point{ 5, 5 }, ColorF{ 0.4, 0.3, 0.2 });
+				TextureAsset(Cat(getData().targetId)).scaled(0.45).drawAt(targetOrigin + Point{5, 5}, ColorF{0.4, 0.3, 0.2});
 
 				// 実際の
-				m_target->getTexture().scaled(0.45).drawAt(targetOrigin);
+				TextureAsset(Cat(getData().targetId)).scaled(0.45).drawAt(targetOrigin);
 			}			
 
 			// ## ターゲット猫の各種情報を表示する部分
@@ -139,7 +139,7 @@ namespace UFOCat
 					// エリアから溢れない範囲でフォントサイズを可変にする
 					double fontSize = 40;
 					// このメソッドは矩形内にすべての文字列が収まらなかったら false を返すので
-					while (not FontAsset(Util::FontFamily::YuseiMagic)(U"{}"_fmt(m_target->getCatData().breed))
+					while (not FontAsset(Util::FontFamily::YuseiMagic)(U"{}"_fmt(m_target->breed))
 						.draw(fontSize--, breedRegion, Util::Palette::Brown))
 					{
 						// そのとき、描画されてしまった文字列を上から塗りつぶして隠す
@@ -156,7 +156,7 @@ namespace UFOCat
 					// 次々と色情報を表示する際に、基準にする前の表示範囲を保持する
 					RectF previousRegion{ colorBox };
 
-					for (const auto& [name, color] : m_target->getCatData().colors)
+					for (const auto& [name, color] : m_target->colors)
 					{
 						// 表示しながら、前の範囲を定める
 						previousRegion = m_showColorData(name, color, previousRegion.rightCenter() + Point{ 20, 0 }, 10);
@@ -171,7 +171,7 @@ namespace UFOCat
 					// 模様名を表示するエリア、マージン (20) 分調整する
 					const RectF& patternRegion = patternBox.movedBy(patternBox.w + 20, 0).setSize(flyerRegion.w - patternBox.w - 20 - 20 - 20, patternBox.h);
 
-					FontAsset(Util::FontFamily::YuseiMagic)(U"{}"_fmt(m_target->getCatData().pattern)).draw(20, Arg::leftCenter = patternRegion.leftCenter(), Util::Palette::Brown);
+					FontAsset(Util::FontFamily::YuseiMagic)(U"{}"_fmt(m_target->pattern)).draw(20, Arg::leftCenter = patternRegion.leftCenter(), Util::Palette::Brown);
 				}
 			}
 		}		

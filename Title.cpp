@@ -298,4 +298,9 @@ namespace UFOCat
 
 		BrightenCursor();
 	}
+
+	Title::~Title()
+	{
+		AudioAsset(Util::AudioSource::BGM::Title).stop();
+	}
 }

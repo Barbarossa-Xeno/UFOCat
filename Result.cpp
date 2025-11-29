@@ -34,8 +34,6 @@ namespace UFOCat
 				getData().scores.back().title = Score::Titles[0];
 			}
 		}
-
-		AudioAsset(getData().bgmName).stop();
 	}
 
 

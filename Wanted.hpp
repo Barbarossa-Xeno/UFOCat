@@ -9,7 +9,7 @@ namespace UFOCat
 	private:
 
 		/// @brief ターゲットの情報
-		std::shared_ptr<CatObject> m_target = nullptr;
+		std::shared_ptr<CatData> m_target = nullptr;
 
 		/// @brief GUI 要素
 		struct
