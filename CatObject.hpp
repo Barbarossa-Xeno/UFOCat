@@ -47,7 +47,7 @@ namespace UFOCat::Core
 			InvokeAction(CatObject &target) : target{ &target } {}
 
 			/// @brief 関数を呼び出す
-			/// @param value `CAct::ValidSignature` に適合している引数値
+			/// @param value `Action::ValidSignature` に適合している引数値
 			/// @return ターゲットインスタンスの参照
 			CatObject &operator()(const Action::ValidSignature auto &value) const;
 		};
@@ -278,9 +278,17 @@ namespace UFOCat::Core
 
 		/// @brief 画面内を設定された速度 (`velocity`) で横切る
 		/// @param period 出現周期（消えた状態から現れるまでの時間）
-		/// @param count 横切る回数
+		/// @param crossingCount 横切る回数
 		/// @return 自分自身の参照
-		CatObject &cross(Duration period = 0s, uint32 count = std::numeric_limits<int32>::infinity());
+		CatObject &cross(Duration period = 0s, uint32 crossingCount = std::numeric_limits<uint32>::infinity());
+
+		// TODO: 集団で横断できる仕組みを考える
+		// 実際にスポーンしていて動いたり描画されたりできるのはシーン部分のリストに入れているオブジェクト
+		// そもそもこのメソッド自体も1つのインスタンスについて用意される
+		// 1匹の猫にこのアクションが割り当てられるだけで複数のインスタンスにも伝播する形がいいけど
+		// そもそも戻り値は自分参照じゃないといけんから、戻り値で追加でスポーンする猫の情報を送るのも難しい
+		// あと、追加でスポーンする猫の座標をきれいに決めるのも難しい
+		// CatObject &crossAsGroup(uint32 count, Duration period = 0s, uint32 crossingCount = std::numeric_limits<uint32>::infinity());
 
 		/// @brief 指定した範囲内のランダムな位置に指定した周期で出現し、指定したイージング関数と時間でそれぞれフェードインアウトする
 		/// @param period 出現周期（消えている時間と現れている時間）

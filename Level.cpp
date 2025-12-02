@@ -239,7 +239,6 @@ namespace UFOCat
 					}
 					m_prevTimerRemaining = getData().timer.s();
 				}
-				//  カウントダウンの音は致し方なく draw() で鳴らしている、実装力不足
 			}
 			break;
 
@@ -525,13 +524,14 @@ namespace UFOCat
 		// # 共通処理（背面）
 		{
 
-			for (const auto& cat : getData().spawns)
+			for (const auto &cat : getData().spawns)
 			{
 				if (not cat)
 				{
 					continue;
 				}
 
+				// ここでも背景色に対応した影を描画
 				cat->drawShadow(m_bg.shadowColor).draw();
 			}
 		}
@@ -576,7 +576,6 @@ namespace UFOCat
 				FontAsset(Util::FontFamily::KoharuiroSunray)(text)
 					// 枠線・影設定 -> テキストサイズ（「GO!」の時以外経過時間で縮小） -> 経過時間で透明化 -> 画面中央ぞろえ描画
 					.drawAt(TextStyle::OutlineShadow(0.3, Util::Palette::Brown, Vec2{ 1.2, 1.2 }, ColorF{ 0.0, 0.65 }), textSize, Scene::Center(), ColorF{ 1.0, EaseOutExpo(t) });
-					// この TextStyle 流用が頻度高かったら定数化を考える
 			}
 			break;
 

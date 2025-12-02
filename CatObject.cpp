@@ -133,10 +133,10 @@ namespace UFOCat::Core
 		return *this;
 	}
 
-	CatObject &CatObject::cross(Duration period, uint32 count)
+	CatObject &CatObject::cross(Duration period, uint32 crossingCount)
 	{
 		// 既に指定回数を上回っていて、無限回が指定されていない状況なら、これ以上処理しない
-		if (m_crossData.count > count && count != std::numeric_limits<int32>::infinity())
+		if (m_crossData.count > crossingCount && crossingCount != std::numeric_limits<uint32>::infinity())
 		{
 			return *this;
 		}
@@ -163,7 +163,7 @@ namespace UFOCat::Core
 					}
 
 					// 移動回数を増やす
-					if (count != std::numeric_limits<int32>::infinity())
+					if (crossingCount != std::numeric_limits<uint32>::infinity())
 					{
 						m_crossData.count++;
 					}
