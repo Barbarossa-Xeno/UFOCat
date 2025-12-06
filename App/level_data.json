@@ -1,223 +1,356 @@
 {
-    "data": [
+  "data": [
+    {
+      "timeLimit": "30s",
+      "similarity": 1,
+      "breedData": {
+        "similar": 1,
+        "other": 4
+      },
+      "intervalData": {
+        "count": 1,
+        "period": "4s"
+      },
+      "actionData": [
         {
-            "timeLimit": "30s",
-            "similarity": 1,
-            "breedData": {
-                "similar": 1,
-                "other": 4
-            },
-            "intervalData": {
-                "count": 1,
-                "period": "4s"
-            },
-            "actionData": [
-                {
-                    "name": "bound",
-                    "overload": 0,
-                    "params": null,
-                    "probability": 0.5
-                },
-                {
-                    "name": "appear",
-                    "overload": 7,
-                    "params": [
-                        "2s",
-                        "1s"
-                    ],
-                    "probability": 0.5
-                }
-            ]
+          "name": "bound",
+          "overload": 0,
+          "params": null,
+          "probability": 0.5
         },
         {
-            "timeLimit": "30s",
-            "similarity": 1,
-            "breedData": {
-                "similar": 1,
-                "other": 7
-            },
-            "intervalData": {
-                "count": 1,
-                "period": "2.8s"
-            },
-            "actionData": [
-                {
-                    "name": "bound",
-                    "overload": 0,
-                    "params": null,
-                    "probability": 0.2
-                },
-                {
-                    "name": "cross",
-                    "overload": 1,
-                    "params": [
-                        "3s"
-                    ],
-                    "probability": 0.3
-                },
-                {
-                    "name": "appear",
-                    "overload": 5,
-                    "params": [
-                        "2.5s",
-                        "1.4s",
-                        "0.6s"
-                    ],
-                    "probability": 0.25
-                },
-                {
-                    "name": "appear",
-                    "overload": 7,
-                    "params": [
-                        "2s",
-                        "0.75s"
-                    ],
-                    "probability": 0.25
-                }
-            ]
-        },
-        {
-            "timeLimit": "30s",
-            "similarity": 2,
-            "breedData": {
-                "similar": 2,
-                "other": 7
-            },
-            "intervalData": {
-                "count": 2,
-                "period": "3.5s"
-            },
-            "actionData": [
-                {
-                    "name": "bound",
-                    "overload": 0,
-                    "params": null,
-                    "probability": 0.1
-                },
-                {
-                    "name": "cross",
-                    "overload": 1,
-                    "params": [
-                        "3.3s"
-                    ],
-                    "probability": 0.35
-                },
-                {
-                    "name": "appear",
-                    "overload": 5,
-                    "params": [
-                        "2.2s",
-                        "1.8s",
-                        "0.5s"
-                    ],
-                    "probability": 0.183
-                },
-                {
-                    "name": "appear",
-                    "overload": 6,
-                    "params": [
-                        "3s",
-                        "e_circ",
-                        "1.2s"
-                    ],
-                    "probability": 0.183
-                },
-                {
-                    "name": "appear",
-                    "overload": 7,
-                    "params": [
-                        "2.6s",
-                        "1.2s"
-                    ],
-                    "probability": 0.184
-                }
-            ]
-        },
-        {
-            "timeLimit": "30s",
-            "similarity": 2,
-            "breedData": {
-                "similar": 3,
-                "other": 9
-            },
-            "intervalData": {
-                "count": 2,
-                "period": "3s"
-            },
-            "actionData": [
-                {
-                    "name": "bound",
-                    "overload": 0,
-                    "params": null,
-                    "probability": 0.1
-                },
-                {
-                    "name": "appearFromEdge",
-                    "overload": 3,
-                    "params": [
-                        "2.5s",
-                        "0.5s",
-                        [60, 50, 80, 60]
-                    ],
-                    "probability": 0.2
-                },
-                {
-                    "name": "cross",
-                    "overload": 0,
-                    "params": [
-                        "3s",
-                        6
-                    ],
-                    "probability": 0.15
-                },
-                {
-                    "name": "cross",
-                    "overload": 1,
-                    "params": [
-                        "2.2s"
-                    ],
-                    "probability": 0.15
-                },
-                {
-                    "name": "appear",
-                    "overload": 5,
-                    "params": [
-                        "1.6s",
-                        "2s",
-                        "2s"
-                    ],
-                    "probability": 0.1
-                },
-                {
-                    "name": "appear",
-                    "overload": 6,
-                    "params": [
-                        "2.5s",
-                        "e_circ",
-                        "1s"
-                    ],
-                    "probability": 0.1
-                },
-                {
-                    "name": "appear",
-                    "overload": 6,
-                    "params": [
-                        "2.1s",
-                        "e_expo",
-                        "1.5s"
-                    ],
-                    "probability": 0.1
-                },
-                {
-                    "name": "appear",
-                    "overload": 7,
-                    "params": [
-                        "2.2s",
-                        "1.1s"
-                    ],
-                    "probability": 0.1
-                }
-            ]
+          "name": "appear",
+          "overload": 7,
+          "params": [
+            "2s",
+            "1s"
+          ],
+          "probability": 0.5
         }
-    ]
+      ]
+    },
+    {
+      "timeLimit": "30s",
+      "similarity": 1,
+      "breedData": {
+        "similar": 1,
+        "other": 7
+      },
+      "intervalData": {
+        "count": 1,
+        "period": "2.8s"
+      },
+      "actionData": [
+        {
+          "name": "bound",
+          "overload": 0,
+          "params": null,
+          "probability": 0.2
+        },
+        {
+          "name": "cross",
+          "overload": 1,
+          "params": [
+            "3s"
+          ],
+          "probability": 0.3
+        },
+        {
+          "name": "appear",
+          "overload": 5,
+          "params": [
+            "2.5s",
+            "1.4s",
+            "0.6s"
+          ],
+          "probability": 0.25
+        },
+        {
+          "name": "appear",
+          "overload": 7,
+          "params": [
+            "2s",
+            "0.75s"
+          ],
+          "probability": 0.25
+        }
+      ]
+    },
+    {
+      "timeLimit": "30s",
+      "similarity": 2,
+      "breedData": {
+        "similar": 2,
+        "other": 7
+      },
+      "intervalData": {
+        "count": 2,
+        "period": "3.5s"
+      },
+      "actionData": [
+        {
+          "name": "bound",
+          "overload": 0,
+          "params": null,
+          "probability": 0.1
+        },
+        {
+          "name": "cross",
+          "overload": 1,
+          "params": [
+            "3.3s"
+          ],
+          "probability": 0.35
+        },
+        {
+          "name": "appear",
+          "overload": 5,
+          "params": [
+            "2.2s",
+            "1.8s",
+            "0.5s"
+          ],
+          "probability": 0.183
+        },
+        {
+          "name": "appear",
+          "overload": 6,
+          "params": [
+            "3s",
+            "e_circ",
+            "1.2s"
+          ],
+          "probability": 0.183
+        },
+        {
+          "name": "appear",
+          "overload": 7,
+          "params": [
+            "2.6s",
+            "1.2s"
+          ],
+          "probability": 0.184
+        }
+      ]
+    },
+    {
+      "timeLimit": "30s",
+      "similarity": 2,
+      "breedData": {
+        "similar": 3,
+        "other": 9
+      },
+      "intervalData": {
+        "count": 2,
+        "period": "3s"
+      },
+      "actionData": [
+        {
+          "name": "bound",
+          "overload": 0,
+          "params": null,
+          "probability": 0.1
+        },
+        {
+          "name": "appearFromEdge",
+          "overload": 3,
+          "params": [
+            "2.5s",
+            "0.5s",
+            [
+              60,
+              50,
+              80,
+              60
+            ]
+          ],
+          "probability": 0.2
+        },
+        {
+          "name": "cross",
+          "overload": 0,
+          "params": [
+            "3s",
+            6
+          ],
+          "probability": 0.15
+        },
+        {
+          "name": "cross",
+          "overload": 1,
+          "params": [
+            "2.2s"
+          ],
+          "probability": 0.15
+        },
+        {
+          "name": "appear",
+          "overload": 5,
+          "params": [
+            "1.6s",
+            "2s",
+            "2s"
+          ],
+          "probability": 0.1
+        },
+        {
+          "name": "appear",
+          "overload": 6,
+          "params": [
+            "2.5s",
+            "e_circ",
+            "1s"
+          ],
+          "probability": 0.1
+        },
+        {
+          "name": "appear",
+          "overload": 6,
+          "params": [
+            "2.1s",
+            "e_expo",
+            "1.5s"
+          ],
+          "probability": 0.1
+        },
+        {
+          "name": "appear",
+          "overload": 7,
+          "params": [
+            "2.2s",
+            "1.1s"
+          ],
+          "probability": 0.1
+        }
+      ]
+    },
+    {
+      "timeLimit": "25s",
+      "similarity": 2,
+      "breedData": {
+        "similar": 3,
+        "other": 9
+      },
+      "intervalData": {
+        "count": 2,
+        "period": "1.5s"
+      },
+      "actionData": [
+        {
+          "name": "bound",
+          "overload": 0,
+          "params": null,
+          "probability": 0.05
+        },
+        {
+          "name": "appear",
+          "overload": 2,
+          "params": [
+            "1.85s",
+            "e_circ",
+            "1s",
+            "(70, 100, 200, 300)"
+          ],
+          "probability": 0.08
+        },
+        {
+          "name": "appear",
+          "overload": 4,
+          "params": [
+            "2.1s",
+            "e_elastic",
+            "1.2s",
+            "e_cubic",
+            "0.8s"
+          ],
+          "probability": 0.08
+        },
+        {
+          "name": "appear",
+          "overload": 6,
+          "params": [
+            "1.7s",
+            "e_expo",
+            "1.25s"
+          ],
+          "probability": 0.08
+        },
+        {
+          "name": "appear",
+          "overload": 6,
+          "params": [
+            "2s",
+            "e_sine",
+            "1.5s"
+          ],
+          "probability": 0.08
+        },
+        {
+          "name": "appear",
+          "overload": 7,
+          "params": [
+            "1.4s",
+            "0.9s"
+          ],
+          "probability": 0.08
+        },
+        {
+          "name": "cross",
+          "overload": 0,
+          "params": [
+            "2.6s",
+            5
+          ],
+          "probability": 0.1
+        },
+        {
+          "name": "cross",
+          "overload": 1,
+          "params": [
+            "2s"
+          ],
+          "probability": 0.1
+        },
+        {
+          "name": "cross",
+          "overload": 1,
+          "params": [
+            "1.85s"
+          ],
+          "probability": 0.1
+        },
+        {
+          "name": "appearFromEdge",
+          "overload": 1,
+          "params": [
+            "3s",
+            "1.4s",
+            "1,8s",
+            [
+              50,
+              40,
+              30,
+              50
+            ]
+          ],
+          "probability": 0.125
+        },
+        {
+          "name": "appearFromEdge",
+          "overload": 3,
+          "params": [
+            "2.2s",
+            "0.5s",
+            [
+              70,
+              70,
+              70,
+              45
+            ]
+          ],
+          "probability": 0.125
+        }
+      ]
+    }
+  ]
 }
