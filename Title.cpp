@@ -15,9 +15,6 @@ namespace UFOCat
 
 			// 最大レベル数の情報をスコアデータに共通のものとして設定しておく
 			Score::Generic::ByLevel::SetLevelCount(getData().levels.size());
-
-			// スコアデータはレベル数に合わせて確保してから、1プレイ分として追加しておく
-			getData().scores << Score::Generic{ Array<Score::Generic::ByLevel>{ getData().levels.size() }, Score::Generic::Title{} };	
 		}
 		// それ以降でタイトルに戻ってきた場合
 		else
@@ -253,6 +250,10 @@ namespace UFOCat
 			{
 				if (m_gui.toLevel.isPressed())
 				{
+					// プレイされるときだけ
+					// スコアデータはレベル数に合わせて確保してから、1プレイ分として追加しておく
+					getData().scores << Score::Generic{ Array<Score::Generic::ByLevel>{ getData().levels.size() }, Score::Generic::Title{} };
+
 					AudioAsset(Util::AudioSource::BGM::Title).fadeVolume(0.0, 0.2s);
 					changeScene(State::Wanted, 1.2s);
 				}

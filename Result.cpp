@@ -228,4 +228,10 @@ namespace UFOCat
 
 		BrightenCursor();
 	}
+
+	Result::~Result()
+	{
+		// 一旦リソース解放
+		TextureAsset::ReleaseAll();
+	}
 }
