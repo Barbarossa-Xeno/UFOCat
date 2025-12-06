@@ -172,7 +172,7 @@ namespace UFOCat::Core
 					}
 					else
 					{
-						throw Error(U"Failed to parse parameter.");
+						throw Error(U"Failed to parse parameter. (Type: {}, ParamIndex: {})"_fmt(Unicode::FromUTF8(typeid(TTuple).name()), i));
 					}
 				}
 				// 配列だった場合特殊ということにしておく

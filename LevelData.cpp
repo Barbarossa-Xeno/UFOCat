@@ -13,7 +13,7 @@ namespace UFOCat::Core
 	{
 		// 正規表現で Rect と見なす
 		// (数字, 数字, 数字, 数字) の形 スペースの有無は問わない
-		const std::regex rectPattern{ R"(^((\d+),\s*(\d+),\s*(\d+),\s*(\d+))$)" };
+		const std::regex rectPattern{ R"(^\((\d+),\s*(\d+),\s*(\d+),\s*(\d+)\)$)" };
 		return std::regex_match(str.narrow(), rectPattern);
 	}
 
@@ -43,7 +43,7 @@ namespace UFOCat::Core
 		std::string cast = str.narrow();
 
 		// IsRect と同じ正規表現パターンを用意
-		const std::regex rectPattern{ R"(^((\d+),\s*(\d+),\s*(\d+),\s*(\d+))$)" };
+		const std::regex rectPattern{ R"(^\((\d+),\s*(\d+),\s*(\d+),\s*(\d+)\)$)" };
 
 		// マッチ結果を格納する変数を作って、パターンを検証
 		if (std::smatch match;
