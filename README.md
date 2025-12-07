@@ -16,3 +16,19 @@
 
 集中力と判断力、短記憶力が問われます！ささっとターゲットを覚えて、たくさん現れる外見や特徴の似た猫の中から1つを見つけ出すのがコアになる遊びです。
 また、UFO猫の動きも多彩で眺め甲斐があります。ですがプレイの際は集中です！
+
+## 使用素材
+
+### 画像アセット
+
+(1) 猫のイラスト素材
+[猫画工房](https://nekoillust.com/)
+- [『まんじゅう猫全身A』全種](https://nekoillust.com/manju-cat-whole-body-a/2/)
+- [『肉球足跡』](https://nekoillust.com/category/other/%e8%82%89%e7%90%83%e8%b6%b3%e8%b7%a1/)
+
+(2) UFOのイラスト素材
+[illust image | イラストイメージ](https://illustimage.com/)
+- [『未確認飛行物体UFOイラスト』](https://illustimage.com/?id=10469)
+使用にあたり画像データの加工をさせていただいております。
+
+- 背景イラスト画像については、ChatGPT による画像生成を利用しております。
