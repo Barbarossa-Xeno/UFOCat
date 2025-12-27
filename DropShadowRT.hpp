@@ -2,6 +2,8 @@
 
 namespace UFOCat::Util
 {
+	/// @brief ドロップシャドウのレンダーテクスチャを用意するクラス
+	/// `draw()` で実際に描画する
 	class DropShadowRT
 	{
 		// シーン全体を白色で透明なレンダーテクスチャで覆う
@@ -14,8 +16,14 @@ namespace UFOCat::Util
 		const RenderTexture m_Internal4{ m_ShadowTexture.size() / 4 };
 
 	public:
-
-		RectF draw(const TextureRegion& targetTexture, ColorF color, Vec2 position, Vec2 offset, double scale)
+		/// @brief ScopedRenderTarget をつくり、対象のテクスチャにドロップシャドウを描画する
+		/// @param targetTexture 対象テクスチャ
+		/// @param color 影の色
+		/// @param position 影の左上
+		/// @param offset 影を描画するうえでの中心位置からのずれ
+		/// @param scale 影の大きさ
+		/// @return 影の描画領域
+		RectF draw(const TextureRegion& targetTexture, ColorF color, Vec2 position, Vec2 offset, double scale) const
 		{
 			// 影の形状を描く
 			{

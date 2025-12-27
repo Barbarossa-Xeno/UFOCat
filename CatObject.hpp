@@ -166,18 +166,6 @@ namespace UFOCat::Core
 		constexpr static double m_HitAreaScale = 0.8;
 
 		/// @brief ドロップシャドウなどにつかうレンダーテクスチャ
-		const struct
-		{
-			// シーン全体を白色で透明なレンダーテクスチャで覆う
-			const RenderTexture ShadowTexture{ Scene::Size(), ColorF{ 1.0, 0.0 } };
-
-			// 1 / 4 にダウンサンプリングする、ブラー用のレンダーテクスチャ
-			const RenderTexture blur4{ ShadowTexture.size() / 4 };
-
-			// ブラー用の中間テクスチャ
-			const RenderTexture internal4{ ShadowTexture.size() / 4 };
-		} m_renderTextures;
-
 		Util::DropShadowRT m_dropShadow;
 
 		/* -- ゲッター -- */
