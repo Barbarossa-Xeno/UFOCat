@@ -44,8 +44,6 @@ namespace UFOCat
 		}
 
 		AudioAsset(getData().bgmName).stop();
-
-		Scene::SetBackground(Color{ 0, 46, 17 });
 	}
 
 	void Wanted::update()
@@ -56,11 +54,7 @@ namespace UFOCat
 		}
 		else if (getData().timer.reachedZero())
 		{
-			changeScene(State::Level, 2s);
-		}
-		else if (2 < getData().timer.sF() and getData().timer.sF() < 4.75)
-		{
-			AudioAsset(Util::AudioSource::SE::Announce).play();
+			changeScene(State::Level, 2.2s);
 		}
 		
 # if _DEBUG
@@ -90,9 +84,22 @@ namespace UFOCat
 # endif
 	}
 
+	void Wanted::updateFadeIn(double t)
+	{
+		// フェードインの 25 ~ 30% のところでキンコンカンコン鳴らす
+		if (0.25 < t and t < 0.3)
+		{
+			AudioAsset(Util::AudioSource::SE::Announce).play();
+		}
+	}
+
 	void Wanted::draw() const
 	{
-		//m_gui.board.fitted(Scene::Size() - Size{ 40, 40 }).drawAt(Scene::Center());
+		// # 背景
+		{
+			// 放射状のグラデーションで疑似敵にビネット効果
+			Circle{ Scene::Center(), Scene::Size().length() * 0.5 }.draw(Color{ 17, 67, 36 }, Color{ 0, 46, 17 });
+		}
 
 		// # 左上のレベル表示
 		{
@@ -183,5 +190,21 @@ namespace UFOCat
 		}		
 
 		BrightenCursor();
+	}
+
+	void Wanted::drawFadeIn(double t) const
+	{
+		draw();
+
+		Circle{ Vec2{ Scene::Center().x, Scene::Center().y - 20 }, 600 }.drawFrame(EaseInSine(1 - t) * 600, 0, Palette::Black);
+
+		Scene::Rect().draw(ColorF{ 0.0, EaseInSine(1 - t) });
+	}
+
+	void Wanted::drawFadeOut(double t) const
+	{
+		draw();
+
+		Circle{ Vec2{ Scene::Center().x, Scene::Center().y - 20 }, 600 }.drawFrame(EaseInOutQuad(t) * 600, 0, Palette::Black);
 	}
 }

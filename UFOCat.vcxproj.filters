@@ -545,6 +545,9 @@
     <Image Include="App\texture\background\town.png">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="App\texture\board.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="App\Resource.rc">
@@ -1227,6 +1230,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="AudioSource.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DropShadowRT.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

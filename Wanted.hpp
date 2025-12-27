@@ -42,7 +42,12 @@ namespace UFOCat
 
 		void update() override;
 
+		void updateFadeIn(double t) override;
+
 		void draw() const override;
 
+		void drawFadeIn(double t) const override;
+
+		void drawFadeOut(double t) const override;
 	};
 }
