@@ -39,9 +39,13 @@ namespace UFOCat
 						  .setProgress((getData().levelIndex + 1) / 10.0);
 
 			m_gui.flyer = Texture{ U"texture/flyer.png", TextureDesc::Mipped };
+
+			m_gui.board = Texture{ U"texture/board.png", TextureDesc::Mipped };
 		}
 
 		AudioAsset(getData().bgmName).stop();
+
+		Scene::SetBackground(Color{ 0, 46, 17 });
 	}
 
 	void Wanted::update()
@@ -88,6 +92,8 @@ namespace UFOCat
 
 	void Wanted::draw() const
 	{
+		//m_gui.board.fitted(Scene::Size() - Size{ 40, 40 }).drawAt(Scene::Center());
+
 		// # 左上のレベル表示
 		{
 			RoundRect back{ 5, 5, 180, 100, 6 };
@@ -95,8 +101,6 @@ namespace UFOCat
 			FontAsset(Util::FontFamily::YuseiMagic)(U"★ {}"_fmt(getData().levelIndex + 1)).draw(26, back.rect.tl() + Point{ 10, 5 }, ColorF{ 0.4, 0.3, 0.2 });
 			m_gui.levelBar.draw();
 		}
-
-		FontAsset(Util::FontFamily::YuseiMagic)(U"見つけるUFOネコは...").drawAt(36, Scene::Center().x, 40);
 
 		// # チラシ部分
 		{
@@ -108,11 +112,13 @@ namespace UFOCat
 
 			// ターゲット猫の表示
 			{
-				// シャドウ
-				TextureAsset(Cat(getData().targetId)).scaled(0.45).drawAt(targetOrigin + Point{5, 5}, ColorF{0.4, 0.3, 0.2});
+				const auto &region = TextureAsset(Cat(getData().targetId)).scaled(0.45);
+
+				// ドロップシャドウ
+				m_dropShadow.draw(region, ColorF{ 0.4, 0.3, 0.2 }, targetOrigin - (region.size / 2), { 2, 2 }, 1.05);
 
 				// 実際の
-				TextureAsset(Cat(getData().targetId)).scaled(0.45).drawAt(targetOrigin);
+				region.drawAt(targetOrigin);
 			}			
 
 			// ## ターゲット猫の各種情報を表示する部分

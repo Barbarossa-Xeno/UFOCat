@@ -1,5 +1,6 @@
 ﻿# pragma once
 # include "Common.hpp"
+# include "DropShadowRT.hpp"
 
 namespace UFOCat
 {
@@ -19,8 +20,13 @@ namespace UFOCat
 
 			/// @brief 「UFO猫を探しています」のチラシのテクスチャ
 			Texture flyer;
+
+			/// @brief  背景に表示する木目の板のテクスチャ
+			Texture board;
 		}
 		m_gui;
+
+		Util::DropShadowRT m_dropShadow;
 
 		/// @brief ターゲット猫の毛色データを、色アイコンと色名で表示するためのコンポーネント
 		/// @param name 色名
