@@ -580,36 +580,19 @@ namespace UFOCat::Core
 		return *this;
 	}
 
-	CatObject &CatObject::drawShadow(ColorF color, Vec2 position, double scale)
+	CatObject &CatObject::drawShadow(ColorF color, Vec2 offset, double scale)
 	{
+		// 影のスケールを更新
+		// ほかの関数で影も含めた大きさを知るための処理
 		m_shadowScale = scale;
 
-		// 影の形状を描く
-		{
-			// レンダーターゲットを白色透明で初期化
-			const ScopedRenderTarget2D target{ m_renderTextures.ShadowTexture.clear(ColorF{ 1.0, 0.0 }) };
+		// 猫のテクスチャの描画スケールと影のスケールを加味したもの
+		const double realScale = m_shadowScale * m_Scale;
 
-			// RGB 値は無視して、描画された最大のアルファ値を保持するブレンドステートを適用することで
-			// 透明部分以外を取る
-			const ScopedRenderStates2D blend{ BlendState::MaxAlpha };
+		// 実際描画されるときの TextureRegion
+		const auto &region = m_Texture(m_ClipArea).scaled(realScale);
 
-			// 影を任意方向に落とすため、描画位置をずらす
-			const Transformer2D transform{ Mat3x2::Translate(position.x, position.y) };
-
-			// 描画範囲をクリップ -> 実テクスチャよりも大きいスケールで現在の透明度を反映して描画
-			const double rescale = m_Scale * scale;
-			const auto &region = m_Texture(m_ClipArea).scaled(rescale);
-			region.draw(this->position - region.size * Math::AbsDiff(m_Scale, rescale), ColorF{ 1.0, m_textureAlpha });
-		}
-
-		// ShadowTexture をダウンサンプリング + ガウスぼかし
-		{
-			Shader::Downsample(m_renderTextures.ShadowTexture, m_renderTextures.blur4);
-			Shader::GaussianBlur(m_renderTextures.blur4, m_renderTextures.internal4, m_renderTextures.blur4);
-		}
-
-		// ぼかした影を描く
-		m_renderTextures.blur4.resized(Scene::Size()).draw(color);
+		m_dropShadow.draw(region, color.withA(m_textureAlpha), this->position - region.size * Math::AbsDiff(m_Scale, realScale), offset, realScale);
 
 		return *this;
 	}

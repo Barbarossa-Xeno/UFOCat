@@ -1,7 +1,8 @@
-﻿#pragma once
-#include "CatData.hpp"
-#include "Stopwatch.hpp"
-#include "LevelData.hpp"
+﻿# pragma once
+# include "CatData.hpp"
+# include "Stopwatch.hpp"
+# include "LevelData.hpp"
+# include "DropShadowRT.hpp"
 
 /// @brief インゲームを動作させるためのコア機能群
 namespace UFOCat::Core
@@ -176,6 +177,8 @@ namespace UFOCat::Core
 			// ブラー用の中間テクスチャ
 			const RenderTexture internal4{ ShadowTexture.size() / 4 };
 		} m_renderTextures;
+
+		Util::DropShadowRT m_dropShadow;
 
 		/* -- ゲッター -- */
 
@@ -399,8 +402,11 @@ namespace UFOCat::Core
 		CatObject &draw();
 
 		/// @brief 影を描画する
+		/// @param color 影の色
+		/// @param offset 影を描画する中心位置からのずれ
+		/// @param scale 影の大きさ
 		/// @return 自分自身の参照
-		CatObject& drawShadow(ColorF color = ColorF{ 0.0, 0.5 }, Vec2 position = Vec2::Zero(), double scale = 1.05);
+		CatObject& drawShadow(ColorF color = ColorF{ 0.0, 0.5 }, Vec2 offset = Vec2::Zero(), double scale = 1.05);
 
 		/// @brief 当たり判定領域を描画する（デバッグ用）
 		/// @return 自分自身の参照
