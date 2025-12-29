@@ -98,9 +98,9 @@ namespace UFOCat
 		// # 背景
 		{
 			// 放射状のグラデーションで疑似敵にビネット効果
-			Circle{ Scene::Center(), Scene::Size().length() * 0.5 }.draw(Color{ 17, 67, 36 }, Color{ 0, 46, 17 });
+			Circle{ Scene::Center(), Scene::Size().length() * 0.5 }.draw(Util::Palette::DarkGreen, Util::Palette::DarkGreenAlt);
 		}
-
+		// TODO: 画面下端の方にUFO猫がすーっと進むプログレスバーで残りのアナウンス時間を示したい
 		// # 左上のレベル表示
 		{
 			RoundRect back{ 5, 5, 180, 100, 6 };

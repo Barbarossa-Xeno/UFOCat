@@ -402,7 +402,8 @@ namespace UFOCat
 			{
 				m_watch.setTimeout([this]()
 				{
-					AudioAsset(m_score.isCaught ? (m_score.isCorrect ? Util::AudioSource::SE::Correct : Util::AudioSource::SE::Incorrect) : Util::AudioSource::SE::TimeUp).playOneShot();
+					// 「SEが鳴っている間」を取得したいのでふつうの play を使う
+					AudioAsset(m_score.isCaught ? (m_score.isCorrect ? Util::AudioSource::SE::Correct : Util::AudioSource::SE::Incorrect) : Util::AudioSource::SE::TimeUp).play();
 				}, 0.2s);
 
 				// # GUI 処理
@@ -645,43 +646,76 @@ namespace UFOCat
 			{
 				// 背景 ちょっと暗くする
 				{
-					Rect{ Scene::Size() }.draw(ColorF{ 0.0, 0.75 });
+					Rect{ Scene::Size() }.draw(HSV{ Util::Palette::DarkGreenAlt }.withV(0.1).withA(0.75));
 				}
 				// 画面左側 捕まえた猫を表示
 				{
 					if (m_score.isCaught)
 					{
-						auto &&image = m_caught->get()->getTexture().scaled(m_CatTextureScale);
+						// つかまえた猫のテクスチャを取得する
+						auto &&catTexture = m_caught->get()->getTexture().scaled(m_CatTextureScale);
 
-						image.drawAt(Scene::CenterF() - SizeF(image.size.x, 0));
+						// 配置する
+						const auto &catRegion = catTexture.drawAt(Scene::CenterF() - SizeF(catTexture.size.x, 0));
 
-						FontAsset(Util::FontFamily::YuseiMagic)(U"キミが捕まえた猫").drawAt(Scene::CenterF() + SizeF(-image.size.x, -150));
+						// 猫のテクスチャの配置を基準に、その下のほうに
+						FontAsset(Util::FontFamily::YuseiMagic)(U"キミが捕まえた猫").drawAt(28, catRegion.centerX(), catRegion.bottomY());
 					}
 				}
 				// 画面右側 ターゲットを表示
 				{
-					auto &&image = TextureAsset(Cat(m_target->id)).scaled(m_CatTextureScale);
-					image.drawAt(Scene::CenterF() + SizeF(image.size.x, 0));
-					FontAsset(Util::FontFamily::YuseiMagic)(U"ターゲット").drawAt(Scene::CenterF() + SizeF(image.size.x, -150));
+					// つかまえた猫のテクスチャを取得する
+					auto &&catTexture = TextureAsset(Cat(m_target->id)).scaled(m_CatTextureScale);
+
+					// 配置する
+					const auto &catRegion = catTexture.drawAt(Scene::CenterF() + SizeF(catTexture.size.x, 0));
+
+					// 猫のテクスチャの配置を基準に、その下のほうに
+					FontAsset(Util::FontFamily::YuseiMagic)(U"ターゲット").drawAt(28, catRegion.centerX(), catRegion.bottomY());
 				}
-				// 画面中央下部 結果表示
+				// 画面中央上部 結果表示
 				{
+					// 表示部分の基準座標
+					const Vec2 origin{ Scene::CenterF().x, 120 };
+
 					// 捕まえたかどうかで分岐
 					if (m_score.isCaught)
 					{
 						// 合っていたかどうかでも分岐
 						if (m_score.isCorrect)
 						{
-							FontAsset(Util::FontFamily::YuseiMagic)(U"正解！").drawAt(Scene::CenterF().x, Scene::CenterF().y + 150);
+							HSV circleColor{ Color{ 249, 32, 52 } };
+							HSV fontColor{ Palette::White };
+
+							// 正解の SE が鳴っている間 明滅させる
+							if (AudioAsset(Util::AudioSource::SE::Correct).isPlaying())
+							{
+								double v = Periodic::Jump0_1(0.2s);
+								circleColor.setV(v);
+								fontColor.setV(v);
+							}
+
+							Circle{ origin, 75 }.drawFrame(15, circleColor);
+
+							// こはるいろサンレイのベースラインが少しずれているので位置を修正
+							FontAsset(Util::FontFamily::KoharuiroSunray)(U"正解!!").drawAt(110, origin.withY(origin.y + 5), fontColor);
 						}
 						else
 						{
-							FontAsset(Util::FontFamily::YuseiMagic)(U"不正解...").drawAt(Scene::CenterF().x, Scene::CenterF().y + 150);
+							const auto &se = AudioAsset(Util::AudioSource::SE::Incorrect);
+
+							double t = se.isPlaying() ? (se.posSec() / se.lengthSec()) : 1.0;
+
+							Vec2 pos = origin.withY(20).lerp(origin, EaseOutBounce(t));
+
+							Shape2D::Cross(75, 25, pos).draw(Color{ 32, 70, 206, static_cast<uint8>(255 * t) });
+							FontAsset(Util::FontFamily::KoharuiroSunray)(U"不正解...").drawAt(110, pos.withY(pos.y + 5), ColorF{ 1.0, t });
 						}
 					}
 					else
 					{
-						FontAsset(Util::FontFamily::YuseiMagic)(U"時間切れ！").drawAt(Scene::CenterF().x, Scene::CenterF().y + 150);
+						// TODO: いい感じのアニメーションを思いつきたい
+						FontAsset(Util::FontFamily::KoharuiroSunray)(U"時間切れ!!").drawAt(110, Scene::CenterF().x, 120);
 					}
 
 					m_gui.toResult.draw();
