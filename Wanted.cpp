@@ -40,7 +40,7 @@ namespace UFOCat
 
 			m_gui.flyer = Texture{ U"texture/flyer.png", TextureDesc::Mipped };
 
-			m_gui.board = Texture{ U"texture/board.png", TextureDesc::Mipped };
+			m_gui.ufocatIcon = Texture{ U"texture/icon_white.png" };
 		}
 
 		AudioAsset(getData().bgmName).stop();
@@ -100,7 +100,34 @@ namespace UFOCat
 			// 放射状のグラデーションで疑似敵にビネット効果
 			Circle{ Scene::Center(), Scene::Size().length() * 0.5 }.draw(Util::Palette::DarkGreen, Util::Palette::DarkGreenAlt);
 		}
-		// TODO: 画面下端の方にUFO猫がすーっと進むプログレスバーで残りのアナウンス時間を示したい
+
+		// # 画面下端の方にUFO猫がすーっと進むプログレスバー
+		{
+			// アナウンス時間のタイマーの進捗
+			double t = getData().timer.progress0_1();
+
+			// t を使って画面の右端から左端まで移動する
+			double x = Scene::Width() * EaseInCubic(t);
+
+			// プログレスバー的な
+			const auto &bar = RectF{ Arg::bottomLeft(Vec2{ 0, Scene::Height() }), x, 10 }.draw();
+
+			// このために作った白のアイコンを使って
+			const auto &iconRegion = m_gui.ufocatIcon.scaled(0.25);
+
+			// 0 ~ 1 で変化する t において、指定した閾値に達したら 1 ということにする関数
+			const auto t_0to = [&t](double threshold) { return Min((t), threshold) / threshold; };
+
+			// アイコンの幅分を引いて、バーの先端の位置にアイコンが表示されるようにする
+			// なお、t が 0.4（残り時間が40%）に達するまではバーの先端よりも後ろに位置するようにする
+			// この式の場合、t = 0 のときは完全に画面外に出ていて、ちょっと焦る感じの動きでバーの動きに合流する
+			double fixedX = x - (iconRegion.region().w / 2) * (1 + EaseInOutElastic(1 - t_0to(0.4)));
+
+			// 画面右端、左端ともにすこしマージンを作ってアイコンも移動させる
+			// Clamp が上手く動かなかったので Max と Min の合わせ技
+			iconRegion.draw(Arg::bottomLeft = Vec2{ Min(fixedX, Scene::Width() - iconRegion.region().w - 5.0), bar.topY() - 5 });
+		}
+
 		// # 左上のレベル表示
 		{
 			RoundRect back{ 5, 5, 180, 100, 6 };
@@ -122,7 +149,7 @@ namespace UFOCat
 				const auto &region = TextureAsset(Cat(getData().targetId)).scaled(0.45);
 
 				// ドロップシャドウ
-				m_dropShadow.draw(region, ColorF{ 0.4, 0.3, 0.2 }, targetOrigin - (region.size / 2), { 2, 2 }, 1.05);
+				m_dropShadow.draw(region, ColorF{ 0.4, 0.3, 0.2 }, targetOrigin, { 2, 2 }, 1.05);
 
 				// 実際の
 				region.drawAt(targetOrigin);
