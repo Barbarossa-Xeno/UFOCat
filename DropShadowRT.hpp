@@ -19,11 +19,11 @@ namespace UFOCat::Util
 		/// @brief ScopedRenderTarget をつくり、対象のテクスチャにドロップシャドウを描画する
 		/// @param targetTexture 対象テクスチャ
 		/// @param color 影の色
-		/// @param position 影の左上
+		/// @param origin 影を描画する基準の中心位置（上下左右からの中心位置）
 		/// @param offset 影を描画するうえでの中心位置からのずれ
 		/// @param scale 影の大きさ
 		/// @return 影の描画領域
-		RectF draw(const TextureRegion& targetTexture, ColorF color, Vec2 position, Vec2 offset, double scale) const
+		RectF draw(const TextureRegion& targetTexture, ColorF color, Vec2 origin, Vec2 offset, double scale) const
 		{
 			// 影の形状を描く
 			{
@@ -38,7 +38,7 @@ namespace UFOCat::Util
 				const Transformer2D transform{ Mat3x2::Translate(offset.x, offset.y) };
 
 				// 実テクスチャに対する任意スケールで現在の透明度を反映して描画
-				targetTexture.draw(position, ColorF{1.0, color.a});
+				targetTexture.scaled(scale).drawAt(origin, ColorF{ 1.0, color.a });
 			}
 
 			// ShadowTexture をダウンサンプリング + ガウスぼかし

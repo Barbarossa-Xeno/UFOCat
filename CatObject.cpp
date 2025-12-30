@@ -589,10 +589,10 @@ namespace UFOCat::Core
 		// 猫のテクスチャの描画スケールと影のスケールを加味したもの
 		const double realScale = m_shadowScale * m_Scale;
 
-		// 実際描画されるときの TextureRegion
-		const auto &region = m_Texture(m_ClipArea).scaled(realScale);
+		// 実際描画されるときの TextureRegion (draw() 参照)
+		const auto &region = m_Texture(m_ClipArea).scaled(m_Scale);
 
-		m_dropShadow.draw(region, color.withA(m_textureAlpha), this->position - region.size * Math::AbsDiff(m_Scale, realScale), offset, realScale);
+		m_dropShadow.draw(region, color.withA(m_textureAlpha), position + region.region().size / 2, offset, m_shadowScale);
 
 		return *this;
 	}
