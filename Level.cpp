@@ -9,7 +9,7 @@ namespace UFOCat
 
 	Array<Score::Generic::ByLevel> &Level::m_currentScoreDatas() const
 	{
-		return getData().scores.back().scores;
+		return getData().scores.back().records;
 	}
 
 	void Level::m_setTargetSpawnTime(size_t level)

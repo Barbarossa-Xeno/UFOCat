@@ -27,8 +27,14 @@ namespace UFOCat
 
 			/// @brief スコアに比例して伸びる称号ゲージ
 			GUI::ProgressBar scoreTitleGauge;
+
+			/// @brief スコア計算の詳細を表示するウィンドウ
+			GUI::MessageBox scoreDetails;
+
+			/// @brief スコア詳細を開くボタン
+			GUI::Button scoreDetailsButton;
 		}
-		m_gui{};
+		m_gui;
 
 		/// @brief 
 		/// @return 

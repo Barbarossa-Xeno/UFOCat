@@ -19,14 +19,18 @@ namespace UFOCat
 			total = static_cast<size_t>
 				(
 					// 捕まえたら +22
-					isCaught ? (22.0 *
-						// 正解なら x2.2、更に反応速度に応じたボーナスを加算
+					isCaught ?
+					(
+						22.0 *
+						// 正解なら x2.2、更に反応速度に応じたボーナスを乗算
 						// 不正解なら x1
-						(isCorrect ? 2.2 * (2.2 + 1 / (2.2 * response)) : 1.0) *
+						(
+							isCorrect ? 2.2 * (2.2 + 1 / (2.2 * response)) : 1.0
+						) *
 						// 正誤にかかわらずレベルに応じたボーナスを乗算し、
 						// 連続正解ボーナスを加算
-						Math::Exp(2.2 * level / 10.0) +
-						222 * consecutiveCorrect)
+						Math::Exp(2.2 * level / 10.0) + 222 * consecutiveCorrect
+					)
 					// 捕まえなかったら 0 点
 					: 0
 				);

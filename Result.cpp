@@ -5,12 +5,12 @@ namespace UFOCat
 
 	Score::Generic::ByLevel &Result::m_currentScoreData() const
 	{
-		return getData().scores.back().scores[getData().levelIndex];
+		return getData().scores.back().records[getData().levelIndex];
 	}
 
 	Array<Score::Generic::ByLevel> &Result::m_currentScoreDatas() const
 	{
-		return getData().scores.back().scores;
+		return getData().scores.back().records;
 	}
 
 	Result::Result(const InitData &init)
@@ -32,6 +32,95 @@ namespace UFOCat
 			else if (i == 0)
 			{
 				getData().scores.back().title = Score::Titles[0];
+			}
+		}
+
+		// GUI 要素初期化
+		{
+			m_gui.scoreDetails.addContents
+			(
+				GUI::TextBox
+				{
+					FontAsset(Util::FontFamily::KoharuiroSunray)
+						(U"くわしいスコア"),
+					48, Util::Palette::Brown, GUI::PositionType::Relative
+				}.setMargin({ 0, 5 }),
+				GUI::TextBox
+				{
+					FontAsset(Util::FontFamily::YuseiMagic)
+						(U"小数点はとちゅうでしょうりゃくしています"),
+					18, Util::Palette::Brown, GUI::PositionType::Relative
+				}.setMargin({ 0, 10 })
+			);
+
+			for (auto &&data : m_currentScoreDatas())
+			{
+				// スコアの条件に応じてうまくインデントを下げる
+				m_gui.scoreDetails.addContents
+				(
+					GUI::TextBox
+					{
+						FontAsset(Util::FontFamily::YuseiMagic)
+							(U"★ レベル{}"_fmt(data.level)),
+						28, Util::Palette::Brown, GUI::PositionType::Relative
+					}.setMargin({ 5, 5 }),
+					GUI::TextBox
+					{
+						FontAsset(Util::FontFamily::YuseiMagic)
+							(data.isCaught ? (data.isCorrect ? U"正解!!" : U"不正解…") : U"時間切れ…"),
+						22, Util::Palette::Brown, GUI::PositionType::Relative
+					}.setMargin({ 0, 5 }).setIndent(20)
+				);
+
+				// 以下、小数点以下のけたが大きい場合小数第3位で四捨五入
+				if (data.isCaught)
+				{
+					m_gui.scoreDetails.addContents
+					(
+						GUI::TextBox
+						{
+							FontAsset(Util::FontFamily::YuseiMagic)
+								(U"猫をつかまえた！ ── +22"),
+							18, Util::Palette::Brown, GUI::PositionType::Relative
+						}.setIndent(40)
+					);
+
+					if (data.isCorrect)
+					{
+						m_gui.scoreDetails.addContents
+						(
+							GUI::TextBox
+							{
+								FontAsset(Util::FontFamily::YuseiMagic)
+									(U"タイムボーナス！ ── ×{}"_fmt(Round(100 * 2.2 * (2.2 + 1 / (2.2 * data.response))) / 100)),
+								18, Util::Palette::Brown, GUI::PositionType::Relative
+							}.setIndent(60)
+						);
+					}
+
+					m_gui.scoreDetails.addContents
+					(
+						GUI::TextBox
+						{
+							FontAsset(Util::FontFamily::YuseiMagic)
+								(U"レベルとうたつボーナス！ ── ×{}"_fmt(Round(100 * Math::Exp(2.2 * data.level / 10.0)) / 100)),
+							18, Util::Palette::Brown, GUI::PositionType::Relative
+						}.setIndent(40)
+					);
+
+					if (data.consecutiveCorrect > 0)
+					{
+						m_gui.scoreDetails.addContents
+						(
+							GUI::TextBox
+							{
+								FontAsset(Util::FontFamily::YuseiMagic)
+									(U"{} 回れんぞく正解！ ── +{}"_fmt(data.consecutiveCorrect, 222 * data.consecutiveCorrect)),
+								18, Util::Palette::Brown, GUI::PositionType::Relative
+							}.setIndent(40)
+						);
+					}
+				}
 			}
 		}
 	}
@@ -125,9 +214,10 @@ namespace UFOCat
 		{
 			m_gui.scoreTitleGauge.set({ 0.65 * Scene::Width(), 15.0 }, Util::Palette::LightBrown)
 				.setPosition(Arg::topCenter = Vec2{ Scene::Center().x, Scene::Center().y + 110 });
+
 			if (m_gui.toTitle.set(32, U"タイトルへ")
-							  .setPosition(Arg::bottomLeft = Vec2{ 10.0, Scene::Height() - 10.0 })
-							  .isPressed())
+							 .setPosition(Arg::bottomLeft = Vec2{ 10.0, Scene::Height() - 10.0 })
+							 .isPressed())
 			{
 				// まだスコアのカウントアップが途中だったら、シンバルは鳴らしておく
 				if (not m_isFinishedCountUp)
@@ -139,6 +229,15 @@ namespace UFOCat
 				// リセット処理は、タイトル側で行う
 				changeScene(State::Title, 1.5s);
 			}
+
+			if (m_gui.scoreDetailsButton.set(32, U"もっとくわしく")
+										.setPosition(Arg::bottomRight = (Scene::Size() - Size{ 10, 10 }))
+										.isPressed())
+			{
+				m_gui.scoreDetails.setSize({ 400, 450 }).open();
+			}
+
+			m_gui.scoreDetails.isPressedOK();
 		}
 
 # if _DEBUG
@@ -156,44 +255,6 @@ namespace UFOCat
 		DrawPolkaDotBackground(30, 0.3, Util::Palette::LightBrownAlt);
 		Scene::Rect().draw(ColorF{ 0.0, 0.5 });
 
-		// TODO: 進んだレベル分だけ表示、アニメーションスクロール、終わった後自分でスクロール可
-
-		/*if (m_currentScoreData().isCaught)
-		{
-			FontAsset(U"Test")(U"猫を捕まえた！").draw(Arg::leftCenter = Vec2{ 30.0, Scene::Center().y - 120.0 });
-			FontAsset(U"Test")(U"+22").draw(Arg::rightCenter = Vec2{ Scene::Width() - 30.0, Scene::Center().y - 120.0 });
-
-			if (m_currentScoreData().isCorrect)
-			{
-				FontAsset(U"Test")(U"正解ボーナス！").draw(Arg::leftCenter = Vec2{ 30.0, Scene::Center().y - 60.0 });
-				FontAsset(U"Test")(U"×2.2").draw(Arg::rightCenter = Vec2{ Scene::Width() - 30.0, Scene::Center().y - 60.0 });
-
-				{
-					FontAsset(U"Test")(U"{:.2}秒で捕まえた！"_fmt(m_currentScoreData().response)).draw(Arg::leftCenter = Vec2{ 30.0, Scene::Center().y });
-					double factor = 2.2 + 1 / (2.2 * m_currentScoreData().response);
-					FontAsset(U"Test")(U"×{:.2}"_fmt(factor)).draw(Arg::rightCenter = Vec2{ Scene::Width() - 30.0, Scene::Center().y });
-				}
-
-				{
-					FontAsset(U"Test")(U"レベルボーナス！").draw(Arg::leftCenter = Vec2{ 30.0, Scene::Center().y + 60.0 });
-					double factor = Math::Exp(2.2 * (m_currentScoreData().level) / 10.0);
-					FontAsset(U"Test")(U"×{:.2}"_fmt(factor)).draw(Arg::rightCenter = Vec2{ Scene::Width() - 30.0, Scene::Center().y + 60.0 });
-				}
-
-				if (m_currentScoreData().consecutiveCorrect > 0)
-				{
-					FontAsset(U"Test")(U"連続正解ボーナス！").draw(Arg::leftCenter = Vec2{ 30.0, Scene::Center().y + 120.0 });
-					FontAsset(U"Test")(U"+{}"_fmt(222 * m_currentScoreData().consecutiveCorrect)).draw(Arg::rightCenter = Vec2{ Scene::Width() - 30.0, Scene::Center().y + 120.0 });
-				}
-			}
-
-		}
-		else
-		{
-			FontAsset(U"Test")(U"捕まえられなかった……").draw(Arg::leftCenter = Vec2{ 30.0, Scene::Center().y - 60.0 });
-			FontAsset(U"Test")(U"+0").draw(Arg::rightCenter = Vec2{ Scene::Width() - 30.0, Scene::Center().y - 60.0 });
-		}*/
-
 		// # スコア表示
 		{
 			// TODO: ほんとはこういうサイズもレスポンシブにすべきなんだろうな
@@ -210,8 +271,6 @@ namespace UFOCat
 			}
 
 			{
-				// RoundRect{ Vec2{ }, SizeF(0.65 * Scene::Width(), 150.0), 12.0};
-
 				const RectF &region1 = FontAsset(Util::FontFamily::YuseiMagic)(U"キミは").draw(26, Arg::bottomLeft = (m_gui.scoreTitleGauge.getRegion().tl() - Point{ 0, 20 }));
 
 				const RectF &region2 = FontAsset(Util::FontFamily::KoharuiroSunray)(U"{}"_fmt(m_currentTitle.kanjiName)).drawBase(60, (region1.br() + Point{ 10, 5 }));
@@ -224,7 +283,12 @@ namespace UFOCat
 			
 		}
 
-		m_gui.toTitle.draw();
+		// # GUI 描画
+		{
+			m_gui.toTitle.draw();
+			m_gui.scoreDetails.draw();
+			m_gui.scoreDetailsButton.draw();
+		}
 
 		BrightenCursor();
 	}
