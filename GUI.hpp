@@ -683,23 +683,33 @@ namespace UFOCat::GUI
 		/// @param ...contents `Relocatable` なコンポーネントを複数指定
 		/// @return 自分自身の参照
 		template <std::derived_from<Relocatable> ...TContents>
-		inline Scrollable& setContents(const TContents &...contents)
+		inline Scrollable &addContents(const TContents &...contents)
 		{
-			// 既存のコンテンツをクリア
-			m_contents.release();
-			
 			// Fold 式
 			((m_contents << std::make_unique<TContents>(contents)), ...);
-			
+
 			// スクロール位置をリセット
 			m_progress = 0.0;
 			m_inner.region.y = 0.0;
 			m_bar.region.y = m_bar.minY;
-	
+
 			m_updateContents();
 			m_updateInner();
-	
+
 			return *this;
+		}
+
+		/// @brief インナー要素内に配置するコンテンツを設定しなおす
+		/// @tparam ...TContents `Relocatable` なコンポーネント（パラメータパック）
+		/// @param ...contents `Relocatable` なコンポーネントを複数指定
+		/// @return 自分自身の参照
+		template <std::derived_from<Relocatable> ...TContents>
+		inline Scrollable &setContents(const TContents &...contents)
+		{
+			// 既存のコンテンツをクリア
+			m_contents.release();
+			
+			return addContents(contents...);
 		}
 
 		void update();
@@ -759,7 +769,18 @@ namespace UFOCat::GUI
 		/// @param ...contents `Relocatable` なコンポーネントを複数指定
 		/// @return 自分自身の参照
 		template <std::derived_from<Relocatable> ...TContents>
-		inline MessageBox& setContents(const TContents &...contents)
+		inline MessageBox &addContents(const TContents &...contents)
+		{
+			m_contents.addContents(contents...);
+			return *this;
+		}
+
+		/// @brief 配置するコンテンツを設定しなおす
+		/// @tparam ...TContents `Relocatable` なコンポーネント（パラメータパック）
+		/// @param ...contents `Relocatable` なコンポーネントを複数指定
+		/// @return 自分自身の参照
+		template <std::derived_from<Relocatable> ...TContents>
+		inline MessageBox &setContents(const TContents &...contents)
 		{
 			m_contents.setContents(contents...);
 			return *this;
