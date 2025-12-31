@@ -115,7 +115,7 @@ namespace UFOCat
 
 				/// @brief 各レベルのスコアデータ
 				/// @remarks 途中でレベルをクリアできなかった場合は、そのレベル以降のデータは存在しない
-				Array<ByLevel> scores;
+				Array<ByLevel> records;
 
 				/// @brief 称号データ
 				Title title;

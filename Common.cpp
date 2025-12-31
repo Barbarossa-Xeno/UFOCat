@@ -61,10 +61,10 @@ namespace UFOCat
 		size_t UFOCat::Core::Score::Generic::calculateTotal()
 		{
 			// 一度すべてのスコアで総合得点を反映させる
-			scores.each([](ByLevel& data) { data.calculateTotal(); });
+			records.each([](ByLevel& data) { data.calculateTotal(); });
 
 			// それらを合計する
-			total =  (scores >> [](const ByLevel& data) { return data.total; }).sum();
+			total =  (records >> [](const ByLevel& data) { return data.total; }).sum();
 
 			return total;
 		}
