@@ -161,13 +161,17 @@ namespace UFOCat::GUI
 		{
 			// マウスホイールの回転に合わせてスクロール
 			m_scroll(m_inner, Mouse::Wheel() * -30).m_scrollSync(m_bar);
+
+			// マウスのドラッグ（スワイプ）でもスクロールする
+			if (MouseL.pressed())
+			{
+				m_scroll(m_inner, Cursor::DeltaF().y).m_scrollSync(m_bar);
+			}
 		}
 
-		// スクロールバーの当たり判定を広げておく
-		// TODO: なぜかスクロールバーが移動後に変なところに行く、意味が分からない、スクロールバーで動かせないじゃん
-		m_isHoverBar = m_bar.region.stretched(5 * m_bar.region.w, m_bar.region.h)
-								   .movedBy(2 * m_bar.region.w, m_bar.region.h / 4)
-								   .mouseOver();
+		// スクロールバーの当たり判定を広げて、
+		// 自分の座標分だけ動かしてグローバル座標にしておく by GPT-4.1
+		m_isHoverBar = m_bar.region.scaled(5.0, 2.0).movedBy(m_region.pos).mouseOver();
 
 		// スクロールバー付近にマウスがあれば
 		if (m_isHoverBar)
