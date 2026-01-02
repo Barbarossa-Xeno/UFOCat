@@ -459,6 +459,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AudioSource.hpp" />
+    <ClInclude Include="Bubble.hpp" />
     <ClInclude Include="DropShadowRT.hpp" />
     <ClInclude Include="Palette.hpp" />
     <ClInclude Include="FontFamily.hpp">

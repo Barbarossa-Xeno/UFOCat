@@ -4,6 +4,8 @@
 # include "Wanted.hpp"
 # include "Level.hpp"
 # include "Result.hpp"
+# include "Bubble.hpp"
+# include "Stopwatch.hpp"
 
 using namespace UFOCat;
 
@@ -59,12 +61,29 @@ void Main()
 	app.add<Result>(State::Result);
 
 	app.init(State::Title, 1s);
+
+	s3d::Effect effect;
+	Util::Stopwatch effectTimer;
 	
 	while (System::Update())
 	{
 		if (not app.update())
 		{
 			break;
+		}
+
+		// タップエフェクト
+		{
+			if (MouseL.down())
+			{
+				effect.add<UFOCat::Effect::Bubble>(Cursor::Pos(), 5, 15, 1s, Random(0.0, 360.0), Random(0.2, 0.4));
+			}
+			if (MouseL.pressed())
+			{
+				effectTimer.setInterval([&]() { effect.add<UFOCat::Effect::Bubble>(Cursor::Pos(), 6, 15, 0.7s, Random(0.0, 360.0), Random(0.2, 0.4)); }, 0.3s);
+			}
+
+			effect.update();
 		}
 	}
 }
