@@ -39,8 +39,6 @@ namespace UFOCat
 						  .setProgress((getData().levelIndex + 1) / 10.0);
 
 			m_gui.flyer = Texture{ U"texture/flyer.png", TextureDesc::Mipped };
-
-			m_gui.ufocatIcon = Texture{ U"texture/icon_white.png" };
 		}
 
 		AudioAsset(getData().bgmName).stop();
@@ -112,8 +110,8 @@ namespace UFOCat
 			// プログレスバー的な
 			const auto &bar = RectF{ Arg::bottomLeft(Vec2{ 0, Scene::Height() }), x, 10 }.draw();
 
-			// このために作った白のアイコンを使って
-			const auto &iconRegion = m_gui.ufocatIcon.scaled(0.25);
+			// 適当なUFO猫のテクスチャを再利用
+			const auto &iconRegion = TextureAsset(Cat(0)).scaled(0.075);
 
 			// 0 ~ 1 で変化する t において、指定した閾値に達したら 1 ということにする関数
 			const auto t_0to = [&t](double threshold) { return Min((t), threshold) / threshold; };
@@ -122,10 +120,15 @@ namespace UFOCat
 			// なお、t が 0.4（残り時間が40%）に達するまではバーの先端よりも後ろに位置するようにする
 			// この式の場合、t = 0 のときは完全に画面外に出ていて、ちょっと焦る感じの動きでバーの動きに合流する
 			double fixedX = x - (iconRegion.region().w / 2) * (1 + EaseInOutElastic(1 - t_0to(0.4)));
+			
+			{
+				// 黒を乗算して描画したテクスチャに対して加算を行うことで白描画にする
+				const ScopedColorAdd2D colorAdd{ 1.0 };
 
-			// 画面右端、左端ともにすこしマージンを作ってアイコンも移動させる
-			// Clamp が上手く動かなかったので Max と Min の合わせ技
-			iconRegion.draw(Arg::bottomLeft = Vec2{ Min(fixedX, Scene::Width() - iconRegion.region().w - 5.0), bar.topY() - 5 });
+				// 画面右端、左端ともにすこしマージンを作ってアイコンも移動させる
+				// Clamp が上手く動かなかったので Max と Min の合わせ技
+				iconRegion.draw(Arg::bottomLeft = Vec2{ Min(fixedX, Scene::Width() - iconRegion.region().w - 5.0), bar.topY() - 5 }, ColorF{ 0.0 });
+			}
 		}
 
 		// # 左上のレベル表示

@@ -20,9 +20,6 @@ namespace UFOCat
 
 			/// @brief 「UFO猫を探しています」のチラシのテクスチャ
 			Texture flyer;
-
-			/// @brief  UFO猫のアイコンのテクスチャ（白）
-			Texture ufocatIcon;
 		}
 		m_gui;
 
