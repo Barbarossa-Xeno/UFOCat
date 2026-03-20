@@ -31,55 +31,55 @@ namespace UFOCat::GUI
 		return RelocatableTypeID::ProgressBar;
 	}
 
-	ProgressBar & ProgressBar::setPosition(const Vec2 &position, bool isOverwriteDefault = false) noexcept
+	ProgressBar & ProgressBar::setPosition(const Vec2 &position, bool isOverwriteDefault) noexcept
 	{
 		Relocatable::setPosition(position, isOverwriteDefault);
 		return *this;
 	}
 
-	ProgressBar & ProgressBar::setPosition(const Arg::topCenter_<Vec2> &position, bool isOverwriteDefault = false) noexcept
+	ProgressBar & ProgressBar::setPosition(const Arg::topCenter_<Vec2> &position, bool isOverwriteDefault) noexcept
 	{
 		Relocatable::setPosition(position, isOverwriteDefault);
 		return *this;
 	}
 
-	ProgressBar & ProgressBar::setPosition(const Arg::topRight_<Vec2> &position, bool isOverwriteDefault = false) noexcept
+	ProgressBar & ProgressBar::setPosition(const Arg::topRight_<Vec2> &position, bool isOverwriteDefault) noexcept
 	{
 		Relocatable::setPosition(position, isOverwriteDefault);
 		return *this;
 	}
 
-	ProgressBar & ProgressBar::setPosition(const Arg::leftCenter_<Vec2> &position, bool isOverwriteDefault = false) noexcept
+	ProgressBar & ProgressBar::setPosition(const Arg::leftCenter_<Vec2> &position, bool isOverwriteDefault) noexcept
 	{
 		Relocatable::setPosition(position, isOverwriteDefault);
 		return *this;
 	}
 
-	ProgressBar & ProgressBar::setPosition(const Arg::rightCenter_<Vec2> &position, bool isOverwriteDefault = false) noexcept
+	ProgressBar & ProgressBar::setPosition(const Arg::rightCenter_<Vec2> &position, bool isOverwriteDefault) noexcept
 	{
 		Relocatable::setPosition(position, isOverwriteDefault);
 		return *this;
 	}
 
-	ProgressBar & ProgressBar::setPosition(const Arg::bottomLeft_<Vec2> &position, bool isOverwriteDefault = false) noexcept
+	ProgressBar & ProgressBar::setPosition(const Arg::bottomLeft_<Vec2> &position, bool isOverwriteDefault) noexcept
 	{
 		Relocatable::setPosition(position, isOverwriteDefault);
 		return *this;
 	}
 
-	ProgressBar & ProgressBar::setPosition(const Arg::bottomCenter_<Vec2> &position, bool isOverwriteDefault = false) noexcept
+	ProgressBar & ProgressBar::setPosition(const Arg::bottomCenter_<Vec2> &position, bool isOverwriteDefault) noexcept
 	{
 		Relocatable::setPosition(position, isOverwriteDefault);
 		return *this;
 	}
 
-	ProgressBar & ProgressBar::setPosition(const Arg::bottomRight_<Vec2> &position, bool isOverwriteDefault = false) noexcept
+	ProgressBar & ProgressBar::setPosition(const Arg::bottomRight_<Vec2> &position, bool isOverwriteDefault) noexcept
 	{
 		Relocatable::setPosition(position, isOverwriteDefault);
 		return *this;
 	}
 
-	ProgressBar & ProgressBar::setPositionAt(const Vec2 &position, bool isOverwriteDefault = false) noexcept
+	ProgressBar & ProgressBar::setPositionAt(const Vec2 &position, bool isOverwriteDefault) noexcept
 	{
 		Relocatable::setPositionAt(position, isOverwriteDefault);
 		return *this;

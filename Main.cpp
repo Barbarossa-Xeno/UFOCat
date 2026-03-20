@@ -1,5 +1,5 @@
 ﻿#include <Siv3D.hpp> // Siv3D v0.6.16
-# include "Source/Core/Common.hpp"
+# include "Source/Common.hpp"
 # include "Source/Scene/Title.hpp"
 # include "Source/Scene/Wanted.hpp"
 # include "Source/Scene/Level.hpp"

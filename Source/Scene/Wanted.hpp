@@ -1,5 +1,5 @@
 ﻿# pragma once
-# include "../Core/Common.hpp"
+# include "../Common.hpp"
 # include "../Util/DropShadowRT.hpp"
 
 namespace UFOCat

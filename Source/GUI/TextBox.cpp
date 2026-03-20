@@ -39,49 +39,49 @@ namespace UFOCat::GUI
 		return *this;
 	}
 
-	TextBox &TextBox::setPosition(const Arg::topCenter_<Vec2> &position, bool isOverwriteDefault = false) noexcept
+	TextBox &TextBox::setPosition(const Arg::topCenter_<Vec2> &position, bool isOverwriteDefault) noexcept
 	{
 		Relocatable::setPosition(position, isOverwriteDefault);
 		return *this;
 	}
 
-	TextBox &TextBox::setPosition(const Arg::topRight_<Vec2> &position, bool isOverwriteDefault = false) noexcept
+	TextBox &TextBox::setPosition(const Arg::topRight_<Vec2> &position, bool isOverwriteDefault) noexcept
 	{
 		Relocatable::setPosition(position, isOverwriteDefault);
 		return *this;
 	}
 
-	TextBox &TextBox::setPosition(const Arg::leftCenter_<Vec2> &position, bool isOverwriteDefault = false) noexcept
+	TextBox &TextBox::setPosition(const Arg::leftCenter_<Vec2> &position, bool isOverwriteDefault) noexcept
 	{
 		Relocatable::setPosition(position, isOverwriteDefault);
 		return *this;
 	}
 
-	TextBox &TextBox::setPosition(const Arg::rightCenter_<Vec2> &position, bool isOverwriteDefault = false) noexcept
+	TextBox &TextBox::setPosition(const Arg::rightCenter_<Vec2> &position, bool isOverwriteDefault) noexcept
 	{
 		Relocatable::setPosition(position, isOverwriteDefault);
 		return *this;
 	}
 
-	TextBox &TextBox::setPosition(const Arg::bottomLeft_<Vec2> &position, bool isOverwriteDefault = false) noexcept
+	TextBox &TextBox::setPosition(const Arg::bottomLeft_<Vec2> &position, bool isOverwriteDefault) noexcept
 	{
 		Relocatable::setPosition(position, isOverwriteDefault);
 		return *this;
 	}
 
-	TextBox &TextBox::setPosition(const Arg::bottomCenter_<Vec2> &position, bool isOverwriteDefault = false) noexcept
+	TextBox &TextBox::setPosition(const Arg::bottomCenter_<Vec2> &position, bool isOverwriteDefault) noexcept
 	{
 		Relocatable::setPosition(position, isOverwriteDefault);
 		return *this;
 	}
 
-	TextBox &TextBox::setPosition(const Arg::bottomRight_<Vec2> &position, bool isOverwriteDefault = false) noexcept
+	TextBox &TextBox::setPosition(const Arg::bottomRight_<Vec2> &position, bool isOverwriteDefault) noexcept
 	{
 		Relocatable::setPosition(position, isOverwriteDefault);
 		return *this;
 	}
 
-	TextBox &TextBox::setPositionAt(const Vec2 &position, bool isOverwriteDefault = false) noexcept
+	TextBox &TextBox::setPositionAt(const Vec2 &position, bool isOverwriteDefault) noexcept
 	{
 		Relocatable::setPositionAt(position, isOverwriteDefault);
 		return *this;

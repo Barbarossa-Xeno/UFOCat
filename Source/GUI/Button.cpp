@@ -79,55 +79,55 @@ namespace UFOCat::GUI
 		return RelocatableTypeID::Button;
 	}
 
-	Button& Button::setPosition(const Vec2 &position, bool isOverwriteDefault = false) noexcept
+	Button& Button::setPosition(const Vec2 &position, bool isOverwriteDefault) noexcept
 	{
 		Relocatable::setPosition(position, isOverwriteDefault);
 		return *this;
 	}
 
-	Button &Button::setPosition(const Arg::topCenter_<Vec2> &position, bool isOverwriteDefault = false) noexcept
+	Button &Button::setPosition(const Arg::topCenter_<Vec2> &position, bool isOverwriteDefault) noexcept
 	{
 		Relocatable::setPosition(position, isOverwriteDefault);
 		return *this;
 	}
 
-	Button &Button::setPosition(const Arg::topRight_<Vec2> &position, bool isOverwriteDefault = false) noexcept
+	Button &Button::setPosition(const Arg::topRight_<Vec2> &position, bool isOverwriteDefault) noexcept
 	{
 		Relocatable::setPosition(position, isOverwriteDefault);
 		return *this;
 	}
 
-	Button &Button::setPosition(const Arg::leftCenter_<Vec2> &position, bool isOverwriteDefault = false) noexcept
+	Button &Button::setPosition(const Arg::leftCenter_<Vec2> &position, bool isOverwriteDefault) noexcept
 	{
 		Relocatable::setPosition(position, isOverwriteDefault);
 		return *this;
 	}
 
-	Button &Button::setPosition(const Arg::rightCenter_<Vec2> &position, bool isOverwriteDefault = false) noexcept
+	Button &Button::setPosition(const Arg::rightCenter_<Vec2> &position, bool isOverwriteDefault) noexcept
 	{
 		Relocatable::setPosition(position, isOverwriteDefault);
 		return *this;
 	}
 
-	Button &Button::setPosition(const Arg::bottomLeft_<Vec2> &position, bool isOverwriteDefault = false) noexcept
+	Button &Button::setPosition(const Arg::bottomLeft_<Vec2> &position, bool isOverwriteDefault) noexcept
 	{
 		Relocatable::setPosition(position, isOverwriteDefault);
 		return *this;
 	}
 
-	Button &Button::setPosition(const Arg::bottomCenter_<Vec2> &position, bool isOverwriteDefault = false) noexcept
+	Button &Button::setPosition(const Arg::bottomCenter_<Vec2> &position, bool isOverwriteDefault) noexcept
 	{
 		Relocatable::setPosition(position, isOverwriteDefault);
 		return *this;
 	}
 
-	Button &Button::setPosition(const Arg::bottomRight_<Vec2> &position, bool isOverwriteDefault = false) noexcept
+	Button &Button::setPosition(const Arg::bottomRight_<Vec2> &position, bool isOverwriteDefault) noexcept
 	{
 		Relocatable::setPosition(position, isOverwriteDefault);
 		return *this;
 	}
 
-	Button &Button::setPositionAt(const Vec2 &position, bool isOverwriteDefault = false) noexcept
+	Button &Button::setPositionAt(const Vec2 &position, bool isOverwriteDefault) noexcept
 	{
 		Relocatable::setPositionAt(position, isOverwriteDefault);
 		return *this;
