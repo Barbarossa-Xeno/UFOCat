@@ -1,6 +1,6 @@
 ﻿# pragma once
 
-namespace UFOCat::Util::AudioSource
+namespace UFOCat::Util::AudioName
 {
 	namespace BGM
 	{
@@ -19,7 +19,7 @@ namespace UFOCat::Util::AudioSource
 
 		const String Cancel = U"Cancel";
 
-		const String Announce = U"Annonnce";
+		const String Announce = U"Annonce";
 
 		const String CountDown = U"CountDown";
 

@@ -1,6 +1,6 @@
 ﻿# pragma once
 # include "../Util/FontName.hpp"
-# include "../Util/AudioSource.hpp"
+# include "../Util/AudioName.hpp"
 # include "Relocatable.hpp"
 
 namespace UFOCat::GUI
@@ -15,7 +15,7 @@ namespace UFOCat::GUI
 
 		String m_text;
 
-		Audio m_se = AudioAsset(Util::AudioSource::SE::Open);
+		Audio m_se = AudioAsset(Util::AudioName::SE::Open);
 
 		bool m_isEnabled = true;
 

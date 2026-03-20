@@ -87,7 +87,7 @@ namespace UFOCat
 		// フェードインの 25 ~ 30% のところでキンコンカンコン鳴らす
 		if (0.25 < t and t < 0.3)
 		{
-			AudioAsset(Util::AudioSource::SE::Announce).play();
+			AudioAsset(Util::AudioName::SE::Announce).play();
 		}
 	}
 

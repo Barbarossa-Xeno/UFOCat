@@ -25,7 +25,7 @@ namespace UFOCat
 
 		// # GUI 要素設定
 		{
-			m_gui.toLevel.set(36, U"あそぶ", AudioAsset(Util::AudioSource::SE::OK), GUI::PositionType::Absolute, true, { 96, 10 })
+			m_gui.toLevel.set(36, U"あそぶ", AudioAsset(Util::AudioName::SE::OK), GUI::PositionType::Absolute, true, { 96, 10 })
 						 .setPositionAt(Scene::Center() + Vec2{ 0, 60 });
 
 			m_gui.howToPlayButton.set(36, U"あそび方", GUI::PositionType::Absolute, true, { 60, 10 })
@@ -229,7 +229,7 @@ namespace UFOCat
 		// もし他のBGMが流れていた場合も考えて、一度ストップ
 		AudioAsset(getData().bgmName).stop();
 
-		getData().bgmName = Util::AudioSource::BGM::Title;
+		getData().bgmName = Util::AudioName::BGM::Title;
 
 		AudioAsset(getData().bgmName).play();
 	}
@@ -254,7 +254,7 @@ namespace UFOCat
 					// スコアデータはレベル数に合わせて確保してから、1プレイ分として追加しておく
 					getData().scores << Score::ResultRecord{ Array<Score::LevelRecord>{ getData().levels.size() }, Score::Title{ } };
 
-					AudioAsset(Util::AudioSource::BGM::Title).fadeVolume(0.0, 0.2s);
+					AudioAsset(Util::AudioName::BGM::Title).fadeVolume(0.0, 0.2s);
 					changeScene(SceneState::Wanted, 2.2s);
 				}
 
@@ -302,6 +302,6 @@ namespace UFOCat
 
 	Title::~Title()
 	{
-		AudioAsset(Util::AudioSource::BGM::Title).stop();
+		AudioAsset(Util::AudioName::BGM::Title).stop();
 	}
 }

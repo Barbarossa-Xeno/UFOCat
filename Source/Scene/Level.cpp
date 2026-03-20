@@ -176,7 +176,7 @@ namespace UFOCat
 		AudioAsset(getData().bgmName).stop();
 
 		// BGM 抽選
-		getData().bgmName = Array{ Util::AudioSource::BGM::Level01, Util::AudioSource::BGM::Level02 }.choice();
+		getData().bgmName = Array{ Util::AudioName::BGM::Level01, Util::AudioName::BGM::Level02 }.choice();
 
 		// 3、2、1、GO! のカウントダウンを入れるための待機時間をセット
 		// シーンのフェードインアウト時間を考慮して少し長め = 4s に取る
@@ -229,12 +229,12 @@ namespace UFOCat
 						{
 							// カウントダウンの音
 							// ここでは 3 回なる
-							AudioAsset(Util::AudioSource::SE::CountDown).playOneShot();
+							AudioAsset(Util::AudioName::SE::CountDown).playOneShot();
 						}
 						else
 						{
 							// スタートの音（ぴーっ）
-							AudioAsset(Util::AudioSource::SE::StartLevel).playOneShot();
+							AudioAsset(Util::AudioName::SE::StartLevel).playOneShot();
 						}
 					}
 					m_prevTimerRemaining = getData().timer.s();
@@ -342,7 +342,7 @@ namespace UFOCat
 							// 明示的にストップウォッチリセット（でないと積算時間が持ち越される）
 							m_watch.reset();
 
-							AudioAsset(Util::AudioSource::SE::FinishLevel).playOneShot();
+							AudioAsset(Util::AudioName::SE::FinishLevel).playOneShot();
 							AudioAsset(getData().bgmName).fadeVolume(0.0, 1s);
 
 							break;
@@ -374,7 +374,7 @@ namespace UFOCat
 						// 明示的にストップウォッチリセット（でないと積算時間が持ち越される）
 						m_watch.reset();
 
-						AudioAsset(Util::AudioSource::SE::FinishLevel).playOneShot();
+						AudioAsset(Util::AudioName::SE::FinishLevel).playOneShot();
 						AudioAsset(getData().bgmName).fadeVolume(0.0, 1s);
 					}
 				}
@@ -403,7 +403,7 @@ namespace UFOCat
 				m_watch.setTimeout([this]()
 				{
 					// 「SEが鳴っている間」を取得したいのでふつうの play を使う
-					AudioAsset(m_score.isCaught ? (m_score.isCorrect ? Util::AudioSource::SE::Correct : Util::AudioSource::SE::Incorrect) : Util::AudioSource::SE::TimeUp).play();
+					AudioAsset(m_score.isCaught ? (m_score.isCorrect ? Util::AudioName::SE::Correct : Util::AudioName::SE::Incorrect) : Util::AudioName::SE::TimeUp).play();
 				}, 0.2s);
 
 				// # GUI 処理
@@ -688,7 +688,7 @@ namespace UFOCat
 							HSV fontColor{ Palette::White };
 
 							// 正解の SE が鳴っている間 明滅させる
-							if (AudioAsset(Util::AudioSource::SE::Correct).isPlaying())
+							if (AudioAsset(Util::AudioName::SE::Correct).isPlaying())
 							{
 								double v = Periodic::Jump0_1(0.2s);
 								circleColor.setV(v);
@@ -702,7 +702,7 @@ namespace UFOCat
 						}
 						else
 						{
-							const auto &se = AudioAsset(Util::AudioSource::SE::Incorrect);
+							const auto &se = AudioAsset(Util::AudioName::SE::Incorrect);
 
 							double t = se.isPlaying() ? (se.posSec() / se.lengthSec()) : 1.0;
 

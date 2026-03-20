@@ -5,7 +5,7 @@
 // GUI に関連するユーティリティもまとめておく
 # include "Util/FontName.hpp"
 # include "Util/Palette.hpp"
-# include "Util/AudioSource.hpp"
+# include "Util/AudioName.hpp"
 
 // GUI コンポーネント
 # include "GUI/IDrawable.hpp"

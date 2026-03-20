@@ -485,7 +485,7 @@
     <ClInclude Include="Source\Scene\Result.hpp" />
     <ClInclude Include="Source\Scene\Title.hpp" />
     <ClInclude Include="Source\Scene\Wanted.hpp" />
-    <ClInclude Include="Source\Util\AudioSource.hpp" />
+    <ClInclude Include="Source\Util\AudioName.hpp" />
     <ClInclude Include="Source\Util\DropShadowRT.hpp" />
     <ClInclude Include="Source\Util\FontName.hpp" />
     <ClInclude Include="Source\Util\Palette.hpp" />
