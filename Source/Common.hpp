@@ -8,13 +8,6 @@ using namespace UFOCat::Core;
 
 namespace UFOCat
 {
-	/// @brief インデックスを保存する変数のための無効値 @n
-	/// このゲームで登場するUFO猫の種類は最大で 44 種類であり、
-	/// テクスチャを読み込む際も、レベルデータを読み込む際も、その数字を超えることはない @n
-	/// そのため、この名前空間内では特別に無効値として扱う
-	/// @note Optional でもよかったけど、いちいち value() ってするのが面倒だったけん
-	constexpr size_t InvalidIndex = 44;
-
 	namespace Util
 	{
 		/// @brief 背景画像のデータ
@@ -30,8 +23,6 @@ namespace UFOCat
 
 	namespace Core
 	{
-		using ::UFOCat::InvalidIndex; // これで Core 内で未修飾 InvalidIndex が使える
-
 		enum class SceneState
 		{
 			/// @brief タイトル画面
@@ -67,10 +58,10 @@ namespace UFOCat
 			String bgmName;
 
 			/// @brief 現在のターゲットの ID（= インデックスと同義）を格納する変数
-			size_t targetId = InvalidIndex;
+			size_t targetId;
 
 			/// @brief 現在のレベルのインデックスを格納する変数
-			size_t levelIndex = InvalidIndex;
+			size_t levelIndex;
 
 			/// @brief グローバルタイマー @n 色んな場所で使いまわす
 			Timer timer;

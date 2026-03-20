@@ -1,5 +1,4 @@
 ﻿# pragma once
-# include "../Common.hpp"
 
 namespace UFOCat::Core::Score
 {
@@ -31,8 +30,8 @@ namespace UFOCat::Core::Score
 	/// @brief レベルごとに集計するスコアデータ
 	struct LevelRecord
 	{
-		/// @brief プレイしたレベル (1 ~ )
-		size_t level = InvalidIndex;
+		/// @brief プレイしたレベル (1 ~ ) 未指定の場合 none
+		Optional<size_t> level;
 
 		/// @brief 猫を捕まえたか
 		bool isCaught = false;

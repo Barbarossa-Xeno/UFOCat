@@ -317,7 +317,7 @@ namespace UFOCat
 							for (size_t i = 0; i < m_currentScoreDatas().size() - 1; i++)
 							{
 								// 次のスコアデータが存在しない場合は終了
-								if (m_currentScoreDatas()[i + 1].level == InvalidIndex)
+								if (not m_currentScoreDatas()[i + 1].level)
 								{
 									break;
 								}

@@ -61,7 +61,7 @@ namespace UFOCat
 					GUI::TextBox
 					{
 						FontAsset(Util::FontFamily::YuseiMagic)
-							(U"★ レベル{}"_fmt(data.level)),
+							(U"★ レベル{}"_fmt(*data.level)),
 						28, Util::Palette::Brown, GUI::PositionType::Relative
 					}.setMargin({ 5, 5 }),
 					GUI::TextBox
@@ -103,7 +103,7 @@ namespace UFOCat
 						GUI::TextBox
 						{
 							FontAsset(Util::FontFamily::YuseiMagic)
-								(U"レベルとうたつボーナス！ ── ×{}"_fmt(Round(100 * Math::Exp(2.2 * data.level / 10.0)) / 100)),
+								(U"レベルとうたつボーナス！ ── ×{}"_fmt(Round(100 * Math::Exp(2.2 * (*data.level) / 10.0)) / 100)),
 							18, Util::Palette::Brown, GUI::PositionType::Relative
 						}.setIndent(40)
 					);
