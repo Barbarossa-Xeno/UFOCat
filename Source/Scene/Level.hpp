@@ -54,7 +54,7 @@ namespace UFOCat
 		int32 m_prevTimerRemaining = 4;
 
 		/// @brief このレベルでのスコア
-		Score::Generic::ByLevel m_score;
+		Score::LevelRecord m_score;
 
 		/// @brief 捕まえた猫のオブジェクトへのポインタへのポインタ
 		/// @remarks 二重ポインタにしているのは、`spawns` からとってくるため `spawns`は unique_ptr で管理されている 
@@ -88,7 +88,7 @@ namespace UFOCat
 
 		/// @brief 
 		/// @return 
-		Array<Score::Generic::ByLevel> &m_currentScoreDatas() const;
+		Array<Score::LevelRecord> &m_currentScoreDatas() const;
 
 		/// @brief ターゲットが出現する時間を引数に応じてランダムに決め、`m_targetAppearTime` に設定する
 		/// @param level 整数値（1 ~ 10 の範囲で、特に現在のレベル値を入れることを想定）

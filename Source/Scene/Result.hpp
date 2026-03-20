@@ -10,7 +10,7 @@ namespace UFOCat
 		size_t m_ScoreCount = 0;
 
 		/// @brief カウントアップに応じて変わる称号データを保持する
-		Score::Generic::Title m_currentTitle = Score::Titles[0];
+		Score::Title m_currentTitle = Score::Titles[0];
 
 		/// @brief カウントアップさせるときの加速度 随時加算
 		double m_countUpAcceleration = 1.0;
@@ -38,10 +38,10 @@ namespace UFOCat
 
 		/// @brief 
 		/// @return 
-		Score::Generic::ByLevel& m_currentScoreData() const;
+		Score::LevelRecord& m_currentScoreData() const;
 
 		// TODO: m_currentScoreDatas() は2個目 親クラスでの共通化を考える
-		Array<Score::Generic::ByLevel> &m_currentScoreDatas() const;
+		Array<Score::LevelRecord> &m_currentScoreDatas() const;
 
 	public:
 		Result(const InitData &init);

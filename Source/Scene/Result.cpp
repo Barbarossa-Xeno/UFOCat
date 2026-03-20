@@ -3,12 +3,12 @@
 namespace UFOCat
 {
 
-	Score::Generic::ByLevel &Result::m_currentScoreData() const
+	Score::LevelRecord &Result::m_currentScoreData() const
 	{
 		return getData().scores.back().records[getData().levelIndex];
 	}
 
-	Array<Score::Generic::ByLevel> &Result::m_currentScoreDatas() const
+	Array<Score::LevelRecord> &Result::m_currentScoreDatas() const
 	{
 		return getData().scores.back().records;
 	}
@@ -23,7 +23,7 @@ namespace UFOCat
 		for (size_t i = Score::Titles.size(); --i > 0;)
 		{
 			// 閾値よりも総合得点が大きければ、その称号を与える
-			if (total >= Score::Titles[i].threshold * Score::Generic::ByLevel::GetMaxTheoretical())
+			if (total >= Score::Titles[i].threshold * Score::GetMaxTheoretical())
 			{
 				getData().scores.back().title = Score::Titles[i];
 				break;
@@ -164,7 +164,7 @@ namespace UFOCat
 							// 現在のスコアのカウントが、比較対象の称号の閾値以下
 							// （カウント / 理論値 が 1.0 以下になる状況）のとき、
 							// ゲージを加算する
-							if (double realThreshold = itr->threshold * Score::Generic::ByLevel::GetMaxTheoretical();
+							if (double realThreshold = itr->threshold * Score::GetMaxTheoretical();
 								m_ScoreCount <= realThreshold)
 							{
 								// パラメータ
@@ -179,7 +179,7 @@ namespace UFOCat
 								else
 								{
 									// 一個下の閾値をフィードバック
-									const double prev = std::prev(itr)->threshold * Score::Generic::ByLevel::GetMaxTheoretical();
+									const double prev = std::prev(itr)->threshold * Score::GetMaxTheoretical();
 									const double num = static_cast<double>(m_ScoreCount) - prev;
 									const double den = realThreshold - prev;
 									t = num / den;
@@ -262,7 +262,7 @@ namespace UFOCat
 			// 点数表示
 			FontAsset(Util::FontFamily::KoharuiroSunray)(U"{}"_fmt(m_ScoreCount)).draw(120, Arg::bottomCenter = Scene::Center());
 
-			const RectF& maxRegion = FontAsset(Util::FontFamily::KoharuiroSunray)(U"{}"_fmt(Score::Generic::ByLevel::GetMaxTheoretical())).region(120, Arg::bottomCenter = Scene::Center());
+			const RectF& maxRegion = FontAsset(Util::FontFamily::KoharuiroSunray)(U"{}"_fmt(Score::GetMaxTheoretical())).region(120, Arg::bottomCenter = Scene::Center());
 
 			// 回転座標系
 			{

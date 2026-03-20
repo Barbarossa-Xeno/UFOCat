@@ -122,6 +122,7 @@
     <ClCompile Include="Source\Core\CatData.cpp" />
     <ClCompile Include="Source\Core\CatObject.cpp" />
     <ClCompile Include="Source\Core\LevelData.cpp" />
+    <ClCompile Include="Source\Core\Score.cpp" />
     <ClCompile Include="Source\GUI\Button.cpp" />
     <ClCompile Include="Source\GUI\Dialog.cpp" />
     <ClCompile Include="Source\GUI\MessageBox.cpp" />
@@ -469,6 +470,7 @@
     <ClInclude Include="Source\Core\CatData.hpp" />
     <ClInclude Include="Source\Core\CatObject.hpp" />
     <ClInclude Include="Source\Core\LevelData.hpp" />
+    <ClInclude Include="Source\Core\Score.hpp" />
     <ClInclude Include="Source\Effect\Bubble.hpp" />
     <ClInclude Include="Source\GUI.hpp" />
     <ClInclude Include="Source\GUI\Button.hpp" />

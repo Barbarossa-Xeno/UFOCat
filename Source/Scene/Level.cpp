@@ -7,7 +7,7 @@ namespace UFOCat
 		return getData().levels[getData().levelIndex];
 	}
 
-	Array<Score::Generic::ByLevel> &Level::m_currentScoreDatas() const
+	Array<Score::LevelRecord> &Level::m_currentScoreDatas() const
 	{
 		return getData().scores.back().records;
 	}
@@ -477,7 +477,7 @@ namespace UFOCat
 			if (KeyS.pressed())
 			{
 				m_currentLevel().isCleared = true;
-				m_currentScoreDatas()[getData().levelIndex] = Score::Generic::ByLevel{ getData().levelIndex + 1, true, true, 0.3, getData().levelIndex };
+				m_currentScoreDatas()[getData().levelIndex] = Score::LevelRecord{ getData().levelIndex + 1, true, true, 0.3, getData().levelIndex };
 			
 				getData().timer.reset();
 
@@ -497,7 +497,7 @@ namespace UFOCat
 			{
 				// 全てのレベルをクリアしたことにして結果シーンへ
 				// 一気に移るので、クリアフラグを上げる必要もない
-				m_currentScoreDatas().each_index([this](size_t i, Score::Generic::ByLevel &score) { score = Score::Generic::ByLevel{ i + 1, true, true, 0.5, i }; });
+				m_currentScoreDatas().each_index([this](size_t i, Score::LevelRecord &score) { score = Score::LevelRecord{ i + 1, true, true, 0.5, i }; });
 				getData().timer.reset();
 				changeScene(SceneState::Result);
 			}
