@@ -18,12 +18,12 @@ void Main()
 	}
 
 	// フォントアセットの登録
-	FontAsset::Register(Util::FontFamily::YuseiMagic, FontMethod::SDF, 48, U"font/YuseiMagic-Regular.ttf");
-	FontAsset::Register(Util::FontFamily::KoharuiroSunray, FontMethod::SDF, 48, U"font/GN-Koharuiro_Sunray.ttf");
+	FontAsset::Register(Util::FontName::YuseiMagic, FontMethod::SDF, 48, U"font/YuseiMagic-Regular.ttf");
+	FontAsset::Register(Util::FontName::KoharuiroSunray, FontMethod::SDF, 48, U"font/GN-Koharuiro_Sunray.ttf");
 
 	// バッファサイズの設定
-	FontAsset(Util::FontFamily::YuseiMagic).setBufferThickness(4);
-	FontAsset(Util::FontFamily::KoharuiroSunray).setBufferThickness(4);
+	FontAsset(Util::FontName::YuseiMagic).setBufferThickness(4);
+	FontAsset(Util::FontName::KoharuiroSunray).setBufferThickness(4);
 
 	// オーディオアセットの登録
 	// TODO: 音量設定をつくるのもあり

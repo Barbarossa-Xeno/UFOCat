@@ -3,7 +3,7 @@
 /* GUI コンポーネント一括インクルード用 */
 
 // GUI に関連するユーティリティもまとめておく
-# include "Util/FontFamily.hpp"
+# include "Util/FontName.hpp"
 # include "Util/Palette.hpp"
 # include "Util/AudioSource.hpp"
 

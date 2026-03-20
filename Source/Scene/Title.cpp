@@ -38,7 +38,7 @@ namespace UFOCat
 			(
 				GUI::TextBox
 				{
-					FontAsset(Util::FontFamily::YuseiMagic)
+					FontAsset(Util::FontName::YuseiMagic)
 						(U"ときは21XX年、猫がUFOを乗りこなす、おてんばな時代。"
 						 U"UFOに乗った猫、「UFO猫」は飼い主の家から脱走するのが、おおきな社会問題になっていた。\n"
 						 U"そんな中、あなたは「UFO猫ハンター」として猫たちをつかまえることになったのだった…。"
@@ -47,44 +47,44 @@ namespace UFOCat
 				}.setMargin({ 0, 5 }),
 				GUI::TextBox
 				{
-					FontAsset(Util::FontFamily::YuseiMagic)
+					FontAsset(Util::FontName::YuseiMagic)
 						(U"似ている猫たちの中から正しい「UFO猫」をつかまえるゲームです！"),
 					22, Util::Palette::Brown, GUI::PositionType::Relative
 				}.setMargin({ 5, 10 }),
 				GUI::TextBox
 				{
-					FontAsset(Util::FontFamily::KoharuiroSunray)
+					FontAsset(Util::FontName::KoharuiroSunray)
 						(U"■ あそび方"),
 					44, Util::Palette::Brown, GUI::PositionType::Relative
 				}.setMargin({ 10, 0 }),
 				GUI::TextBox
 				{
-					FontAsset(Util::FontFamily::YuseiMagic)
+					FontAsset(Util::FontName::YuseiMagic)
 						(U"レベル ごとにきめられたUFO猫を、まちがえないようにつかまえましょう。\n"
 						 U"つかまえないといけない ターゲット は レベル のはじめに、画像といっしょにお知らせします。ちょっとの時間しか映りません。すぐ覚えないと……"),
 					18, Util::Palette::Brown, GUI::PositionType::Relative
 				}.setMargin({ 0, 5 }).setIndent(44),
 				GUI::TextBox
 				{
-					FontAsset(Util::FontFamily::KoharuiroSunray)
+					FontAsset(Util::FontName::KoharuiroSunray)
 						(U"■ レベル (★) について"),
 					44, Util::Palette::Brown, GUI::PositionType::Relative
 				}.setMargin({ 10, 0 }),
 				GUI::TextBox
 				{
-					FontAsset(Util::FontFamily::YuseiMagic)
+					FontAsset(Util::FontName::YuseiMagic)
 						(U"レベル が上がるとUFO猫がすばしっこくなったり、ほかのUFO猫がたくさんあらわれたりして、だんだんむずかしくなります。集中しないとまちがえるかも！"),
 					18, Util::Palette::Brown, GUI::PositionType::Relative
 				}.setMargin({ 0, 5 }).setIndent(44),
 				GUI::TextBox
 				{
-					FontAsset(Util::FontFamily::KoharuiroSunray)
+					FontAsset(Util::FontName::KoharuiroSunray)
 						(U"■ スコアについて"),
 					44, Util::Palette::Brown, GUI::PositionType::Relative
 				}.setMargin({ 10, 0 }),
 				GUI::TextBox
 				{
-					FontAsset(Util::FontFamily::YuseiMagic)
+					FontAsset(Util::FontName::YuseiMagic)
 						(U"ターゲットをつかまえたり、つかまえるのが速かったりしたら、その分だけ スコア が上がります。\n"
 						 U"どんどん高いレベルへ進んでいって スコア がたまると、すごい しょうごう がもらえます。高みをめざせ！"),
 					18, Util::Palette::Brown, GUI::PositionType::Relative
@@ -94,87 +94,87 @@ namespace UFOCat
 			m_gui.lisence.setContents(
 				GUI::TextBox
 				{
-					FontAsset(Util::FontFamily::KoharuiroSunray)
+					FontAsset(Util::FontName::KoharuiroSunray)
 						(U"ライセンス"),
 					48, Util::Palette::Brown, GUI::PositionType::Relative
 				}.setMargin({ 0, 10 }),
 				GUI::TextBox
 				{
-					FontAsset(Util::FontFamily::YuseiMagic)
+					FontAsset(Util::FontName::YuseiMagic)
 						(U"■ 画像アセット"),
 					28, Util::Palette::Brown, GUI::PositionType::Relative
 				}.setMargin({ 0, 10 }),
 				GUI::TextBox
 				{
-					FontAsset(Util::FontFamily::YuseiMagic)
+					FontAsset(Util::FontName::YuseiMagic)
 						(U"(1) 猫のイラスト素材"),
 					22, Util::Palette::Brown, GUI::PositionType::Relative
 				}.setMargin({ 5, 5 }),
 				GUI::TextBox
 				{
-					FontAsset(Util::FontFamily::YuseiMagic)
+					FontAsset(Util::FontName::YuseiMagic)
 						(U"猫画工房 - https://nekoillust.com/\n"
 						 U"『まんじゅう猫全身A』全種 - https://nekoillust.com/manju-cat-whole-body-a/2/"),
 					18, Util::Palette::Brown, GUI::PositionType::Relative
 				}.setMargin({ 0, 0 }).setIndent(40),
 				GUI::TextBox
 				{
-					FontAsset(Util::FontFamily::YuseiMagic)
+					FontAsset(Util::FontName::YuseiMagic)
 						(U"『肉球足跡』- https://nekoillust.com/category/other/%e8%82%89%e7%90%83%e8%b6%b3%e8%b7%a1/"),
 					18, Util::Palette::Brown, GUI::PositionType::Relative
 				}.setMargin({ 0, 0 }).setIndent(40),
 				GUI::TextBox
 				{
-					FontAsset(Util::FontFamily::YuseiMagic)
+					FontAsset(Util::FontName::YuseiMagic)
 						(U"(2) UFOのイラスト素材"),
 					22, Util::Palette::Brown, GUI::PositionType::Relative
 				}.setMargin({ 5, 5 }),
 				GUI::TextBox
 				{
-					FontAsset(Util::FontFamily::YuseiMagic)
+					FontAsset(Util::FontName::YuseiMagic)
 						(U"illust image | イラストイメージ - https://illustimage.com/\n"
 						 U"『未確認飛行物体UFOイラスト』- https://illustimage.com/?id=10469"),
 					18, Util::Palette::Brown, GUI::PositionType::Relative
 				}.setMargin({ 0, 0 }).setIndent(40),
 				GUI::TextBox
 				{
-					FontAsset(Util::FontFamily::YuseiMagic)
+					FontAsset(Util::FontName::YuseiMagic)
 						(U"使用にあたり画像データの加工をさせていただいております。"),
 					18, Util::Palette::Brown, GUI::PositionType::Relative
 				}.setMargin({ 2, 0 }).setIndent(40),
 				GUI::TextBox
 				{
-					FontAsset(Util::FontFamily::YuseiMagic)
+					FontAsset(Util::FontName::YuseiMagic)
 						(U"・背景イラスト画像については、ChatGPT による画像生成を利用しております。"),
 					14, Util::Palette::Brown, GUI::PositionType::Relative
 				}.setMargin({ 15, 0 }).setIndent(5),
 				GUI::TextBox
 				{
-					FontAsset(Util::FontFamily::YuseiMagic)
+					FontAsset(Util::FontName::YuseiMagic)
 						(U"■ フォントアセット"),
 					28, Util::Palette::Brown, GUI::PositionType::Relative
 				}.setMargin({ 10, 10 }),
 				GUI::TextBox
 				{
-					FontAsset(Util::FontFamily::YuseiMagic)
+					FontAsset(Util::FontName::YuseiMagic)
 						(U"(1) たぬき油性マジック / Yusei Magic"),
 					22, Util::Palette::Brown, GUI::PositionType::Relative
 				}.setMargin({ 5, 5 }),
 				GUI::TextBox
 				{
-					FontAsset(Util::FontFamily::YuseiMagic)
+					FontAsset(Util::FontName::YuseiMagic)
 						(U"たぬき油性マジック - たぬきフォント - https://tanukifont.com/tanuki-permanent-marker/"),
 					18, Util::Palette::Brown, GUI::PositionType::Relative
 				}.setMargin({ 0, 0 }).setIndent(40),
 				GUI::TextBox
 				{
-					FontAsset(Util::FontFamily::KoharuiroSunray)
+					FontAsset(Util::FontName::KoharuiroSunray)
 						(U"(2) こはるいろサンレイ"),
 					28, Util::Palette::Brown, GUI::PositionType::Relative
 				}.setMargin({ 5, 5 }).setIndent(5),
 				GUI::TextBox
 				{
-					FontAsset(Util::FontFamily::YuseiMagic)
+					FontAsset(Util::FontName::YuseiMagic)
 						(U"（配布サイト） - http://getsuren.com/"),
 					18, Util::Palette::Brown, GUI::PositionType::Relative
 				}.setMargin({ 0, 0 }).setIndent(40)

@@ -49,7 +49,7 @@ namespace UFOCat
 			m_gui.timer = Texture{ U"texture/timer.png", TextureDesc::Mipped };
 			m_gui.dialog.setContents
 			(
-				GUI::TextBox{ FontAsset(Util::FontFamily::YuseiMagic)(U"本当に戻りますか？\nここまでのデータは失われます"), 20, Util::Palette::Brown }.setPositionAt({ 135, 40 })
+				GUI::TextBox{ FontAsset(Util::FontName::YuseiMagic)(U"本当に戻りますか？\nここまでのデータは失われます"), 20, Util::Palette::Brown }.setPositionAt({ 135, 40 })
 			).setSize({ 350, 200 });
 			m_bg = getData().backgrounds.choice();
 		}
@@ -574,7 +574,7 @@ namespace UFOCat
 					textSize = std::lerp(40.0, 210.0, EaseOutQuart(t));
 				}
 
-				FontAsset(Util::FontFamily::KoharuiroSunray)(text)
+				FontAsset(Util::FontName::KoharuiroSunray)(text)
 					// 枠線・影設定 -> テキストサイズ（「GO!」の時以外経過時間で縮小） -> 経過時間で透明化 -> 画面中央ぞろえ描画
 					.drawAt(TextStyle::OutlineShadow(0.3, Util::Palette::Brown, Vec2{ 1.2, 1.2 }, ColorF{ 0.0, 0.65 }), textSize, Scene::Center(), ColorF{ 1.0, EaseOutExpo(t) });
 			}
@@ -603,13 +603,13 @@ namespace UFOCat
 						.draw(LineStyle::RoundCap, 4.0, Palette::Salmon);
 
 					// ### 残り時間の描画
-					FontAsset(Util::FontFamily::YuseiMagic)(U"のこり")
+					FontAsset(Util::FontName::YuseiMagic)(U"のこり")
 						.draw(TextStyle::Shadow(Vec2{ 1.2, 1.2 }, ColorF{ 0.2 }), 20, swRegion.tr().x + 10, swRegion.tr().y - 10, ColorF{ 1.0, Periodic::Square0_1(1s) });
 
 					// 実際の残り時間の描画領域を取っておいて、その右にちっちゃく「秒」を描く
-					RectF tRegion = FontAsset(Util::FontFamily::YuseiMagic)(U"{}"_fmt(getData().timer.s()))
+					RectF tRegion = FontAsset(Util::FontName::YuseiMagic)(U"{}"_fmt(getData().timer.s()))
 										.drawBase(TextStyle::OutlineShadow(0.3, Util::Palette::Brown, Vec2{ 1.2, 1.2 }, ColorF{ 0.2 }), 36, Vec2{ swRegion.br().x + 10, swRegion.br().y - 5 });
-					FontAsset(Util::FontFamily::YuseiMagic)(U"秒").drawBase(TextStyle::Shadow(Vec2{ 1.2, 1.2 }, ColorF{ 0.2 }), 24, Vec2{ tRegion.br().x + 10, swRegion.br().y - 5 });
+					FontAsset(Util::FontName::YuseiMagic)(U"秒").drawBase(TextStyle::Shadow(Vec2{ 1.2, 1.2 }, ColorF{ 0.2 }), 24, Vec2{ tRegion.br().x + 10, swRegion.br().y - 5 });
 				}
 			}
 			break;
@@ -659,7 +659,7 @@ namespace UFOCat
 						const auto &catRegion = catTexture.drawAt(Scene::CenterF() - SizeF(catTexture.size.x, 0));
 
 						// 猫のテクスチャの配置を基準に、その下のほうに
-						FontAsset(Util::FontFamily::YuseiMagic)(U"キミが捕まえた猫").drawAt(28, catRegion.centerX(), catRegion.bottomY());
+						FontAsset(Util::FontName::YuseiMagic)(U"キミが捕まえた猫").drawAt(28, catRegion.centerX(), catRegion.bottomY());
 					}
 				}
 				// 画面右側 ターゲットを表示
@@ -671,7 +671,7 @@ namespace UFOCat
 					const auto &catRegion = catTexture.drawAt(Scene::CenterF() + SizeF(catTexture.size.x, 0));
 
 					// 猫のテクスチャの配置を基準に、その下のほうに
-					FontAsset(Util::FontFamily::YuseiMagic)(U"ターゲット").drawAt(28, catRegion.centerX(), catRegion.bottomY());
+					FontAsset(Util::FontName::YuseiMagic)(U"ターゲット").drawAt(28, catRegion.centerX(), catRegion.bottomY());
 				}
 				// 画面中央上部 結果表示
 				{
@@ -698,7 +698,7 @@ namespace UFOCat
 							Circle{ origin, 75 }.drawFrame(15, circleColor);
 
 							// こはるいろサンレイのベースラインが少しずれているので位置を修正
-							FontAsset(Util::FontFamily::KoharuiroSunray)(U"正解!!").drawAt(110, origin.withY(origin.y + 5), fontColor);
+							FontAsset(Util::FontName::KoharuiroSunray)(U"正解!!").drawAt(110, origin.withY(origin.y + 5), fontColor);
 						}
 						else
 						{
@@ -709,13 +709,13 @@ namespace UFOCat
 							Vec2 pos = origin.withY(20).lerp(origin, EaseOutBounce(t));
 
 							Shape2D::Cross(75, 25, pos).draw(Color{ 32, 70, 206, static_cast<uint8>(255 * t) });
-							FontAsset(Util::FontFamily::KoharuiroSunray)(U"不正解...").drawAt(110, pos.withY(pos.y + 5), ColorF{ 1.0, t });
+							FontAsset(Util::FontName::KoharuiroSunray)(U"不正解...").drawAt(110, pos.withY(pos.y + 5), ColorF{ 1.0, t });
 						}
 					}
 					else
 					{
 						// TODO: いい感じのアニメーションを思いつきたい
-						FontAsset(Util::FontFamily::KoharuiroSunray)(U"時間切れ!!").drawAt(110, Scene::CenterF().x, 120);
+						FontAsset(Util::FontName::KoharuiroSunray)(U"時間切れ!!").drawAt(110, Scene::CenterF().x, 120);
 					}
 
 					m_gui.toResult.draw();

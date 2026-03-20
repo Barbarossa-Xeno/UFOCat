@@ -1,5 +1,5 @@
 ﻿# pragma once
-# include "../Util/FontFamily.hpp"
+# include "../Util/FontName.hpp"
 # include "../Util/AudioSource.hpp"
 # include "Relocatable.hpp"
 
@@ -9,7 +9,7 @@ namespace UFOCat::GUI
 	/// デフォルトのフォントは 油性マジック を使用する
 	class Button : public Relocatable
 	{
-		Font m_font = FontAsset(Util::FontFamily::YuseiMagic);
+		Font m_font = FontAsset(Util::FontName::YuseiMagic);
 
 		double m_fontSize;
 

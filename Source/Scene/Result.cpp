@@ -41,13 +41,13 @@ namespace UFOCat
 			(
 				GUI::TextBox
 				{
-					FontAsset(Util::FontFamily::KoharuiroSunray)
+					FontAsset(Util::FontName::KoharuiroSunray)
 						(U"くわしいスコア"),
 					48, Util::Palette::Brown, GUI::PositionType::Relative
 				}.setMargin({ 0, 5 }),
 				GUI::TextBox
 				{
-					FontAsset(Util::FontFamily::YuseiMagic)
+					FontAsset(Util::FontName::YuseiMagic)
 						(U"小数点はとちゅうでしょうりゃくしています"),
 					18, Util::Palette::Brown, GUI::PositionType::Relative
 				}.setMargin({ 0, 10 })
@@ -60,13 +60,13 @@ namespace UFOCat
 				(
 					GUI::TextBox
 					{
-						FontAsset(Util::FontFamily::YuseiMagic)
+						FontAsset(Util::FontName::YuseiMagic)
 							(U"★ レベル{}"_fmt(*data.level)),
 						28, Util::Palette::Brown, GUI::PositionType::Relative
 					}.setMargin({ 5, 5 }),
 					GUI::TextBox
 					{
-						FontAsset(Util::FontFamily::YuseiMagic)
+						FontAsset(Util::FontName::YuseiMagic)
 							(data.isCaught ? (data.isCorrect ? U"正解!!" : U"不正解…") : U"時間切れ…"),
 						22, Util::Palette::Brown, GUI::PositionType::Relative
 					}.setMargin({ 0, 5 }).setIndent(20)
@@ -79,7 +79,7 @@ namespace UFOCat
 					(
 						GUI::TextBox
 						{
-							FontAsset(Util::FontFamily::YuseiMagic)
+							FontAsset(Util::FontName::YuseiMagic)
 								(U"猫をつかまえた！ ── +22"),
 							18, Util::Palette::Brown, GUI::PositionType::Relative
 						}.setIndent(40)
@@ -91,7 +91,7 @@ namespace UFOCat
 						(
 							GUI::TextBox
 							{
-								FontAsset(Util::FontFamily::YuseiMagic)
+								FontAsset(Util::FontName::YuseiMagic)
 									(U"タイムボーナス！ ── ×{}"_fmt(Round(100 * 2.2 * (2.2 + 1 / (2.2 * data.response))) / 100)),
 								18, Util::Palette::Brown, GUI::PositionType::Relative
 							}.setIndent(60)
@@ -102,7 +102,7 @@ namespace UFOCat
 					(
 						GUI::TextBox
 						{
-							FontAsset(Util::FontFamily::YuseiMagic)
+							FontAsset(Util::FontName::YuseiMagic)
 								(U"レベルとうたつボーナス！ ── ×{}"_fmt(Round(100 * Math::Exp(2.2 * (*data.level) / 10.0)) / 100)),
 							18, Util::Palette::Brown, GUI::PositionType::Relative
 						}.setIndent(40)
@@ -114,7 +114,7 @@ namespace UFOCat
 						(
 							GUI::TextBox
 							{
-								FontAsset(Util::FontFamily::YuseiMagic)
+								FontAsset(Util::FontName::YuseiMagic)
 									(U"{} 回れんぞく正解！ ── +{}"_fmt(data.consecutiveCorrect, 222 * data.consecutiveCorrect)),
 								18, Util::Palette::Brown, GUI::PositionType::Relative
 							}.setIndent(40)
@@ -260,22 +260,22 @@ namespace UFOCat
 			// TODO: ほんとはこういうサイズもレスポンシブにすべきなんだろう
 
 			// 点数表示
-			FontAsset(Util::FontFamily::KoharuiroSunray)(U"{}"_fmt(m_ScoreCount)).draw(120, Arg::bottomCenter = Scene::Center());
+			FontAsset(Util::FontName::KoharuiroSunray)(U"{}"_fmt(m_ScoreCount)).draw(120, Arg::bottomCenter = Scene::Center());
 
-			const RectF& maxRegion = FontAsset(Util::FontFamily::KoharuiroSunray)(U"{}"_fmt(Score::GetMaxTheoretical())).region(120, Arg::bottomCenter = Scene::Center());
+			const RectF& maxRegion = FontAsset(Util::FontName::KoharuiroSunray)(U"{}"_fmt(Score::GetMaxTheoretical())).region(120, Arg::bottomCenter = Scene::Center());
 
 			// 回転座標系
 			{
 				const Transformer2D tr{ Mat3x2::Rotate(-15_deg, maxRegion.left().end) };
-				FontAsset(Util::FontFamily::YuseiMagic)(U"今回の評価").draw(40, Arg::bottomCenter = Vec2{ maxRegion.x, maxRegion.y });
+				FontAsset(Util::FontName::YuseiMagic)(U"今回の評価").draw(40, Arg::bottomCenter = Vec2{ maxRegion.x, maxRegion.y });
 			}
 
 			{
-				const RectF &region1 = FontAsset(Util::FontFamily::YuseiMagic)(U"キミは").draw(26, Arg::bottomLeft = (m_gui.scoreTitleGauge.getRegion().tl() - Point{ 0, 20 }));
+				const RectF &region1 = FontAsset(Util::FontName::YuseiMagic)(U"キミは").draw(26, Arg::bottomLeft = (m_gui.scoreTitleGauge.getRegion().tl() - Point{ 0, 20 }));
 
-				const RectF &region2 = FontAsset(Util::FontFamily::KoharuiroSunray)(U"{}"_fmt(m_currentTitle.kanjiName)).drawBase(60, (region1.br() + Point{ 10, 5 }));
+				const RectF &region2 = FontAsset(Util::FontName::KoharuiroSunray)(U"{}"_fmt(m_currentTitle.kanjiName)).drawBase(60, (region1.br() + Point{ 10, 5 }));
 
-				FontAsset(Util::FontFamily::YuseiMagic)(U"UFO猫ハンターだ！！").draw(26, Arg::bottomLeft = Vec2{ (region2.br().x + 10), region1.br().y });
+				FontAsset(Util::FontName::YuseiMagic)(U"UFO猫ハンターだ！！").draw(26, Arg::bottomLeft = Vec2{ (region2.br().x + 10), region1.br().y });
 
 				// 称号ゲージ更新
 				m_gui.scoreTitleGauge.draw();

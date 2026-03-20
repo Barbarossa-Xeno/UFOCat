@@ -19,7 +19,7 @@ namespace UFOCat::GUI
 
 	Button::Button(double fontSize, const String &text, const Audio &se, PositionType positionType, bool isEnabled, const Vec2 &padding)
 		// ここでフォントを決め打ちにする
-		: Button(FontAsset(Util::FontFamily::YuseiMagic), fontSize, text, se, positionType, isEnabled, padding)
+		: Button(FontAsset(Util::FontName::YuseiMagic), fontSize, text, se, positionType, isEnabled, padding)
 	{}
 
 	Button::Button(const Font &font, double fontSize, const String &text, PositionType positionType, bool isEnabled, const Vec2 &padding)
