@@ -77,7 +77,7 @@ namespace UFOCat
 		} m_gui;
 
 		/// @brief 背景データ
-		Util::BackgroundData m_bg;
+		Core::BackgroundData m_bg;
 
 		/* -- ゲッター / セッター -- */
 

@@ -2,7 +2,7 @@
 
 namespace UFOCat
 {
-	void UFOCat::BrightenCursor()
+	void BrightenCursor()
 	{
 		if (Cursor::OnClientRect())
 		{
@@ -10,7 +10,7 @@ namespace UFOCat
 		}
 	}
 
-	void UFOCat::DrawPolkaDotBackground(int32 cellSize, double circleScale, const ColorF& color)
+	void DrawPolkaDotBackground(int32 cellSize, double circleScale, const ColorF& color)
 	{
 		for (int32 y = 0; y < (Scene::Height() / cellSize); ++y)
 		{
@@ -24,12 +24,12 @@ namespace UFOCat
 		}
 	}
 
-	String UFOCat::Cat(size_t id)
+	String Cat(size_t id)
 	{
 		return U"Cat{}"_fmt(id);
 	}
 
-	Array<UFOCat::Core::CatData> UFOCat::LoadCatData()
+	Array<CatData> LoadCatData()
 	{
 		// JSON ファイルからデータを読み込む
 		const JSON json = JSON::Load(U"cat_data.json");
@@ -149,7 +149,7 @@ namespace UFOCat
 		throw Error{ U"Parameter is not JSONValueType::Array." };
 	}
 
-	Array<UFOCat::Core::LevelData> UFOCat::LoadLevelData()
+	Array<LevelData> LoadLevelData()
 	{
 		// JSON からデータを読み込む
 		const JSON json = JSON::Load(U"level_data.json");
@@ -491,7 +491,7 @@ namespace UFOCat
 		throw Error(U"`level_data.json is invalid format.`");
 	}
 
-	Array<Util::BackgroundData> UFOCat::LoadBackgrounds()
+	Array<BackgroundData> LoadBackgrounds()
 	{
 		// 背景画像をイメージとして読み込む
 		auto &&bgs = FileSystem::DirectoryContents(U"texture/background").map([](const String &path) { return Image{ path }; });
@@ -532,7 +532,7 @@ namespace UFOCat
 			// 平均色をモノクロ -> 色反転 したらだいたい反対の色になって見やすくなる
 			const ColorF inversed{ 1.0 - means[i].grayscale() };
 
-			return Util::BackgroundData{ Texture{ bgs[i] }, inversed };
+			return BackgroundData{ Texture{ bgs[i] }, inversed };
 		});
 	}
 }

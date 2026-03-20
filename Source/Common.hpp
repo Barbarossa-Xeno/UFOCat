@@ -8,7 +8,7 @@ using namespace UFOCat::Core;
 
 namespace UFOCat
 {
-	namespace Util
+	namespace Core
 	{
 		/// @brief 背景画像のデータ
 		struct BackgroundData
@@ -18,21 +18,6 @@ namespace UFOCat
 
 			/// @brief この背景の上に描画するものに対して使用するとちょうどよくなる影の色
 			ColorF shadowColor;
-		};
-	}
-
-	namespace Core
-	{
-		enum class SceneState
-		{
-			/// @brief タイトル画面
-			Title,
-			/// @brief 捕まえるUFO猫が発表される画面 レベルシーンの初期化処理に使う
-			Wanted,
-			/// @brief レベル画面
-			Level,
-			/// @brief 結果画面 リタイアするか、失敗したときに移行できる
-			Result
 		};
 
 		/// @brief ゲーム全体で共有するデータ
@@ -52,7 +37,7 @@ namespace UFOCat
 			Array<Score::ResultRecord> scores;
 
 			/// @brief 使用する全ての背景画像のテクスチャとその上から猫を描画するときに使う影の色の組み合わせを記録するリスト
-			Array<Util::BackgroundData> backgrounds;
+			Array<BackgroundData> backgrounds;
 
 			/// @brief 現在BGMとして再生しているオーディオの名前（1 つのみ）
 			String bgmName;
@@ -67,6 +52,18 @@ namespace UFOCat
 			Timer timer;
 		};
 	}
+
+	enum class SceneState
+	{
+		/// @brief タイトル画面
+		Title,
+		/// @brief 捕まえるUFO猫が発表される画面 レベルシーンの初期化処理に使う
+		Wanted,
+		/// @brief レベル画面
+		Level,
+		/// @brief 結果画面 リタイアするか、失敗したときに移行できる
+		Result
+	};
 
 	/// @brief マウスカーソルの周囲を明るくする（画面幅 or 高さの大きいほうの 2% 分の半径）
 	void BrightenCursor();
@@ -83,8 +80,6 @@ namespace UFOCat
 	/// @return 名前 TextureAsset で使える
 	String Cat(size_t id);
 
-	// TODO: このメソッドでいっきにテクスチャまで読み込んでしまうので、無駄にメモリを確保してしまう
-	// 端から全てのテクスチャを読む必要はないので、あとで必要なときに初めてテクスチャを確保するように処理を変える
 	/// @brief UFO猫のデータをJSONから読み込んでそれら全てのインスタンスを作成する
 	/// @return 全てのUFO猫のインスタンスリスト
 	Array<CatData> LoadCatData();
@@ -95,7 +90,7 @@ namespace UFOCat
 
 	/// @brief 使用する背景画像を読み込んでそれら全てのテクスチャと影の色のペアを作成する
 	/// @return 全ての背景画像のテクスチャと使用する影の色のペアのリスト
-	Array<Util::BackgroundData> LoadBackgrounds();
+	Array<BackgroundData> LoadBackgrounds();
 
 	using App = SceneManager<SceneState, GameData>;
 }

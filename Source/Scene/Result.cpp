@@ -257,7 +257,7 @@ namespace UFOCat
 
 		// # スコア表示
 		{
-			// TODO: ほんとはこういうサイズもレスポンシブにすべきなんだろうな
+			// TODO: ほんとはこういうサイズもレスポンシブにすべきなんだろう
 
 			// 点数表示
 			FontAsset(Util::FontFamily::KoharuiroSunray)(U"{}"_fmt(m_ScoreCount)).draw(120, Arg::bottomCenter = Scene::Center());
