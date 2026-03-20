@@ -91,6 +91,7 @@ namespace UFOCat
 				}.setMargin({ 0, 15 }).setIndent(44)
 			).setSize({ 500, 500 });
 
+			// 「ライセンス」項目
 			m_gui.lisence.setContents(
 				GUI::TextBox
 				{
@@ -98,10 +99,12 @@ namespace UFOCat
 						(U"ライセンス"),
 					48, Util::Palette::Brown, GUI::PositionType::Relative
 				}.setMargin({ 0, 10 }),
+
+				// - 画像素材の項目
 				GUI::TextBox
 				{
 					FontAsset(Util::FontName::YuseiMagic)
-						(U"■ 画像アセット"),
+						(U"■ 画像素材"),
 					28, Util::Palette::Brown, GUI::PositionType::Relative
 				}.setMargin({ 0, 10 }),
 				GUI::TextBox
@@ -148,10 +151,12 @@ namespace UFOCat
 						(U"・背景イラスト画像については、ChatGPT による画像生成を利用しております。"),
 					14, Util::Palette::Brown, GUI::PositionType::Relative
 				}.setMargin({ 15, 0 }).setIndent(5),
+
+				// - フォント素材の項目
 				GUI::TextBox
 				{
 					FontAsset(Util::FontName::YuseiMagic)
-						(U"■ フォントアセット"),
+						(U"■ フォント素材"),
 					28, Util::Palette::Brown, GUI::PositionType::Relative
 				}.setMargin({ 10, 10 }),
 				GUI::TextBox
@@ -176,6 +181,50 @@ namespace UFOCat
 				{
 					FontAsset(Util::FontName::YuseiMagic)
 						(U"（配布サイト） - http://getsuren.com/"),
+					18, Util::Palette::Brown, GUI::PositionType::Relative
+				}.setMargin({ 0, 0 }).setIndent(40),
+
+				// - 音声素材の項目
+				GUI::TextBox
+				{
+					FontAsset(Util::FontName::YuseiMagic)
+						(U"■ 音声素材"),
+					28, Util::Palette::Brown, GUI::PositionType::Relative
+				}.setMargin({ 10, 10 }),
+				GUI::TextBox
+				{
+					FontAsset(Util::FontName::YuseiMagic)
+						(U"(1) 効果音ラボ"),
+					22, Util::Palette::Brown, GUI::PositionType::Relative
+				}.setMargin({ 5, 5 }),
+				GUI::TextBox
+				{
+					FontAsset(Util::FontName::YuseiMagic)
+						(U"（配布サイト） - https://soundeffect-lab.info/"),
+					18, Util::Palette::Brown, GUI::PositionType::Relative
+				}.setMargin({ 0, 0 }).setIndent(40),
+				GUI::TextBox
+				{
+					FontAsset(Util::FontName::YuseiMagic)
+						(U"(2) 魔王魂"),
+					22, Util::Palette::Brown, GUI::PositionType::Relative
+				}.setMargin({ 5, 5 }).setIndent(5),
+				GUI::TextBox
+				{
+					FontAsset(Util::FontName::YuseiMagic)
+						(U"（配布サイト） - https://maou.audio/"),
+					18, Util::Palette::Brown, GUI::PositionType::Relative
+				}.setMargin({ 0, 0 }).setIndent(40),
+				GUI::TextBox
+				{
+					FontAsset(Util::FontName::YuseiMagic)
+						(U"(3) 甘茶の音楽工房"),
+					22, Util::Palette::Brown, GUI::PositionType::Relative
+				}.setMargin({ 5, 5 }).setIndent(5),
+				GUI::TextBox
+				{
+					FontAsset(Util::FontName::YuseiMagic)
+						(U"（配布サイト） - https://amachamusic.chagasi.com/index.html"),
 					18, Util::Palette::Brown, GUI::PositionType::Relative
 				}.setMargin({ 0, 0 }).setIndent(40)
 			).setSize({ 600, 500 });
