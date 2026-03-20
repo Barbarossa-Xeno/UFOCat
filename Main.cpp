@@ -55,12 +55,12 @@ void Main()
 
 	App app;
 
-	app.add<Title>(State::Title);
-	app.add<Wanted>(State::Wanted);
-	app.add<Level>(State::Level);
-	app.add<Result>(State::Result);
+	app.add<Title>(SceneState::Title);
+	app.add<Wanted>(SceneState::Wanted);
+	app.add<Level>(SceneState::Level);
+	app.add<Result>(SceneState::Result);
 
-	app.init(State::Title, 1s);
+	app.init(SceneState::Title, 1s);
 
 	s3d::Effect effect;
 	Util::Stopwatch effectTimer;

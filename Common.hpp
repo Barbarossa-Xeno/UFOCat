@@ -32,7 +32,7 @@ namespace UFOCat
 	{
 		using ::UFOCat::InvalidIndex; // これで Core 内で未修飾 InvalidIndex が使える
 
-		enum class State
+		enum class SceneState
 		{
 			/// @brief タイトル画面
 			Title,
@@ -202,5 +202,5 @@ namespace UFOCat
 	/// @return 全ての背景画像のテクスチャと使用する影の色のペアのリスト
 	Array<Util::BackgroundData> LoadBackgrounds();
 
-	using App = SceneManager<State, GameData>;
+	using App = SceneManager<SceneState, GameData>;
 }

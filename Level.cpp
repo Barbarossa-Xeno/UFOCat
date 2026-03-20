@@ -189,7 +189,7 @@ namespace UFOCat
 		// # ステート依存処理
 		switch (m_state)
 		{
-			case Level::State::Before:
+			case State::Before:
 			{
 				// タイマー稼働してない
 				if (not getData().timer.isRunning())
@@ -213,7 +213,7 @@ namespace UFOCat
 					else
 					{
 						// ステートをプレイ中に変更する
-						m_state = Level::State::Playing;
+						m_state = State::Playing;
 
 						// 制限時間を決めて、タイマー開始
 						// 1.75s 猶予を持たせて、BGM再生までの癪に使う
@@ -242,7 +242,7 @@ namespace UFOCat
 			}
 			break;
 
-			case Level::State::Playing:
+			case State::Playing:
 			{
 				// ## スポーン処理
 				m_watch.setInterval([this]()
@@ -337,7 +337,7 @@ namespace UFOCat
 							m_score.consecutiveCorrect = temp_consecutive;
 
 							// プレイ終了へ
-							m_state = Level::State::Finish;
+							m_state = State::Finish;
 
 							// 明示的にストップウォッチリセット（でないと積算時間が持ち越される）
 							m_watch.reset();
@@ -369,7 +369,7 @@ namespace UFOCat
 					else
 					{
 						// 制限時間が終わったら、終了表示を出しに行く
-						m_state = Level::State::Finish;
+						m_state = State::Finish;
 
 						// 明示的にストップウォッチリセット（でないと積算時間が持ち越される）
 						m_watch.reset();
@@ -383,12 +383,12 @@ namespace UFOCat
 			}
 			break;
 
-			case Level::State::Finish:
+			case State::Finish:
 			{
 				// 3s 経ったらレベル終わり画面を出しに行く
 				m_watch.setTimeout([this]()
 					{
-						m_state = Level::State::After;
+						m_state = State::After;
 
 						// 明示的にストップウォッチリセット（でないと積算時間が持ち越される）
 						m_watch.reset();
@@ -398,7 +398,7 @@ namespace UFOCat
 			}
 			break;
 
-			case Level::State::After:
+			case State::After:
 			{
 				m_watch.setTimeout([this]()
 				{
@@ -423,7 +423,7 @@ namespace UFOCat
 						m_currentScoreDatas()[getData().levelIndex] = m_score;
 
 						// 次のレベル初期化へ
-						changeScene(Core::State::Wanted);
+						changeScene(SceneState::Wanted);
 					}
 
 					// タイトルへ戻るボタン
@@ -447,7 +447,7 @@ namespace UFOCat
 							m_currentScoreDatas()[getData().levelIndex] = m_score;
 
 							// 結果シーンへ
-							changeScene(Core::State::Result, 1s);
+							changeScene(SceneState::Result, 1s);
 						}
 					}
 
@@ -458,7 +458,7 @@ namespace UFOCat
 						m_currentScoreDatas()[getData().levelIndex] = m_score;
 
 						// 結果シーンへ
-						changeScene(Core::State::Result, 1s);
+						changeScene(SceneState::Result, 1s);
 					}
 
 					m_gui.dialog.isPressedCancel();
@@ -484,11 +484,11 @@ namespace UFOCat
 				if (getData().levelIndex + 1 >= getData().levels.size())
 				{
 					// レベルがもう存在しない場合は、結果シーンへ
-					changeScene(Core::State::Result);
+					changeScene(SceneState::Result);
 				}
 				else
 				{
-					changeScene(Core::State::Wanted);
+					changeScene(SceneState::Wanted);
 				}
 			}
 
@@ -499,7 +499,7 @@ namespace UFOCat
 				// 一気に移るので、クリアフラグを上げる必要もない
 				m_currentScoreDatas().each_index([this](size_t i, Score::Generic::ByLevel &score) { score = Score::Generic::ByLevel{ i + 1, true, true, 0.5, i }; });
 				getData().timer.reset();
-				changeScene(Core::State::Result);
+				changeScene(SceneState::Result);
 			}
 
 			// Ctrl + Shift + Q でタイマー一時停止/再開
@@ -541,7 +541,7 @@ namespace UFOCat
 		switch (m_state)
 		{
 			// ## 開始前（カウントダウン処理など）
-			case UFOCat::Level::State::Before:	
+			case State::Before:	
 			{
 				// 3s 以下からカウントし始めたいので、残り時間がそれ以上あるときは処理しない
 				if (getData().timer.s() > 3.0)
@@ -581,7 +581,7 @@ namespace UFOCat
 			break;
 
 			// ## プレイ中（タイマー表示など）
-			case UFOCat::Level::State::Playing:
+			case State::Playing:
 			{
 				{
 					if (getData().timer.s() > m_currentLevel().timeLimit.count())
@@ -615,7 +615,7 @@ namespace UFOCat
 			break;
 
 			// L335より、終了表示は 3s 間
-			case UFOCat::Level::State::Finish:
+			case State::Finish:
 			{
 				// 線形補間のパラメータ
 				double t = 1.0;
@@ -642,7 +642,7 @@ namespace UFOCat
 			}
 			break;
 
-			case UFOCat::Level::State::After:
+			case State::After:
 			{
 				// 背景 ちょっと暗くする
 				{

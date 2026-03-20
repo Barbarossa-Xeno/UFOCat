@@ -227,7 +227,7 @@ namespace UFOCat
 				}
 
 				// リセット処理は、タイトル側で行う
-				changeScene(State::Title, 1.5s);
+				changeScene(SceneState::Title, 1.5s);
 			}
 
 			if (m_gui.scoreDetailsButton.set(32, U"もっとくわしく")
@@ -244,7 +244,7 @@ namespace UFOCat
 		// デバッグ機能：Ctrl + Shift + S でスキップ
 		if (KeyControl.pressed() and KeyShift.pressed() and KeyR.pressed())
 		{
-			changeScene(State::Result, 1s);
+			changeScene(SceneState::Result, 1s);
 		}
 # endif
 	}

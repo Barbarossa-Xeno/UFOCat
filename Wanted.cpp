@@ -52,7 +52,7 @@ namespace UFOCat
 		}
 		else if (getData().timer.reachedZero())
 		{
-			changeScene(State::Level, 2.2s);
+			changeScene(SceneState::Level, 2.2s);
 		}
 		
 # if _DEBUG
@@ -63,7 +63,7 @@ namespace UFOCat
 			if (KeyS.pressed())
 			{
 				getData().timer.reset();
-				changeScene(State::Level, 0.7s);
+				changeScene(SceneState::Level, 0.7s);
 			}
 
 			// Ctrl + Shift + Q でタイマーの一時停止・再開

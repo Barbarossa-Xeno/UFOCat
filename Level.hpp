@@ -43,7 +43,7 @@ namespace UFOCat
 		DiscreteDistribution m_actionProbabilities;
 
 		/// @brief シーン内ステート
-		Level::State m_state = Level::State::Before;
+		State m_state = State::Before;
 
 		/// @brief スポーン間隔の計測やシーン内ステートの遷移などに使う内部ストップウォッチ
 		Util::Stopwatch m_watch;

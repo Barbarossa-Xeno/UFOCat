@@ -255,7 +255,7 @@ namespace UFOCat
 					getData().scores << Score::Generic{ Array<Score::Generic::ByLevel>{ getData().levels.size() }, Score::Generic::Title{} };
 
 					AudioAsset(Util::AudioSource::BGM::Title).fadeVolume(0.0, 0.2s);
-					changeScene(State::Wanted, 2.2s);
+					changeScene(SceneState::Wanted, 2.2s);
 				}
 
 				if (m_gui.howToPlayButton.isPressed())
