@@ -1,0 +1,71 @@
+﻿# pragma once
+
+namespace UFOCat::Core::Action
+{
+	using EasingFunction = std::function<double(double)>;
+
+	namespace Cross
+	{
+		using _0 = std::tuple<Duration, uint32>;
+		using _1 = std::tuple<Duration>;
+
+		constexpr size_t Count = 2;
+
+		template <class T>
+		concept ValidSignature = std::same_as<std::remove_cvref_t<T>, _0>
+			|| std::same_as<std::remove_cvref_t<T>, _1>;
+	}
+
+	namespace Appear
+	{
+		using _0 = std::tuple<Duration, EasingFunction, Duration, EasingFunction, Duration, Rect>;
+		using _1 = std::tuple<Duration, Duration, Duration, Rect>;
+		using _2 = std::tuple<Duration, EasingFunction, Duration, Rect>;
+		using _3 = std::tuple<Duration, Duration, Rect>;
+		using _4 = std::tuple<Duration, EasingFunction, Duration, EasingFunction, Duration>;
+		using _5 = std::tuple<Duration, Duration, Duration>;
+		using _6 = std::tuple<Duration, EasingFunction, Duration>;
+		using _7 = std::tuple<Duration, Duration>;
+
+		constexpr size_t Count = 8;
+
+		template <class T>
+		concept ValidSignature = std::same_as<std::remove_cvref_t<T>, _0>
+			|| std::same_as<std::remove_cvref_t<T>, _1>
+			|| std::same_as<std::remove_cvref_t<T>, _2>
+			|| std::same_as<std::remove_cvref_t<T>, _3>
+			|| std::same_as<std::remove_cvref_t<T>, _4>
+			|| std::same_as<std::remove_cvref_t<T>, _5>
+			|| std::same_as<std::remove_cvref_t<T>, _6>
+			|| std::same_as<std::remove_cvref_t<T>, _7>;
+	}
+
+	namespace AppearFromEdge
+	{
+		using _0 = std::tuple<Duration, EasingFunction, Duration, EasingFunction, Duration, std::array<double, 4>>;
+		using _1 = std::tuple<Duration, Duration, Duration, std::array<double, 4>>;
+		using _2 = std::tuple<Duration, EasingFunction, Duration, std::array<double, 4>>;
+		using _3 = std::tuple<Duration, Duration, std::array<double, 4>>;
+
+		constexpr size_t Count = 4;
+
+		template <class T>
+		concept ValidSignature = std::same_as<std::remove_cvref_t<T>, _0>
+			|| std::same_as<std::remove_cvref_t<T>, _1>
+			|| std::same_as<std::remove_cvref_t<T>, _2>
+			|| std::same_as<std::remove_cvref_t<T>, _3>;
+	}
+
+	using Generic = std::variant<
+		std::monostate,
+		Cross::_0, Cross::_1,
+		Appear::_0, Appear::_1, Appear::_2, Appear::_3, Appear::_4, Appear::_5, Appear::_6, Appear::_7,
+		AppearFromEdge::_0, AppearFromEdge::_1, AppearFromEdge::_2, AppearFromEdge::_3
+	>;
+
+	template <class T>
+	concept ValidSignature = std::same_as<std::remove_cvref_t<T>, std::monostate>
+		|| Cross::ValidSignature<T>
+		|| Appear::ValidSignature<T>
+		|| AppearFromEdge::ValidSignature<T>;
+}

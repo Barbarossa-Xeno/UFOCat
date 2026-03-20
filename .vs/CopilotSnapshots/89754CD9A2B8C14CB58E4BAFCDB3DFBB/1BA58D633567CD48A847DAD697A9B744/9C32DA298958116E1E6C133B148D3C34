@@ -1,0 +1,5 @@
+﻿# Copilot Instructions
+
+## User Preferences
+- ユーザーはGUIを分割しても、`GUI.hpp` 1つの `#include` で全GUIコンポーネントを利用できる設計を好む。
+- ユーザーは `Main.cpp` 以外のソース/ヘッダーを `Source` フォルダ配下に配置するディレクトリ構成を採用している。

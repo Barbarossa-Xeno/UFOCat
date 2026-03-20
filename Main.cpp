@@ -1,11 +1,11 @@
 ﻿#include <Siv3D.hpp> // Siv3D v0.6.16
-# include "Common.hpp"
-# include "Title.hpp"
-# include "Wanted.hpp"
-# include "Level.hpp"
-# include "Result.hpp"
-# include "Bubble.hpp"
-# include "Stopwatch.hpp"
+# include "Source/Core/Common.hpp"
+# include "Source/Scene/Title.hpp"
+# include "Source/Scene/Wanted.hpp"
+# include "Source/Scene/Level.hpp"
+# include "Source/Scene/Result.hpp"
+# include "Source/Effect/Bubble.hpp"
+# include "Source/Util/Stopwatch.hpp"
 
 using namespace UFOCat;
 

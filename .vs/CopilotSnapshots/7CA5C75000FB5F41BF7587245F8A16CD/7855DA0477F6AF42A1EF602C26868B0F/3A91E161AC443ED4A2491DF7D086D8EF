@@ -1,0 +1,13 @@
+﻿# pragma once
+
+namespace UFOCat::Core::Action
+{
+	using EasingFunction = std::function<double(double)>;
+
+	struct Generic
+	{
+	};
+
+	template <class T>
+	concept ValidSignature = true;
+}

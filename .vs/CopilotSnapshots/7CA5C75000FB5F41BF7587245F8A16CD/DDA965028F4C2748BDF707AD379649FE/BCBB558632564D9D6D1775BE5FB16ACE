@@ -1,0 +1,30 @@
+﻿# pragma once
+
+namespace UFOCat::Util::AudioSource
+{
+	namespace BGM
+	{
+		inline constexpr StringView Title = U"BGM_Title";
+		inline constexpr StringView Level01 = U"BGM_Level01";
+		inline constexpr StringView Level02 = U"BGM_Level02";
+	}
+
+	namespace SE
+	{
+		inline constexpr StringView Open = U"SE_Open";
+		inline constexpr StringView OK = U"SE_OK";
+		inline constexpr StringView Cancel = U"SE_Cancel";
+		inline constexpr StringView Announce = U"SE_Announce";
+		inline constexpr StringView CountDown = U"SE_CountDown";
+		inline constexpr StringView StartLevel = U"SE_StartLevel";
+		inline constexpr StringView FinishLevel = U"SE_FinishLevel";
+		inline constexpr StringView Correct = U"SE_Correct";
+		inline constexpr StringView Incorrect = U"SE_Incorrect";
+		inline constexpr StringView TimeUp = U"SE_TimeUp";
+		inline constexpr StringView CountUpScore = U"SE_CountUpScore";
+		inline constexpr StringView FinishScore = U"SE_FinishScore";
+		inline constexpr StringView Cat01 = U"SE_Cat01";
+		inline constexpr StringView Cat02 = U"SE_Cat02";
+		inline constexpr StringView CatAngry = U"SE_CatAngry";
+	}
+}
