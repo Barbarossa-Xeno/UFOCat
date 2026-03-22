@@ -55,6 +55,14 @@ namespace UFOCat
 
 			for (auto &&data : m_currentScoreDatas())
 			{
+				// 共通データの records は、ゲーム開始時に毎回レベルの数だけの要素数で作られるので
+				// デフォルトデータのままのもの (data.level は未指定のため none) があればそれ以降のレベルはプレイされていない
+				// なのでここで表示を切る
+				if (not data.level)
+				{
+					break;
+				}
+
 				// スコアの条件に応じてうまくインデントを下げる
 				m_gui.scoreDetails.addContents
 				(

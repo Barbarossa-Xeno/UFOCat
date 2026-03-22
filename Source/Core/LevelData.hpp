@@ -12,7 +12,7 @@ namespace UFOCat::Core
 		struct BreedData
 		{
 			/// @brief ターゲットと類似している猫を何匹登場させるか
-			/// @details ターゲットと似ている猫の定義は、`Phase::similarity` フィールドを参照
+			/// @details 実際の絞り込みフローは、`Level` のコンストラクタでの初期化処理を参照
 			uint32 similar;
 
 			/// @brief 別にターゲットとは類似ではない猫を何匹登場させるか
@@ -43,7 +43,7 @@ namespace UFOCat::Core
 			String name;
 
 			/// @brief メソッドを実行させるときのパラメータ情報 @n
-			/// CatObject のすべての動作系メソッドの引数に対応するタプル型を格納できる
+			/// CatObject のすべての行動系メソッドの引数に対応するタプル型を格納できる
 			Action::Generic params;
 
 			/// @brief このアクションが選択される確率（0.0 ～ 1.0）
@@ -104,19 +104,19 @@ namespace UFOCat::Core
 		/// @return 変換可能なら `true`
 		static bool IsEasing(const String& str);
 
-		/// @brief 文字列を Duration 型に変換する
+		/// @brief 文字列を Duration 型に変換する バリデーションはこれを呼び出す前に行うこと
 		/// @param str 対象文字列 末尾に 's' がつく
-		/// @return 変換した Duration 型オブジェクト、変換できなければ例外が投げられる
+		/// @return 変換した Duration 型オブジェクト
 		static Duration ParseDuration(const String& str);
 
-		/// @brief 文字列を Rect 型に変換する
+		/// @brief 文字列を Rect 型に変換する バリデーションはこれを呼び出す前に行うこと
 		/// @param str 対象文字列 '(x, y, w, h)' の形式
-		/// @return 変換した Rect 型オブジェクト、変換できなければ例外が投げられる
+		/// @return 変換した Rect 型オブジェクト
 		static Rect ParseRect(const String& str);
 
-		/// @brief 文字列を Siv3D 規定のイージング関数へ変換する
+		/// @brief 文字列を Siv3D 規定のイージング関数へ変換する バリデーションはこれを呼び出す前に行うこと
 		/// @param str 対象文字列 'e_' で始まる必要がある
-		/// @return 変換したイージング関数のオブジェクト、変換できなければ例外が投げられる
+		/// @return 変換したイージング関数のオブジェクト
 		static Action::EasingFunction ParseEasing(const String &str);
 
 		/// @brief アクションのシグネチャをあらわしたタプル型 TSignatureTuple を指定して、アクションを実行するための引数データが格納された JSON 配列を検証する @n

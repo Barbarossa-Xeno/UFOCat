@@ -8,22 +8,25 @@
 namespace UFOCat::Core
 {
 	/// @brief オブジェクトとしてのUFO猫のクラス @n
-	/// ムーブ代入不可能
+	/// ムーブ代入禁止
 	class CatObject
 	{
 		/* -- クラスなど -- */
 
 	private:
 
-		/// @brief 外見の状態
+		/// @brief 外見の状態 見えているか見えていないか
 		enum class AppearanceState
 		{
 			/// @brief 表示されていない（画面外もしくは描画していない）
 			Hidden,
+
 			/// @brief 画面内に登場している最中
 			In,
+
 			/// @brief 画面外へ退場している最中
 			Out,
+
 			/// @brief 完全に表示されている（画面内に）
 			Visible
 		};
@@ -31,9 +34,16 @@ namespace UFOCat::Core
 		/// @brief 画面端の種類
 		enum class ScreenEdgeDirection
 		{
+			/// @brief 上端
 			Top,
+
+			/// @brief 右端
 			Right,
+
+			/// @brief 下端
 			Bottom,
+
+			/// @brief 左端
 			Left
 		};
 
@@ -56,11 +66,12 @@ namespace UFOCat::Core
 		/* -- フィールド -- */
 
 	public:
-
+		// 無名共用体
 		union
 		{
 			/// @brief 位置
 			Vec2 position;
+
 			struct
 			{
 				/// @brief X座標 ( = position.x )
@@ -75,6 +86,7 @@ namespace UFOCat::Core
 		{
 			/// @brief 速度
 			Vec2 velocity;
+
 			struct
 			{
 				/// @brief X方向の速さ ( = velocity.x )
@@ -190,9 +202,9 @@ namespace UFOCat::Core
 		/// @return このオブジェクトが持つ CatData の読み取り専用左辺参照
 		const CatData &getCatData(CatData *out = nullptr) const;
 
-		/// @brief 左上を基準としたときにこのオブジェクトがはみ出さずに描画できる最大の領域を取得する
+		/// @brief 左上を基準としたときにこのオブジェクトがはみ出さずに表示できる最大の領域を取得する
 		/// @return 最大の領域を表す `Rect`
-		Rect getMaxDisplayedArea() const;
+		Rect getMaxDisplayArea() const;
 
 		/* -- セッター -- */
 	public:
@@ -227,7 +239,7 @@ namespace UFOCat::Core
 			, m_screenEdgeArea{ -Vec2(m_ClientSize), Scene::Width() + m_ClientSize.x, Scene::Height() + m_ClientSize.y }
 			, velocity{ { 0, 0 } }
 		{
-			m_changeScreenEdgePosition();
+			m_choiceScreenEdgePosition();
 		}
 
 		/// @brief 使用テクスチャ、初期位置、初期速度からオブジェクトを作る
@@ -350,7 +362,7 @@ namespace UFOCat::Core
 		/// @param in 出現にかかる時間
 		/// @param outFunc 退去時の移動モーションに使うイージング関数
 		/// @param out 退去にかかる時間
-		/// @param overflow 画面端からのはみだし量 サイズ4の `double` 配列で、0番目が上、1番目が右、2番目が下、3番目が左 のはみだし量を意味する
+		/// @param overflow 画面端からのはみだし量（0以上） サイズ4の `double` 配列で、0番目が上、1番目が右、2番目が下、3番目が左 のはみだし量を意味する
 		/// @return 自分自身の参照
 		CatObject &appearFromEdge(Duration period, Action::EasingFunction inFunc, Duration in, Action::EasingFunction outFunc, Duration out, const std::array<double, 4> &overflow);
 
@@ -359,7 +371,7 @@ namespace UFOCat::Core
 		/// @param period 出現周期（消えている時間と現れている時間）
 		/// @param in 出現にかかる時間
 		/// @param out 退去にかかる時間
-		/// @param overflow 画面端からのはみだし量 サイズ4の `double` 配列で、0番目が上、1番目が右、2番目が下、3番目が左 のはみだし量を意味する
+		/// @param overflow 画面端からのはみだし量（0以上） サイズ4の `double` 配列で、0番目が上、1番目が右、2番目が下、3番目が左 のはみだし量を意味する
 		/// @return 自分自身の参照
 		CatObject &appearFromEdge(Duration period, Duration in, Duration out, const std::array<double, 4> &overflow);
 
@@ -368,7 +380,7 @@ namespace UFOCat::Core
 		/// @param period 出現周期（消えている時間と現れている時間）
 		/// @param inAndOutFunc 出現、退去時の移動モーションに使うイージング関数
 		/// @param inAndOut 出現、退去にかかる時間
-		/// @param overflow 画面端からのはみだし量 サイズ4の `double` 配列で、0番目が上、1番目が右、2番目が下、3番目が左 のはみだし量を意味する
+		/// @param overflow 画面端からのはみだし量（0以上） サイズ4の `double` 配列で、0番目が上、1番目が右、2番目が下、3番目が左 のはみだし量を意味する
 		/// @return 自分自身の参照
 		CatObject &appearFromEdge(Duration period, Action::EasingFunction inAndOutFunc, Duration inAndOut, const std::array<double, 4> &overflow);
 
@@ -376,7 +388,7 @@ namespace UFOCat::Core
 		/// 画面端からのはみだし量は 0 を指定するとその部分からは出現しなくなる
 		/// @param period 出現周期（消えている時間と現れている時間）
 		/// @param inAndOut 出現、退去にかかる時間
-		/// @param overflow 画面端からのはみだし量 サイズ4の `double` 配列で、0番目が上、1番目が右、2番目が下、3番目が左 のはみだし量を意味する
+		/// @param overflow 画面端からのはみだし量（0以上） サイズ4の `double` 配列で、0番目が上、1番目が右、2番目が下、3番目が左 のはみだし量を意味する
 		/// @return 自分自身の参照
 		CatObject &appearFromEdge(Duration period, Duration inAndOut, const std::array<double, 4> &overflow);
 
@@ -422,7 +434,7 @@ namespace UFOCat::Core
 		/// 自身がぎりぎり映らない、表示領域外の場所として決められる @n
 		/// 終了点は開始点の反対側として決められ、開始点と終了点の組み合わせをタプルで返す @n
 		/// ** `m_edgeDirection` を同時に変更し、更に決まった開始点は、自動的に `position` に代入される **
-		/// @return 開始点と終了点のタプル  [0] が開始点、[1] が終了点
-		std::tuple<Vec2, Vec2> m_changeScreenEdgePosition();
+		/// @return 開始点と終了点のタプル  <0> が開始点、<1> が終了点
+		std::tuple<Vec2, Vec2> m_choiceScreenEdgePosition();
 	};
 }

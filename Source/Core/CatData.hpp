@@ -5,13 +5,13 @@ namespace UFOCat::Core
 	/// @brief UFO猫のデータ（品種や模様など）
 	struct CatData
 	{
-		// ID（使わんかも）
+		// ID
 		size_t id;
 
 		// 品種
 		String breed;
 
-		// 色 複数あればその全て
+		// 色 複数あればその全てが含まれており、色名と実際の値のペアで表される
 		HashTable<String, Color> colors;
 
 		// 模様の種類
@@ -36,12 +36,15 @@ namespace UFOCat::Core
 			, colors{ colors }
 			, pattern{ pattern }
 			, isLongHair{ isLongHair }
-		{
-		}
+		{}
 
+		/// @brief 自身と比較対象で共通している特徴の数を取得する @n
+		/// 実質的に模様が同じだったり、毛色に含まれている色が同じだったりすることも「同じ特徴」としてカウントする
+		/// @param target 比較対象
+		/// @return 同じ特徴の数
 		uint32 getSameDataCount(const CatData& target) const;
 
-		/// @brief データが等しいかどうか id の比較で比べる
+		/// @brief データが等しいかどうかインスタンスではなく id の比較で比べる
 		/// @param target 比較対象
 		/// @return 等しいデータなら true
 		bool operator==(const CatData& target) const;

@@ -57,7 +57,7 @@ namespace UFOCat::Core
 		return m_catData;
 	}
 
-	Rect CatObject::getMaxDisplayedArea() const
+	Rect CatObject::getMaxDisplayArea() const
 	{
 		// (0, 0) から 画面端から自分の長さを引いたところまでが左上基準の最大の表示領域
 		return Rect{ 0, 0, Scene::Width() - static_cast<int32>(m_ClientSize.x), Scene::Height() - static_cast<int32>(m_ClientSize.y) };
@@ -96,12 +96,12 @@ namespace UFOCat::Core
 
 		// オブジェクトの全てが入り切る領域内で X 方向の端に到達したら
 		if (const double rightEdge = Scene::Width() - m_ClientSize.x;
-			x < 0 || x > rightEdge)
+			x < 0 or x > rightEdge)
 		{
 			// 完全に画面外に出ているような状況に対しては、オブジェクト右下の点を見るようにして、
 			// 右下の点が画面外にあるようなら、画面内に戻すよう速度の符号を調整する
 			// (x + m_ClientSize.x) が右下の X 座標
-			if ((x + m_ClientSize.x) < m_ClientSize.x || (x + m_ClientSize.x) > rightEdge)
+			if ((x + m_ClientSize.x) < m_ClientSize.x or (x + m_ClientSize.x) > rightEdge)
 			{
 				// x <= 0 領域なら vx を正に
 				// それ以外: x >= m_ClientSize.x 領域なら vx を負にして
@@ -117,11 +117,11 @@ namespace UFOCat::Core
 
 		// Y 方向の端に到達したら
 		if (const double bottomEdge = Scene::Height() - m_ClientSize.y;
-			y < 0 || y > bottomEdge)
+			y < 0 or y > bottomEdge)
 		{
 			// 以下、X 座標のときと同様
 			// (y + m_ClientSize.y) が右下の Y 座標
-			if (y + m_ClientSize.y < m_ClientSize.y || y + m_ClientSize.y > bottomEdge)
+			if (y + m_ClientSize.y < m_ClientSize.y or y + m_ClientSize.y > bottomEdge)
 			{
 				vy = y <= 0 ? Abs(vy) : -Abs(vy);
 			}
@@ -136,7 +136,7 @@ namespace UFOCat::Core
 	CatObject &CatObject::cross(Duration period, uint32 crossingCount)
 	{
 		// 既に指定回数を上回っていて、無限回が指定されていない状況なら、これ以上処理しない
-		if (m_crossData.count > crossingCount && crossingCount != std::numeric_limits<uint32>::infinity())
+		if (m_crossData.count > crossingCount and crossingCount != std::numeric_limits<uint32>::infinity())
 		{
 			return *this;
 		}
@@ -146,11 +146,12 @@ namespace UFOCat::Core
 		{
 			case AppearanceState::Hidden:
 			{
+				// 周期で繰り返す
 				m_stopwatch.setInterval([&]()
 				{
 					// ランダムに開始位置を決める（スタート位置はこの関数で代入される）
 					// 既に宣言されている変数は構造化代入が使えないので std::tie を利用する
-					std::tie(m_crossData.start, m_crossData.goal) = m_changeScreenEdgePosition();
+					std::tie(m_crossData.start, m_crossData.goal) = m_choiceScreenEdgePosition();
 
 					// 増やす角度
 					double angle = 0.0;
@@ -171,9 +172,9 @@ namespace UFOCat::Core
 					// 見える状態へ移行
 					m_appearanceState = AppearanceState::Visible;
 				}, period);
-			}
-			break;
 
+				break;
+			}
 			case AppearanceState::Visible:
 			{
 				// 相対する画面端に辿り着いたかどうか
@@ -183,30 +184,30 @@ namespace UFOCat::Core
 				// 領域外位置は影のスケールを考慮する
 				switch (m_edgeDirection)
 				{
-				case ScreenEdgeDirection::Top:
-				{
-					// 上から始まったら左上が画面外に出るまで
-					isReached = y > (Scene::Height() + (m_ClientSize * Math::AbsDiff(1.0, m_shadowScale)).y);
-				}
-				break;
-				case ScreenEdgeDirection::Right:
-				{
-					// 右から始まったら右上が画面外に出るまで
-					isReached = x + (m_ClientSize * m_shadowScale).x < 0;
-				}
-				break;
-				case ScreenEdgeDirection::Bottom:
-				{
-					// 下から始まったら左下が画面外に出るまで
-					isReached = y + (m_ClientSize * m_shadowScale).y < 0;
-				}
-				break;
-				case ScreenEdgeDirection::Left:
-				{
-					// 左から始まったら左上が画面外に出るまで
-					isReached = x > Scene::Width() + (m_ClientSize * Math::AbsDiff(1.0, m_shadowScale)).x;
-				}
-				break;
+					case ScreenEdgeDirection::Top:
+					{
+						// 上から始まったら左上が画面外に出るまで
+						isReached = y > (Scene::Height() + (m_ClientSize * Math::AbsDiff(1.0, m_shadowScale)).y);
+						break;
+					}
+					case ScreenEdgeDirection::Right:
+					{
+						// 右から始まったら右上が画面外に出るまで
+						isReached = x + (m_ClientSize * m_shadowScale).x < 0;
+						break;
+					}
+					case ScreenEdgeDirection::Bottom:
+					{
+						// 下から始まったら左下が画面外に出るまで
+						isReached = y + (m_ClientSize * m_shadowScale).y < 0;
+						break;
+					}
+					case ScreenEdgeDirection::Left:
+					{
+						// 左から始まったら左上が画面外に出るまで
+						isReached = x > Scene::Width() + (m_ClientSize * Math::AbsDiff(1.0, m_shadowScale)).x;
+						break;
+					}
 				}
 
 				// 向こう側に到着したら
@@ -218,13 +219,14 @@ namespace UFOCat::Core
 				else
 				{
 					// 到着するまで動かす
-					// なぜか（おそらく角度の回転方向が逆だった）計算上速度が逆のベクトルで出てしまったのでここで補正
+					// 計算上速度が逆のベクトルで出てしまったのでここで補正
+					// おそらく角度の回転方向が逆だった
 					position.moveBy(-velocity * Scene::DeltaTime());
 				}
-			}
-			break;
 
-			default: return *this;
+				break;
+			}
+			default: break;
 		}
 
 		return *this;
@@ -238,6 +240,7 @@ namespace UFOCat::Core
 			// 隠れている（見えない）とき
 			case AppearanceState::Hidden:
 			{
+				// 透明にする
 				m_textureAlpha = 0;
 
 				// 出現周期だけ経過したら
@@ -249,9 +252,9 @@ namespace UFOCat::Core
 					// フェードインに移行する
 					m_appearanceState = AppearanceState::In;
 				}, period);
-			}
-			break;
 
+				return *this;
+			}
 			// フェードインしているとき
 			case AppearanceState::In:
 			{
@@ -275,9 +278,9 @@ namespace UFOCat::Core
 					const double t = m_stopwatch.now() / fadeIn.count();
 					m_textureAlpha = Min(fadeInFunc(Min(t, 1.0)), 1.0);
 				}
-			}
-			break;
 
+				return *this;
+			}
 			// 見えているとき
 			case AppearanceState::Visible:
 			{
@@ -285,12 +288,13 @@ namespace UFOCat::Core
 
 				m_stopwatch.setTimeout([&]()
 				{
-					// フェードアウト状態に移行
+					// 一定周期が経過したらフェードアウト状態に移行
 					m_appearanceState = AppearanceState::Out;
 				}, period);
-			}
-			break;
 
+				return *this;
+			}
+			// フェードアウトしているとき
 			case AppearanceState::Out:
 			{
 				// 手動で時間を経過させる
@@ -306,33 +310,31 @@ namespace UFOCat::Core
 					const double t = m_stopwatch.now() / fadeOut.count();
 					m_textureAlpha = Max(fadeOutFunc(Max(1.0 - t, 0.0)), 0.0);
 				}
+
+				return *this;
 			}
-			break;
-
-			default: break;
+			default: return *this;
 		}
-
-		return *this;
 	}
 
-	CatObject &CatObject::appear(Duration period, Duration fadeIn, Duration fadeOut, const Rect& range)
+	CatObject &CatObject::appear(Duration period, Duration fadeIn, Duration fadeOut, const Rect &range)
 	{
 		return appear(period, Easing::Linear, fadeIn, Easing::Linear, fadeOut, range);
 	}
 
-	CatObject &CatObject::appear(Duration period, Action::EasingFunction fadeFunc, Duration fade, const Rect& range)
+	CatObject &CatObject::appear(Duration period, Action::EasingFunction fadeFunc, Duration fade, const Rect &range)
 	{
 		return appear(period, fadeFunc, fade, fadeFunc, fade, range);
 	}
 
-	CatObject &CatObject::appear(Duration period, Duration fade, const Rect& range)
+	CatObject &CatObject::appear(Duration period, Duration fade, const Rect &range)
 	{
 		return appear(period, fade, fade, range);
 	}
 
 	CatObject &CatObject::appear(Duration period, Action::EasingFunction fadeInFunc, Duration fadeIn, Action::EasingFunction fadeOutFunc, Duration fadeOut)
 	{
-		return appear(period, fadeInFunc, fadeIn, fadeOutFunc, fadeOut, getMaxDisplayedArea());
+		return appear(period, fadeInFunc, fadeIn, fadeOutFunc, fadeOut, getMaxDisplayArea());
 	}
 
 	CatObject &CatObject::appear(Duration period, Duration fadeIn, Duration fadeOut)
@@ -398,44 +400,40 @@ namespace UFOCat::Core
 						// 上：y だけ領域外
 						case ScreenEdgeDirection::Top:
 						{
-							x = Random(0, getMaxDisplayedArea().w);
+							x = Random(0, getMaxDisplayArea().w);
 							y = -(m_ClientSize * m_shadowScale).y;
+							break;
 						}
-						break;
-
 						// 右：x だけ領域外
 						case ScreenEdgeDirection::Right:
 						{
 							x = Scene::Width() + (m_ClientSize * Math::AbsDiff(1.0, m_shadowScale)).x;
-							y = Random(0, getMaxDisplayedArea().h);
+							y = Random(0, getMaxDisplayArea().h);
+							break;
 						}
-						break;
-
 						// 下：y だけ領域外
 						case ScreenEdgeDirection::Bottom:
 						{
-							x = Random(0, getMaxDisplayedArea().w);
+							x = Random(0, getMaxDisplayArea().w);
 							y = Scene::Height() + (m_ClientSize * Math::AbsDiff(1.0, m_shadowScale)).y;
+							break;
 						}
-						break;
-
 						// 左：x だけ領域外
 						case ScreenEdgeDirection::Left:
 						{
 							x = -(m_ClientSize * m_shadowScale).x;
-							y = Random(0, getMaxDisplayedArea().h);
+							y = Random(0, getMaxDisplayArea().h);
+							break;
 						}
-						break;
-
 						default: return *this;
 					}
 
 					// 抽選が終わったら出現状態へ移行
 					m_appearanceState = AppearanceState::In;
 				}
-			}
-			break;
 
+				return *this;
+			}
 			// 出現しようとしている時
 			case AppearanceState::In:
 			{
@@ -445,6 +443,7 @@ namespace UFOCat::Core
 					// 完全に見える状態へ移行
 					m_appearanceState = AppearanceState::Visible;
 				}
+				// それまでの間は位置を移動させる
 				else
 				{
 					// 線形補間に渡すパラメータ
@@ -459,36 +458,32 @@ namespace UFOCat::Core
 						{
 							// 位置は線形補間ではみだし量に相当する位置まで移動させる
 							position = position.lerp({ x, overflow[0] }, t);
+							break;
 						}
-						break;
-
 						// 1
 						case ScreenEdgeDirection::Right:
 						{
-							position = position.lerp({ getMaxDisplayedArea().w - overflow[1], y }, t);
+							position = position.lerp({ getMaxDisplayArea().w - overflow[1], y }, t);
+							break;
 						}
-						break;
-
 						// 2
 						case ScreenEdgeDirection::Bottom:
 						{
-							position = position.lerp({ x, getMaxDisplayedArea().h - overflow[2] }, t);
+							position = position.lerp({ x, getMaxDisplayArea().h - overflow[2] }, t);
+							break;
 						}
-						break;
-
 						// 3
 						case ScreenEdgeDirection::Left:
 						{
 							position = position.lerp({ overflow[3], y }, t);
+							break;
 						}
-						break;
-
 						default: return *this;
 					}
 				}
-			}
-			break;
 
+				return *this;
+			}
 			// 見えている時
 			case AppearanceState::Visible:
 			{
@@ -496,9 +491,9 @@ namespace UFOCat::Core
 				{
 					m_appearanceState = AppearanceState::Out;
 				}
-			}
-			break;
 
+				return *this;
+			}
 			// 退去しようとしている時
 			case AppearanceState::Out:
 			{
@@ -511,62 +506,57 @@ namespace UFOCat::Core
 					// パラメータ
 					double t = Min(outFunc(m_stopwatch.now() / out.count()), 1.0);
 
+					// 各画面端方向の表示されない位置まで線形補間で移動させる
 					switch (m_edgeDirection)
 					{
 						case ScreenEdgeDirection::Top:
 						{
 							position = position.lerp({ x, -m_ClientSize.y }, t);
+							break;
 						}
-						break;
-
 						case ScreenEdgeDirection::Right:
 						{
 							position = position.lerp({ Scene::Width(), y }, t);
+							break;
 						}
-						break;
-
 						case ScreenEdgeDirection::Bottom:
 						{
 							position = position.lerp({ x, Scene::Height() }, t);
+							break;
 						}
-						break;
-
 						case ScreenEdgeDirection::Left:
 						{
 							position = position.lerp({ -m_ClientSize.x , y }, t);
+							break;
 						}
-						break;
-
 						default: return *this;
 					}
 				}
-			}
-			break;
 
+				return *this;
+			}
 			default: return *this;
 		}
-
-		return *this;
 	}
 
-	CatObject &CatObject::appearFromEdge(Duration period, Duration in, Duration out, const std::array<double, 4>& overflow)
+	CatObject &CatObject::appearFromEdge(Duration period, Duration in, Duration out, const std::array<double, 4> &overflow)
 	{
 		return appearFromEdge(period, Easing::Linear, in, Easing::Linear, out, overflow);
 	}
 
-	CatObject &CatObject::appearFromEdge(Duration period, Action::EasingFunction inAndOutFunc, Duration inAndOut, const std::array<double, 4>& overflow)
+	CatObject &CatObject::appearFromEdge(Duration period, Action::EasingFunction inAndOutFunc, Duration inAndOut, const std::array<double, 4> &overflow)
 	{
 		return appearFromEdge(period, inAndOutFunc, inAndOut, inAndOutFunc, inAndOut, overflow);
 	}
 
-	CatObject &CatObject::appearFromEdge(Duration period, Duration inAndOut, const std::array<double, 4>& overflow)
+	CatObject &CatObject::appearFromEdge(Duration period, Duration inAndOut, const std::array<double, 4> &overflow)
 	{
 		return appearFromEdge(period, inAndOut, inAndOut, overflow);
 	}
 
 	CatObject &CatObject::act()
 	{
-		// m_actionData.params (variant の型)に格納されている引数をもとにアクションを呼び出す
+		// m_actionData.params (variant の型) に格納されている引数をもとにアクションを呼び出す
 		return std::visit(InvokeAction{ *this }, m_actionData.params);
 	}
 
@@ -577,21 +567,23 @@ namespace UFOCat::Core
 
 		// 描画範囲をクリップ -> スケール変更 -> 任意位置にアルファ値を乗算して描画
 		m_Texture(m_ClipArea).scaled(m_Scale).draw(position, ColorF{ 1.0, m_textureAlpha });
+
 		return *this;
 	}
 
 	CatObject &CatObject::drawShadow(ColorF color, Vec2 offset, double scale)
 	{
 		// 影のスケールを更新
-		// ほかの関数で影も含めた大きさを知るための処理
+		// ほかの関数で影も含めた大きさを知るための処理です
 		m_shadowScale = scale;
 
 		// 猫のテクスチャの描画スケールと影のスケールを加味したもの
 		const double realScale = m_shadowScale * m_Scale;
 
-		// 実際描画されるときの TextureRegion (draw() 参照)
+		// 実際描画されるときの TextureRegion (this.draw() 参照)
 		const auto &region = m_Texture(m_ClipArea).scaled(m_Scale);
 
+		// 描画位置が猫の中心 (+オフセット) になるように設定しながら、現在の透明度も適用して描画
 		m_dropShadow.draw(region, color.withA(m_textureAlpha), position + region.region().size / 2, offset, m_shadowScale);
 
 		return *this;
@@ -608,13 +600,17 @@ namespace UFOCat::Core
 		// In, Visible, Out の場合は見えているとみなす
 		switch (m_appearanceState)
 		{
-		case AppearanceState::In:
-		case AppearanceState::Visible:
-		case AppearanceState::Out:
-			return true;
-		case AppearanceState::Hidden:
-		default:
-			return false;
+			case AppearanceState::In:
+			case AppearanceState::Visible:
+			case AppearanceState::Out:
+			{
+				return true;
+			}
+			case AppearanceState::Hidden:
+			default:
+			{
+				return false;
+			}
 		}
 	}
 
@@ -629,7 +625,7 @@ namespace UFOCat::Core
 		return CatObject{ *this };
 	}
 
-	std::tuple<Vec2, Vec2> CatObject::m_changeScreenEdgePosition()
+	std::tuple<Vec2, Vec2> CatObject::m_choiceScreenEdgePosition()
 	{
 		Vec2 start{}, goal{};
 
@@ -637,35 +633,36 @@ namespace UFOCat::Core
 		switch (m_edgeDirection = ToEnum<ScreenEdgeDirection>(Random(0, 3)))
 		{
 			// 上側なら下側を目指す
-		case ScreenEdgeDirection::Top:
-		{
-			start = RandomVec2(m_screenEdgeArea.top());
-			goal = RandomVec2(m_screenEdgeArea.bottom());
-		}
-		break;
-		// 右側なら左側を目指す
-		case ScreenEdgeDirection::Right:
-		{
-			start = RandomVec2(m_screenEdgeArea.right());
-			m_crossData.goal = RandomVec2(m_screenEdgeArea.left());
-		}
-		break;
-		// 下側なら上側を目指す
-		case ScreenEdgeDirection::Bottom:
-		{
-			start = RandomVec2(m_screenEdgeArea.bottom());
-			goal = RandomVec2(m_screenEdgeArea.top());
-		}
-		break;
-		// 左側なら右側を目指す
-		case ScreenEdgeDirection::Left:
-		{
-			start = RandomVec2(m_screenEdgeArea.left());
-			goal = RandomVec2(m_screenEdgeArea.right());
-		}
-		break;
+			case ScreenEdgeDirection::Top:
+			{
+				start = RandomVec2(m_screenEdgeArea.top());
+				goal = RandomVec2(m_screenEdgeArea.bottom());
+				break;
+			}
+			// 右側なら左側を目指す
+			case ScreenEdgeDirection::Right:
+			{
+				start = RandomVec2(m_screenEdgeArea.right());
+				m_crossData.goal = RandomVec2(m_screenEdgeArea.left());
+				break;
+			}
+			// 下側なら上側を目指す
+			case ScreenEdgeDirection::Bottom:
+			{
+				start = RandomVec2(m_screenEdgeArea.bottom());
+				goal = RandomVec2(m_screenEdgeArea.top());
+				break;
+			}
+			// 左側なら右側を目指す
+			case ScreenEdgeDirection::Left:
+			{
+				start = RandomVec2(m_screenEdgeArea.left());
+				goal = RandomVec2(m_screenEdgeArea.right());
+				break;
+			}
 		}
 
+		// 現在の位置をスタート地点に設定しておく
 		position = start;
 
 		return std::tie(start, goal);
