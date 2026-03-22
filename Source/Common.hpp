@@ -73,7 +73,7 @@ namespace UFOCat
 	/// @param circleScale 円のスケール
 	/// @param color 色
 	/// @note https://siv3d.github.io/ja-jp/reference/game_tips/
-	void DrawPolkaDotBackground(int32 cellSize, double circleScale, const ColorF& color);
+	void DrawPolkaDotBackground(int32 cellSize, double circleScale, const ColorF &color);
 
 	/// @brief アセット登録された猫の名前を ID から取得する
 	/// @param id UFO猫の ID

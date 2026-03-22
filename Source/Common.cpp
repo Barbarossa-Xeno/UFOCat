@@ -10,7 +10,7 @@ namespace UFOCat
 		}
 	}
 
-	void DrawPolkaDotBackground(int32 cellSize, double circleScale, const ColorF& color)
+	void DrawPolkaDotBackground(int32 cellSize, double circleScale, const ColorF &color)
 	{
 		for (int32 y = 0; y < (Scene::Height() / cellSize); ++y)
 		{
@@ -37,7 +37,7 @@ namespace UFOCat
 		// もし読み込みに失敗したら
 		if (not json)
 		{
-			throw Error{ U"Failed to load `cat_data.json`" };
+			throw Error{ U"cat_data.json の読み込みに失敗しました。" };
 		}
 
 		// data プロパティの中に配列として格納されている（元JSON参照）
@@ -46,107 +46,112 @@ namespace UFOCat
 		// 結果格納用
 		Array<CatData> results;
 
-		if (data.getType() == JSONValueType::Array)
+		if (not data.isArray())
 		{
-			for (const auto& d : data)
-			{
-				if (d.value.getType() == JSONValueType::Object)
-				{
-					size_t id = d.value[U"id"].get<size_t>();
-					String breed = d.value[U"breed"].get<String>();
-
-					// 以後、仮の文字列格納用変数は data_ で始める
-					String data_color = d.value[U"color"].get<String>();
-					String pattern = d.value[U"pattern"].get<String>();
-
-					// ダイリュートかどうか
-					bool isDilute = data_color.substr(0, 2) == U"D_";
-
-					// ダイリュートなら先頭の "D_" を取り除く
-					data_color = isDilute ? data_color.substr(2) : data_color;
-
-					// テーブルをつくり、色データを区切り文字で分割して取得しながら記録
-					HashTable<String, Color> colors;
-					data_color.split(U'|').each([&isDilute, &colors](const auto& name)
-					{
-						Color temp = Palette::White;
-
-						if (name == U"白")
-						{
-							temp = Color{ U"#f2fafe" };
-						}
-						else if (name == U"黒")
-						{
-							temp = Color{ U"#272a2e" };
-						}
-						else if (name == U"灰")
-						{
-							temp = Color{ U"#9da5a9" };
-						}
-						else if (name == U"うす茶")
-						{
-							temp = Color{ U"#e8ae77" };
-						}
-						else if (name == U"おうど")
-						{
-							temp = Color{ U"#a87e39" };
-						}
-						else if (name == U"オレンジ")
-						{
-							temp = Color{ U"#d67d36" };
-						}
-						else if (name == U"クリーム")
-						{
-							temp = Color{ U"#e5d5b6" };
-						}
-						else if (name == U"きじ")
-						{
-							temp = Color{ U"#7e7360" };
-						}
-						else if (name == U"銀")
-						{
-							temp = Color{ U"#a8b7c1" };
-						}
-						else if (name == U"茶")
-						{
-							temp = Color{ U"#805308" };
-						}
-						else if (name == U"フォーン")
-						{
-							temp = Color{ U"#d3c5a8" };
-						}
-						else if (name == U"灰青")
-						{
-							temp = Color{ U"#70748d" };
-						}
-						else if (name == U"金")
-						{
-							temp = Color{ U"#aa9263" };
-						}
-
-						if (isDilute)
-						{
-							HSV hsv{ temp };
-							// 彩度を半分に、明度を少し上げる
-							hsv.s *= 0.5;
-							hsv.v += 0.1;
-							temp = Color{ hsv };
-						}
-
-						colors[name] = temp;
-					});
-				
-					bool isLongHair = d.value[U"isLongHair"].get<bool>();
-
-					// 作成したインスタンスを格納
-					results << CatData{ id, breed, colors, pattern, isLongHair };
-				}
-			}
-
-			return results;
+			throw Error{ U"cat_data.json の `data` プロパティが配列形式になっていません。" };
 		}
 
-		throw Error{ U"Parameter is not JSONValueType::Array." };
+		for (const auto &d : data)
+		{
+			if (not d.value.isObject())
+			{
+				throw Error{ U"cat_data.json の `data` のいずれかの要素がオブジェクト形式になっていません。\n{}"_fmt(d.value.format()) };
+			};
+
+			size_t id = d.value[U"id"].get<size_t>();
+			String breed = d.value[U"breed"].get<String>();
+
+			// 以後、仮の文字列格納用変数は data_ で始める
+			String data_color = d.value[U"color"].get<String>();
+			String pattern = d.value[U"pattern"].get<String>();
+
+			// ダイリュートかどうか
+			bool isDilute = data_color.substr(0, 2) == U"D_";
+
+			// ダイリュートなら先頭の "D_" を取り除く
+			data_color = isDilute ? data_color.substr(2) : data_color;
+
+			// テーブルをつくり、色データを区切り文字で分割して取得しながら記録
+			HashTable<String, Color> colors;
+
+			for (const auto &name : data_color.split(U'|'))
+			{
+				Color temp = Palette::White;
+
+				if (name == U"白")
+				{
+					temp = Color{ U"#f2fafe" };
+				}
+				else if (name == U"黒")
+				{
+					temp = Color{ U"#272a2e" };
+				}
+				else if (name == U"灰")
+				{
+					temp = Color{ U"#9da5a9" };
+				}
+				else if (name == U"うす茶")
+				{
+					temp = Color{ U"#e8ae77" };
+				}
+				else if (name == U"おうど")
+				{
+					temp = Color{ U"#a87e39" };
+				}
+				else if (name == U"オレンジ")
+				{
+					temp = Color{ U"#d67d36" };
+				}
+				else if (name == U"クリーム")
+				{
+					temp = Color{ U"#e5d5b6" };
+				}
+				else if (name == U"きじ")
+				{
+					temp = Color{ U"#7e7360" };
+				}
+				else if (name == U"銀")
+				{
+					temp = Color{ U"#a8b7c1" };
+				}
+				else if (name == U"茶")
+				{
+					temp = Color{ U"#805308" };
+				}
+				else if (name == U"フォーン")
+				{
+					temp = Color{ U"#d3c5a8" };
+				}
+				else if (name == U"灰青")
+				{
+					temp = Color{ U"#70748d" };
+				}
+				else if (name == U"金")
+				{
+					temp = Color{ U"#aa9263" };
+				}
+
+				if (isDilute)
+				{
+					HSV hsv{ temp };
+
+					// ダイリュートは薄い毛色なので
+					// 彩度を半分に、明度を少し上げる処理を施す
+					hsv.s *= 0.5;
+					hsv.v += 0.1;
+					temp = Color{ hsv };
+				}
+
+				colors[name] = temp;
+			}
+				
+			bool isLongHair = d.value[U"isLongHair"].get<bool>();
+
+			// 作成したインスタンスを格納
+			results << CatData{ id, breed, colors, pattern, isLongHair };
+		}
+
+		return results;
 	}
 
 	Array<LevelData> LoadLevelData()
@@ -157,344 +162,241 @@ namespace UFOCat
 		// もし読み込みに失敗したら
 		if (not json)
 		{
-			throw Error{ U"Failed to load `level_data.json`" };
+			throw Error{ U"level_data.json の読み込みに失敗しました。" };
 		}
 
 		// data プロパティの中に配列として格納されている各レベルのデータ（元JSON参照）
-		const auto&& data = json[U"data"];
+		// まずは、配列形式でいろんなPhaseのデータが入っているのが前提
+		if (not json[U"data"].isArray())
+		{
+			throw Error(U"level_data.json の `data` プロパティが配列形式になっていません。");
+		}
 
 		// 結果格納用
 		Array<LevelData> result;
 
-		// まずは、配列形式でいろんなPhaseのデータが入っているのが前提
-		if (data.isArray())
+		// JSONデータの全てを走査
+		for (const auto &data : json[U"data"])
 		{
-			// JSONデータの全てを走査
-			for (const auto& d : data)
+			if (not data.value.isObject())
 			{
-				if (d.value.isObject())
+				throw Error(U"level_data.json の `data` のいずれかの要素がオブジェクト形式になっていません。\n{}"_fmt(data.value.format()));
+			}
+
+			/*
+			 * 以後、JSONから抽出する仮の文字列格納用変数は data_ で始める
+			 * JSONのプロパティ値が
+			 * - 数値型の場合はs3d::JSON の get<uint32>() を使ってパース
+			 * - 文字列型の場合は、複数の型表現を包括しているため
+			 *	 一旦 getString() で文字列として取得し、
+			 *	 Duration や Rect、EasingFunction に変換する
+			 */
+
+			 // 1レベルの時間制限
+			Duration timeLimit = LevelData::ParseDuration(data.value[U"timeLimit"].get<String>());
+
+			// 類似度
+			uint32 similarity = data.value[U"similarity"].get<uint32>();
+
+			// 品種データがオブジェクト形式じゃないならエラー
+			if (not data.value[U"breedData"].isObject())
+			{
+				throw Error(U"level_data.json[`data`] 内の `breedData` プロパティがオブジェクト形式になっていません。\n{}"_fmt(data.value[U"breedData"].format()));
+			}
+
+			// 品種データ
+			LevelData::BreedData breedData
+			{
+				data.value[U"breedData"][U"similar"].get<uint32>(),
+				data.value[U"breedData"][U"other"].get<uint32>()
+			};
+
+			// 出現ペースのデータがオブジェクト形式じゃないならエラー
+			if (not data.value[U"intervalData"].isObject())
+			{
+				throw Error(U"level_data.json[`data`] 内の `intervalData` プロパティがオブジェクト形式になっていません。\n{}"_fmt(data.value[U"intervalData"].format()));
+			}
+
+			// 出現ペース
+			LevelData::IntervalData intervalData
+			{
+				data.value[U"intervalData"][U"count"].get<uint32>(),
+				LevelData::ParseDuration(data.value[U"intervalData"][U"period"].get<String>())
+			};
+
+			// アクションデータが配列形式じゃないならエラー
+			if (not data.value[U"actionData"].isArray())
+			{
+				throw Error(U"level_data.json[`data`] 内の `actionData` プロパティが配列形式になっていません。\n{}"_fmt(data.value[U"actionData"].format()));
+			}
+
+			// このレベルで使われるアクションのデータを格納するリスト
+			Array<LevelData::ActionData> actionDataList;
+
+			// アクションデータを全走査
+			for (const auto &actionData : data.value[U"actionData"])
+			{
+				// そのアクションの引数リストが配列か nullでないならエラー
+				// null の場合引数無しのアクションということであり、bound に該当する
+				if (not actionData.value[U"params"].isArray() and
+					not actionData.value[U"params"].isNull())
 				{
-					/*
-					 * 以後、JSONから抽出する仮の文字列格納用変数は data_ で始める
-					 * JSONのプロパティ値が
-					 *	数値型の場合はs3d::JSON の get<uint32>() を使ってパース
-					 *	文字列型の場合は、複数の型表現を包括しているため
-					 *	 一旦 getString() で文字列として取得し、
-					 *	 Duration や Rect、EasingFunction に変換する
-					 */
-
-					 // 1レベルの時間制限
-					Duration timeLimit = LevelData::ParseDuration(d.value[U"timeLimit"].get<String>());
-
-					// 類似度
-					uint32 similarity = d.value[U"similarity"].get<uint32>();
-
-					// 品種
-					LevelData::BreedData breedData{ };
-
-					// 品種データを読み込む
-					if (const auto& data_breedData = d.value[U"breedData"];
-						data_breedData.isObject())
-					{
-						breedData.similar = data_breedData[U"similar"].get<uint32>();
-						breedData.other = data_breedData[U"other"].get<uint32>();
-					}
-					else
-					{
-						throw Error(U"`breedData` is not object type.");
-					}
-
-					// 出現ペース
-					LevelData::IntervalData intervalData{ };
-
-					// 出現ペースのデータを読み込む
-					if (const auto& data_intervalData = d.value[U"intervalData"];
-						data_intervalData.isObject())
-					{
-						intervalData.count = data_intervalData[U"count"].get<uint32>();
-						intervalData.period = LevelData::ParseDuration(data_intervalData[U"period"].getString());
-					}
-					else
-					{
-						throw Error(U"`intervalData` is not object type.");
-					}
-
-					// このレベルでの使用アクション
-					Array<LevelData::ActionData> actionDataList{ };
-
-					// 配列であることを確認してからアクションデータを全走査
-					if (const auto& data_actionData = d.value[U"actionData"];
-						data_actionData.isArray())
-					{
-						for (const auto& md : data_actionData)
-						{
-							// アクション名（メソッド名）
-							const String name = md.value[U"name"].getString();
-
-							// オーバーロード番号（何がどれに対応するかは、`cact` 参照）
-							const size_t overload = md.value[U"overload"].get<size_t>();
-
-							// `params` プロパティを格納する仮変数
-							const auto& data_params = md.value[U"params"];
-
-							// 発生確率
-							const double probability = md.value[U"probability"].get<double>();
-
-							/* -- こっから実際の引数として使えるタプルにするためのパース処理 -- */
-
-							// 引数リスト
-							Action::Generic params;
-
-							// 配列形式であることを確認
-							if (data_params.isArray())
-							{
-								// タプルの N 番目の要素を variant を外して取り出す
-								// tparam: N - 取り出す要素のインデックス
-								// tparam: TTuple - 取り出す対象のタプル型
-								// param: source - `Phase::ParseParameters()` の戻り値として得られた tuple (中身 variant)
-								const auto get_at = []<size_t N, typename TTuple>(const auto &source)
-								{
-									// source (タプル) の N 番目の要素を取り出す
-									// これは、variant<> であることが期待される
-									auto &&element = std::get<N>(source);
-
-									// TTuple の N 番目の要素の型を取得
-									// この型は、element の variant に格納されている本来の型と同じはず
-									using RealType = std::tuple_element_t<N, TTuple>;
-
-									// つまりこれは variant を外す処理となる
-									return std::get<RealType>(element);
-								};
-								// ジェネリックラムダのテンプレートは、実質ローカル関数でもテンプレートが使えるので便利だけど
-								// 明示的にテンプレートを指定するのは、operator() を使わなければならないので少し面倒
-
-								// 各アクションごとに場合分けしてパース処理
-								if (name == U"bound")
-								{
-									// `bound` は引数を取らないので、monostate をセットしておく
-									params = std::monostate{};
-								}
-								else if (name == U"cross")
-								{
-									switch (overload)
-									{
-										case 0:
-										{
-											auto p = LevelData::ParseParameters<Action::Cross::_0>(data_params);
-											params = std::make_tuple(
-												get_at.operator()<0, Action::Cross::_0>(p),
-												get_at.operator()<1, Action::Cross::_0>(p)
-											);
-											break;
-										}
-										case 1:
-										{
-											auto p = LevelData::ParseParameters<Action::Cross::_1>(data_params);
-											params = std::make_tuple(
-												get_at.operator()<0, Action::Cross::_1>(p)
-											);
-											break;
-										}
-										default:
-										{
-											throw Error(U"`cross` overload index is invalid. (valid range: 0 ~ {})"_fmt(Action::Cross::Count - 1));
-										}
-									}
-								}
-								else if (name == U"appear")
-								{
-									switch (overload)
-									{
-										case 0:
-										{
-											auto p = LevelData::ParseParameters<Action::Appear::_0>(data_params);
-											// 直書きでタプル作るのはちょっとダサいけど
-											// 固定長で作るという制約上しゃあないところが大きい
-											params = std::make_tuple
-											(
-												get_at.operator()<0, Action::Appear::_0>(p),
-												get_at.operator()<1, Action::Appear::_0>(p),
-												get_at.operator()<2, Action::Appear::_0>(p),
-												get_at.operator()<3, Action::Appear::_0>(p),
-												get_at.operator()<4, Action::Appear::_0>(p),
-												get_at.operator()<5, Action::Appear::_0>(p)
-											);
-											break;
-										}
-										case 1:
-										{
-											auto p = LevelData::ParseParameters<Action::Appear::_1>(data_params);
-											params = std::make_tuple
-											(
-												get_at.operator()<0, Action::Appear::_1>(p),
-												get_at.operator()<1, Action::Appear::_1>(p),
-												get_at.operator()<2, Action::Appear::_1>(p),
-												get_at.operator()<3, Action::Appear::_1>(p)
-											);
-											break;
-										}
-										case 2:
-										{
-											auto p = LevelData::ParseParameters<Action::Appear::_2>(data_params);
-											params = std::make_tuple
-											(
-												get_at.operator()<0, Action::Appear::_2>(p),
-												get_at.operator()<1, Action::Appear::_2>(p),
-												get_at.operator()<2, Action::Appear::_2>(p),
-												get_at.operator()<3, Action::Appear::_2>(p)
-											);
-											break;
-										}
-										case 3:
-										{
-											auto p = LevelData::ParseParameters<Action::Appear::_3>(data_params);
-											params = std::make_tuple
-											(
-												get_at.operator()<0, Action::Appear::_3>(p),
-												get_at.operator()<1, Action::Appear::_3>(p),
-												get_at.operator()<2, Action::Appear::_3>(p)
-											);
-											break;
-										}
-										case 4:
-										{
-											auto p = LevelData::ParseParameters<Action::Appear::_4>(data_params);
-											params = std::make_tuple
-											(
-												get_at.operator()<0, Action::Appear::_4>(p),
-												get_at.operator()<1, Action::Appear::_4>(p),
-												get_at.operator()<2, Action::Appear::_4>(p),
-												get_at.operator()<3, Action::Appear::_4>(p),
-												get_at.operator()<4, Action::Appear::_4>(p)
-											);
-											break;
-										}
-										case 5:
-										{
-											auto p = LevelData::ParseParameters<Action::Appear::_5>(data_params);
-											params = std::make_tuple
-											(
-												get_at.operator()<0, Action::Appear::_5>(p),
-												get_at.operator()<1, Action::Appear::_5>(p),
-												get_at.operator()<2, Action::Appear::_5>(p)
-											);
-											break;
-										}
-										case 6:
-										{
-											auto p = LevelData::ParseParameters<Action::Appear::_6>(data_params);
-											params = std::make_tuple
-											(
-												get_at.operator()<0, Action::Appear::_6>(p),
-												get_at.operator()<1, Action::Appear::_6>(p),
-												get_at.operator()<2, Action::Appear::_6>(p)
-											);
-											break;
-										}
-										case 7:
-										{
-											auto p = LevelData::ParseParameters<Action::Appear::_7>(data_params);
-											params = std::make_tuple
-											(
-												get_at.operator()<0, Action::Appear::_7>(p),
-												get_at.operator()<1, Action::Appear::_7>(p)
-											);
-											break;
-										}
-										default:
-										{
-											throw Error(U"`appear` overload index is invalid. (valid range: 0 ~ {})"_fmt(Action::Appear::Count - 1));
-										}
-									}
-								}
-								else if (name == U"appearFromEdge")
-								{
-									switch (overload)
-									{
-										case 0:
-										{
-											auto p = LevelData::ParseParameters<Action::AppearFromEdge::_0>(data_params);
-											params = std::make_tuple
-											(
-												get_at.operator()<0, Action::AppearFromEdge::_0>(p),
-												get_at.operator()<1, Action::AppearFromEdge::_0>(p),
-												get_at.operator()<2, Action::AppearFromEdge::_0>(p),
-												get_at.operator()<3, Action::AppearFromEdge::_0>(p),
-												get_at.operator()<4, Action::AppearFromEdge::_0>(p),
-												get_at.operator()<5, Action::AppearFromEdge::_0>(p)
-											);
-											break;
-										}
-										case 1:
-										{
-											auto p = LevelData::ParseParameters<Action::AppearFromEdge::_1>(data_params);
-											params = std::make_tuple
-											(
-												get_at.operator()<0, Action::AppearFromEdge::_1>(p),
-												get_at.operator()<1, Action::AppearFromEdge::_1>(p),
-												get_at.operator()<2, Action::AppearFromEdge::_1>(p),
-												get_at.operator()<3, Action::AppearFromEdge::_1>(p)
-											);
-											break;
-										}
-										case 2:
-										{
-											auto p = LevelData::ParseParameters<Action::AppearFromEdge::_2>(data_params);
-											params = std::make_tuple
-											(
-												get_at.operator()<0, Action::AppearFromEdge::_2>(p),
-												get_at.operator()<1, Action::AppearFromEdge::_2>(p),
-												get_at.operator()<2, Action::AppearFromEdge::_2>(p),
-												get_at.operator()<3, Action::AppearFromEdge::_2>(p)
-											);
-											break;
-										}
-										case 3:
-										{
-											auto p = LevelData::ParseParameters<Action::AppearFromEdge::_3>(data_params);
-											params = std::make_tuple
-											(
-												get_at.operator()<0, Action::AppearFromEdge::_3>(p),
-												get_at.operator()<1, Action::AppearFromEdge::_3>(p),
-												get_at.operator()<2, Action::AppearFromEdge::_3>(p)
-											);
-											break;
-										}
-										default:
-										{
-											throw Error(U"`appearFromEdge` overload index is invalid. (valid range: 0 ~ {})"_fmt(Action::AppearFromEdge::Count - 1));
-										}
-									}
-								}
-								else
-								{
-									throw Error(U"`{}` is not registered as action (method) name."_fmt(name));
-								}
-							}
-
-							// アクションデータのパース1周したら、リストに追加
-							actionDataList << LevelData::ActionData{ name, params, probability };
-						}
-					}
-					else
-					{
-						throw Error(U"`actionData` is not array type.");
-					}
-
-					// 1レベル走査したら、結果に追加
-					result << LevelData{ timeLimit, similarity, breedData, intervalData, actionDataList };
+					throw Error(U"level_data.json[`data`][`actionData`] 内の `params` プロパティが配列形式になっていません。\n{}"_fmt(actionData.value[U"params"].format()));
 				}
 
+				// アクション名（メソッド名）
+				const String &name = actionData.value[U"name"].get<String>();
+
+				// オーバーロード番号（何がどれに対応するかは、`namespace Action` 参照）
+				const size_t overload = actionData.value[U"overload"].get<size_t>();
+
+				// 発生確率
+				const double probability = actionData.value[U"probability"].get<double>();
+
+				/* -- ここから実際の引数として使えるタプルにするためのパース処理 -- */
+
+				// 引数リスト
+				Action::Generic params;
+
+				// 各アクションの動作とシグネチャは `namespace Action` および `Core::CatObject` 参照
+				// `bound: 画面端で跳ね返る`
+				if (name == U"bound")
+				{
+					// 引数無ししかシグネチャがないので monostate
+					params = std::monostate{};
+				}
+				// `cross: 画面縦横断`
+				else if (name == U"cross")
+				{
+					switch (overload)
+					{
+						case 0:
+						{
+							params = LevelData::ParseParameters<Action::Cross::_0>(actionData.value[U"params"]);
+							break;
+						}
+						case 1:
+						{
+							params = LevelData::ParseParameters<Action::Cross::_1>(actionData.value[U"params"]);
+							break;
+						}
+						default:
+						{
+							throw Error(U"level_data.json[`data`][`actionData`][`params`] 内で定義されたアクション `cross` のオーバーロード番号が不正です。"
+										+ U"(有効範囲 : 0 ~ {})\n"_fmt(Action::Cross::Count - 1)
+										+ U"{}"_fmt(actionData.value[U"params"].format()));
+						}
+					}
+				}
+				// `appear: 画面内にランダムに出現`
+				else if (name == U"appear")
+				{
+					switch (overload)
+					{
+						case 0:
+						{
+							params = LevelData::ParseParameters<Action::Appear::_0>(actionData.value[U"params"]);
+							break;
+						}
+						case 1:
+						{
+							params = LevelData::ParseParameters<Action::Appear::_1>(actionData.value[U"params"]);
+							break;
+						}
+						case 2:
+						{
+							params = LevelData::ParseParameters<Action::Appear::_2>(actionData.value[U"params"]);
+							break;
+						}
+						case 3:
+						{
+							params = LevelData::ParseParameters<Action::Appear::_3>(actionData.value[U"params"]);
+							break;
+						}
+						case 4:
+						{
+							params = LevelData::ParseParameters<Action::Appear::_4>(actionData.value[U"params"]);
+							break;
+						}
+						case 5:
+						{
+							params = LevelData::ParseParameters<Action::Appear::_5>(actionData.value[U"params"]);
+							break;
+						}
+						case 6:
+						{
+							params = LevelData::ParseParameters<Action::Appear::_6>(actionData.value[U"params"]);
+							break;
+						}
+						case 7:
+						{
+							params = LevelData::ParseParameters<Action::Appear::_7>(actionData.value[U"params"]);
+							break;
+						}
+						default:
+						{
+							throw Error(U"level_data.json[`data`][`actionData`][`params`] 内で定義されたアクション `appear` のオーバーロード番号が不正です。"
+										+ U"(有効範囲 : 0 ~ {})\n"_fmt(Action::Appear::Count - 1)
+										+ U"{}"_fmt(actionData.value[U"params"].format()));
+						}
+					}
+				}
+				// `appearFromEdge: 画面端からひょっこり出現`
+				else if (name == U"appearFromEdge")
+				{
+					switch (overload)
+					{
+						case 0:
+						{
+							params = LevelData::ParseParameters<Action::AppearFromEdge::_0>(actionData.value[U"params"]);
+							break;
+						}
+						case 1:
+						{
+							params = LevelData::ParseParameters<Action::AppearFromEdge::_1>(actionData.value[U"params"]);
+							break;
+						}
+						case 2:
+						{
+							params = LevelData::ParseParameters<Action::AppearFromEdge::_2>(actionData.value[U"params"]);
+							break;
+						}
+						case 3:
+						{
+							params = LevelData::ParseParameters<Action::AppearFromEdge::_3>(actionData.value[U"params"]);
+							break;
+						}
+						default:
+						{
+							throw Error(U"level_data.json[`data`][`actionData`][`params`] 内で定義されたアクション `appearFromEdge` のオーバーロード番号が不正です。"
+										+ U"(有効範囲 : 0 ~ {})\n"_fmt(Action::AppearFromEdge::Count - 1)
+										+ U"{}"_fmt(actionData.value[U"params"].format()));
+						}
+					}
+				}
+				else
+				{
+					throw Error(U"level_data.json[`data`][`actionData`] 内で定義されたアクションの名前 `{}` は不正です。\n{}"_fmt(name, actionData.value.format()));
+				}
+
+				// アクションデータのパースが1周したら、リストに追加
+				actionDataList << LevelData::ActionData{ name, params, probability };
 			}
-			return result;
+
+			// 1レベル走査したら、結果に追加
+			result << LevelData{ timeLimit, similarity, breedData, intervalData, actionDataList };
 		}
-		throw Error(U"`level_data.json is invalid format.`");
+
+		return result;
 	}
 
 	Array<BackgroundData> LoadBackgrounds()
 	{
 		// 背景画像をイメージとして読み込む
-		auto &&bgs = FileSystem::DirectoryContents(U"texture/background").map([](const String &path) { return Image{ path }; });
+		auto &&bgs = FileSystem::DirectoryContents(U"texture/background").map([](const String &path)
+		{
+			return Image{ path };
+		});
 
 		// 各背景画像のピクセルの色の平均値
 		auto &&means = bgs.map([](const Image &bg)

@@ -119,46 +119,42 @@ namespace UFOCat::Core
 		/// @return 変換したイージング関数のオブジェクト、変換できなければ例外が投げられる
 		static Action::EasingFunction ParseEasing(const String &str);
 
-		/// @brief JSON 配列に対して指定したタプル型 TTuple に対応する値を検証して、アクションの引数として取りうる型およびその要素が入った std::tuple に変換する（中身が std::variant）@n
-		/// paramData は アクションを実行するための引数情報を JSON 配列として表現したものであることが想定されており、その各要素を制約通りにパースした結果をタプルとして返す @n
-		/// このタプルを展開して CatObject のアクションメソッドに渡すことで、** JSON データからアクションを実行できるようになる **
-		/// @tparam TTuple 変換したい引数の構成となるタプル型 名前空間 `cact` に定義されている各アクション（`bound` 以外）のシグネチャを指定する
-		/// @param paramData 解析対象の JSON 配列 TTupleの要素数と一致していなければならない @n
+		/// @brief アクションのシグネチャをあらわしたタプル型 TSignatureTuple を指定して、アクションを実行するための引数データが格納された JSON 配列を検証する @n
+		/// 検証に成功すると 指定した TSignatureTuple と同じ型でデータが格納されたタプルを返す @n
+		/// このタプルを展開して CatObject のアクションメソッドに渡すことで、** JSON データからのアクションの指定を実現する **
+		/// @tparam TSignatureTuple 変換したい引数の構成となるタプル型 名前空間 `cact` に定義されている各アクション（`bound` 以外）のシグネチャを指定する（`bound` は引数なしのため別途処理する）
+		/// @param paramData 解析対象の JSON 配列で、TSignatureTuple の要素数と一致していなければならない @n
 		/// 各要素は: 数値 (uint32 として扱う)、文字列 (Duration, Rect, または Action::EasingFunction を表す形式)、または長さ4の配列 (std::array<double,4>) であることが期待され、合わない場合は例外を投げる
-		/// @return 各要素が TTuple に合う形で構成した tuple（中身 variant） @n 配列の長さや各要素の型が期待と一致しない場合は例外を投げる
-		template <Action::ValidSignature TTuple>
+		/// @return 各要素が TSignatureTuple に合う形で構成した std::tuple @n
+		/// パースが成功して返ってくるこのタプルは Action::Generic に必ず当てはまる
+		/// 配列の長さや各要素の型が期待と一致しない場合は例外を投げる
+		template <Action::ValidSignature TSignatureTuple>
 		static auto ParseParameters(const JSON &paramData)
 		{
 			// JSON 配列の長さと 希望のタプル型の要素数が一致していなかったらエラー
-			if (paramData.size() != std::tuple_size_v<TTuple>)
+			if (paramData.size() != std::tuple_size_v<TSignatureTuple>)
 			{
-				throw Error(U"Specified `paramData` (JSON data) and TTuple is not match length.\n`paramData.size()`: {} - `{}` length: {}"_fmt(paramData.size(), Unicode::Widen(std::string(typeid(TTuple).name())), std::tuple_size_v<TTuple>));
+				throw Error(U"指定されたJSON形式のシグネチャデータが TSignatureTuple ({}) の要素数と一致していません\n"_fmt(Unicode::Widen(std::string(typeid(TSignatureTuple).name())))
+							+ U"`paramData.size()`: {}\n"_fmt(paramData.size())
+							+ U"`{}` length: {}"_fmt(Unicode::Widen(std::string(typeid(TSignatureTuple).name())), std::tuple_size_v<TSignatureTuple>));
 			}
 
-			// 一時的に各要素を取りうる型の variant で格納する配列（長さは TTuple 分）
-			std::array<
-				std::variant<
-					uint32,
-					Duration,
-					Rect,
-					Action::EasingFunction,
-					std::array<double, 4>
-				>,
-				std::tuple_size_v<TTuple>
-			> temp;
+			// 一時的に各要素を取りうる型の variant で格納する配列（長さは TSignatureTuple 分）
+			std::array<Action::VariantParam, std::tuple_size_v<TSignatureTuple>> temp;
 
 			// 各要素を検証しながら対応する位置の temp に格納していく
-			for (size_t i = 0; i < std::tuple_size_v<TTuple>; i++)
+			for (size_t i = 0; i < std::tuple_size_v<TSignatureTuple>; i++)
 			{
+				// 数値だったら uint32 として扱う
 				if (paramData[i].isNumber())
 				{
 					temp[i] = paramData[i].get<uint32>();
 				}
+				// 文字列だったら Duration, Rect, または Action::EasingFunction を表す形式のいずれかであることを期待する
 				else if (paramData[i].isString())
 				{
-					const String& parsed = paramData[i].getString();
-
-					if (IsDuration(parsed))
+					if (const String& parsed = paramData[i].get<String>();
+						IsDuration(parsed))
 					{
 						temp[i] = ParseDuration(parsed);
 					}
@@ -172,7 +168,7 @@ namespace UFOCat::Core
 					}
 					else
 					{
-						throw Error(U"Failed to parse parameter. (Type: {}, ParamIndex: {})"_fmt(Unicode::FromUTF8(typeid(TTuple).name()), i));
+						throw Error(U"パラメータの変換に失敗しました。(Type: {}, ParamIndex: {})"_fmt(Unicode::FromUTF8(typeid(TSignatureTuple).name()), i));
 					}
 				}
 				// 配列だった場合特殊ということにしておく
@@ -192,21 +188,38 @@ namespace UFOCat::Core
 					}
 					else
 					{
-						throw Error(U"Invalid array parameter. `appearFromEdge`'s parameter is allowed [double, double, double, double].");
+						throw Error(U"配列のデータが不正です。 `appearFromEdge` のパラメータに指定できる配列は [double, double, double, double] の形式です。");
 					}
 				}
 				else
 				{
-					throw Error(U"Invalid format of parameter (index: {}) in JSON "_fmt(i));
+					throw Error(U"不正なパラメータです。 (JSON内 index: {})"_fmt(i));
 				}
 			}
 
-			// temp の各要素を取り出してタプルに変換したのを返す
-			// apply はパラメータパックを使って展開できるからこれが便利
-			return std::apply([](auto &&...args)
+			// 各アクションの引数として使用可能な型が格納された配列を、指定したタプルと同じ構成に変換して返すテンプレートラムダ
+			// 第1引数: 変換したい引数の構成となるタプル型を type_identity で包んで渡す
+			// 第2引数: 各アクションの引数として使用可能な型が格納された配列
+			// 戻り値: 指定したタプルと同じ構成に変換されたタプル
+			const auto toSignatureTuple = []<typename ...Ts>
+				(std::type_identity<std::tuple<Ts...>>,
+				 const std::array<Action::VariantParam, sizeof...(Ts)> &variantArray)
+				-> std::tuple<Ts...>
 			{
-				return std::make_tuple(args...);
-			}, temp);
+				return std::apply([](auto &&...args)
+				{
+					// 各 variant から タプルの要素型に対応する型を取り出す
+					// これを fold expression で展開して、タプルを構成する
+					return std::make_tuple(std::get<Ts>(args)...);
+				}, variantArray);
+			};
+			// std::type_identity がポイント。型データを変数のように渡すことができてテンプレートラムダで重宝する上に
+			// パラメータパックでタプルの要素型をテンプレート化しやすく、テクニカル
+			// そしてまさかの「sizeof...」というひとまとまりの演算子でした
+			// https://cpprefjp.github.io/lang/cpp11/variadic_templates.html
+
+			// これで戻り値が TSignatureTuple と同じ構成のタプルになる
+			return toSignatureTuple(std::type_identity<TSignatureTuple>{}, temp);
 		}
 		// 戻り値が auto のせいでテンプレート外で定義できないので、この関数だけヘッダーに定義を書いています
 	};

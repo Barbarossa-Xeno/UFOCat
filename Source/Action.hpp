@@ -1,8 +1,20 @@
 ﻿#pragma once
 
-/// @brief UFO猫がとるアクションについて定義した名前空間
+/// @brief UFO猫がとるアクションについて定義した名前空間 @n
+/// `CatObject` 内の行動系メソッドのシグネチャを型情報として定義しており、
+/// これらはJSONで記述されたレベルデータから動的に行動（関数名、引数）を判定するために使われる
 namespace UFOCat::Action
 {
+	/*
+	 * tuple は、アクション判別後にパラメータパックによって引数を展開するために使われ、
+	 * 各名前空間内のタプルは、対応する行動系メソッドの引数シグネチャを表す。
+	 * そのエイリアスの名前になっている番号は「オーバーロード番号」であり、JSONのレベルデータ内の `overload` プロパティの値と対応している。
+	 * 
+	 * variant は、
+	 * concept は、
+	 */
+
+
 	/// @brief Siv3D のイージング関数の型
 	using EasingFunction = std::function<double(double)>;
 
@@ -25,10 +37,10 @@ namespace UFOCat::Action
 		/// @tparam 登録されたシグネチャとの比較対象
 		template <typename T>
 		concept ValidSignature =
-			(
-				std::same_as<T, _0> or
-				std::same_as<T, _1>
-			);
+		(
+			std::same_as<T, _0> or
+			std::same_as<T, _1>
+		);
 	}
 
 	/// @brief `CatObject::appear()` のシグネチャなど
@@ -68,16 +80,16 @@ namespace UFOCat::Action
 		/// @tparam 登録されたシグネチャとの比較対象
 		template <typename T>
 		concept ValidSignature =
-			(
-				std::same_as<T, _0> or
-				std::same_as<T, _1> or
-				std::same_as<T, _2> or
-				std::same_as<T, _3> or
-				std::same_as<T, _4> or
-				std::same_as<T, _5> or
-				std::same_as<T, _6> or
-				std::same_as<T, _7>
-			);
+		(
+			std::same_as<T, _0> or
+			std::same_as<T, _1> or
+			std::same_as<T, _2> or
+			std::same_as<T, _3> or
+			std::same_as<T, _4> or
+			std::same_as<T, _5> or
+			std::same_as<T, _6> or
+			std::same_as<T, _7>
+		);
 	}
 
 	/// @brief /// @brief `CatObject::appearFromEdge()` のシグネチャなど
@@ -105,13 +117,18 @@ namespace UFOCat::Action
 		/// @tparam 登録されたシグネチャとの比較対象
 		template <typename T>
 		concept ValidSignature =
-			(
-				std::same_as<T, _0> or
-				std::same_as<T, _1> or
-				std::same_as<T, _2> or
-				std::same_as<T, _3>
-			);
+		(
+			std::same_as<T, _0> or
+			std::same_as<T, _1> or
+			std::same_as<T, _2> or
+			std::same_as<T, _3>
+		);
 	}
+
+	/*
+	 * `Generic` は実際のデータ型、`ValidSignature` は制約なだけであって
+	 * 用途はちがうけど両方とも全てのシグネチャを内包する文脈で使う
+	 */
 
 	/// @brief `CatObject` 内全ての行動系メソッドのシグネチャ（猫を行動させるパラメータ）が入る万能型
 	using Generic = std::variant<
@@ -130,4 +147,15 @@ namespace UFOCat::Action
 		Action::Appear::ValidSignature<T> or
 		Action::AppearFromEdge::ValidSignature<T>
 	);
+
+	/// @brief 各アクションの引数として使用可能な型をまとめた variant @n
+	/// 適切にパースされた引数はこの variant のいずれかの型で表されることが期待されており、
+	/// パース後、一時的に引数リストを格納する目的で使える
+	/// @note この variant に登録された型以外はアクションの引数として使わないこと
+	using VariantParam = std::variant<
+		uint32,
+		Duration,
+		Rect,
+		EasingFunction,
+		std::array<double, 4>>;
 }

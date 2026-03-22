@@ -456,8 +456,6 @@
     <Xml Include="App\example\xml\test.xml" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="GUI\Button.hpp" />
-    <ClInclude Include="GUI\Dialog.hpp" />
     <ClInclude Include="GUI\IDrawable.hpp" />
     <ClInclude Include="GUI\MessageBox.hpp" />
     <ClInclude Include="GUI\ProgressBar.hpp" />
@@ -465,7 +463,6 @@
     <ClInclude Include="GUI\Scrollable.hpp" />
     <ClInclude Include="GUI\TextBox.hpp" />
     <ClInclude Include="Source\Action.hpp" />
-    <ClInclude Include="Source\App.hpp" />
     <ClInclude Include="Source\Common.hpp" />
     <ClInclude Include="Source\Core\CatData.hpp" />
     <ClInclude Include="Source\Core\CatObject.hpp" />

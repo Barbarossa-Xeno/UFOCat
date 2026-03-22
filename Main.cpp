@@ -50,21 +50,23 @@ void Main()
 	// ウィンドウの設定
 	Window::SetTitle(U"UFO猫をつかまえろ!!");
 	Window::SetStyle(WindowStyle::Sizable);
-
 	Scene::SetResizeMode(ResizeMode::Keep);
 
+	// アプリケーションの初期化
 	App app;
-
 	app.add<Title>(SceneState::Title);
 	app.add<Wanted>(SceneState::Wanted);
 	app.add<Level>(SceneState::Level);
 	app.add<Result>(SceneState::Result);
-
 	app.init(SceneState::Title, 1s);
 
-	s3d::Effect effect;
-	Util::Stopwatch effectTimer;
-	
+	/// @brief タップエフェクト
+	s3d::Effect tapEffect;
+
+	/// @brief 長押しした時の時間を図ってタップエフェクトを制御するタイマー
+	Util::Stopwatch tapEffectTimer;
+
+	// メインループ
 	while (System::Update())
 	{
 		if (not app.update())
@@ -76,14 +78,17 @@ void Main()
 		{
 			if (MouseL.down())
 			{
-				effect.add<UFOCat::Effect::Bubble>(Cursor::Pos(), 5, 15, 1s, Random(0.0, 360.0), Random(0.2, 0.4));
+				// タップされた瞬間に生成
+				tapEffect.add<UFOCat::Effect::Bubble>(Cursor::Pos(), 5, 15, 1s, Random(0.0, 360.0), Random(0.2, 0.4));
 			}
 			if (MouseL.pressed())
 			{
-				effectTimer.setInterval([&]() { effect.add<UFOCat::Effect::Bubble>(Cursor::Pos(), 6, 15, 0.7s, Random(0.0, 360.0), Random(0.2, 0.4)); }, 0.3s);
+				// 長押ししている間は、0.3秒ごとに新しいエフェクトを生成し、0.7秒で消えるようにする
+				tapEffectTimer.setInterval([&]() { tapEffect.add<UFOCat::Effect::Bubble>(Cursor::Pos(), 6, 15, 0.7s, Random(0.0, 360.0), Random(0.2, 0.4)); }, 0.3s);
 			}
 
-			effect.update();
+			// 更新と描画
+			tapEffect.update();
 		}
 	}
 }

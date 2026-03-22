@@ -4,6 +4,9 @@
 namespace UFOCat::Effect
 {
 	// https://siv3d.github.io/ja-jp/tutorial3/effect/#518-%E3%82%B5%E3%83%B3%E3%83%97%E3%83%AB%E6%B3%A1%E3%81%AE%E3%82%88%E3%81%86%E3%81%AA%E3%82%A8%E3%83%95%E3%82%A7%E3%82%AF%E3%83%88
+	// を参考に実装しています
+
+	/// @brief キラキラ模様の泡のエフェクト
 	class Bubble : public IEffect
 	{
 		struct BubbleInstance

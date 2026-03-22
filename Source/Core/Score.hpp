@@ -18,7 +18,7 @@ namespace UFOCat::Core::Score
 	/// @brief 称号の定義リスト @n
 	/// スコアの閾値が小さい順に並んでいるので、総合得点と比較していく際には
 	/// どんどんインデックスの値を増やして走査していけばいい
-	const static std::array<Title, 5> Titles =
+	const std::array<Title, 5> Titles =
 	{ {
 		{ U"新米", U"しんまい", 0.25 },
 		{ U"逸材", U"いつざい", 0.5 },
