@@ -45,7 +45,7 @@ namespace UFOCat::GUI
 		/// @param positionType 座標指定方法
 		/// @param isEnabled 有効かどうか
 		/// @param padding ボタンの内側余白 (デフォルトは (30, 10))
-		Button(double fontSize, const String& text, const Audio& se, PositionType positionType = PositionType::Absolute, bool isEnabled = true, const Vec2& padding = { 30.0, 10.0 });
+		Button(double fontSize, const String &text, const Audio& se, PositionType positionType = PositionType::Absolute, bool isEnabled = true, const Vec2 &padding = { 30.0, 10.0 });
 
 		/// @brief コンストラクタ（SE はデフォルト）
 		/// @param font テキストに使うフォント
@@ -54,7 +54,7 @@ namespace UFOCat::GUI
 		/// @param positionType 座標指定方法
 		/// @param isEnabled 有効かどうか
 		/// @param padding ボタンの内側余白 (デフォルトは (30, 10))
-		Button(const Font& font, double fontSize, const String& text, PositionType positionType = PositionType::Absolute, bool isEnabled = true, const Vec2& padding = { 30.0, 10.0 });
+		Button(const Font &font, double fontSize, const String &text, PositionType positionType = PositionType::Absolute, bool isEnabled = true, const Vec2 &padding = { 30.0, 10.0 });
 
 		/// @brief ボタンの各種パラメータを一括で設定する
 		/// @param font テキストに使うフォント
@@ -73,7 +73,7 @@ namespace UFOCat::GUI
 		/// @param positionType 座標指定方法
 		/// @param isEnabled 有効かどうか
 		/// @param padding ボタンの内側余白 (デフォルトは (30.0, 10.0))
-		Button &set(double fontSize, const String& text, const Audio& se, PositionType positionType = PositionType::Absolute, bool isEnabled = true, const Vec2& padding = { 30.0, 10.0 });
+		Button &set(double fontSize, const String &text, const Audio& se, PositionType positionType = PositionType::Absolute, bool isEnabled = true, const Vec2 &padding = { 30.0, 10.0 });
 
 		/// @brief ボタンの各種パラメータを一括で設定する（SE はデフォルト）
 		/// @param font テキストに使うフォント
@@ -82,7 +82,7 @@ namespace UFOCat::GUI
 		/// @param positionType 座標指定方法
 		/// @param isEnabled 有効かどうか
 		/// @param padding ボタンの内側余白 (デフォルトは (30.0, 10.0))
-		Button &set(const Font& font, double fontSize, const String& text, PositionType positionType = PositionType::Absolute, bool isEnabled = true, const Vec2& padding = { 30.0, 10.0 });
+		Button &set(const Font &font, double fontSize, const String &text, PositionType positionType = PositionType::Absolute, bool isEnabled = true, const Vec2 &padding = { 30.0, 10.0 });
 
 		/// @brief ボタンの各種パラメータを一括で設定する（フォントと SE はデフォルト）
 		/// @param fontSize 
@@ -90,45 +90,45 @@ namespace UFOCat::GUI
 		/// @param positionType 座標指定方法
 		/// @param isEnabled 有効かどうか
 		/// @param padding ボタンの内側余白 (デフォルトは (30.0, 10.0))
-		Button& set(double fontSize, const String &text, PositionType positionType = PositionType::Absolute, bool isEnabled = true, const Vec2 &padding = { 30.0, 10.0 });
+		Button &set(double fontSize, const String &text, PositionType positionType = PositionType::Absolute, bool isEnabled = true, const Vec2 &padding = { 30.0, 10.0 });
 
 		/// @brief ボタンに表示するフォントを設定する
 		/// デフォルトの表示フォントを変えたいときはこのメソッドから明示的に行うこと
 		/// @param font フォント
 		/// @return 
-		Button& setFont(const Font& font);
+		Button &setFont(const Font &font);
 
 		/// @brief ボタンに表示するテキストを設定する
 		/// @param text テキスト
 		/// @return 
-		Button& setText(const String& text);
-
-		RelocatableTypeID typeID() const override;
-
-		Button& setPosition(const Vec2& position, bool isOverwriteDefault = false) noexcept override;
-
-		Button& setPosition(const Arg::topCenter_<Vec2>& position, bool isOverwriteDefault = false) noexcept override;
-
-		Button& setPosition(const Arg::topRight_<Vec2>& position, bool isOverwriteDefault = false) noexcept override;
-
-		Button& setPosition(const Arg::leftCenter_<Vec2>& position, bool isOverwriteDefault = false) noexcept override;
-
-		Button& setPosition(const Arg::rightCenter_<Vec2>& position, bool isOverwriteDefault = false) noexcept override;
-
-		Button& setPosition(const Arg::bottomLeft_<Vec2>& position, bool isOverwriteDefault = false) noexcept override;
-
-		Button& setPosition(const Arg::bottomCenter_<Vec2>& position, bool isOverwriteDefault = false) noexcept override;
-
-		Button& setPosition(const Arg::bottomRight_<Vec2>& position, bool isOverwriteDefault = false) noexcept override;
-
-		Button& setPositionAt(const Vec2& position, bool isOverwriteDefault = false) noexcept override;
-
-		Button& setMargin(const Margin& margin) noexcept override;
+		Button &setText(const String &text);
 
 		/// @brief ボタンが押されたかを返す
 		/// @return 押されたら `true`
 		bool isPressed() const;
 
 		void draw() const override;
+
+		RelocatableTypeID typeID() const noexcept override;
+
+		Button &setPosition(const Vec2 &position, bool isOverwriteDefault = false) noexcept override;
+
+		Button &setPosition(const Arg::topCenter_<Vec2> &position, bool isOverwriteDefault = false) noexcept override;
+
+		Button &setPosition(const Arg::topRight_<Vec2> &position, bool isOverwriteDefault = false) noexcept override;
+
+		Button &setPosition(const Arg::leftCenter_<Vec2> &position, bool isOverwriteDefault = false) noexcept override;
+
+		Button &setPosition(const Arg::rightCenter_<Vec2> &position, bool isOverwriteDefault = false) noexcept override;
+
+		Button &setPosition(const Arg::bottomLeft_<Vec2> &position, bool isOverwriteDefault = false) noexcept override;
+
+		Button &setPosition(const Arg::bottomCenter_<Vec2> &position, bool isOverwriteDefault = false) noexcept override;
+
+		Button &setPosition(const Arg::bottomRight_<Vec2> &position, bool isOverwriteDefault = false) noexcept override;
+
+		Button &setPositionAt(const Vec2& position, bool isOverwriteDefault = false) noexcept override;
+
+		Button &setMargin(const Margin& margin) noexcept override;
 	};
 }

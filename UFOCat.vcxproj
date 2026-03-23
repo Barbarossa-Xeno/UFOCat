@@ -472,7 +472,7 @@
     <ClInclude Include="Source\GUI.hpp" />
     <ClInclude Include="Source\GUI\Button.hpp" />
     <ClInclude Include="Source\GUI\Dialog.hpp" />
-    <ClInclude Include="Source\GUI\IDrawable.hpp" />
+    <ClInclude Include="Source\GUI\Drawable.hpp" />
     <ClInclude Include="Source\GUI\MessageBox.hpp" />
     <ClInclude Include="Source\GUI\ProgressBar.hpp" />
     <ClInclude Include="Source\GUI\Relocatable.hpp" />

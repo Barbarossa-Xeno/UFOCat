@@ -2,13 +2,15 @@
 
 namespace UFOCat::GUI
 {
-	Arg::bottomCenter_<Vec2> Dialog::m_okButtonPosition() const
+	Arg::bottomCenter_<Vec2> Dialog::m_okButtonPosition() const noexcept
 	{
+		// 横はウィンドウ横幅の 25%、盾はウィンドウ下部から縦マージン分上
 		return Arg::bottomCenter(Vec2{ m_region.centerX() - m_region.w / 4.0, m_region.bottomCenter().y - m_Margin });
 	}
 
-	Arg::bottomCenter_<Vec2> Dialog::m_cancelButtonPosition() const
+	Arg::bottomCenter_<Vec2> Dialog::m_cancelButtonPosition() const noexcept
 	{
+		// 横はウィンドウ横幅の 75%、盾はウィンドウ下部から縦マージン分上
 		return Arg::bottomCenter(Vec2{ m_region.centerX() + m_region.w / 4.0, m_region.bottomCenter().y - m_Margin });
 	}
 
@@ -53,9 +55,10 @@ namespace UFOCat::GUI
 	{
 		MessageBox::draw();
 
+		// ダイアログウィンドウが開かれている状態で
+		// キャンセルボタンを描画する処理を追加
 		if (m_isOpen)
 		{
-			// キャンセルボタン
 			m_cancelButton.draw();
 		}
 	}

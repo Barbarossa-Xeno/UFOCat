@@ -8,7 +8,7 @@
 # include "Util/AudioName.hpp"
 
 // GUI コンポーネント
-# include "GUI/IDrawable.hpp"
+# include "GUI/Drawable.hpp"
 # include "GUI/Relocatable.hpp"
 # include "GUI/Button.hpp"
 # include "GUI/ProgressBar.hpp"

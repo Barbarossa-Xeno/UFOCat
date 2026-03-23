@@ -3,24 +3,27 @@
 
 namespace UFOCat::GUI
 {
-	double MessageBox::m_buttonSize() const
+	double MessageBox::m_buttonSize() const noexcept
 	{
 		// 変にデカくならないようにするために設定
 		return Min(0.05 * m_region.size.x, 24.0);
 	}
 
-	Arg::bottomCenter_<Vec2> MessageBox::m_okButtonPosition() const
+	Arg::bottomCenter_<Vec2> MessageBox::m_okButtonPosition() const noexcept
 	{
+		// ウィンドウの中央下部から縦マージンだけ上の位置
 		return Arg::bottomCenter(Vec2{ m_region.centerX(), m_region.bottomCenter().y - m_Margin });
 	}
 
-	Arg::center_<Vec2> MessageBox::m_separatorPosition() const
+	Arg::center_<Vec2> MessageBox::m_separatorPosition() const noexcept
 	{
+		// ウィンドウの中央で、OK ボタンの上部から縦マージンだけ上の位置
 		return Arg::center(Scene::CenterF().x, m_okButton.getRegion().topY() - m_Margin);
 	}
 
-	RectF MessageBox::m_contentsRegion() const
+	RectF MessageBox::m_contentsRegion() const noexcept
 	{
+		// 左上基準でマージンを考慮した位置
 		Vec2 &&position{ m_region.tl().x + m_Margin, m_region.tl().y + m_Margin };
 
 		// ウィンドウ幅は、スクロールバーサイズも考慮
@@ -50,25 +53,26 @@ namespace UFOCat::GUI
 		// setPos(Arg::center = ...) を使うとなぜか値がバグるので、直接 RectF を再確保
 		m_region = RectF{ Arg::center = Scene::Center(), windowSize };
 
-		// ボタンサイズもウィンドウサイズを参照するので再設定
+		// ボタンサイズもウィンドウサイズを参照するので、コンストラクタ同様に再設定
 		m_okButton.set(Ceil(m_buttonSize()), U"OK", AudioAsset(Util::AudioName::SE::OK)).setPosition(m_okButtonPosition());
 
+		// コンテンツも再設定
 		m_contents.setRegion(m_contentsRegion());
 
 		return *this;
 	}
 
-	bool MessageBox::isOpen() const
+	bool MessageBox::isOpen() const noexcept
 	{
 		return m_isOpen;
 	}
 
-	void MessageBox::open()
+	void MessageBox::open() noexcept
 	{
 		m_isOpen = true;
 	}
 
-	void MessageBox::close()
+	void MessageBox::close() noexcept
 	{
 		m_isOpen = false;
 	}

@@ -33,14 +33,21 @@ namespace UFOCat::GUI
 		/// @return 自分自身の参照
 		TextBox &set(const DrawableText &text, double fontSize, const Color &color, PositionType positionType = PositionType::Absolute);
 
-		/// @brief 
-		/// @param px 
-		/// @return 
-		TextBox &setIndent(double px);
+		/// @brief 左からのインデントを指定する
+		/// @param px インデント (ピクセル指定)
+		/// @return 自分自身の参照
+		TextBox &setIndent(double px) noexcept;
 
-		RelocatableTypeID typeID() const override;
+		/// @brief 指定した横幅に合わせてテキストボックスの折り返しと高さ変更をする
+		/// @param width 合わせる横幅
+		/// @return テキストボックスの範囲が変化すれば true
+		bool adjustWidth(double width);
 
-		TextBox &setPosition(const Vec2& position, bool isOverwriteDefault) noexcept override;
+		void draw() const override;
+
+		RelocatableTypeID typeID() const noexcept override;
+
+		TextBox &setPosition(const Vec2 &position, bool isOverwriteDefault) noexcept override;
 
 		TextBox &setPosition(const Arg::topCenter_<Vec2> &position, bool isOverwriteDefault = false) noexcept override;
 
@@ -59,12 +66,5 @@ namespace UFOCat::GUI
 		TextBox &setPositionAt(const Vec2 &position, bool isOverwriteDefault = false) noexcept override;
 
 		TextBox &setMargin(const Margin &margin) noexcept override;
-
-		/// @brief 指定した横幅に合わせてテキストボックスの折り返しと高さ変更をする
-		/// @param width 合わせる横幅
-		/// @return テキストボックスの範囲が変化すれば true
-		bool adjustWidth(double width);
-
-		void draw() const override;
 	};
 }
