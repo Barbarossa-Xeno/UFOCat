@@ -58,27 +58,24 @@ namespace UFOCat::Util
 
 		/// @brief 指定時間経過したあとに、コールバックを 1度 実行する @n
 		/// このメソッドは呼び出されるたびにタイマーを進めている（`forward()` を実行している）ので、ループ内で呼び出す必要がある
-		/// @tparam Func コールバックの型
-		/// @param callback コールバック
+		/// @tparam Func コールバックの型 呼び出し可能 (std::invocable)
+		/// @param callback コールバック ラムダ式で記述する
 		/// @param time 時間
 		/// @return コールバックに戻り値があればそれを返す
-		/// @note ちゃっぴー参考
-		template <typename Func>
-		auto setTimeout(Func &&callback, const Duration &time)
-			-> decltype(callback())
+		template <std::invocable Func>
+		void setTimeout(Func &&callback, const Duration &time)
 		{
+			// isOver() の isAutoReset を false にしておく
+			if (isOver(time, false))
+			{
+				callback();
 
-			if (isOver(time, false)) {
-				if constexpr (std::is_void_v<std::invoke_result_t<Func>>) {
-					std::forward<Func>(callback)();
-				}
-				else {
-					return std::forward<Func>(callback)();
-				}
-				// 経過時間だけリセット（超過回数はしない）
+				// 時間に達したら経過時間だけリセット
+				// 超過回数はしない
 				resetTime();
 			}
-			else if (m_overCount <= 0)
+			// 1回目だけ時間を進める
+			else if (m_overCount == 0)
 			{
 				forward();
 			}
@@ -86,21 +83,18 @@ namespace UFOCat::Util
 
 		/// @brief 指定時間でコールバックの実行を繰り返す @n
 		/// このメソッドは呼び出されるたびにタイマーを進めている（`forward()` を実行している）ので、ループ内で呼び出す必要がある
-		/// @tparam Func コールバックの型
+		/// @tparam Func コールバックの型 呼び出し可能 (std::invocable)
 		/// @param callback コールバック
 		/// @param time 時間
 		/// @return コールバックに戻り値があればそれを返す
-		template <typename Func>
-		auto setInterval(Func&& callback, const Duration& time)
+		template <std::invocable Func>
+		void setInterval(Func &&callback, const Duration& time)
 		{
-			// setTimeout() とほぼ変わらないが、時間と超過回数のリセットによってインターバルを作る
-			if (isOver(time)) {
-				if constexpr (std::is_void_v<std::invoke_result_t<Func>>) {
-					std::forward<Func>(callback)();
-				}
-				else {
-					return std::forward<Func>(callback)();
-				}
+			// setTimeout() とほぼ変わらないが
+			// 時間と超過回数を毎回リセットしてインターバルを作る
+			if (isOver(time))
+			{
+				callback();
 			}
 			else
 			{
