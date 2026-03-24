@@ -23,7 +23,7 @@ namespace UFOCat::GUI
 		Relative
 	};
 
-	/// @brief 再配置可能コンポーネント
+	/// @brief 再配置可能コンポーネントの基底クラス @n
 	/// 継承先でそのクラス専用のメソッドチェーンを利用する場合、共変オーバーライドする
 	class Relocatable : public Drawable
 	{

@@ -180,7 +180,7 @@
     <ClCompile Include="Source\GUI\ProgressBar.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GUI\Scrollable.cpp">
+    <ClCompile Include="Source\GUI\ScrollView.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\GUI\TextBox.cpp">
@@ -1229,7 +1229,7 @@
     <ClInclude Include="Source\GUI\Button.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\GUI\Scrollable.hpp">
+    <ClInclude Include="Source\GUI\ScrollView.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\Core\CatData.hpp">
@@ -1281,6 +1281,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\Util\FontName.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\GUI\Scrollable.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

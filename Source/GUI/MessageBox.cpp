@@ -21,7 +21,7 @@ namespace UFOCat::GUI
 		return Arg::center(Scene::CenterF().x, m_okButton.getRegion().topY() - m_Margin);
 	}
 
-	RectF MessageBox::m_contentsRegion() const noexcept
+	RectF MessageBox::m_containerRegion() const noexcept
 	{
 		// 左上基準でマージンを考慮した位置
 		Vec2 &&position{ m_region.tl().x + m_Margin, m_region.tl().y + m_Margin };
@@ -45,7 +45,7 @@ namespace UFOCat::GUI
 		m_okButton = Button{ buttonStyle ? *buttonStyle : Button{ Ceil(m_buttonSize()), U"OK", AudioAsset(Util::AudioName::SE::OK) } }.setPosition(m_okButtonPosition());
 
 		// ウィンドウから (20, 20) 離れた位置に、右と下方向も同じだけ間隔を開けたスクロールをつくる
-		m_contents = Scrollable{ m_contentsRegion().pos, m_contentsRegion().size };
+		m_container = ScrollView{ m_containerRegion().pos, m_containerRegion().size };
 	}
 
 	MessageBox &MessageBox::setSize(const SizeF &windowSize)
@@ -57,7 +57,7 @@ namespace UFOCat::GUI
 		m_okButton.set(Ceil(m_buttonSize()), U"OK", AudioAsset(Util::AudioName::SE::OK)).setPosition(m_okButtonPosition());
 
 		// コンテンツも再設定
-		m_contents.setRegion(m_contentsRegion());
+		m_container.setViewport(m_containerRegion());
 
 		return *this;
 	}
@@ -82,7 +82,7 @@ namespace UFOCat::GUI
 		// 開いているときのみ更新処理を行う
 		if (m_isOpen)
 		{
-			m_contents.update();
+			m_container.update();
 			
 			// 押されたとき、ダイアログが消える
 			if (m_okButton.isPressed())
@@ -130,8 +130,8 @@ namespace UFOCat::GUI
 				.draw(Util::Palette::Brown.withA(0.6));;
 			}
 
-			// Scrollable
-			m_contents.draw();
+			// ScrollView
+			m_container.draw();
 
 			// OKボタン
 			m_okButton.draw();

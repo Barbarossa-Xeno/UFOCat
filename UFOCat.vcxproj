@@ -127,7 +127,7 @@
     <ClCompile Include="Source\GUI\Dialog.cpp" />
     <ClCompile Include="Source\GUI\MessageBox.cpp" />
     <ClCompile Include="Source\GUI\ProgressBar.cpp" />
-    <ClCompile Include="Source\GUI\Scrollable.cpp" />
+    <ClCompile Include="Source\GUI\ScrollView.cpp" />
     <ClCompile Include="Source\GUI\TextBox.cpp" />
     <ClCompile Include="Source\Scene\Level.cpp" />
     <ClCompile Include="Source\Scene\Result.cpp" />
@@ -471,12 +471,13 @@
     <ClInclude Include="Source\Effect\Bubble.hpp" />
     <ClInclude Include="Source\GUI.hpp" />
     <ClInclude Include="Source\GUI\Button.hpp" />
+    <ClInclude Include="Source\GUI\Scrollable.hpp" />
     <ClInclude Include="Source\GUI\Dialog.hpp" />
     <ClInclude Include="Source\GUI\Drawable.hpp" />
     <ClInclude Include="Source\GUI\MessageBox.hpp" />
     <ClInclude Include="Source\GUI\ProgressBar.hpp" />
     <ClInclude Include="Source\GUI\Relocatable.hpp" />
-    <ClInclude Include="Source\GUI\Scrollable.hpp" />
+    <ClInclude Include="Source\GUI\ScrollView.hpp" />
     <ClInclude Include="Source\GUI\TextBox.hpp" />
     <ClInclude Include="Source\Scene\Level.hpp" />
     <ClInclude Include="Source\Scene\Result.hpp" />

@@ -5,13 +5,11 @@
 namespace UFOCat::GUI
 {
 	/// @brief 簡単なテキストをウィンドウとして 画面中央に表示し、1ボタンで閉じるコンポーネント
+	/// ウィンドウ内コンテナはスクロール可能
 	/// デフォルトのフォントは 油性マジック を使用する
-	class MessageBox : public Drawable
+	class MessageBox : public Drawable, public Scrollable<MessageBox>
 	{
 	protected:
-
-		/// @brief 中身をスクロール可能にするコンポーネント
-		Scrollable m_contents;
 
 		/// @brief OK ボタン
 		Button m_okButton;
@@ -41,10 +39,10 @@ namespace UFOCat::GUI
 		/// @return 中央基準の座標データ 実際の基準値が入っているわけではないので注意
 		virtual Arg::center_<Vec2> m_separatorPosition() const noexcept;
 
-		/// @brief コンテンツの表示領域を返す
+		/// @brief コンテナ (m_container) の表示領域を返す
 		/// 区切り線とウィンドウ上部との間らへんを上手いこと指定した範囲
 		/// @return 範囲データ
-		RectF m_contentsRegion() const noexcept;
+		RectF m_containerRegion() const noexcept;
 
 	public:
 
@@ -58,28 +56,6 @@ namespace UFOCat::GUI
 		/// @param windowSize 新しいウィンドウサイズ デフォルトは (350, 300)
 		/// @return 自分自身の参照
 		virtual MessageBox &setSize(const SizeF &windowSize = { 350, 300 });
-
-		/// @brief 配置するコンテンツを追加する
-		/// @tparam ...TContents `Relocatable` なコンポーネント（パラメータパック）
-		/// @param ...contents `Relocatable` なコンポーネントを複数指定
-		/// @return 自分自身の参照
-		template <std::derived_from<Relocatable> ...TContents>
-		inline MessageBox &addContents(const TContents &...contents)
-		{
-			m_contents.addContents(contents...);
-			return *this;
-		}
-
-		/// @brief 配置するコンテンツを設定しなおす
-		/// @tparam ...TContents `Relocatable` なコンポーネント（パラメータパック）
-		/// @param ...contents `Relocatable` なコンポーネントを複数指定
-		/// @return 自分自身の参照
-		template <std::derived_from<Relocatable> ...TContents>
-		inline MessageBox &setContents(const TContents &...contents)
-		{
-			m_contents.setContents(contents...);
-			return *this;
-		}
 
 		/// @brief 開いているか
 		/// @return ウィンドウが開いているか

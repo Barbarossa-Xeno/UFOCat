@@ -13,6 +13,6 @@
 # include "GUI/Button.hpp"
 # include "GUI/ProgressBar.hpp"
 # include "GUI/TextBox.hpp"
-# include "GUI/Scrollable.hpp"
+# include "GUI/ScrollView.hpp"
 # include "GUI/MessageBox.hpp"
 # include "GUI/Dialog.hpp"

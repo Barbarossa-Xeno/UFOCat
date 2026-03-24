@@ -35,28 +35,6 @@ namespace UFOCat::GUI
 		/// @return 自分自身の参照
 		virtual Dialog& setSize(const SizeF &windowSize = { 350, 300 }) override;
 
-		/// @brief 配置するコンテンツを追加する
-		/// @tparam ...TContents `Relocatable` なコンポーネント（パラメータパック）
-		/// @param ...contents `Relocatable` なコンポーネントを複数指定
-		/// @return 自分自身の参照
-		template <std::derived_from<Relocatable> ...TContents>
-		inline Dialog &addContents(const TContents &...contents)
-		{
-			m_contents.addContents(contents...);
-			return *this;
-		}
-
-		/// @brief 配置するコンテンツを追加する
-		/// @tparam ...TContents `Relocatable` なコンポーネント（パラメータパック）
-		/// @param ...contents `Relocatable` なコンポーネントを複数指定
-		/// @return 自分自身の参照
-		template <std::derived_from<Relocatable> ...TContents>
-		inline Dialog &setContents(const TContents &...contents)
-		{
-			m_contents.setContents(contents...);
-			return *this;
-		}
-
 		/// @brief OKボタンが押されたか（押されたら閉じる）
 		/// 監視用に update 内で毎フレーム実行する必要がある
 		/// @return 押されたら `true`

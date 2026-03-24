@@ -1,22 +1,22 @@
-﻿# include "Scrollable.hpp"
+﻿# include "ScrollView.hpp"
 # include "TextBox.hpp"
 
 namespace UFOCat::GUI
 {
-	Scrollable::ScrollData::ScrollData(const RectF& region, double minY, double maxY)
+	ScrollView::ScrollPart::ScrollPart(const RectF& region, double minY, double maxY)
 		: region{ region }
 		, minY{ minY }
 		, maxY{ maxY }
 	{}
 
-	Scrollable::Scrollable(const Vec2 &position, const SizeF &viewportSize)
-		: m_inner
+	ScrollView::ScrollView(const Vec2 &position, const SizeF &viewportSize)
+		: m_container
 		{
-			// 一旦インナーはビューポートと同じ大きさにする
+			// 一旦コンテナはビューポートと同じ大きさにする
 			// 座標はビューポート基準になるのに注意
 			{ Vec2::Zero(), viewportSize },
 
-			// 初めはインナー要素が空なのでスクロールしない
+			// 初めはコンテナ要素が空なのでスクロールしない
 			0.0, 0.0
 		}
 		, m_bar
@@ -32,19 +32,19 @@ namespace UFOCat::GUI
 		m_region = RectF{ position, viewportSize };
 	}
 
-	bool Scrollable::m_shouldScroll() const noexcept
+	bool ScrollView::m_shouldScroll() const noexcept
 	{
-		// ビューポートよりインナーのほうがでかければスクロールの必要あり
-		return m_inner.region.h > m_region.h;
+		// ビューポートよりコンテナのほうがでかければスクロールの必要あり
+		return m_container.region.h > m_region.h;
 	}
 
-	double Scrollable::m_getInnerMinScroll() const noexcept
+	double ScrollView::m_getContainerMinScroll() const noexcept
 	{
-		// インナー要素 (m_innerなど) は上方向 = -Y 方向に移動するので、高さどうしの差の絶対値の負をとってやる
-		return -AbsDiff(m_region.h, m_inner.region.h);
+		// コンテナ要素 (m_containerなど) は上方向 = -Y 方向に移動するので、高さどうしの差の絶対値の負をとってやる
+		return -AbsDiff(m_region.h, m_container.region.h);
 	}
 
-	Scrollable &Scrollable::m_scroll(ScrollData &target, double dy) noexcept
+	ScrollView &ScrollView::m_scroll(ScrollPart &target, double dy) noexcept
 	{
 		// 次の座標を計算
 		const double next = target.region.y + dy;
@@ -58,13 +58,13 @@ namespace UFOCat::GUI
 		return *this;
 	}
 
-	Scrollable &Scrollable::m_scrollSync(ScrollData &target) noexcept
+	ScrollView &ScrollView::m_scrollSync(ScrollPart &target) noexcept
 	{
 		// ターゲット要素のスクロール方向を求める
 		// バー (m_bar) はいつも必ずビューポート内に位置するので、minY > 0 であり maxY より大きくなることも絶対にないが
-		// インナー (m_inner) はスクロールできるとき必ず minY < 0 で 元々下にある領域を上に上げないといけない分その絶対値は maxY より大きくなる
+		// コンテナ (m_container) はスクロールできるとき必ず minY < 0 で 元々下にある領域を上に上げないといけない分その絶対値は maxY より大きくなる
 		// そのため、どちらも絶対値の minY と maxY でスクロール方向が表せる
-		// インナーとバーでスクロール方向は常に逆なので、方向を表す値は -1.0 か 1.0 のどちらかになる
+		// コンテナとバーでスクロール方向は常に逆なので、方向を表す値は -1.0 か 1.0 のどちらかになる
 		// （後で乗算して方向を逆転させるための目的）
 		double direction = Abs(target.minY) > Abs(target.maxY) ? -1.0 : 1.0;
 
@@ -74,28 +74,29 @@ namespace UFOCat::GUI
 		// 配列が空 (インスタンス作成時も) だとループは回らないので null 参照は起きない
 		for (const auto &content : m_contents)
 		{
-			// インナー要素すべてをデフォルト位置からインナー（下地）の移動分だけずらす
+			// コンテナ要素すべてをデフォルト位置からコンテナ（下地）の移動分だけずらす
 			// デフォルト位置：スクロールが0の状態での座標として移動の基準になる
-			content->setPosition(Vec2{ content->getInitialPosition().x, m_inner.region.y + content->getInitialPosition().y });
+			content->setPosition(Vec2{ content->getInitialPosition().x, m_container.region.y + content->getInitialPosition().y });
 		}
 
 		return *this;
 	}
 
-	void Scrollable::m_updateInner()
+	void ScrollView::m_updateContainer()
 	{
 		if (not m_contents.empty())
 		{
 			// 要素全ての高さは一番最後の要素の左上位置とそれ自体の高さに、ビューポート自体の Y 座標を足して計算できるものとする
-			m_inner.region.h = m_contents.back()->getInitialPosition().y + m_contents.back()->getRegion().h
+			// 位置指定が相対のときはマージンも足す
+			m_container.region.h = m_contents.back()->getInitialPosition().y + m_contents.back()->getRegion().h
 								+ (m_contents.back()->positionType() == PositionType::Relative ? m_contents.back()->getMargin().bottom : 0);
 		}
 
-		// インナーのスクロール最小値を更新する（上に移動させる長さが変わりうるので）
-		m_inner.minY = m_getInnerMinScroll();
+		// コンテナのスクロール最小値を更新する（上に移動させる長さが変わりうるので）
+		m_container.minY = m_getContainerMinScroll();
 	}
 
-	void Scrollable::m_updateContents()
+	void ScrollView::m_updateContents()
 	{
 		// コンテンツがないときは何もしない
 		if (m_contents.empty())
@@ -115,9 +116,9 @@ namespace UFOCat::GUI
 			{
 				// 安全で高速にダウンキャスト
 				// ビューポート横幅からスクロールバーの幅を左右から引いた値で合わせておく
-				if (static_cast<TextBox*>((*itr).get())->adjustWidth(m_region.w - BarSize.x * 2))
+				if (static_cast<TextBox*>(itr->get())->adjustWidth(m_region.w - BarSize.x * 2))
 				{
-					m_updateInner();
+					m_updateContainer();
 				}
 			}
 
@@ -143,24 +144,24 @@ namespace UFOCat::GUI
 		}
 	}
 
-	Scrollable &Scrollable::setRegion(const RectF &viewport)
+	ScrollView &ScrollView::setViewport(const RectF &region)
 	{
-		m_region = viewport;
+		m_region = region;
 
 		// コンストラクタと同じ式を使ってスクロールバーの位置を再調整
-		m_bar.region.setPos({ Arg::topRight(Vec2{ viewport.size.x - BarSize.x, BarSize.x }) });
+		m_bar.region.setPos({ Arg::topRight(Vec2{ region.size.x - BarSize.x, BarSize.x }) });
 
 		// 最大値だけ再変更する（上は張り付きだけど、下に移動させる長さは変わりうるので）
-		m_bar.maxY = viewport.size.y - BarSize.y - BarSize.x;
+		m_bar.maxY = region.size.y - BarSize.y - BarSize.x;
 
+		// コンテンツ、コンテナの更新もしておく（ビューポートサイズの変更に合わせて調整する必要があるため）
 		m_updateContents();
-
-		m_updateInner();
+		m_updateContainer();
 
 		return *this;
 	}
 
-	void Scrollable::update()
+	void ScrollView::update()
 	{
 		// 以降の処理はスクロールの必要がないなら何もしない
 		if (not m_shouldScroll())
@@ -172,12 +173,12 @@ namespace UFOCat::GUI
 		if (m_region.mouseOver())
 		{
 			// マウスホイールの回転に合わせてスクロール
-			m_scroll(m_inner, Mouse::Wheel() * -30).m_scrollSync(m_bar);
+			m_scroll(m_container, Mouse::Wheel() * -30).m_scrollSync(m_bar);
 
 			// マウスのドラッグ（スワイプ）でもスクロールする
 			if (MouseL.pressed())
 			{
-				m_scroll(m_inner, Cursor::DeltaF().y).m_scrollSync(m_bar);
+				m_scroll(m_container, Cursor::DeltaF().y).m_scrollSync(m_bar);
 			}
 		}
 
@@ -193,12 +194,12 @@ namespace UFOCat::GUI
 			if (MouseL.pressed())
 			{
 				// 左クリックをホールドしながら上下させるとスクロールする
-				m_scroll(m_bar, Cursor::DeltaF().y).m_scrollSync(m_inner);
+				m_scroll(m_bar, Cursor::DeltaF().y).m_scrollSync(m_container);
 			}
 		}
 	}
 
-	void Scrollable::draw() const
+	void ScrollView::draw() const
 	{
 		// 参考
 		// https://siv3d.github.io/ja-jp/tutorial3/2d-render-state/?h=viewpo#4813-%E3%83%93%E3%83%A5%E3%83%BC%E3%83%9D%E3%83%BC%E3%83%88
