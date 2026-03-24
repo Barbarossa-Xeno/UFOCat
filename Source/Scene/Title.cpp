@@ -2,7 +2,7 @@
 
 namespace UFOCat
 {
-	Title::Title(const InitData& init)
+	Title::Title(const InitData &init)
 		: IScene{ init }
 	{
 		// 初回起動時
@@ -240,14 +240,11 @@ namespace UFOCat
 			// 使うアクションを抽選して入れるための配列
 			Array<Core::LevelData::ActionData> demoActions;
 
-			// 読み込んだUFO猫のデータからアクションデータだけぬきとって１個ずつ代入
-			getData().levels.each([&demoActions](const LevelData& level)
+			// 読み込んだUFO猫のデータからアクションデータだけ全て追加
+			for (const auto &level : getData().levels)
 			{
-					level.actionDataList.each([&](const auto& action)
-					{
-						demoActions << action;
-					});
-			});
+				demoActions.append(level.actionDataList);
+			}
 
 			// スポーンさせる数を決める
 			size_t count = Random(3, 5);
@@ -255,20 +252,23 @@ namespace UFOCat
 			// 全部入れたのをシャッフルしてから、スポーン数だけにする
 			demoActions.shuffle().resize(count);
 
-			// UFO猫のデータからランダムにスポーン数だけチョイスし、
-			getData().spawns = std::move(getData().cats.choice(count)
-														// 生成して unique_ptr にする
-													   .map([](const auto &cat)
-													   {
-													       return std::make_unique<CatObject>(CatObject{ TextureAsset(Cat(cat->id)) });
-													   })
-														// 作ったポインタのリストに対して
-														// （このリストと `demoActions` の長さはどちらも `count` なので）
-														// インデックスを参照しながらアクションをセット
-													   .each_index([&demoActions](size_t i, const auto &ptr)
-													   {
-													       ptr->setAction(demoActions[i]).setRandomVelocity(Random(1, 5));
-													   }));
+			getData().spawns = std::move
+			(
+				// UFO猫のデータからランダムにスポーン数だけチョイスし、
+				getData().cats.choice(count)
+				.map([](const auto &cat)
+				{
+					// 生成して unique_ptr にする
+					return std::make_unique<CatObject>(CatObject{ TextureAsset(Cat(cat->id)) });
+				})
+				.each_index([&demoActions](size_t i, const auto &ptr)
+				{
+					// 作ったポインタのリストに対して
+					// （このリストと `demoActions` の長さはどちらも `count` なので）
+					// インデックスを参照しながらアクションをセット
+					ptr->setAction(demoActions[i]).setRandomVelocity(Random(1, 5));
+				})
+			);
 			// 最後に move で unique_ptr の権利を移譲する
 		}
 
@@ -295,29 +295,35 @@ namespace UFOCat
 
 		// # GUI 更新処理
 		{
+			// 「あそび方」ウィンドウも「ライセンス」ウィンドウも開いていない時だけ有効にする
+			// そうしないと、ウィンドウが開いているのに背後のボタンが押せてしまうことになる
 			if (not m_gui.howToPlay.isOpen() and not m_gui.lisence.isOpen())
 			{
+				// 「あそぶ」ボタン
 				if (m_gui.toLevel.isPressed())
 				{
 					// プレイされるときだけ
-					// スコアデータはレベル数に合わせて確保してから、1プレイ分として追加しておく
+					// **スコアデータはレベル数に合わせて確保** してから、1プレイ分として追加しておく
 					getData().scores << Score::ResultRecord{ Array<Score::LevelRecord>{ getData().levels.size() }, Score::Title{ } };
 
 					AudioAsset(Util::AudioName::BGM::Title).fadeVolume(0.0, 0.2s);
 					changeScene(SceneState::Wanted, 2.2s);
 				}
 
+				// 「あそび方」ボタン
 				if (m_gui.howToPlayButton.isPressed())
 				{
 					m_gui.howToPlay.open();
 				}
 			}
 
+			// 「ライセンス」ボタン
 			if (m_gui.lisenceButton.isPressed())
 			{
 				m_gui.lisence.open();
 			}
 
+			// 押下監視
 			m_gui.howToPlay.isPressedOK();
 			m_gui.lisence.isPressedOK();
 		}

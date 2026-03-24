@@ -15,11 +15,13 @@ namespace UFOCat
 			/// @brief 「あそび方」を開くボタン
 			GUI::Button howToPlayButton;
 
+			/// @brief 「ライセンス」を開くボタン
 			GUI::Button lisenceButton;
 
-			/// @brief 「あそび方」のメッセージボックス
+			/// @brief 「あそび方」を表示するウィンドウ
 			GUI::MessageBox howToPlay;
 
+			/// @brief 「ライセンス」を表示するウィンドウ
 			GUI::MessageBox lisence;
 
 			/// @brief ロゴタイプ
@@ -31,6 +33,7 @@ namespace UFOCat
 		Core::BackgroundData m_bg;
 
 	public:
+
 		Title(const InitData &init);
 
 		~Title();

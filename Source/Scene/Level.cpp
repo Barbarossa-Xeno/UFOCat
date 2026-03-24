@@ -4,19 +4,22 @@ namespace UFOCat
 {
 	LevelData& Level::m_currentLevel() const
 	{
+		// 現在のレベル番号で共有データのレベルデータを参照して返す
 		return getData().levels[getData().levelIndex];
 	}
 
-	Array<Score::LevelRecord> &Level::m_currentScoreDatas() const
+	Array<Score::LevelRecord> &Level::m_currentRecords() const
 	{
+		// 現在のレベルのスコア記録は、共有データのスコア記録のリストの
+		// 最後の要素の records で管理されているので、そこを参照して返す
 		return getData().scores.back().records;
 	}
 
 	void Level::m_setTargetSpawnTime(size_t level)
 	{
 		// 定式の詳細は仕様書参照
-		const double&& term1 = m_currentLevel().timeLimit.count() / Random(2, 4);
-		const double&& term2 = level * (m_currentLevel().breedData.total() * m_currentLevel().intervalData.period.count()) / (m_currentLevel().actionDataList.size() * m_currentLevel().breedData.similar);
+		const double &&term1 = m_currentLevel().timeLimit.count() / Random(2, 4);
+		const double &&term2 = level * (m_currentLevel().breedData.total() * m_currentLevel().intervalData.period.count()) / (m_currentLevel().actionDataList.size() * m_currentLevel().breedData.similar);
 
 		// 一度、ターゲットスポーン時間を設定
 		m_targetAppearTime = Duration{ Min((term1 + term2), 0.75 * m_currentLevel().timeLimit.count()) };
@@ -26,7 +29,8 @@ namespace UFOCat
 	{
 		if (not getData().spawns.isEmpty())
 		{
-			// ターゲットは 0番目 に入れるよう保証しているので、0番目が nullptr でなければ出現済み
+			// ターゲットは 0番目 に入れるよう保証しているので、
+			// 0番目が nullptr でなければ出現済みとする
 			return getData().spawns[0] != nullptr;
 		}
 		else
@@ -46,11 +50,15 @@ namespace UFOCat
 	{
 		// GUI初期化 と テクスチャ取得
 		{
+			// タイマーのテクスチャ ちなみに針はなくてプログラム側で動的に描画する
 			m_gui.timer = Texture{ U"texture/timer.png", TextureDesc::Mipped };
-			m_gui.dialog.setContents
+
+			// ダイアログのアラート内容を設定
+			m_gui.quitAlert.setContents
 			(
 				GUI::TextBox{ FontAsset(Util::FontName::YuseiMagic)(U"本当に戻りますか？\nここまでのデータは失われます"), 20, Util::Palette::Brown }.setPositionAt({ 135, 40 })
 			).setSize({ 350, 200 });
+
 			m_bg = getData().backgrounds.choice();
 		}
 
@@ -63,6 +71,7 @@ namespace UFOCat
 		// `catchable()` で判定をする際に、ターゲットを最も初めにチェックするので、
 		// 当たり判定を優遇することができる（ミスタップを起こしにくい）
 		// しかも一番初めに描画されるので、ターゲットが他の猫に隠れて見えづらいパターンが発生することもあり、難易度がちょっと上がる
+		// （裏側にいたとしても判定は優先される）
 		getData().spawns << nullptr;
 
 		// 前回レベルで選んだ猫を吹っ飛ばし、shared_ptr も解放する
@@ -79,13 +88,12 @@ namespace UFOCat
 		const auto& otherCount = m_currentLevel().breedData.other;
 
 		// それぞれ、似ている猫とそうじゃない猫を絞り込む用の配列を用意する
-		Array<const CatData*> similars;
-		Array<const CatData*> others;
+		Array<const CatData*> similars, others;
 
 		// 全種類の猫の中から、ターゲットと似ている猫とそうでない猫を振り分ける
-		for (const auto& cat : getData().cats)
+		for (const auto &cat : getData().cats)
 		{
-			// それと、ターゲットと同じのを参照しないように保障する
+			// それと、ターゲットと同じのを参照しないように保証する
 			if (m_currentLevel().similarity == cat->getSameDataCount(*m_target)
 				and *cat != *m_target)
 			{
@@ -98,7 +106,7 @@ namespace UFOCat
 			}
 		}
 
-		// 宇宙船演算子が使いたかっただけ！！！
+		// 宇宙船演算子を使ってみる
 		// 上で絞り込んだ結果、similars の数が既定 (similarCount) より多すぎるか、少なすぎる場合に調整する
 		// まずは多すぎる場合
 		if (auto comp = similars.size() <=> similarCount;
@@ -114,7 +122,7 @@ namespace UFOCat
 			Array<const CatData*> looses;
 
 			// 類似度を1つ下げて絞り込んだものを looses に入れる
-			for (const auto& cat : others)
+			for (const auto &cat : others)
 			{
 				if ((m_currentLevel().similarity - 1) == cat->getSameDataCount(*m_target)
 					and *cat != *m_target)
@@ -124,6 +132,7 @@ namespace UFOCat
 			}
 
 			// 足りなかった分を looses か others から補う
+			// 絞り込めた猫が既定の数に達するまで繰り返す
 			while (similars.size() < similarCount)
 			{
 				if (not looses.isEmpty())
@@ -134,7 +143,7 @@ namespace UFOCat
 				{
 					// others から補うことになった場合は補ったやつを元のリストから消す
 					// others はもともと多く絞り込まれるはずなので、枯渇することはない
-					const auto& instead = others.shuffle().choice();
+					const auto &instead = others.shuffle().choice();
 					similars << instead;
 					others.remove(instead);
 				}
@@ -151,9 +160,10 @@ namespace UFOCat
 		// 無理にほかの種類も含めようとすると、難易度が上がりすぎる可能性がある？
 
 		// 結局、似てるのと他のでどの猫を使うのかまとめておく
+		// そのためにまずは id を使って重複を消す
 		Array<size_t> ids = similars.map([](const auto &s) { return s->id; }).append(others.map([](const auto &o) { return o->id; } ));
 
-		// 重複無しがいいので set を利用
+		// 重複無しにするときは set が効率的
 		m_selectionsId = HashSet<size_t>{ ids.begin(), ids.end() };
 
 		
@@ -189,108 +199,128 @@ namespace UFOCat
 		// # ステート依存処理
 		switch (m_state)
 		{
+			// ## プレイ前: タイマーでタイミングを計って、音を鳴らしたりプレイ開始したりする
 			case State::Before:
 			{
 				// タイマー稼働してない
 				if (not getData().timer.isRunning())
 				{
 					// 停止していて、残り時間が0でない場合は、
-					// 初期化時にタイマーをセットしていたということなので
+					// 初期化時にタイマーをセットしたときの続きということなので
 					if (not getData().timer.reachedZero())
 					{
-						// 使用する猫のアセットが全てロードされていれば
+						// 使用する猫（選ばれたもの + ターゲット）のアセットが全てロードされていれば
 						if (std::all_of(m_selectionsId.begin(), m_selectionsId.end(), [](const size_t id)
 							{
 								return TextureAsset::IsReady(Cat(id));
-							})
-							and TextureAsset::IsReady(Cat(m_target->id)))
+							}) and TextureAsset::IsReady(Cat(m_target->id)))
 						{
 							// カウントダウンはじめ
 							getData().timer.start();
 						}
 					}
-					// 次にもう一回 0 になったら
+					// 停止していて、かつ残り時間が 0 になっている場合は、
+					// 1つ前の if 文で始めたカウントダウンが終わったということなので
 					else
 					{
 						// ステートをプレイ中に変更する
 						m_state = State::Playing;
 
 						// 制限時間を決めて、タイマー開始
-						// 1.75s 猶予を持たせて、BGM再生までの癪に使う
+						// 1.75s 猶予を持たせて、BGM再生までの尺とする
 						getData().timer.restart(m_currentLevel().timeLimit + 1.75s);
 					}
 				}
-				// タイマー稼働してる = 開始前のカウントダウン中
+				// タイマー稼働してる = プレイ前のカウントダウン中
 				else
 				{
+					// この else ステートメントの最後で、m_prevTimerRemaining を timer.s() で更新している
+					// この timer.s() は常に整数秒を返すため、m_prevTimerRemaining より小さくなったかどうかを更新前に判定して
+					// 整数秒が変化したタイミングを検知できる
+
+					// タイマーの残り秒数が前回の更新から減っていたら、カウントダウンの音を鳴らす
 					if (m_prevTimerRemaining > getData().timer.s())
 					{
 						if (getData().timer.s() > 0)
 						{
 							// カウントダウンの音
-							// ここでは 3 回なる
+							// ここでは 3 回なるはず（m_prevTimerRemaining が最初 4 なので 3, 2, 1 のタイミング）
 							AudioAsset(Util::AudioName::SE::CountDown).playOneShot();
 						}
 						else
 						{
-							// スタートの音（ぴーっ）
+							// 残り時間 0 の瞬間でスタートの音（ぴーっ）
 							AudioAsset(Util::AudioName::SE::StartLevel).playOneShot();
 						}
 					}
+
+					// 現在の timer.s() で更新しておく
 					m_prevTimerRemaining = getData().timer.s();
 				}
-			}
-			break;
 
+				break;
+			}
+			// ## プレイ中: スポーン処理とタップや制限時間での終了処理
 			case State::Playing:
 			{
-				// ## スポーン処理
+				// ### スポーン処理　出現ペースに応じた間隔
 				m_watch.setInterval([this]()
+				{
+					// ターゲットの出現時刻を超えていて、ターゲットがまだ出現していなかったら
+					if (getData().timer.remaining() <= m_targetAppearTime and (not m_hasAppearedTarget()))
 					{
-						// ターゲットの出現時刻を超えていて、ターゲットがまだ出現していなかったら
-						if (getData().timer.remaining() <= m_targetAppearTime and (not m_hasAppearedTarget()))
+						// ターゲットを湧かせる
+						getData().spawns[0] = std::make_unique<CatObject>(CatObject{ TextureAsset(Cat(m_target->id)) }.setCatData(*m_target));
+
+						// ターゲットにも同様にアクションと速度の設定を行う
+						getData().spawns[0]->setAction(DiscreteSample(m_currentLevel().actionDataList, m_actionProbabilities)).setRandomVelocity(getData().levelIndex + 1);
+					}
+					else
+					{
+						// ターゲット以外の猫をランダムに出現ペースの分だけ選んで（コピーして）追加
+						for (uint32 i = 0; i < m_currentLevel().intervalData.count; i++)
 						{
-							// ターゲットを湧かせる
-							getData().spawns[0] = std::make_unique<CatObject>(CatObject{ TextureAsset(Cat(m_target->id)) }.setCatData(*m_target));
+							// 1個適当に選ぶ
+							const auto &selection = m_selections.choice();
 
-							// ターゲットにも同様にアクションと速度の設定を行う
-							getData().spawns[0]->setAction(DiscreteSample(m_currentLevel().actionDataList, m_actionProbabilities)).setRandomVelocity(getData().levelIndex + 1);
+							// アクションを抽選してセットし、現在のレベルに合わせて速度もランダムに決める
+							// そしてスポーンリストに追加
+							getData().spawns << std::make_unique<CatObject>
+												(
+													CatObject{ TextureAsset(Cat(selection->id)) }
+														.setAction(DiscreteSample(m_currentLevel().actionDataList, m_actionProbabilities))
+														.setRandomVelocity(getData().levelIndex + 1)
+												);
 						}
-						else
-						{
-							// ターゲット以外の猫をランダムに指定個選んで（コピーして）追加
-							for (uint32 i = 0; i < m_currentLevel().intervalData.count; i++)
-							{
-								// 1個適当に選ぶ
-								const auto &selection = m_selections.choice();
+					}
+				}, m_currentLevel().intervalData.period);
 
-								// アクションを抽選してセットし、現在のレベルに合わせて速度もランダムに決める
-								// そしてスポーンリストに追加
-								getData().spawns << std::make_unique<CatObject>
-													(
-														CatObject{ TextureAsset(Cat(selection->id)) }
-															.setAction(DiscreteSample(m_currentLevel().actionDataList, m_actionProbabilities))
-															.setRandomVelocity(getData().levelIndex + 1)
-													);
-							}
-						}
-					}, m_currentLevel().intervalData.period);
-
-				// ## 制限時間内と時間超過後での処理
+				// ### 制限時間内と時間超過後での処理
 				
-				// ### 制限時間内
+				// #### 制限時間内
 				if (getData().timer.isRunning())
 				{
+					// タイマー残り時間が制限時間を超えている場合は、まだプレイできないので、以降の処理をしないで抜ける
+					// つまり State::Before の最後で尺を作った 1.75s の間は、ターゲットが出現していてもタップしても反応しないようにする
 					if (getData().timer.s() > m_currentLevel().timeLimit.count())
 					{
 						return;
 					}
-					// これ以下はタイマー残り時間が 30s 以下であることを保証する
+					// これ以下の処理ではタイマー残り時間が 30s 以下であることを保証する
 
 					AudioAsset(getData().bgmName).play();
 
+					// ターゲットが初めて画面上に見えたかどうかを記録する
+					if (getData().spawns[0] and (not m_targetFirstVisible))
+					{
+						m_targetFirstVisible = getData().spawns[0]->isVisible();
+
+						// 初めて見えた時点での残り時間に変更しておく
+						m_targetAppearTime = getData().timer.remaining();
+					}
+
 					// ターゲットから順に捜査する
-					for (const auto& cat : getData().spawns)
+					for (const auto &cat : getData().spawns)
 					{
 						if (not cat)
 						{
@@ -314,16 +344,17 @@ namespace UFOCat
 							// 仮変数
 							uint32 temp_consecutive = 0;
 
-							for (size_t i = 0; i < m_currentScoreDatas().size() - 1; i++)
+							// 連続正解数の計算
+							for (size_t i = 0; i < m_currentRecords().size() - 1; i++)
 							{
-								// 次のスコアデータが存在しない場合は終了
-								if (not m_currentScoreDatas()[i + 1].level)
+								// 次のスコアデータが存在しない場合はこの for ループ終了
+								if (not m_currentRecords()[i + 1].level)
 								{
 									break;
 								}
 
 								// 今のレベルと次のレベルの両方で正解していたら増やす
-								if (m_currentScoreDatas()[i].isCorrect and m_currentScoreDatas()[i + 1].isCorrect)
+								if (m_currentRecords()[i].isCorrect and m_currentRecords()[i + 1].isCorrect)
 								{
 									++temp_consecutive;
 								}
@@ -339,36 +370,32 @@ namespace UFOCat
 							// プレイ終了へ
 							m_state = State::Finish;
 
-							// 明示的にストップウォッチリセット（でないと積算時間が持ち越される）
+							// 明示的に内部ストップウォッチリセット（でないと積算時間が持ち越される）
 							m_watch.reset();
 
 							AudioAsset(Util::AudioName::SE::FinishLevel).playOneShot();
 							AudioAsset(getData().bgmName).fadeVolume(0.0, 1s);
 
+							// switch を抜ける
 							break;
 						}
 					}
-
-					// ターゲットが初めて画面上に見えたかどうかを記録する
-					if (getData().spawns[0] and (not m_targetFirstVisible))
-					{
-						m_targetFirstVisible = getData().spawns[0]->isVisible();
-
-						// 初めて見えた時点での残り時間に変更しておく
-						m_targetAppearTime = getData().timer.remaining();
-					}
 				}
-				// ### 時間外
+				// #### 時間外
 				else
 				{
 					// タイマーがセットだけされている状態 -> 前のステートからの遷移直後
 					if (not getData().timer.reachedZero())
 					{
+						// なのでタイマースタート
 						getData().timer.start();
 					}
 					else
 					{
-						// 制限時間が終わったら、終了表示を出しに行く
+						// 時間切れでプレイ終了するときは、猫も捕まえられていないので
+						// スコア計算などをしない
+
+						// 制限時間が終わったら、終了表示を出しに行く (draw 参照)
 						m_state = State::Finish;
 
 						// 明示的にストップウォッチリセット（でないと積算時間が持ち越される）
@@ -379,32 +406,36 @@ namespace UFOCat
 					}
 				}
 
-				
+				break;
 			}
-			break;
-
+			// ## プレイ後: 3s 待ってから結果表示へ
 			case State::Finish:
 			{
 				// 3s 経ったらレベル終わり画面を出しに行く
 				m_watch.setTimeout([this]()
-					{
-						m_state = State::After;
+				{
+					m_state = State::After;
 
-						// 明示的にストップウォッチリセット（でないと積算時間が持ち越される）
-						m_watch.reset();
+					// 明示的に内部ストップウォッチリセット（でないと積算時間が持ち越される）
+					m_watch.reset();
 
-						AudioAsset(getData().bgmName).stop();
-					}, 3s);
+					AudioAsset(getData().bgmName).stop();
+				}, 3s);
+
+				break;
 			}
-			break;
-
+			// ## 結果表示
 			case State::After:
 			{
+				// 0.1s 待って音が鳴る
 				m_watch.setTimeout([this]()
 				{
 					// 「SEが鳴っている間」を取得したいのでふつうの play を使う
+					// 捕まえられなかったら時間切れの音
+					// 捕まえられたけど正解していなかったら不正解の音
+					// 捕まえられたうえで正解していたら正解の音
 					AudioAsset(m_score.isCaught ? (m_score.isCorrect ? Util::AudioName::SE::Correct : Util::AudioName::SE::Incorrect) : Util::AudioName::SE::TimeUp).play();
-				}, 0.2s);
+				}, 0.1s);
 
 				// # GUI 処理
 				{
@@ -420,7 +451,7 @@ namespace UFOCat
 						m_currentLevel().isCleared = m_score.isCorrect;
 
 						// スコアを格納する
-						m_currentScoreDatas()[getData().levelIndex] = m_score;
+						m_currentRecords()[getData().levelIndex] = m_score;
 
 						// 次のレベル初期化へ
 						changeScene(SceneState::Wanted);
@@ -434,7 +465,7 @@ namespace UFOCat
 						if (canContinue)
 						{
 							// 次へ行けるのにやめようとしてる人には、ダイアログを出す
-							m_gui.dialog.open();
+							m_gui.quitAlert.open();
 						}
 						else
 						{
@@ -444,7 +475,7 @@ namespace UFOCat
 							m_currentLevel().isCleared = m_score.isCorrect;
 
 							// スコアを格納する
-							m_currentScoreDatas()[getData().levelIndex] = m_score;
+							m_currentRecords()[getData().levelIndex] = m_score;
 
 							// 結果シーンへ
 							changeScene(SceneState::Result, 1s);
@@ -452,32 +483,33 @@ namespace UFOCat
 					}
 
 					// ダイアログ タイトルへ戻るボタンを押して、ダイアログが開かれた場合にボタン判定が始まる
-					if (m_gui.dialog.isPressedOK())
+					if (m_gui.quitAlert.isPressedOK())
 					{
 						// スコアを格納する
-						m_currentScoreDatas()[getData().levelIndex] = m_score;
+						m_currentRecords()[getData().levelIndex] = m_score;
 
 						// 結果シーンへ
 						changeScene(SceneState::Result, 1s);
 					}
 
-					m_gui.dialog.isPressedCancel();
+					// ダイアログのキャンセルボタン押下監視
+					m_gui.quitAlert.isPressedCancel();
 				}
-			
-			}
-			break;
-			default:
+
 				break;
+			}
+			default: break;
 		}
 
-# if _DEBUG    // デバッグ機能：
+# if _DEBUG
+		// # デバッグ機能
 		if (KeyControl.pressed() and KeyShift.pressed())
 		{
-			// Ctrl + Shift + S でスキップ
+			// Ctrl + Shift + S で正解スキップ
 			if (KeyS.pressed())
 			{
 				m_currentLevel().isCleared = true;
-				m_currentScoreDatas()[getData().levelIndex] = Score::LevelRecord{ getData().levelIndex + 1, true, true, 0.3, getData().levelIndex };
+				m_currentRecords()[getData().levelIndex] = Score::LevelRecord{ getData().levelIndex + 1, true, true, 0.3, getData().levelIndex };
 			
 				getData().timer.reset();
 
@@ -492,12 +524,12 @@ namespace UFOCat
 				}
 			}
 
-			// Ctrl + Shift + R で全スキップ
+			// Ctrl + Shift + R で全正解スキップ
 			if (KeyR.pressed())
 			{
 				// 全てのレベルをクリアしたことにして結果シーンへ
 				// 一気に移るので、クリアフラグを上げる必要もない
-				m_currentScoreDatas().each_index([this](size_t i, Score::LevelRecord &score) { score = Score::LevelRecord{ i + 1, true, true, 0.5, i }; });
+				m_currentRecords().each_index([this](size_t i, Score::LevelRecord &score) { score = Score::LevelRecord{ i + 1, true, true, 0.5, i }; });
 				getData().timer.reset();
 				changeScene(SceneState::Result);
 			}
@@ -522,7 +554,7 @@ namespace UFOCat
 	{
 		m_bg.texture.fitted(Scene::Size()).draw();
 
-		// # 共通処理（背面）
+		// # 共通処理（背面レイヤー）
 		{
 
 			for (const auto &cat : getData().spawns)
@@ -537,10 +569,10 @@ namespace UFOCat
 			}
 		}
 
-		// # ステート依存処理
+		// # ステート依存処理（こっちのほうが前面）
 		switch (m_state)
 		{
-			// ## 開始前（カウントダウン処理など）
+			// ## 開始前: カウントダウン処理など
 			case State::Before:	
 			{
 				// 3s 以下からカウントし始めたいので、残り時間がそれ以上あるときは処理しない
@@ -577,44 +609,42 @@ namespace UFOCat
 				FontAsset(Util::FontName::KoharuiroSunray)(text)
 					// 枠線・影設定 -> テキストサイズ（「GO!」の時以外経過時間で縮小） -> 経過時間で透明化 -> 画面中央ぞろえ描画
 					.drawAt(TextStyle::OutlineShadow(0.3, Util::Palette::Brown, Vec2{ 1.2, 1.2 }, ColorF{ 0.0, 0.65 }), textSize, Scene::Center(), ColorF{ 1.0, EaseOutExpo(t) });
-			}
-			break;
 
-			// ## プレイ中（タイマー表示など）
+				break;
+			}
+			// ## プレイ中: タイマー表示など
 			case State::Playing:
 			{
+				if (getData().timer.s() > m_currentLevel().timeLimit.count())
 				{
-					if (getData().timer.s() > m_currentLevel().timeLimit.count())
-					{
-						return;
-					}
-					// これ以下はタイマー残り時間が 30s 以下であることを保証する
-
-					// 中心 (60, 60) としてストップウォッチのテクスチャを最大 60px で描画
-					RectF swRegion = m_gui.timer.resized(60).drawAt(Point{ 60, 60 });
-
-					// 針の角度を計算する（時間進捗の割合 -> ラジアン）
-					double angle = 2 * Math::Pi * getData().timer.sF() / m_currentLevel().timeLimit.count();
-
-					// ### 針を描画
-					// ストップウォッチの中心からちょっとずらした位置
-					// 角度は反時計回りだったので、更に反転させておいた
-					Line{ Vec2{ swRegion.centerX(), swRegion.centerY() + 4.0 }, Arg::angle = -angle, 16.0 }
-						.draw(LineStyle::RoundCap, 4.0, Palette::Salmon);
-
-					// ### 残り時間の描画
-					FontAsset(Util::FontName::YuseiMagic)(U"のこり")
-						.draw(TextStyle::Shadow(Vec2{ 1.2, 1.2 }, ColorF{ 0.2 }), 20, swRegion.tr().x + 10, swRegion.tr().y - 10, ColorF{ 1.0, Periodic::Square0_1(1s) });
-
-					// 実際の残り時間の描画領域を取っておいて、その右にちっちゃく「秒」を描く
-					RectF tRegion = FontAsset(Util::FontName::YuseiMagic)(U"{}"_fmt(getData().timer.s()))
-										.drawBase(TextStyle::OutlineShadow(0.3, Util::Palette::Brown, Vec2{ 1.2, 1.2 }, ColorF{ 0.2 }), 36, Vec2{ swRegion.br().x + 10, swRegion.br().y - 5 });
-					FontAsset(Util::FontName::YuseiMagic)(U"秒").drawBase(TextStyle::Shadow(Vec2{ 1.2, 1.2 }, ColorF{ 0.2 }), 24, Vec2{ tRegion.br().x + 10, swRegion.br().y - 5 });
+					return;
 				}
-			}
-			break;
+				// これ以下はタイマー残り時間が 30s 以下であることを保証する
 
-			// L335より、終了表示は 3s 間
+				// 中心 (60, 60) としてストップウォッチのテクスチャを最大 60px で描画
+				RectF swRegion = m_gui.timer.resized(60).drawAt(Point{ 60, 60 });
+
+				// 針の角度を計算する（時間進捗の割合 -> ラジアン）
+				double angle = 2 * Math::Pi * getData().timer.sF() / m_currentLevel().timeLimit.count();
+
+				// ### 針を描画
+				// ストップウォッチの中心からちょっとずらした位置
+				// 角度は反時計回りだったので、更に反転させておいた
+				Line{ Vec2{ swRegion.centerX(), swRegion.centerY() + 4.0 }, Arg::angle = -angle, 16.0 }
+					.draw(LineStyle::RoundCap, 4.0, Palette::Salmon);
+
+				// ### 残り時間の描画
+				FontAsset(Util::FontName::YuseiMagic)(U"のこり")
+					.draw(TextStyle::Shadow(Vec2{ 1.2, 1.2 }, ColorF{ 0.2 }), 20, swRegion.tr().x + 10, swRegion.tr().y - 10, ColorF{ 1.0, Periodic::Square0_1(1s) });
+
+				// 実際の残り時間の描画領域を取っておいて、その右にちっちゃく「秒」を描く
+				RectF tRegion = FontAsset(Util::FontName::YuseiMagic)(U"{}"_fmt(getData().timer.s()))
+										.drawBase(TextStyle::OutlineShadow(0.3, Util::Palette::Brown, Vec2{ 1.2, 1.2 }, ColorF{ 0.2 }), 36, Vec2{ swRegion.br().x + 10, swRegion.br().y - 5 });
+				FontAsset(Util::FontName::YuseiMagic)(U"秒").drawBase(TextStyle::Shadow(Vec2{ 1.2, 1.2 }, ColorF{ 0.2 }), 24, Vec2{ tRegion.br().x + 10, swRegion.br().y - 5 });
+
+				break;
+			}
+			// ## 終了: 終了表示は 3s 間 (update 参照)
 			case State::Finish:
 			{
 				// 線形補間のパラメータ
@@ -623,6 +653,8 @@ namespace UFOCat
 				// 1.7s までの間
 				if (m_watch.now() <= 1.7)
 				{
+					// 時間的には 1.7s だけど数値的には 1.0 より大きいので
+					// 半分にしておく
 					t = Clamp(m_watch.now() / 2.0, 0.0, 1.0);
 				}
 				// それ以外は t = 1.0 として処理
@@ -639,9 +671,9 @@ namespace UFOCat
 				// 経過に合わせて移動させる
 				// イージング関数で跳ねて戻ってくるような移動効果
 				view.drawAt(TextStyle::OutlineShadow(0.3, Util::Palette::Brown, Vec2{ 1.2, 1.2 }, ColorF{ 0.0, 0.65 }), 150.0, begin.lerp(Scene::CenterF(), EaseOutElastic(t)));
-			}
-			break;
 
+				break;
+			}
 			case State::After:
 			{
 				// 背景 ちょっと暗くする
@@ -678,12 +710,13 @@ namespace UFOCat
 					// 表示部分の基準座標
 					const Vec2 origin{ Scene::CenterF().x, 120 };
 
-					// 捕まえたかどうかで分岐
+					// 捕まえられた場合
 					if (m_score.isCaught)
 					{
-						// 合っていたかどうかでも分岐
+						// 合っていた場合
 						if (m_score.isCorrect)
 						{
+							// 明滅させたいので明度が扱える HSV
 							HSV circleColor{ Color{ 249, 32, 52 } };
 							HSV fontColor{ Palette::White };
 
@@ -695,19 +728,25 @@ namespace UFOCat
 								fontColor.setV(v);
 							}
 
+							// 正解の円を描く
 							Circle{ origin, 75 }.drawFrame(15, circleColor);
 
 							// こはるいろサンレイのベースラインが少しずれているので位置を修正
 							FontAsset(Util::FontName::KoharuiroSunray)(U"正解!!").drawAt(110, origin.withY(origin.y + 5), fontColor);
 						}
+						// 間違っていた場合
 						else
 						{
+							// エイリアス
 							const auto &se = AudioAsset(Util::AudioName::SE::Incorrect);
 
+							// SE が鳴り始め = 0.0 -> 鳴り終わり = 1.0 になるような値をつくる
 							double t = se.isPlaying() ? (se.posSec() / se.lengthSec()) : 1.0;
 
+							// t を使って、不正解の音に合わせて跳ねるような動きをさせるための位置を計算
 							Vec2 pos = origin.withY(20).lerp(origin, EaseOutBounce(t));
 
+							// テキストもバツ印もちょっと跳ねる
 							Shape2D::Cross(75, 25, pos).draw(Color{ 32, 70, 206, static_cast<uint8>(255 * t) });
 							FontAsset(Util::FontName::KoharuiroSunray)(U"不正解...").drawAt(110, pos.withY(pos.y + 5), ColorF{ 1.0, t });
 						}
@@ -723,12 +762,12 @@ namespace UFOCat
 					// このレベルをクリアできていて、次のレベルが存在する場合のみ表示される update 参照
 					m_gui.toNextLevel.draw();
 
-					m_gui.dialog.draw();
+					m_gui.quitAlert.draw();
 				}
+
+				break;
 			}
-				break;
-			default:
-				break;
+			default: break;
 		}
 
 		BrightenCursor();
@@ -737,6 +776,8 @@ namespace UFOCat
 	Level::~Level()
 	{
 		AudioAsset(getData().bgmName).stop();
+
+		// このレベルで使用したテクスチャアセットを一旦全て解放する
 		TextureAsset::ReleaseAll();
 	}
 }

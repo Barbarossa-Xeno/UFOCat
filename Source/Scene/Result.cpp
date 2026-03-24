@@ -2,14 +2,10 @@
 
 namespace UFOCat
 {
-
-	Score::LevelRecord &Result::m_currentScoreData() const
+	Array<Score::LevelRecord> &Result::m_currentRecords() const
 	{
-		return getData().scores.back().records[getData().levelIndex];
-	}
-
-	Array<Score::LevelRecord> &Result::m_currentScoreDatas() const
-	{
+		// 現在のレベルのスコア記録は、共有データのスコア記録のリストの
+		// 最後の要素の records で管理されているので、そこを参照して返す
 		return getData().scores.back().records;
 	}
 
@@ -35,7 +31,7 @@ namespace UFOCat
 			}
 		}
 
-		// GUI 要素初期化
+		// GUI 要素初期化: m_gui.scoreDetails の設定
 		{
 			m_gui.scoreDetails.addContents
 			(
@@ -53,7 +49,7 @@ namespace UFOCat
 				}.setMargin({ 0, 10 })
 			);
 
-			for (auto &&data : m_currentScoreDatas())
+			for (auto &&data : m_currentRecords())
 			{
 				// 共通データの records は、ゲーム開始時に毎回レベルの数だけの要素数で作られるので
 				// デフォルトデータのままのもの (data.level は未指定のため none) があればそれ以降のレベルはプレイされていない
@@ -64,6 +60,9 @@ namespace UFOCat
 				}
 
 				// スコアの条件に応じてうまくインデントを下げる
+				// アーリーリターンしていないのでコードは少々見づらいですが、setIndent の数値は
+				// コードそのもののインデントを目印に下げていきました
+
 				m_gui.scoreDetails.addContents
 				(
 					GUI::TextBox
@@ -81,6 +80,8 @@ namespace UFOCat
 				);
 
 				// 以下、小数点以下のけたが大きい場合小数第3位で四捨五入
+
+				// 捕まえれたとき
 				if (data.isCaught)
 				{
 					m_gui.scoreDetails.addContents
@@ -93,6 +94,7 @@ namespace UFOCat
 						}.setIndent(40)
 					);
 
+					// 正解の時
 					if (data.isCorrect)
 					{
 						m_gui.scoreDetails.addContents
@@ -106,6 +108,7 @@ namespace UFOCat
 						);
 					}
 
+					// レベル到達ボーナスは、絶対描画する（レベル1でも加算されるので）
 					m_gui.scoreDetails.addContents
 					(
 						GUI::TextBox
@@ -116,6 +119,7 @@ namespace UFOCat
 						}.setIndent(40)
 					);
 
+					// 連続正解数
 					if (data.consecutiveCorrect > 0)
 					{
 						m_gui.scoreDetails.addContents
@@ -140,7 +144,7 @@ namespace UFOCat
 		{
 			// スコアと称号ゲージを増やす
 			if (const size_t total = getData().scores.back().total;
-				m_ScoreCount < total)
+				m_scoreCount < total)
 			{
 				AudioAsset(Util::AudioName::SE::CountUpScore).play();
 
@@ -149,66 +153,68 @@ namespace UFOCat
 
 				// インターバルごとに繰り返す
 				m_scoreCountUpWatch.setInterval([&]()
+				{
+					// 実際の総得点とカウントとの差が10を切るまで、スピードを上げてカウントアップ
+					if (total - m_scoreCount >= 10)
 					{
-						// 実際の総得点とカウントとの差が10を切るまで、スピードを上げてカウントアップ
-						if (total - m_ScoreCount >= 10)
-						{
-							// 速度（デルタタイムの足し上げ）の切り上げを変化にする
-							m_ScoreCount += static_cast<size_t>(Ceil(m_countUpAcceleration));
-						}
-						// 最後は1つずつ足し上げて誤差がないように終了
-						else
-						{
-							++m_ScoreCount;
-						}
+						// 速度（デルタタイムの足し上げ）の切り上げを変化にする
+						m_scoreCount += static_cast<size_t>(Ceil(m_countUpAcceleration));
+					}
+					// 最後は1つずつ足し上げて誤差がないように終了
+					else
+					{
+						++m_scoreCount;
+					}
 						
 
-						// 前回の速度 x デルタタイムの足し上げ -> 加速度的
-						m_countUpAcceleration += m_countUpAcceleration * Scene::DeltaTime();
+					// 前回の速度 x デルタタイムの足し上げ -> 加速度的
+					m_countUpAcceleration += m_countUpAcceleration * Scene::DeltaTime();
 
-						// 閾値の割合がデカいほうから順に走査
-						for (auto itr = Score::Titles.begin(); itr != Score::Titles.end(); ++itr)
+					// 閾値の割合がデカいほうから順に走査
+					for (auto itr = Score::Titles.begin(); itr != Score::Titles.end(); ++itr)
+					{
+						// 現在のスコアのカウントが、比較対象の称号の閾値以下
+						// （カウント / 理論値 が 1.0 以下になる状況）のとき、
+						// ゲージを加算する
+						if (double realThreshold = itr->threshold * Score::GetMaxTheoretical();
+							m_scoreCount <= realThreshold)
 						{
-							// 現在のスコアのカウントが、比較対象の称号の閾値以下
-							// （カウント / 理論値 が 1.0 以下になる状況）のとき、
-							// ゲージを加算する
-							if (double realThreshold = itr->threshold * Score::GetMaxTheoretical();
-								m_ScoreCount <= realThreshold)
+							// パラメータ
+							double t = 0.0;
+
+							// 一番下の称号の場合、そのまま進捗を設定
+							if (itr == Score::Titles.begin())
 							{
-								// パラメータ
-								double t = 0.0;
-
-								// 一番下の称号の場合、そのまま進捗を設定
-								if (itr == Score::Titles.begin())
-								{
-									t = static_cast<double>(m_ScoreCount) / realThreshold;
-								}
-								// それ以外の場合、前の称号の閾値を引いた分だけ進捗を設定
-								else
-								{
-									// 一個下の閾値をフィードバック
-									const double prev = std::prev(itr)->threshold * Score::GetMaxTheoretical();
-									const double num = static_cast<double>(m_ScoreCount) - prev;
-									const double den = realThreshold - prev;
-									t = num / den;
-								}
-
-								// 称号を更新
-								m_currentTitle = *itr;
-
-								// ゲージを更新
-								m_gui.scoreTitleGauge.setProgress(Easing::Sine(t));
-
-								// 更新したら走査やめる
-								break;
+								t = static_cast<double>(m_scoreCount) / realThreshold;
 							}
+							// それ以外の場合、前の称号の閾値を引いた分だけ進捗を設定
+							else
+							{
+								// 一個下の閾値をフィードバック
+								const double prev = std::prev(itr)->threshold * Score::GetMaxTheoretical();
+								const double num = static_cast<double>(m_scoreCount) - prev;
+								const double den = realThreshold - prev;
+								t = num / den;
+							}
+
+							// 称号を更新
+							m_currentTitle = *itr;
+
+							// ゲージを更新
+							m_gui.scoreTitleGauge.setProgress(Easing::Sine(t));
+
+							// 更新したら走査やめる
+							break;
 						}
-					}, Duration(interval));
+					}
+				}, Duration(interval));
 			}
+			// スコア表示の加算が終わったら
 			else
 			{
 				if (not m_isFinishedCountUp)
 				{
+					// カウントアップの音を止めて、シンバルの音を鳴らす
 					AudioAsset(Util::AudioName::SE::CountUpScore).stop();
 					AudioAsset(Util::AudioName::SE::FinishScore).play();
 
@@ -220,14 +226,18 @@ namespace UFOCat
 
 		// # GUI 更新処理
 		{
+			// 称号ゲージ更新
 			m_gui.scoreTitleGauge.set({ 0.65 * Scene::Width(), 15.0 }, Util::Palette::LightBrown)
-				.setPosition(Arg::topCenter = Vec2{ Scene::Center().x, Scene::Center().y + 110 });
+								 .setPosition(Arg::topCenter = Vec2{ Scene::Center().x, Scene::Center().y + 110 });
 
+			// タイトルへ戻る
+			// スコアのカウントアップが途中でも戻れる
 			if (m_gui.toTitle.set(32, U"タイトルへ")
 							 .setPosition(Arg::bottomLeft = Vec2{ 10.0, Scene::Height() - 10.0 })
 							 .isPressed())
 			{
-				// まだスコアのカウントアップが途中だったら、シンバルは鳴らしておく
+				// でも一応スコアのカウントアップが途中だったら、
+				// シンバルだけは鳴らして戻る
 				if (not m_isFinishedCountUp)
 				{
 					AudioAsset(Util::AudioName::SE::CountUpScore).stop();
@@ -238,6 +248,7 @@ namespace UFOCat
 				changeScene(SceneState::Title, 1.5s);
 			}
 
+			// スコア詳細を開く
 			if (m_gui.scoreDetailsButton.set(32, U"もっとくわしく")
 										.setPosition(Arg::bottomRight = (Scene::Size() - Size{ 10, 10 }))
 										.isPressed())
@@ -245,31 +256,29 @@ namespace UFOCat
 				m_gui.scoreDetails.setSize({ 400, 450 }).open();
 			}
 
+			// スコア詳細のOKボタン監視
 			m_gui.scoreDetails.isPressedOK();
 		}
-
-# if _DEBUG
-		// デバッグ機能：Ctrl + Shift + S でスキップ
-		if (KeyControl.pressed() and KeyShift.pressed() and KeyR.pressed())
-		{
-			changeScene(SceneState::Result, 1s);
-		}
-# endif
 	}
 
 	void Result::draw() const
 	{
-		Scene::Rect().draw(Util::Palette::Brown);
-		DrawPolkaDotBackground(30, 0.3, Util::Palette::LightBrownAlt);
-		Scene::Rect().draw(ColorF{ 0.0, 0.5 });
+		// # 背景描画
+		{
+			// 背景色と水玉模様にちょっと透明な白を重ねる
+			Scene::Rect().draw(Util::Palette::Brown);
+			DrawPolkaDotBackground(30, 0.3, Util::Palette::LightBrownAlt);
+			Scene::Rect().draw(ColorF{ 0.0, 0.5 });
+		}
 
 		// # スコア表示
 		{
 			// TODO: ほんとはこういうサイズもレスポンシブにすべきなんだろう
 
 			// 点数表示
-			FontAsset(Util::FontName::KoharuiroSunray)(U"{}"_fmt(m_ScoreCount)).draw(120, Arg::bottomCenter = Scene::Center());
+			FontAsset(Util::FontName::KoharuiroSunray)(U"{}"_fmt(m_scoreCount)).draw(120, Arg::bottomCenter = Scene::Center());
 
+			// 理論値を使って点数表示に必要な最大の領域を事前に計算しておく
 			const RectF& maxRegion = FontAsset(Util::FontName::KoharuiroSunray)(U"{}"_fmt(Score::GetMaxTheoretical())).region(120, Arg::bottomCenter = Scene::Center());
 
 			// 回転座標系
@@ -285,10 +294,9 @@ namespace UFOCat
 
 				FontAsset(Util::FontName::YuseiMagic)(U"UFO猫ハンターだ！！").draw(26, Arg::bottomLeft = Vec2{ (region2.br().x + 10), region1.br().y });
 
-				// 称号ゲージ更新
+				// 称号ゲージ描画
 				m_gui.scoreTitleGauge.draw();
 			}
-			
 		}
 
 		// # GUI 描画

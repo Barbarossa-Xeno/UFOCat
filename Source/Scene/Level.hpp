@@ -57,7 +57,8 @@ namespace UFOCat
 		Score::LevelRecord m_score;
 
 		/// @brief 捕まえた猫のオブジェクトへのポインタへのポインタ
-		/// @remarks 二重ポインタにしているのは、`spawns` からとってくるため `spawns`は unique_ptr で管理されている 
+		/// @remarks 二重ポインタにしているのは、`spawns` からとってくるから
+		/// （`spawns`は unique_ptr で管理されているので、それが示している猫のインスタンスは参照できない）
 		const std::unique_ptr<CatObject> *m_caught = nullptr;
 
 		/// @brief レベル終わりに自分の捕まえた猫やターゲットを表示する際の倍率
@@ -69,26 +70,29 @@ namespace UFOCat
 			/// @brief 結果シーンに進むボタン
 			GUI::Button toResult;
 
+			/// @brief 次のレベルに進むボタン
+			/// 状況に応じて無効になる
 			GUI::Button toNextLevel;
 
-			GUI::Dialog dialog;
+			/// @brief 次のレベルに行けるのにやめようとしたときに警告するダイアログ
+			GUI::Dialog quitAlert;
 
+			/// @brief タイマーの画像
 			Texture timer;
 		} m_gui;
 
 		/// @brief 背景データ
 		Core::BackgroundData m_bg;
 
-		/* -- ゲッター / セッター -- */
+		/* -- プロパティ -- */
 
 		/// @brief 現在のレベル (非 const)
-		/// @return 現在の `LevelData` の参照
-		/// @remarks ゲッターとか言いながらオブジェクトの変更も許している（？）
+		/// @return 共有データにある現在の `LevelData` の参照
 		LevelData &m_currentLevel() const;
 
-		/// @brief 
-		/// @return 
-		Array<Score::LevelRecord> &m_currentScoreDatas() const;
+		/// @brief 現在の1ゲームにおいて、各レベルのスコア記録
+		/// @return 共有データにある`LevelRecord` のリストへの参照
+		Array<Score::LevelRecord> &m_currentRecords() const;
 
 		/// @brief ターゲットが出現する時間を引数に応じてランダムに決め、`m_targetAppearTime` に設定する
 		/// @param level 整数値（1 ~ 10 の範囲で、特に現在のレベル値を入れることを想定）

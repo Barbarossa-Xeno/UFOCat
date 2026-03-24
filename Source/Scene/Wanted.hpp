@@ -25,13 +25,13 @@ namespace UFOCat
 
 		Util::DropShadowRT m_dropShadow;
 
-		/// @brief ターゲット猫の毛色データを、色アイコンと色名で表示するためのコンポーネント
+		/// @brief ターゲット猫の毛色データを、色アイコンと色名で描画する
 		/// @param name 色名
 		/// @param color 色
 		/// @param leftCenter 左中央を基準としたの配置位置  
 		/// @param size 表示サイズ（色アイコンの半径に相当する）
-		/// @return アイコンとマージン、色名の表示領域全てを足した範囲を RectF で返す
-		RectF m_showColorData(String name, Color color, Vec2 leftCenter, double size) const;
+		/// @return アイコンとマージン、色名の描画領域全てを足した範囲を RectF で返す
+		RectF m_drawColorData(String name, Color color, Vec2 leftCenter, double size) const;
 
 	public:
 

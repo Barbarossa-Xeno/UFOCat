@@ -6,20 +6,22 @@ namespace UFOCat
 {
 	class Result : public App::Scene
 	{
-		/// @brief カウントアップさせるスコア
-		size_t m_ScoreCount = 0;
+		/// @brief 表示のためにカウントアップさせていくスコア
+		size_t m_scoreCount = 0;
 
 		/// @brief カウントアップに応じて変わる称号データを保持する
 		Score::Title m_currentTitle = Score::Titles[0];
 
-		/// @brief カウントアップさせるときの加速度 随時加算
+		/// @brief カウントアップするときの加速度 随時加算
 		double m_countUpAcceleration = 1.0;
 
-		/// @brief カウントアップするためのストップウォッチ
+		/// @brief ある間隔でカウントアップするためのストップウォッチ
 		Util::Stopwatch m_scoreCountUpWatch;
 
+		/// @brief カウントアップが終わったか
 		bool m_isFinishedCountUp = false;
 
+		/// @brief GUI 要素
 		struct
 		{
 			/// @brief タイトルに行くボタン
@@ -36,14 +38,12 @@ namespace UFOCat
 		}
 		m_gui;
 
-		/// @brief 
-		/// @return 
-		Score::LevelRecord& m_currentScoreData() const;
-
-		// TODO: m_currentScoreDatas() は2個目 親クラスでの共通化を考える
-		Array<Score::LevelRecord> &m_currentScoreDatas() const;
+		/// @brief 現在の1ゲームにおいて、各レベルのスコア記録
+		/// @return 共有データにある`LevelRecord` のリストへの参照
+		Array<Score::LevelRecord> &m_currentRecords() const;
 
 	public:
+
 		Result(const InitData &init);
 
 		~Result();
