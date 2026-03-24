@@ -89,7 +89,7 @@ namespace UFOCat::GUI
 			// 要素全ての高さは一番最後の要素の左上位置とそれ自体の高さに、ビューポート自体の Y 座標を足して計算できるものとする
 			// 位置指定が相対のときはマージンも足す
 			m_container.region.h = m_contents.back()->getInitialPosition().y + m_contents.back()->getRegion().h
-								+ (m_contents.back()->positionType() == PositionType::Relative ? m_contents.back()->getMargin().bottom : 0);
+								+ (m_contents.back()->layoutMode() == LayoutMode::Relative ? m_contents.back()->getMargin().bottom : 0);
 		}
 
 		// コンテナのスクロール最小値を更新する（上に移動させる長さが変わりうるので）
@@ -112,7 +112,7 @@ namespace UFOCat::GUI
 			// ボックスの変更が必要なときのみ更新される
 				
 			// TextBox の場合のみ adjustWidth を呼び出す
-			if ((*itr)->typeID() == RelocatableTypeID::TextBox)
+			if ((*itr)->typeID() == LayoutableTypeID::TextBox)
 			{
 				// 安全で高速にダウンキャスト
 				// ビューポート横幅からスクロールバーの幅を左右から引いた値で合わせておく
@@ -124,7 +124,7 @@ namespace UFOCat::GUI
 
 			// # マージン使用時の位置調整
 			if (const auto &current = *itr;
-				current->positionType() == PositionType::Relative)
+				current->layoutMode() == LayoutMode::Relative)
 			{
 				// このメソッドと使用する場面として、ビューポートサイズの変更後や、各要素の変更後であることが予想されるため
 				// 初期位置は強制リセットする

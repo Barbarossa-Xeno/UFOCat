@@ -476,7 +476,7 @@
     <ClInclude Include="Source\GUI\Drawable.hpp" />
     <ClInclude Include="Source\GUI\MessageBox.hpp" />
     <ClInclude Include="Source\GUI\ProgressBar.hpp" />
-    <ClInclude Include="Source\GUI\Relocatable.hpp" />
+    <ClInclude Include="Source\GUI\Layoutable.hpp" />
     <ClInclude Include="Source\GUI\ScrollView.hpp" />
     <ClInclude Include="Source\GUI\TextBox.hpp" />
     <ClInclude Include="Source\Scene\Level.hpp" />

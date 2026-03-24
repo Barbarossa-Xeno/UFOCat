@@ -1,10 +1,10 @@
 ﻿# pragma once
-# include "Relocatable.hpp"
+# include "Layoutable.hpp"
 
 namespace UFOCat::GUI
 {
-	/// @brief シンプルなテキストボックスの機能を提供するコンポーネント
-	class TextBox : public Relocatable
+	/// @brief シンプルなテキストボックスのコンポーネント
+	class TextBox : public Layoutable
 	{
 		/// @brief Font()(U"") の形で描画可能にしたテキストデータ
 		DrawableText m_text;
@@ -22,16 +22,16 @@ namespace UFOCat::GUI
 		/// @param text Font()(U"") の形で描画可能にしたテキストデータ
 		/// @param fontSize フォントサイズ
 		/// @param color テキストの色
-		/// @param positionType 座標指定方法
-		TextBox(const DrawableText &text, double fontSize, const Color &color, PositionType positionType = PositionType::Absolute);
+		/// @param layoutMode 座標指定方法
+		TextBox(const DrawableText &text, double fontSize, const Color &color, LayoutMode layoutMode = LayoutMode::Absolute);
 
 		/// @brief 各種パラメータを一括で設定する
 		/// @param text Font()(U"") の形で描画可能にしたテキストデータ
 		/// @param fontSize フォントサイズ
 		/// @param color テキストの色
-		/// @param positionType 座標指定方法
+		/// @param layoutMode 座標指定方法
 		/// @return 自分自身の参照
-		TextBox &set(const DrawableText &text, double fontSize, const Color &color, PositionType positionType = PositionType::Absolute);
+		TextBox &set(const DrawableText &text, double fontSize, const Color &color, LayoutMode layoutMode = LayoutMode::Absolute);
 
 		/// @brief 左からのインデントを指定する
 		/// @param px インデント (ピクセル指定)
@@ -45,7 +45,7 @@ namespace UFOCat::GUI
 
 		void draw() const override;
 
-		RelocatableTypeID typeID() const noexcept override;
+		LayoutableTypeID typeID() const noexcept override;
 
 		TextBox &setPosition(const Vec2 &position, bool isOverwriteDefault) noexcept override;
 

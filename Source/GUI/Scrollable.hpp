@@ -19,7 +19,7 @@ namespace UFOCat::GUI
 		/// @tparam ...TContents `Relocatable` なコンポーネント（パラメータパック）
 		/// @param ...contents `Relocatable` なコンポーネントを複数指定（可変長引数）
 		/// @return 自分自身の参照
-		template <std::derived_from<Relocatable> ...TContents>
+		template <std::derived_from<Layoutable> ...TContents>
 		inline Derived &addContents(const TContents &...contents)
 		{
 			m_container.addContents(contents...);
@@ -30,7 +30,7 @@ namespace UFOCat::GUI
 		/// @tparam ...TContents `Relocatable` なコンポーネント（パラメータパック）
 		/// @param ...contents `Relocatable` なコンポーネントを複数指定（可変長引数）
 		/// @return 自分自身の参照
-		template <std::derived_from<Relocatable> ...TContents>
+		template <std::derived_from<Layoutable> ...TContents>
 		inline Derived &setContents(const TContents &...contents)
 		{
 			m_container.setContents(contents...);

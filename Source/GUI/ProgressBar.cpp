@@ -2,20 +2,20 @@
 
 namespace UFOCat::GUI
 {
-	ProgressBar::ProgressBar(const SizeF &size, const ColorF &color, PositionType positionType, double roundness, double progress)
+	ProgressBar::ProgressBar(const SizeF &size, const ColorF &color, LayoutMode layoutMode, double roundness, double progress)
 		: m_color{ color }
 		, m_roundness{ roundness }
 		, m_progress{ progress }
 	{
 		m_region = RectF{ size };
-		m_positionType = positionType;
+		m_layoutMode = layoutMode;
 	}
 
-	ProgressBar &ProgressBar::set(const SizeF &size, const ColorF &color, PositionType positionType, double roundness)
+	ProgressBar &ProgressBar::set(const SizeF &size, const ColorF &color, LayoutMode layoutMode, double roundness)
 	{
 		m_region = RectF{ size };
 		m_color = color;
-		m_positionType = positionType;
+		m_layoutMode = layoutMode;
 		m_roundness = roundness;
 		return *this;
 	}
@@ -41,68 +41,68 @@ namespace UFOCat::GUI
 		RoundRect{ bar.rect.pos, SizeF{ 0.0, bar.h }, bar.r }.lerp(full, m_progress).draw(m_color);
 	}
 
-	RelocatableTypeID ProgressBar::typeID() const noexcept
+	LayoutableTypeID ProgressBar::typeID() const noexcept
 	{
-		return RelocatableTypeID::ProgressBar;
+		return LayoutableTypeID::ProgressBar;
 	}
 
 	ProgressBar &ProgressBar::setPosition(const Vec2 &position, bool isOverwriteDefault) noexcept
 	{
-		Relocatable::setPosition(position, isOverwriteDefault);
+		Layoutable::setPosition(position, isOverwriteDefault);
 		return *this;
 	}
 
 	ProgressBar &ProgressBar::setPosition(const Arg::topCenter_<Vec2> &position, bool isOverwriteDefault) noexcept
 	{
-		Relocatable::setPosition(position, isOverwriteDefault);
+		Layoutable::setPosition(position, isOverwriteDefault);
 		return *this;
 	}
 
 	ProgressBar &ProgressBar::setPosition(const Arg::topRight_<Vec2> &position, bool isOverwriteDefault) noexcept
 	{
-		Relocatable::setPosition(position, isOverwriteDefault);
+		Layoutable::setPosition(position, isOverwriteDefault);
 		return *this;
 	}
 
 	ProgressBar &ProgressBar::setPosition(const Arg::leftCenter_<Vec2> &position, bool isOverwriteDefault) noexcept
 	{
-		Relocatable::setPosition(position, isOverwriteDefault);
+		Layoutable::setPosition(position, isOverwriteDefault);
 		return *this;
 	}
 
 	ProgressBar &ProgressBar::setPosition(const Arg::rightCenter_<Vec2> &position, bool isOverwriteDefault) noexcept
 	{
-		Relocatable::setPosition(position, isOverwriteDefault);
+		Layoutable::setPosition(position, isOverwriteDefault);
 		return *this;
 	}
 
 	ProgressBar &ProgressBar::setPosition(const Arg::bottomLeft_<Vec2> &position, bool isOverwriteDefault) noexcept
 	{
-		Relocatable::setPosition(position, isOverwriteDefault);
+		Layoutable::setPosition(position, isOverwriteDefault);
 		return *this;
 	}
 
 	ProgressBar &ProgressBar::setPosition(const Arg::bottomCenter_<Vec2> &position, bool isOverwriteDefault) noexcept
 	{
-		Relocatable::setPosition(position, isOverwriteDefault);
+		Layoutable::setPosition(position, isOverwriteDefault);
 		return *this;
 	}
 
 	ProgressBar &ProgressBar::setPosition(const Arg::bottomRight_<Vec2> &position, bool isOverwriteDefault) noexcept
 	{
-		Relocatable::setPosition(position, isOverwriteDefault);
+		Layoutable::setPosition(position, isOverwriteDefault);
 		return *this;
 	}
 
 	ProgressBar &ProgressBar::setPositionAt(const Vec2 &position, bool isOverwriteDefault) noexcept
 	{
-		Relocatable::setPositionAt(position, isOverwriteDefault);
+		Layoutable::setPositionAt(position, isOverwriteDefault);
 		return *this;
 	}
 
 	ProgressBar &ProgressBar::setMargin(const Margin &margin) noexcept
 	{
-		Relocatable::setMargin(margin);
+		Layoutable::setMargin(margin);
 		return *this;
 	}
 }

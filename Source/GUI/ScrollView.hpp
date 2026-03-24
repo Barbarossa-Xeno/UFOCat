@@ -1,9 +1,9 @@
 ﻿# pragma once
-# include "Relocatable.hpp"
+# include "Layoutable.hpp"
 
 namespace UFOCat::GUI
 {
-	/// @brief `Relocatable` な GUI コンポーネントを複数格納し、
+	/// @brief `Layoutable` な GUI コンポーネントを複数格納し、
 	/// マウスのホイールスクロールやスワイプ、スクロールバー操作によるスクロール表示を可能にするコンポーネント
 	class ScrollView final : public Drawable
 	{
@@ -43,7 +43,7 @@ namespace UFOCat::GUI
 		ScrollPart m_bar;
 
 		/// @brief ビューの中に入れるコンポーネント（コンテンツ）
-		Array<std::unique_ptr<Relocatable>> m_contents{};
+		Array<std::unique_ptr<Layoutable>> m_contents{};
 
 		/// @brief 現在のスクロール割合 (0.0 ~ 1.0)
 		double m_progress = 0.0;
@@ -101,7 +101,7 @@ namespace UFOCat::GUI
 		/// @tparam ...TContents `Relocatable` なコンポーネント（パラメータパック）
 		/// @param ...contents `Relocatable` なコンポーネントを複数指定（可変長引数）
 		/// @return 自分自身の参照
-		template <std::derived_from<Relocatable> ...TContents>
+		template <std::derived_from<Layoutable> ...TContents>
 		inline ScrollView &addContents(const TContents &...contents)
 		{
 			// Fold 式でループしながら追加
@@ -119,10 +119,10 @@ namespace UFOCat::GUI
 		}
 
 		/// @brief コンテナ内に配置するコンテンツを設定しなおす
-		/// @tparam ...TContents `Relocatable` なコンポーネント（パラメータパック）
-		/// @param ...contents `Relocatable` なコンポーネントを複数指定（可変長引数）
+		/// @tparam ...TContents `Layoutable` なコンポーネント（パラメータパック）
+		/// @param ...contents `Layoutable` なコンポーネントを複数指定（可変長引数）
 		/// @return 自分自身の参照
-		template <std::derived_from<Relocatable> ...TContents>
+		template <std::derived_from<Layoutable> ...TContents>
 		inline ScrollView &setContents(const TContents &...contents)
 		{
 			// 既存のコンテンツをクリア

@@ -1211,7 +1211,7 @@
     <ClInclude Include="Source\GUI\Drawable.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\GUI\Relocatable.hpp">
+    <ClInclude Include="Source\GUI\Layoutable.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\GUI\TextBox.hpp">

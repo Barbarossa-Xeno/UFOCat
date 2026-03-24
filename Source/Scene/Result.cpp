@@ -43,13 +43,13 @@ namespace UFOCat
 				{
 					FontAsset(Util::FontName::KoharuiroSunray)
 						(U"くわしいスコア"),
-					48, Util::Palette::Brown, GUI::PositionType::Relative
+					48, Util::Palette::Brown, GUI::LayoutMode::Relative
 				}.setMargin({ 0, 5 }),
 				GUI::TextBox
 				{
 					FontAsset(Util::FontName::YuseiMagic)
 						(U"小数点はとちゅうでしょうりゃくしています"),
-					18, Util::Palette::Brown, GUI::PositionType::Relative
+					18, Util::Palette::Brown, GUI::LayoutMode::Relative
 				}.setMargin({ 0, 10 })
 			);
 
@@ -70,13 +70,13 @@ namespace UFOCat
 					{
 						FontAsset(Util::FontName::YuseiMagic)
 							(U"★ レベル{}"_fmt(*data.level)),
-						28, Util::Palette::Brown, GUI::PositionType::Relative
+						28, Util::Palette::Brown, GUI::LayoutMode::Relative
 					}.setMargin({ 5, 5 }),
 					GUI::TextBox
 					{
 						FontAsset(Util::FontName::YuseiMagic)
 							(data.isCaught ? (data.isCorrect ? U"正解!!" : U"不正解…") : U"時間切れ…"),
-						22, Util::Palette::Brown, GUI::PositionType::Relative
+						22, Util::Palette::Brown, GUI::LayoutMode::Relative
 					}.setMargin({ 0, 5 }).setIndent(20)
 				);
 
@@ -89,7 +89,7 @@ namespace UFOCat
 						{
 							FontAsset(Util::FontName::YuseiMagic)
 								(U"猫をつかまえた！ ── +22"),
-							18, Util::Palette::Brown, GUI::PositionType::Relative
+							18, Util::Palette::Brown, GUI::LayoutMode::Relative
 						}.setIndent(40)
 					);
 
@@ -101,7 +101,7 @@ namespace UFOCat
 							{
 								FontAsset(Util::FontName::YuseiMagic)
 									(U"タイムボーナス！ ── ×{}"_fmt(Round(100 * 2.2 * (2.2 + 1 / (2.2 * data.response))) / 100)),
-								18, Util::Palette::Brown, GUI::PositionType::Relative
+								18, Util::Palette::Brown, GUI::LayoutMode::Relative
 							}.setIndent(60)
 						);
 					}
@@ -112,7 +112,7 @@ namespace UFOCat
 						{
 							FontAsset(Util::FontName::YuseiMagic)
 								(U"レベルとうたつボーナス！ ── ×{}"_fmt(Round(100 * Math::Exp(2.2 * (*data.level) / 10.0)) / 100)),
-							18, Util::Palette::Brown, GUI::PositionType::Relative
+							18, Util::Palette::Brown, GUI::LayoutMode::Relative
 						}.setIndent(40)
 					);
 
@@ -124,7 +124,7 @@ namespace UFOCat
 							{
 								FontAsset(Util::FontName::YuseiMagic)
 									(U"{} 回れんぞく正解！ ── +{}"_fmt(data.consecutiveCorrect, 222 * data.consecutiveCorrect)),
-								18, Util::Palette::Brown, GUI::PositionType::Relative
+								18, Util::Palette::Brown, GUI::LayoutMode::Relative
 							}.setIndent(40)
 						);
 					}

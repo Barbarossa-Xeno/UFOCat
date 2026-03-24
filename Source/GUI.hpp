@@ -9,7 +9,7 @@
 
 // GUI コンポーネント
 # include "GUI/Drawable.hpp"
-# include "GUI/Relocatable.hpp"
+# include "GUI/Layoutable.hpp"
 # include "GUI/Button.hpp"
 # include "GUI/ProgressBar.hpp"
 # include "GUI/TextBox.hpp"

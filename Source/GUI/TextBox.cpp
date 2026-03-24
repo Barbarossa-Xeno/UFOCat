@@ -2,22 +2,22 @@
 
 namespace UFOCat::GUI
 {
-	TextBox::TextBox(const DrawableText &text, double fontSize, const Color &color, PositionType positionType)
+	TextBox::TextBox(const DrawableText &text, double fontSize, const Color &color, LayoutMode layoutMode)
 		: m_text{ text }
 		, m_fontSize{ fontSize }
 		, m_color{ color }
 	{
 		m_region = text.region(fontSize);
-		m_positionType = positionType;
+		m_layoutMode = layoutMode;
 	}
 
-	TextBox &TextBox::set(const DrawableText &text, double fontSize, const Color &color, PositionType positionType)
+	TextBox &TextBox::set(const DrawableText &text, double fontSize, const Color &color, LayoutMode layoutMode)
 	{
 		m_region = text.region(fontSize);
 		m_text = text;
 		m_fontSize = fontSize;
 		m_color = color;
-		m_positionType = positionType;
+		m_layoutMode = layoutMode;
 
 		return *this;
 	}
@@ -65,68 +65,68 @@ namespace UFOCat::GUI
 		m_text.draw(m_fontSize, m_region, m_color);
 	}
 
-	RelocatableTypeID TextBox::typeID() const noexcept
+	LayoutableTypeID TextBox::typeID() const noexcept
 	{
-		return RelocatableTypeID::TextBox;
+		return LayoutableTypeID::TextBox;
 	}
 
 	TextBox &TextBox::setPosition(const Vec2 &position, bool isOverwriteDefault) noexcept
 	{
-		Relocatable::setPosition(position, isOverwriteDefault);
+		Layoutable::setPosition(position, isOverwriteDefault);
 		return *this;
 	}
 
 	TextBox &TextBox::setPosition(const Arg::topCenter_<Vec2> &position, bool isOverwriteDefault) noexcept
 	{
-		Relocatable::setPosition(position, isOverwriteDefault);
+		Layoutable::setPosition(position, isOverwriteDefault);
 		return *this;
 	}
 
 	TextBox &TextBox::setPosition(const Arg::topRight_<Vec2> &position, bool isOverwriteDefault) noexcept
 	{
-		Relocatable::setPosition(position, isOverwriteDefault);
+		Layoutable::setPosition(position, isOverwriteDefault);
 		return *this;
 	}
 
 	TextBox &TextBox::setPosition(const Arg::leftCenter_<Vec2> &position, bool isOverwriteDefault) noexcept
 	{
-		Relocatable::setPosition(position, isOverwriteDefault);
+		Layoutable::setPosition(position, isOverwriteDefault);
 		return *this;
 	}
 
 	TextBox &TextBox::setPosition(const Arg::rightCenter_<Vec2> &position, bool isOverwriteDefault) noexcept
 	{
-		Relocatable::setPosition(position, isOverwriteDefault);
+		Layoutable::setPosition(position, isOverwriteDefault);
 		return *this;
 	}
 
 	TextBox &TextBox::setPosition(const Arg::bottomLeft_<Vec2> &position, bool isOverwriteDefault) noexcept
 	{
-		Relocatable::setPosition(position, isOverwriteDefault);
+		Layoutable::setPosition(position, isOverwriteDefault);
 		return *this;
 	}
 
 	TextBox &TextBox::setPosition(const Arg::bottomCenter_<Vec2> &position, bool isOverwriteDefault) noexcept
 	{
-		Relocatable::setPosition(position, isOverwriteDefault);
+		Layoutable::setPosition(position, isOverwriteDefault);
 		return *this;
 	}
 
 	TextBox &TextBox::setPosition(const Arg::bottomRight_<Vec2> &position, bool isOverwriteDefault) noexcept
 	{
-		Relocatable::setPosition(position, isOverwriteDefault);
+		Layoutable::setPosition(position, isOverwriteDefault);
 		return *this;
 	}
 
 	TextBox &TextBox::setPositionAt(const Vec2 &position, bool isOverwriteDefault) noexcept
 	{
-		Relocatable::setPositionAt(position, isOverwriteDefault);
+		Layoutable::setPositionAt(position, isOverwriteDefault);
 		return *this;
 	}
 
 	TextBox &TextBox::setMargin(const Margin &margin) noexcept
 	{
-		Relocatable::setMargin(margin);
+		Layoutable::setMargin(margin);
 		return *this;
 	}
 }

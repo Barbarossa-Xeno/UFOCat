@@ -3,7 +3,7 @@
 
 namespace UFOCat::GUI
 {
-	Button::Button(const Font &font, double fontSize, const String &text, const Audio &se, PositionType positionType, bool isEnabled, const Vec2 &padding)
+	Button::Button(const Font &font, double fontSize, const String &text, const Audio &se, LayoutMode layoutMode, bool isEnabled, const Vec2 &padding)
 		: m_font(font)
 		, m_fontSize(fontSize)
 		, m_text(text)
@@ -11,29 +11,29 @@ namespace UFOCat::GUI
 		, m_isEnabled(isEnabled)
 		, m_padding(padding)
 	{
-		m_positionType = positionType;
+		m_layoutMode = layoutMode;
 
 		// フォントの描画領域 (左上(0, 0)の位置) を特定して、パディング分を足したサイズで Rect を作成
 		m_region = RectF{ m_font(m_text).region(fontSize).size + m_padding };
 	}
 
-	Button::Button(double fontSize, const String &text, const Audio &se, PositionType positionType, bool isEnabled, const Vec2 &padding)
+	Button::Button(double fontSize, const String &text, const Audio &se, LayoutMode layoutMode, bool isEnabled, const Vec2 &padding)
 		// ここでフォントを決め打ちにする
-		: Button(FontAsset(Util::FontName::YuseiMagic), fontSize, text, se, positionType, isEnabled, padding)
+		: Button(FontAsset(Util::FontName::YuseiMagic), fontSize, text, se, layoutMode, isEnabled, padding)
 	{}
 
-	Button::Button(const Font &font, double fontSize, const String &text, PositionType positionType, bool isEnabled, const Vec2 &padding)
+	Button::Button(const Font &font, double fontSize, const String &text, LayoutMode layoutMode, bool isEnabled, const Vec2 &padding)
 		// ここで SE を決め打ちにする
-		: Button(font, fontSize, text, AudioAsset(Util::AudioName::SE::Open), positionType, isEnabled, padding)
+		: Button(font, fontSize, text, AudioAsset(Util::AudioName::SE::Open), layoutMode, isEnabled, padding)
 	{}
 
-	Button &Button::set(const Font &font, double fontSize, const String &text, const Audio &se, PositionType positionType, bool isEnabled, const Vec2 &padding)
+	Button &Button::set(const Font &font, double fontSize, const String &text, const Audio &se, LayoutMode layoutMode, bool isEnabled, const Vec2 &padding)
 	{
 		m_font = font;
 		m_fontSize = fontSize;
 		m_text = text;
 		m_se = se;
-		m_positionType = positionType;
+		m_layoutMode = layoutMode;
 		m_isEnabled = isEnabled;
 		m_padding = padding;
 		m_region = RectF{ m_font(m_text).region(fontSize).size + m_padding };
@@ -41,19 +41,19 @@ namespace UFOCat::GUI
 		return *this;
 	}
 
-	Button &Button::set(double fontSize, const String &text, const Audio &se, PositionType positionType, bool isEnabled, const Vec2 &padding)
+	Button &Button::set(double fontSize, const String &text, const Audio &se, LayoutMode layoutMode, bool isEnabled, const Vec2 &padding)
 	{
-		return set(m_font, fontSize, text, se, positionType, isEnabled, padding);
+		return set(m_font, fontSize, text, se, layoutMode, isEnabled, padding);
 	}
 
-	Button &Button::set(const Font &font, double fontSize, const String &text, PositionType positionType, bool isEnabled, const Vec2 &padding)
+	Button &Button::set(const Font &font, double fontSize, const String &text, LayoutMode layoutMode, bool isEnabled, const Vec2 &padding)
 	{
-		return set(font, fontSize, text, m_se, positionType, isEnabled, padding);
+		return set(font, fontSize, text, m_se, layoutMode, isEnabled, padding);
 	}
 
-	Button &Button::set(double fontSize, const String &text, PositionType positionType, bool isEnabled, const Vec2 &padding)
+	Button &Button::set(double fontSize, const String &text, LayoutMode layoutMode, bool isEnabled, const Vec2 &padding)
 	{
-		return set(m_font, fontSize, text, m_se, positionType, isEnabled, padding);
+		return set(m_font, fontSize, text, m_se, layoutMode, isEnabled, padding);
 	}
 
 	Button &Button::setFont(const Font &font)
@@ -119,68 +119,68 @@ namespace UFOCat::GUI
 		}
 	}
 
-	RelocatableTypeID Button::typeID() const noexcept
+	LayoutableTypeID Button::typeID() const noexcept
 	{
-		return RelocatableTypeID::Button;
+		return LayoutableTypeID::Button;
 	}
 
 	Button& Button::setPosition(const Vec2 &position, bool isOverwriteDefault) noexcept
 	{
-		Relocatable::setPosition(position, isOverwriteDefault);
+		Layoutable::setPosition(position, isOverwriteDefault);
 		return *this;
 	}
 
 	Button &Button::setPosition(const Arg::topCenter_<Vec2> &position, bool isOverwriteDefault) noexcept
 	{
-		Relocatable::setPosition(position, isOverwriteDefault);
+		Layoutable::setPosition(position, isOverwriteDefault);
 		return *this;
 	}
 
 	Button &Button::setPosition(const Arg::topRight_<Vec2> &position, bool isOverwriteDefault) noexcept
 	{
-		Relocatable::setPosition(position, isOverwriteDefault);
+		Layoutable::setPosition(position, isOverwriteDefault);
 		return *this;
 	}
 
 	Button &Button::setPosition(const Arg::leftCenter_<Vec2> &position, bool isOverwriteDefault) noexcept
 	{
-		Relocatable::setPosition(position, isOverwriteDefault);
+		Layoutable::setPosition(position, isOverwriteDefault);
 		return *this;
 	}
 
 	Button &Button::setPosition(const Arg::rightCenter_<Vec2> &position, bool isOverwriteDefault) noexcept
 	{
-		Relocatable::setPosition(position, isOverwriteDefault);
+		Layoutable::setPosition(position, isOverwriteDefault);
 		return *this;
 	}
 
 	Button &Button::setPosition(const Arg::bottomLeft_<Vec2> &position, bool isOverwriteDefault) noexcept
 	{
-		Relocatable::setPosition(position, isOverwriteDefault);
+		Layoutable::setPosition(position, isOverwriteDefault);
 		return *this;
 	}
 
 	Button &Button::setPosition(const Arg::bottomCenter_<Vec2> &position, bool isOverwriteDefault) noexcept
 	{
-		Relocatable::setPosition(position, isOverwriteDefault);
+		Layoutable::setPosition(position, isOverwriteDefault);
 		return *this;
 	}
 
 	Button &Button::setPosition(const Arg::bottomRight_<Vec2> &position, bool isOverwriteDefault) noexcept
 	{
-		Relocatable::setPosition(position, isOverwriteDefault);
+		Layoutable::setPosition(position, isOverwriteDefault);
 		return *this;
 	}
 
 	Button &Button::setPositionAt(const Vec2 &position, bool isOverwriteDefault) noexcept
 	{
-		Relocatable::setPositionAt(position, isOverwriteDefault);
+		Layoutable::setPositionAt(position, isOverwriteDefault);
 		return *this;
 	}
 
 	Button &Button::setMargin(const Margin &margin) noexcept
 	{
-		Relocatable::setMargin(margin);
+		Layoutable::setMargin(margin);
 		return *this;
 	}
 }
