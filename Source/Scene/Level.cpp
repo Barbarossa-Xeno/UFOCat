@@ -288,6 +288,7 @@ namespace UFOCat
 							getData().spawns << std::make_unique<CatObject>
 												(
 													CatObject{ TextureAsset(Cat(selection->id)) }
+														.setCatData(*selection)
 														.setAction(DiscreteSample(m_currentLevel().actionDataList, m_actionProbabilities))
 														.setRandomVelocity(getData().levelIndex + 1)
 												);
