@@ -1,10 +1,12 @@
-.vs/UFOCat/*
+/.vs/*
+/.vscode/*
 
 App/*
 !App/texture
 !App/font
 !App/audio
 !App/*.json
+!App/*.md
 App/launcher_info.json
 
 !App/Resource.aps
