@@ -31,8 +31,8 @@ namespace UFOCat
 
 	Array<CatData> LoadCatData()
 	{
-		// JSON ファイルからデータを読み込む
-		const JSON json = JSON::Load(U"cat_data.json");
+		// JSON ファイル（埋め込みリソース）からデータを読み込む
+		const JSON json = JSON::Load(Resource(U"cat_data.json"));
 
 		// もし読み込みに失敗したら
 		if (not json)
@@ -156,8 +156,8 @@ namespace UFOCat
 
 	Array<LevelData> LoadLevelData()
 	{
-		// JSON からデータを読み込む
-		const JSON json = JSON::Load(U"level_data.json");
+		// JSON（埋め込みリソース）からデータを読み込む
+		const JSON json = JSON::Load(Resource(U"level_data.json"));
 
 		// もし読み込みに失敗したら
 		if (not json)
@@ -392,10 +392,12 @@ namespace UFOCat
 
 	Array<BackgroundData> LoadBackgrounds()
 	{
-		// 背景画像をイメージとして読み込む
-		auto &&bgs = FileSystem::DirectoryContents(U"texture/background").map([](const String &path)
+		// 背景画像（埋め込みリソース）をイメージとして読み込む
+		auto &&bgs = EnumResourceFiles()
+			.filter([](const auto& path) { return path.lowercased().contains(U"texture/background"); })
+			.map([](const String &path)
 		{
-			return Image{ path };
+			return Image{ Resource(path) };
 		});
 
 		// 各背景画像のピクセルの色の平均値

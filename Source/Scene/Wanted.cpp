@@ -38,7 +38,7 @@ namespace UFOCat
 						  .setPosition(Arg::bottomCenter = Vec2{ 180.0 / 2 + 5, 100 - 5 - 10 })
 						  .setProgress((getData().levelIndex + 1) / 10.0);
 
-			m_gui.flyer = Texture{ U"texture/flyer.png", TextureDesc::Mipped };
+			m_gui.flyer = Texture{ Resource(U"texture/flyer.png"), TextureDesc::Mipped };
 		}
 
 		AudioAsset(getData().bgmName).stop();

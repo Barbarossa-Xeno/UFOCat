@@ -11,15 +11,15 @@ using namespace UFOCat;
 
 void Main()
 {
-	// テクスチャフォルダから初めに全ての猫の画像アセットを登録
-	for (auto &&[i, path] : Indexed(FileSystem::DirectoryContents(U"texture/cat")))
+	// 埋め込みリソースにしたテクスチャフォルダから全ての猫の画像アセットを登録
+	for (auto &&[i, path] : Indexed(EnumResourceFiles().filter([](const auto &path) { return path.lowercased().contains(U"texture/cat"); })))
 	{
-		TextureAsset::Register(Cat(i), path);
+		TextureAsset::Register(Cat(i), Resource(path));
 	}
 
-	// フォントアセットの登録
-	FontAsset::Register(Util::FontName::YuseiMagic, FontMethod::SDF, 48, U"font/YuseiMagicRegular.ttf");
-	FontAsset::Register(Util::FontName::KoharuiroSunray, FontMethod::SDF, 48, U"font/KoharuiroSunray.ttf");
+	// 埋め込みリソースにしたフォントアセットの登録
+	FontAsset::Register(Util::FontName::YuseiMagic, FontMethod::SDF, 48, Resource(U"font/YuseiMagicRegular.ttf"));
+	FontAsset::Register(Util::FontName::KoharuiroSunray, FontMethod::SDF, 48, Resource(U"font/KoharuiroSunray.ttf"));
 
 	// バッファサイズの設定
 	FontAsset(Util::FontName::YuseiMagic).setBufferThickness(4);
@@ -27,25 +27,25 @@ void Main()
 
 	// オーディオアセットの登録
 	// TODO: 音量設定をつくるのもあり
-	AudioAsset::Register(Util::AudioName::BGM::Title, Audio::Stream, U"audio/title.mp3", Loop::Yes);
-	AudioAsset::Register(Util::AudioName::BGM::Level01, Audio::Stream, U"audio/level01.mp3");
-	AudioAsset::Register(Util::AudioName::BGM::Level02, Audio::Stream, U"audio/level02.mp3");
-	AudioAsset::Register(Util::AudioName::SE::Open, U"audio/open.mp3");
-	AudioAsset::Register(Util::AudioName::SE::OK, U"audio/ok.mp3");
-	AudioAsset::Register(Util::AudioName::SE::Cancel, U"audio/cancenl.mp3");
-	AudioAsset::Register(Util::AudioName::SE::Announce, U"audio/announce.mp3");
-	AudioAsset::Register(Util::AudioName::SE::CountDown, U"audio/countDown.mp3");
-	AudioAsset::Register(Util::AudioName::SE::StartLevel, U"audio/startLevel.mp3");
-	AudioAsset::Register(Util::AudioName::SE::FinishLevel, U"audio/finishLevel.mp3");
-	AudioAsset::Register(Util::AudioName::SE::Correct, U"audio/correct.mp3");
-	AudioAsset::Register(Util::AudioName::SE::Incorrect, U"audio/incorrect.mp3");
-	AudioAsset::Register(Util::AudioName::SE::TimeUp, U"audio/timeUp.mp3");
+	AudioAsset::Register(Util::AudioName::BGM::Title, Audio::Stream, Resource(U"audio/title.mp3"), Loop::Yes);
+	AudioAsset::Register(Util::AudioName::BGM::Level01, Audio::Stream, Resource(U"audio/level01.mp3"));
+	AudioAsset::Register(Util::AudioName::BGM::Level02, Audio::Stream, Resource(U"audio/level02.mp3"));
+	AudioAsset::Register(Util::AudioName::SE::Open, Resource(U"audio/open.mp3"));
+	AudioAsset::Register(Util::AudioName::SE::OK, Resource(U"audio/ok.mp3"));
+	AudioAsset::Register(Util::AudioName::SE::Cancel, Resource(U"audio/cancel.mp3"));
+	AudioAsset::Register(Util::AudioName::SE::Announce, Resource(U"audio/announce.mp3"));
+	AudioAsset::Register(Util::AudioName::SE::CountDown, Resource(U"audio/countDown.mp3"));
+	AudioAsset::Register(Util::AudioName::SE::StartLevel, Resource(U"audio/startLevel.mp3"));
+	AudioAsset::Register(Util::AudioName::SE::FinishLevel, Resource(U"audio/finishLevel.mp3"));
+	AudioAsset::Register(Util::AudioName::SE::Correct, Resource(U"audio/correct.mp3"));
+	AudioAsset::Register(Util::AudioName::SE::Incorrect, Resource(U"audio/incorrect.mp3"));
+	AudioAsset::Register(Util::AudioName::SE::TimeUp, Resource(U"audio/timeUp.mp3"));
 	// ループのタイミング指定は秒数にサンプリング周波数を掛けて実際のサンプル数にしないといけないらしい
-	AudioAsset::Register(Util::AudioName::SE::CountUpScore, U"audio/countUpScore.mp3", Arg::loopBegin = static_cast<uint64>(0.683 * 44100), Arg::loopEnd = static_cast<uint64>(4.272 * 44100));
-	AudioAsset::Register(Util::AudioName::SE::FinishScore, U"audio/finishScore.mp3");
-	AudioAsset::Register(Util::AudioName::SE::Cat01, U"audio/cat01.mp3");
-	AudioAsset::Register(Util::AudioName::SE::Cat02, U"audio/cat02.mp3");
-	AudioAsset::Register(Util::AudioName::SE::CatAngry, U"audio/catAngry.mp3");
+	AudioAsset::Register(Util::AudioName::SE::CountUpScore, Resource(U"audio/countUpScore.mp3"), Arg::loopBegin = static_cast<uint64>(0.683 * 44100), Arg::loopEnd = static_cast<uint64>(4.272 * 44100));
+	AudioAsset::Register(Util::AudioName::SE::FinishScore, Resource(U"audio/finishScore.mp3"));
+	AudioAsset::Register(Util::AudioName::SE::Cat01, Resource(U"audio/cat01.mp3"));
+	AudioAsset::Register(Util::AudioName::SE::Cat02, Resource(U"audio/cat02.mp3"));
+	AudioAsset::Register(Util::AudioName::SE::CatAngry, Resource(U"audio/catAngry.mp3"));
 
 	// ウィンドウの設定
 	Window::SetTitle(U"UFO猫をつかまえろ!!");

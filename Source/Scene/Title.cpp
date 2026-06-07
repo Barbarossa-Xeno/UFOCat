@@ -229,7 +229,7 @@ namespace UFOCat
 				}.setMargin({ 0, 0 }).setIndent(40)
 			).setSize({ 600, 500 });
 
-			m_gui.logo = Texture{ U"texture/logo.png", TextureDesc::Mipped };
+			m_gui.logo = Texture{ Resource(U"texture/logo.png"), TextureDesc::Mipped };
 		}
 
 		// # タイトル画面に現れる猫を決める

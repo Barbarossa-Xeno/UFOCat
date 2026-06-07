@@ -86,48 +86,94 @@ Resource(engine/texture/box-shadow/8.png)
 
 //////////////////////////////////////////////////////
 //
-//	Siv3D Engine Optional Resources (Can be removed if not required)
-//
-//////////////////////////////////////////////////////
-
-//
-//	Fonts
-//
-Resource(engine/font/mplus/mplus-1p-thin.ttf.zstdcmp)
-Resource(engine/font/mplus/mplus-1p-light.ttf.zstdcmp)
-Resource(engine/font/mplus/mplus-1p-regular.ttf.zstdcmp)
-Resource(engine/font/mplus/mplus-1p-medium.ttf.zstdcmp)
-Resource(engine/font/mplus/mplus-1p-bold.ttf.zstdcmp)
-Resource(engine/font/mplus/mplus-1p-heavy.ttf.zstdcmp)
-Resource(engine/font/mplus/mplus-1p-black.ttf.zstdcmp)
-Resource(engine/font/noto-cjk/NotoSansCJK-Regular.ttc.zstdcmp)
-//Resource(engine/font/noto-cjk/NotoSansJP-Regular.otf.zstdcmp)
-
-//
-//	Emoji Fonts
-//
-Resource(engine/font/noto-emoji/NotoColorEmoji.ttf.zstdcmp)
-Resource(engine/font/noto-emoji/NotoEmoji-Regular.ttf.zstdcmp)
-
-//
-//	Icons
-//
-Resource(engine/font/fontawesome/fontawesome-brands.otf.zstdcmp)
-Resource(engine/font/fontawesome/fontawesome-solid.otf.zstdcmp)
-Resource(engine/font/materialdesignicons/materialdesignicons-webfont.ttf.zstdcmp)
-
-//
-//	Sound Font
-//
-Resource(engine/soundfont/GMGSx.sf2.zstdcmp)
-
-//////////////////////////////////////////////////////
-//
 //	Siv3D App Resources (Your application resources here)
 //
 //////////////////////////////////////////////////////
 
+Resource(cat_data.json)
+Resource(level_data.json)
 
+//
+// fonts
+//
+Resource(font/KoharuiroSunray.ttf)
+Resource(font/YuseiMagicRegular.ttf)
+
+//
+// textures
+//
+Resource(texture/cat/00.png)
+Resource(texture/cat/01.png)
+Resource(texture/cat/02.png)
+Resource(texture/cat/03.png)
+Resource(texture/cat/04.png)
+Resource(texture/cat/05.png)
+Resource(texture/cat/06.png)
+Resource(texture/cat/07.png)
+Resource(texture/cat/08.png)
+Resource(texture/cat/09.png)
+Resource(texture/cat/10.png)
+Resource(texture/cat/11.png)
+Resource(texture/cat/12.png)
+Resource(texture/cat/13.png)
+Resource(texture/cat/14.png)
+Resource(texture/cat/15.png)
+Resource(texture/cat/16.png)
+Resource(texture/cat/17.png)
+Resource(texture/cat/18.png)
+Resource(texture/cat/19.png)
+Resource(texture/cat/20.png)
+Resource(texture/cat/21.png)
+Resource(texture/cat/22.png)
+Resource(texture/cat/23.png)
+Resource(texture/cat/24.png)
+Resource(texture/cat/25.png)
+Resource(texture/cat/26.png)
+Resource(texture/cat/27.png)
+Resource(texture/cat/28.png)
+Resource(texture/cat/29.png)
+Resource(texture/cat/30.png)
+Resource(texture/cat/31.png)
+Resource(texture/cat/32.png)
+Resource(texture/cat/33.png)
+Resource(texture/cat/34.png)
+Resource(texture/cat/35.png)
+Resource(texture/cat/36.png)
+Resource(texture/cat/37.png)
+Resource(texture/cat/38.png)
+Resource(texture/cat/39.png)
+Resource(texture/cat/40.png)
+Resource(texture/cat/41.png)
+Resource(texture/cat/42.png)
+Resource(texture/cat/43.png)
+Resource(texture/background/cafe.png)
+Resource(texture/background/space.png)
+Resource(texture/background/town.png)
+Resource(texture/flyer.png)
+Resource(texture/logo.png)
+Resource(texture/timer.png)
+
+//
+// audio
+//
+Resource(audio/announce.mp3)
+Resource(audio/cancel.mp3)
+Resource(audio/cat01.mp3)
+Resource(audio/cat02.mp3)
+Resource(audio/catAngry.mp3)
+Resource(audio/correct.mp3)
+Resource(audio/countDown.mp3)
+Resource(audio/countUpScore.mp3)
+Resource(audio/finishLevel.mp3)
+Resource(audio/finishScore.mp3)
+Resource(audio/incorrect.mp3)
+Resource(audio/level01.mp3)
+Resource(audio/level02.mp3)
+Resource(audio/ok.mp3)
+Resource(audio/open.mp3)
+Resource(audio/startLevel.mp3)
+Resource(audio/timeUp.mp3)
+Resource(audio/title.mp3)
 
 /* examples 
 

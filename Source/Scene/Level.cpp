@@ -51,7 +51,7 @@ namespace UFOCat
 		// GUI初期化 と テクスチャ取得
 		{
 			// タイマーのテクスチャ ちなみに針はなくてプログラム側で動的に描画する
-			m_gui.timer = Texture{ U"texture/timer.png", TextureDesc::Mipped };
+			m_gui.timer = Texture{ Resource(U"texture/timer.png"), TextureDesc::Mipped };
 
 			// ダイアログのアラート内容を設定
 			m_gui.quitAlert.setContents
