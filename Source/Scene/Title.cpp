@@ -142,15 +142,27 @@ namespace UFOCat
 				GUI::TextBox
 				{
 					FontAsset(Util::FontName::YuseiMagic)
-						(U"使用にあたり画像データの加工をさせていただいております。"),
+						(U"使用にあたり画像データの加工をしております。"),
 					18, Util::Palette::Brown, GUI::LayoutMode::Relative
 				}.setMargin({ 2, 0 }).setIndent(40),
 				GUI::TextBox
 				{
 					FontAsset(Util::FontName::YuseiMagic)
-						(U"・背景イラスト画像については、ChatGPT による画像生成を利用しております。"),
-					14, Util::Palette::Brown, GUI::LayoutMode::Relative
-				}.setMargin({ 15, 0 }).setIndent(5),
+						(U"(3) 背景イラスト素材"),
+					22, Util::Palette::Brown, GUI::LayoutMode::Relative
+				}.setMargin({ 5, 5 }),
+				GUI::TextBox
+				{
+					FontAsset(Util::FontName::YuseiMagic)
+						(U"イラストAC - https://www.ac-illust.com/"),
+					18, Util::Palette::Brown, GUI::LayoutMode::Relative
+				}.setMargin({ 0, 0 }).setIndent(40),
+				GUI::TextBox
+				{
+					FontAsset(Util::FontName::YuseiMagic)
+						(U"使用にあたり画像データの加工をしております。"),
+					18, Util::Palette::Brown, GUI::LayoutMode::Relative
+				}.setMargin({ 2, 0 }).setIndent(40),
 
 				// - フォント素材の項目
 				GUI::TextBox
